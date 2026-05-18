@@ -1,8 +1,9 @@
-import { Component, input, output } from '@angular/core';
-import { LucideAngularModule, Eye, EyeOff, Bookmark, Shuffle, Calendar, Clock } from 'lucide-angular';
+import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-toolbar',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LucideAngularModule],
   template: `
     <div class="border-b bg-base-100/80 backdrop-blur-sm">

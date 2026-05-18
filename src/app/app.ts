@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, effect } from '@angular/core';
+import { Component, OnInit, OnDestroy, effect, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
 import { HeaderComponent } from './components/header.component';
@@ -6,10 +6,12 @@ import { ToolbarComponent } from './components/toolbar.component';
 import { CategoryPillsComponent } from './components/category-pills.component';
 import { QuestionCardComponent } from './components/question-card.component';
 import { InterviewService } from './services/interview.service';
+import { type InterviewSection, type InterviewQuestion } from './models/interview.models';
 import { interviewCategories } from './data/interview-categories';
 
 @Component({
   selector: 'app-root',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     LucideAngularModule,
@@ -22,31 +24,30 @@ import { interviewCategories } from './data/interview-categories';
   styleUrl: './app.css',
 })
 export class App implements OnInit, OnDestroy {
-  get activeCategory() { return this.svc.activeCategory; }
-  get searchQuery() { return this.svc.searchQuery; }
-  get flashcardMode() { return this.svc.flashcardMode; }
-  get showBookmarksOnly() { return this.svc.showBookmarksOnly; }
-  get showDailyChallenge() { return this.svc.showDailyChallenge; }
-  get showMockInterview() { return this.svc.showMockInterview; }
-  get mockInterviewIdx() { return this.svc.mockInterviewIdx; }
-  get mockTimer() { return this.svc.mockTimer; }
-  get mockRunning() { return this.svc.mockRunning; }
-  get bookmarkCount() { return this.svc.bookmarkCount; }
-  get category() { return this.svc.category; }
-  get categoryProgress() { return this.svc.categoryProgress; }
-  get searchResults() { return this.svc.searchResults; }
-  get dailyQuestions() { return this.svc.dailyQuestions; }
-  get mockQuestions() { return this.svc.mockQuestions; }
-  get revealedCards() { return this.svc.revealedCards; }
-  get bookmarks() { return this.svc.bookmarks; }
-  get notes() { return this.svc.notes; }
+  private svc = inject(InterviewService);
+
+  readonly activeCategory = this.svc.activeCategory;
+  readonly searchQuery = this.svc.searchQuery;
+  readonly flashcardMode = this.svc.flashcardMode;
+  readonly showBookmarksOnly = this.svc.showBookmarksOnly;
+  readonly showDailyChallenge = this.svc.showDailyChallenge;
+  readonly showMockInterview = this.svc.showMockInterview;
+  readonly mockInterviewIdx = this.svc.mockInterviewIdx;
+  readonly mockTimer = this.svc.mockTimer;
+  readonly mockRunning = this.svc.mockRunning;
+  readonly bookmarkCount = this.svc.bookmarkCount;
+  readonly category = this.svc.category;
+  readonly categoryProgress = this.svc.categoryProgress;
+  readonly searchResults = this.svc.searchResults;
+  readonly dailyQuestions = this.svc.dailyQuestions;
+  readonly mockQuestions = this.svc.mockQuestions;
+  readonly revealedCards = this.svc.revealedCards;
+  readonly bookmarks = this.svc.bookmarks;
+  readonly notes = this.svc.notes;
 
   private timerInterval: ReturnType<typeof setInterval> | null = null;
 
-  private svc: InterviewService;
-
-  constructor(svc: InterviewService) {
-    this.svc = svc;
+  constructor() {
     effect(() => {
       if (this.svc.mockRunning()) {
         this.timerInterval = setInterval(() => {
@@ -124,10 +125,10 @@ export class App implements OnInit, OnDestroy {
   get categoryCount(): number { return interviewCategories.length; }
   todayDate(): string { return new Date().toLocaleDateString('fr-FR'); }
   formatTime(s: number): string { return this.svc.formatTime(s); }
-  getOrderedQuestions(section: any): any[] { return this.svc.getOrderedQuestions(section); }
+  getOrderedQuestions(section: InterviewSection): InterviewQuestion[] { return this.svc.getOrderedQuestions(section); }
 
-  getFilteredQuestions(section: any): any[] {
+  getFilteredQuestions(section: InterviewSection): InterviewQuestion[] {
     const questions = this.getOrderedQuestions(section);
-    return this.showBookmarksOnly() ? questions.filter((q: any) => this.bookmarks().has(q.id)) : questions;
+    return this.showBookmarksOnly() ? questions.filter(q => this.bookmarks().has(q.id)) : questions;
   }
 }

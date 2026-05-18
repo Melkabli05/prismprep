@@ -1,9 +1,10 @@
-import { Component, output, signal } from '@angular/core';
+import { Component, output, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule, Search, X, Moon, Sun } from 'lucide-angular';
 
 @Component({
   selector: 'app-header',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule, LucideAngularModule],
   template: `
     <header class="sticky top-0 z-40 border-b bg-base-100/95 backdrop-blur-sm">
@@ -41,7 +42,7 @@ import { LucideAngularModule, Search, X, Moon, Sun } from 'lucide-angular';
     </header>
   `,
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   isDark = signal(false);
   searchValue = '';
 

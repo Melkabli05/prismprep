@@ -1,8 +1,9 @@
-import { Component, input, signal } from '@angular/core';
-import { LucideAngularModule, Code2, Copy, Check } from 'lucide-angular';
+import { Component, input, signal, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-code-block',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LucideAngularModule],
   template: `
     <div class="rounded-xl overflow-hidden border mt-6 shadow-sm"
@@ -30,7 +31,7 @@ import { LucideAngularModule, Code2, Copy, Check } from 'lucide-angular';
     </div>
   `,
 })
-export class CodeBlockComponent {
+export class CodeBlockComponent implements OnInit, OnDestroy {
   code = input.required<string>();
   language = input<string>();
 
@@ -38,11 +39,16 @@ export class CodeBlockComponent {
   readonly copied = signal(false);
 
   private mediaQuery: MediaQueryList | null = null;
+  private listener = (e: MediaQueryListEvent) => this.isDark.set(e.matches);
 
   ngOnInit(): void {
     this.mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     this.isDark.set(this.mediaQuery.matches);
-    this.mediaQuery.addEventListener('change', (e) => this.isDark.set(e.matches));
+    this.mediaQuery.addEventListener('change', this.listener);
+  }
+
+  ngOnDestroy(): void {
+    this.mediaQuery?.removeEventListener('change', this.listener);
   }
 
   copyCode(): void {
