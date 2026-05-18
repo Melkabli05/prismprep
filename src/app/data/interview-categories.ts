@@ -27,4 +27,4 @@ export const interviewCategories = [
   restApiCategory, cloudCategory, linuxCategory, systemDesignCategory, behavioralCategory, aiCategory,
 ];
 
-export type { InterviewCategory, InterviewSection, InterviewQuestion } from './interview.models';
+export type { InterviewCategory, InterviewSection, InterviewQuestion } from '../models/interview.models';

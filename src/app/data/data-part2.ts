@@ -1,3 +1,5 @@
+import type { InterviewCategory } from '../models/interview.models';
+
 export const part2Categories: InterviewCategory[] = [
   {
     id: 'java',
