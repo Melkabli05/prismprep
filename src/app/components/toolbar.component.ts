@@ -1,9 +1,9 @@
 import { Component, input, output } from '@angular/core';
-import { LucideAngularComponent as LucideAngular, Eye, EyeOff, Bookmark, Shuffle, Calendar, Clock } from 'lucide-angular';
+import { LucideAngularModule, Eye, EyeOff, Bookmark, Shuffle, Calendar, Clock } from 'lucide-angular';
 
 @Component({
   selector: 'app-toolbar',
-  imports: [LucideAngular],
+  imports: [LucideAngularModule],
   template: `
     <div class="border-b bg-base-100/80 backdrop-blur-sm">
       <div class="max-w-2xl mx-auto px-6 py-2.5 flex items-center gap-2 overflow-x-auto">

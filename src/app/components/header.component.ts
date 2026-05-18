@@ -1,10 +1,10 @@
 import { Component, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { LucideAngularComponent as LucideAngular, Search, X, Moon, Sun } from 'lucide-angular';
+import { LucideAngularModule, Search, X, Moon, Sun } from 'lucide-angular';
 
 @Component({
   selector: 'app-header',
-  imports: [FormsModule, LucideAngular],
+  imports: [FormsModule, LucideAngularModule],
   template: `
     <header class="sticky top-0 z-40 border-b bg-base-100/95 backdrop-blur-sm">
       <div class="max-w-2xl mx-auto px-6 py-4">

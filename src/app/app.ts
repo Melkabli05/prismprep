@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { LucideAngularComponent as LucideAngular, ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-angular';
+import { LucideAngularModule } from 'lucide-angular';
 import { HeaderComponent } from './components/header.component';
 import { ToolbarComponent } from './components/toolbar.component';
 import { CategoryPillsComponent } from './components/category-pills.component';
@@ -12,7 +12,7 @@ import { interviewCategories } from './data/interview-categories';
   selector: 'app-root',
   imports: [
     FormsModule,
-    LucideAngular,
+    LucideAngularModule,
     HeaderComponent,
     ToolbarComponent,
     CategoryPillsComponent,
@@ -22,10 +22,6 @@ import { interviewCategories } from './data/interview-categories';
   styleUrl: './app.css',
 })
 export class App implements OnInit, OnDestroy {
-  readonly ChevronLeft = ChevronLeft;
-  readonly ChevronRight = ChevronRight;
-  readonly CheckCircle2 = CheckCircle2;
-
   get activeCategory() { return this.svc.activeCategory; }
   get searchQuery() { return this.svc.searchQuery; }
   get flashcardMode() { return this.svc.flashcardMode; }
@@ -129,4 +125,9 @@ export class App implements OnInit, OnDestroy {
   todayDate(): string { return new Date().toLocaleDateString('fr-FR'); }
   formatTime(s: number): string { return this.svc.formatTime(s); }
   getOrderedQuestions(section: any): any[] { return this.svc.getOrderedQuestions(section); }
+
+  getFilteredQuestions(section: any): any[] {
+    const questions = this.getOrderedQuestions(section);
+    return this.showBookmarksOnly() ? questions.filter((q: any) => this.bookmarks().has(q.id)) : questions;
+  }
 }

@@ -1,6 +1,6 @@
 import { Component, input, output, computed, signal, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { LucideAngularComponent as LucideAngular, Star, Eye, EyeOff, StickyNote, Lightbulb } from 'lucide-angular';
+import { LucideAngularModule, Star, Eye, EyeOff, StickyNote, Lightbulb } from 'lucide-angular';
 import { type InterviewQuestion } from '../models/interview.models';
 import { CodeBlockComponent } from './code-block.component';
 
@@ -10,15 +10,15 @@ function escapeRegex(str: string): string {
 
 @Component({
   selector: 'app-question-card',
-  imports: [FormsModule, LucideAngular, CodeBlockComponent],
+  imports: [FormsModule, LucideAngularModule, CodeBlockComponent],
   template: `
     <div class="group border rounded-xl transition-all duration-200"
-         [class.cursor-pointer]="flashcardMode() && !isRevealed()"
-         [class.hover:shadow-md]="flashcardMode() && !isRevealed()"
-         [class.hover:border-primary/30]="flashcardMode() && !isRevealed()"
-         [class.shadow-sm]="!flashcardMode() || isRevealed()"
-         [class.hover:shadow-md]="!flashcardMode() || isRevealed()"
-         [class.border-base-200]="!isRevealed() && flashcardMode()"
+         [class.cursor-pointer]="flashcardMode() && !isRevealed"
+         [class.hover:shadow-md]="flashcardMode() && !isRevealed"
+         [class.hover:border-primary/30]="flashcardMode() && !isRevealed"
+         [class.shadow-sm]="!flashcardMode() || isRevealed"
+         [class.hover:shadow-md]="!flashcardMode() || isRevealed"
+         [class.border-base-200]="!isRevealed && flashcardMode()"
          [class.border-base-300]="!flashcardMode()"
          [class.bg-base-100]="true">
 
@@ -37,15 +37,15 @@ function escapeRegex(str: string): string {
           </div>
           <button (click)="onToggleBookmark()"
                   class="p-1.5 rounded-lg transition-all duration-200 shrink-0"
-                  [class.text-amber-500]="isBookmarked()"
-                  [class.hover:text-amber-600]="isBookmarked()"
-                  [class.hover:bg-amber-50]="isBookmarked()"
-                  [class.text-base-content/30]="!isBookmarked()"
-                  [class.hover:text-base-content/60]="!isBookmarked()"
-                  [class.hover:bg-base-200]="!isBookmarked()">
+                  [class.text-amber-500]="isBookmarked"
+                  [class.hover:text-amber-600]="isBookmarked"
+                  [class.hover:bg-amber-50]="isBookmarked"
+                  [class.text-base-content/30]="!isBookmarked"
+                  [class.hover:text-base-content/60]="!isBookmarked"
+                  [class.hover:bg-base-200]="!isBookmarked">
             <lucide-icon name="star" class="h-4 w-4"
-                         [class.fill-current]="isBookmarked()"
-                         [class.scale-110]="isBookmarked()"></lucide-icon>
+                         [class.fill-current]="isBookmarked"
+                         [class.scale-110]="isBookmarked"></lucide-icon>
           </button>
         </div>
 
@@ -63,7 +63,7 @@ function escapeRegex(str: string): string {
           <div class="h-px flex-1 bg-gradient-to-r from-base-300/60 via-base-base/30 to-transparent"></div>
         </div>
 
-        @if (isHidden()) {
+        @if (isHidden) {
           <div class="mt-5 flex flex-col items-center gap-2 py-8 px-6 rounded-xl bg-base-200/20 border border-dashed border-base-content/10">
             <div class="flex items-center gap-2 text-base-content/40">
               <lucide-icon name="eye-off" class="h-4 w-4"></lucide-icon>
@@ -73,7 +73,7 @@ function escapeRegex(str: string): string {
           </div>
         } @else {
           <div class="space-y-4">
-            @for (para of answerParagraphs(); track $index) {
+            @for (para of answerParagraphs; track $index) {
               <p class="leading-[1.8] text-[15.5px]"
                  [class.text-base-content/90]="$first"
                  [class.text-base-content/80]="!$first">
@@ -83,11 +83,11 @@ function escapeRegex(str: string): string {
           </div>
         }
 
-        @if (showAnswer() && question().code) {
+        @if (showAnswer && question().code) {
           <app-code-block [code]="question().code!" [language]="question().language"></app-code-block>
         }
 
-        @if (showAnswer() && question().example && !question().code) {
+        @if (showAnswer && question().example && !question().code) {
           <div class="mt-6 rounded-xl bg-primary/[0.04] p-4 border border-primary/10">
             <div class="flex items-center gap-1.5 mb-2">
               <lucide-icon name="lightbulb" class="h-3.5 w-3.5 text-primary/60"></lucide-icon>
@@ -118,7 +118,7 @@ function escapeRegex(str: string): string {
           Note{{ hasNote() ? ' ✓' : '' }}
         </button>
 
-        @if (flashcardMode() && !isRevealed()) {
+        @if (flashcardMode() && !isRevealed) {
           <button (click)="onReveal()"
                   class="btn btn-outline btn-sm h-7 px-3 text-xs ml-auto">
             <lucide-icon name="eye" class="h-3.5 w-3.5 mr-1"></lucide-icon>

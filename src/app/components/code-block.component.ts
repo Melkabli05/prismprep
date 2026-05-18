@@ -1,9 +1,9 @@
 import { Component, input, signal } from '@angular/core';
-import { LucideAngularComponent as LucideAngular, Code2, Copy, Check } from 'lucide-angular';
+import { LucideAngularModule, Code2, Copy, Check } from 'lucide-angular';
 
 @Component({
   selector: 'app-code-block',
-  imports: [LucideAngular],
+  imports: [LucideAngularModule],
   template: `
     <div class="rounded-xl overflow-hidden border mt-6 shadow-sm"
          [class.border-base-300]="!isDark()"
