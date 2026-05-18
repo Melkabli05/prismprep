@@ -1,6 +1,6 @@
 import { Component, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { LucideAngular, Search, X, Moon, Sun } from 'lucide-angular';
+import { LucideAngularComponent as LucideAngular, Search, X, Moon, Sun } from 'lucide-angular';
 
 @Component({
   selector: 'app-header',

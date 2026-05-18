@@ -32,7 +32,7 @@ export class InterviewService {
   mockInterviewIdx = signal(0);
   mockTimer = signal(0);
   mockRunning = signal(false);
-  shuffledIds = localStorageSignal<string[]>('shuffled-ids', null);
+  shuffledIds = localStorageSignal<string[]>('shuffled-ids', []);
 
   // Persisted sets
   revealedCards = localStorageSignal<Set<string>>('revealed-cards', new Set());
@@ -105,7 +105,7 @@ export class InterviewService {
   // ── Actions ────────────────────────────────────────────────
   setCategory(id: string): void {
     this.activeCategory.set(id);
-    this.shuffledIds.set(null);
+    this.shuffledIds.set([]);
   }
 
   toggleBookmark(id: string): void {

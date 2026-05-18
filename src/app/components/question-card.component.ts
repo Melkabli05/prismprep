@@ -1,6 +1,6 @@
 import { Component, input, output, computed, signal, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { LucideAngular, Star, Eye, EyeOff, StickyNote, Lightbulb } from 'lucide-angular';
+import { LucideAngularComponent as LucideAngular, Star, Eye, EyeOff, StickyNote, Lightbulb } from 'lucide-angular';
 import { type InterviewQuestion } from '../models/interview.models';
 import { CodeBlockComponent } from './code-block.component';
 

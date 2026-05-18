@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { LucideAngular, ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-angular';
+import { LucideAngularComponent as LucideAngular, ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-angular';
 import { HeaderComponent } from './components/header.component';
 import { ToolbarComponent } from './components/toolbar.component';
 import { CategoryPillsComponent } from './components/category-pills.component';
@@ -26,28 +26,31 @@ export class App implements OnInit, OnDestroy {
   readonly ChevronRight = ChevronRight;
   readonly CheckCircle2 = CheckCircle2;
 
-  readonly activeCategory = this.svc.activeCategory;
-  readonly searchQuery = this.svc.searchQuery;
-  readonly flashcardMode = this.svc.flashcardMode;
-  readonly showBookmarksOnly = this.svc.showBookmarksOnly;
-  readonly showDailyChallenge = this.svc.showDailyChallenge;
-  readonly showMockInterview = this.svc.showMockInterview;
-  readonly mockInterviewIdx = this.svc.mockInterviewIdx;
-  readonly mockTimer = this.svc.mockTimer;
-  readonly mockRunning = this.svc.mockRunning;
-  readonly bookmarkCount = this.svc.bookmarkCount;
-  readonly category = this.svc.category;
-  readonly categoryProgress = this.svc.categoryProgress;
-  readonly searchResults = this.svc.searchResults;
-  readonly dailyQuestions = this.svc.dailyQuestions;
-  readonly mockQuestions = this.svc.mockQuestions;
-  readonly revealedCards = this.svc.revealedCards;
-  readonly bookmarks = this.svc.bookmarks;
-  readonly notes = this.svc.notes;
+  get activeCategory() { return this.svc.activeCategory; }
+  get searchQuery() { return this.svc.searchQuery; }
+  get flashcardMode() { return this.svc.flashcardMode; }
+  get showBookmarksOnly() { return this.svc.showBookmarksOnly; }
+  get showDailyChallenge() { return this.svc.showDailyChallenge; }
+  get showMockInterview() { return this.svc.showMockInterview; }
+  get mockInterviewIdx() { return this.svc.mockInterviewIdx; }
+  get mockTimer() { return this.svc.mockTimer; }
+  get mockRunning() { return this.svc.mockRunning; }
+  get bookmarkCount() { return this.svc.bookmarkCount; }
+  get category() { return this.svc.category; }
+  get categoryProgress() { return this.svc.categoryProgress; }
+  get searchResults() { return this.svc.searchResults; }
+  get dailyQuestions() { return this.svc.dailyQuestions; }
+  get mockQuestions() { return this.svc.mockQuestions; }
+  get revealedCards() { return this.svc.revealedCards; }
+  get bookmarks() { return this.svc.bookmarks; }
+  get notes() { return this.svc.notes; }
 
   private timerInterval: ReturnType<typeof setInterval> | null = null;
 
-  constructor(readonly svc: InterviewService) {
+  private svc: InterviewService;
+
+  constructor(svc: InterviewService) {
+    this.svc = svc;
     effect(() => {
       if (this.svc.mockRunning()) {
         this.timerInterval = setInterval(() => {

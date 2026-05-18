@@ -1,5 +1,5 @@
 import { Component, input, output } from '@angular/core';
-import { LucideAngular, Eye, EyeOff, Bookmark, Shuffle, Calendar, Clock } from 'lucide-angular';
+import { LucideAngularComponent as LucideAngular, Eye, EyeOff, Bookmark, Shuffle, Calendar, Clock } from 'lucide-angular';
 
 @Component({
   selector: 'app-toolbar',

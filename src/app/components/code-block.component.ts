@@ -1,5 +1,5 @@
 import { Component, input, signal } from '@angular/core';
-import { LucideAngular, Code2, Copy, Check } from 'lucide-angular';
+import { LucideAngularComponent as LucideAngular, Code2, Copy, Check } from 'lucide-angular';
 
 @Component({
   selector: 'app-code-block',
