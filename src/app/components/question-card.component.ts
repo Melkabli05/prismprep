@@ -119,9 +119,8 @@ function escapeRegex(str: string): string {
         </button>
 
         @if (flashcardMode() && !isRevealed()) {
-          <button (click)="handleReveal()"
-                  class="btn btn-outline btn-sm h-7 px-3 text-xs ml-auto"
-                  (click)="onReveal()">
+          <button (click)="onReveal()"
+                  class="btn btn-outline btn-sm h-7 px-3 text-xs ml-auto">
             <lucide-icon name="eye" class="h-3.5 w-3.5 mr-1"></lucide-icon>
             Révéler
           </button>
@@ -140,6 +139,7 @@ export class QuestionCardComponent {
   notes = input<Record<string, string>>({});
   totalInCategory = input(0);
   indexInCategory = input(0);
+  highlightQuery = input<string>('');
 
   // Outputs
   toggleBookmark = output<string>();
@@ -158,16 +158,14 @@ export class QuestionCardComponent {
     return this.question().answer.split(/\n\n|\n/).filter(p => p.trim().length > 0);
   }
 
-  get flashcardMode(): boolean { return this.flashcardMode(); }
-
   noteText = computed(() => this.notes()[this.question().id] ?? '');
   hasNote = computed(() => Boolean(this.noteText().trim()));
 
   onToggleBookmark(): void { this.toggleBookmark.emit(this.question().id); }
   onReveal(): void { this.toggleRevealed.emit(this.question().id); }
-  markViewed(): void { this.markViewed.emit(this.question().id); }
+  emitMarkViewed(): void { this.markViewed.emit(this.question().id); }
 
-  ngOnInit(): void { this.markViewed(); }
+  ngOnInit(): void { this.emitMarkViewed(); }
 
   toggleNotes(): void {
     const id = this.question().id;
@@ -190,12 +188,9 @@ export class QuestionCardComponent {
   }
 
   highlightText(text: string): string {
-    return text;
-  }
-
-  handleReveal(): void {
-    if (this.flashcardMode() && !this.isRevealed) {
-      this.toggleRevealed.emit(this.question().id);
-    }
+    const query = this.highlightQuery();
+    if (!query) return text;
+    const regex = new RegExp(`(${escapeRegex(query)})`, 'gi');
+    return text.replace(regex, '<mark>$1</mark>');
   }
 }
