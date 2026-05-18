@@ -16,6 +16,11 @@
   (mockInterviewChange)="onMockInterview()">
 </app-toolbar>
 
+<app-category-pills
+  [activeCategory]="activeCategory()"
+  (categoryChange)="onCategoryChange($event)">
+</app-category-pills>
+
 <main class="flex-1 max-w-2xl mx-auto w-full px-6 py-8">
 
   <!-- SEARCH RESULTS -->
@@ -152,11 +157,6 @@
 
   <!-- NORMAL CATEGORY VIEW -->
   @else {
-    <app-category-pills
-      [activeCategory]="activeCategory()"
-      (categoryChange)="onCategoryChange($event)">
-    </app-category-pills>
-
     <div class="mb-10">
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-semibold tracking-tight">{{ category().title }}</h2>
