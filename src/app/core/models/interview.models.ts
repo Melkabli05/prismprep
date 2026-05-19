@@ -5,6 +5,7 @@ export interface InterviewQuestion {
   example?: string;
   code?: string;
   language?: string;
+  deepDive?: string;
 }
 
 export interface InterviewSection {

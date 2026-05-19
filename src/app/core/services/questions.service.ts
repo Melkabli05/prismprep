@@ -7,6 +7,7 @@ export interface QuestionRow {
   id: string; section_id: string; category_id: string;
   question: string; answer: string; example: string | null;
   code: string | null; language: string | null; sort_order: number;
+  deep_dive: string | null;
 }
 
 interface SectionRow { id: string; category_id: string; title: string; sort_order: number; }
@@ -37,7 +38,7 @@ export class QuestionsService {
     if (!this.client) { console.warn('[QuestionsService] Client not initialized'); return; }
     try {
       const [questionsRes, sectionsRes, categoriesRes] = await Promise.all([
-        this.client.from('questions').select('id, section_id, category_id, question, answer, example, code, language, sort_order').order('sort_order'),
+        this.client.from('questions').select('id, section_id, category_id, question, answer, example, code, language, sort_order, deep_dive').order('sort_order'),
         this.client.from('sections').select('id, category_id, title, sort_order').order('sort_order'),
         this.client.from('categories').select('id, title, color, description, sort_order').order('sort_order'),
       ]);
@@ -77,6 +78,7 @@ export class QuestionsService {
       secMap.get(q.section_id)!.questions.push({
         id: q.id, question: q.question, answer: q.answer,
         example: q.example ?? undefined, code: q.code ?? undefined, language: q.language ?? undefined,
+        deepDive: q.deep_dive ?? undefined,
       });
     }
 
