@@ -21,12 +21,14 @@ export class InterviewService {
 
   readonly categoryTree = computed(() => this.questions.categoryTree());
 
-  /** Filters categories by user's selected stack. Empty stack = all categories. */
+  /** Sorts categories: user's selected stack first (high priority), then all others. Never hides anything. */
   readonly activeCategories = computed(() => {
     const cats = this.categoryTree();
     const userStack = this.auth.stack();
     if (!userStack.length) return cats;
-    return cats.filter(c => userStack.includes(c.id));
+    const selected = cats.filter(c => userStack.includes(c.id));
+    const rest = cats.filter(c => !userStack.includes(c.id));
+    return [...selected, ...rest];
   });
 
   /** linkedSignal — auto-resets to first category when tree loads, preserves selection if still valid */
