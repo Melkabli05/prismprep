@@ -21,6 +21,14 @@ export class InterviewService {
 
   readonly categoryTree = computed(() => this.questions.categoryTree());
 
+  /** Filters categories by user's selected stack. Empty stack = all categories. */
+  readonly activeCategories = computed(() => {
+    const cats = this.categoryTree();
+    const userStack = this.auth.stack();
+    if (!userStack.length) return cats;
+    return cats.filter(c => userStack.includes(c.id));
+  });
+
   /** linkedSignal — auto-resets to first category when tree loads, preserves selection if still valid */
   private readonly _activeCategory = linkedSignal({
     source: () => this.categoryTree(),
@@ -59,13 +67,13 @@ export class InterviewService {
   readonly bookmarkCount = computed(() => this.userState.bookmarks().size);
 
   readonly category = computed(() => {
-    const cats = this.categoryTree();
+    const cats = this.activeCategories();
     return cats.find(c => c.id === this._activeCategory()) ?? cats[0] ?? { id: 'rh', title: 'Entretien RH', color: '', description: '', sections: [] };
   });
 
   readonly allQuestionsFlat = computed<{ category: InterviewCategory; question: InterviewQuestion }[]>(() => {
     const result: { category: InterviewCategory; question: InterviewQuestion }[] = [];
-    for (const cat of this.categoryTree()) for (const sec of cat.sections) for (const q of sec.questions) result.push({ category: cat, question: q });
+    for (const cat of this.activeCategories()) for (const sec of cat.sections) for (const q of sec.questions) result.push({ category: cat, question: q });
     return result;
   });
 
@@ -89,7 +97,7 @@ export class InterviewService {
   /** Template helpers — expose so the dumb shell can call them directly */
   readonly isSearching = computed(() => this._searchQuery().trim().length > 0);
   readonly totalQuestions = computed(() => this.allQuestionsFlat().length);
-  readonly categoryCount = computed(() => this.categoryTree().length);
+  readonly categoryCount = computed(() => this.activeCategories().length);
 
   getOrderedQuestions(section: InterviewSection): InterviewQuestion[] {
     const ids = this._shuffledIds();

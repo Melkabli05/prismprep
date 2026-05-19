@@ -13,6 +13,11 @@ export class AuthService {
   readonly loading = this._loading.asReadonly();
   readonly isAuthenticated = computed(() => this._user() !== null);
 
+  readonly stack = computed(() => {
+    const meta = this._user()?.user_metadata;
+    return Array.isArray(meta?.['stack']) ? meta['stack'] as string[] : [];
+  });
+
   init(): void {
     this.client = createClient(environment.supabaseUrl, environment.supabaseAnonKey, {
       auth: { persistSession: true, autoRefreshToken: true },
@@ -32,9 +37,15 @@ export class AuthService {
     return { error: error?.message ?? null };
   }
 
-  async signUp(email: string, password: string): Promise<{ error: string | null }> {
+  async signUp(email: string, password: string, name: string): Promise<{ error: string | null }> {
     if (!this.client) return { error: 'Client not initialized' };
-    const { error } = await this.client.auth.signUp({ email, password });
+    const { error } = await this.client.auth.signUp({ email, password, options: { data: { name } } });
+    return { error: error?.message ?? null };
+  }
+
+  async updateProfile(name: string, stack: string[] = []): Promise<{ error: string | null }> {
+    if (!this.client) return { error: 'Client not initialized' };
+    const { error } = await this.client.auth.updateUser({ data: { name, stack } });
     return { error: error?.message ?? null };
   }
 

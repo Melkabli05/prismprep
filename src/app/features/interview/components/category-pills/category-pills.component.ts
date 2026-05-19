@@ -90,7 +90,7 @@ export class CategoryPillsComponent {
   activeCategory = input<string>('rh');
   categoryChange = output<string>();
 
-  readonly categories = computed(() => this.svc.categoryTree());
+  readonly categories = computed(() => this.svc.activeCategories());
 
   readonly categoryTotals = computed(() =>
     Object.fromEntries(

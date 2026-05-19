@@ -4,11 +4,12 @@ import { LucideAngularModule } from 'lucide-angular';
 import { SearchShortcutDirective } from '../../../../shared/directives/search-shortcut.directive';
 import { AuthService } from '../../../../core/services/auth.service';
 import { AuthModalComponent } from '../../../../shared/components/auth-modal/auth-modal.component';
+import { UserPreferencesComponent } from '../../../../shared/components/user-preferences/user-preferences.component';
 
 @Component({
   selector: 'app-header',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LucideAngularModule, FormField, SearchShortcutDirective, AuthModalComponent],
+  imports: [LucideAngularModule, FormField, SearchShortcutDirective, AuthModalComponent, UserPreferencesComponent],
   styles: `
     :host { display: block; position: sticky; top: 0; z-index: 50; }
     header {
@@ -64,15 +65,45 @@ import { AuthModalComponent } from '../../../../shared/components/auth-modal/aut
     }
     .auth-btn:hover { border-color: var(--color-accent); color: var(--color-accent); background: var(--color-accent-soft); }
     .user-badge {
-      font-size: 0.75rem; color: var(--color-text-muted);
-      max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      display: flex; align-items: center; gap: 0.375rem;
+      height: 32px; padding: 0 0.625rem; border-radius: var(--radius-full);
+      border: 1px solid var(--color-border); background: var(--color-surface);
+      color: var(--color-text-secondary); font-size: 0.75rem;
+      cursor: pointer; transition: all 150ms ease; white-space: nowrap;
     }
+    .user-badge:hover { border-color: var(--color-accent); color: var(--color-accent); background: var(--color-accent-soft); }
+    .user-initial {
+      width: 20px; height: 20px; border-radius: 9999px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--color-accent); color: var(--color-accent-text);
+      font-size: 0.6875rem; font-weight: 700; flex-shrink: 0;
+    }
+    .user-dropdown {
+      position: absolute; top: calc(100% + 8px); right: 0;
+      min-width: 160px; border-radius: var(--radius-lg); border: 1px solid var(--color-border);
+      background: var(--color-surface); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+      overflow: hidden; z-index: 100;
+    }
+    .dropdown-item {
+      display: flex; align-items: center; gap: 0.5rem;
+      width: 100%; padding: 0.625rem 0.875rem;
+      font-size: 0.8125rem; color: var(--color-text-secondary);
+      background: transparent; border: none; cursor: pointer; text-align: left;
+      transition: background 150ms ease, color 150ms ease;
+    }
+    .dropdown-item:hover { background: var(--color-surface-hover); color: var(--color-text-primary); }
+    .dropdown-item.danger:hover { background: var(--color-error-soft); color: var(--color-error); }
+    .dropdown-divider { height: 1px; background: var(--color-border); margin: 0.25rem 0; }
   `,
   template: `
     <header class="h-14 sm:h-16">
       @if (showAuthModal()) {
         <app-auth-modal (close)="showAuthModal.set(false)" />
       }
+      @if (showPreferences()) {
+        <app-user-preferences (close)="showPreferences.set(false)" />
+      }
+
       <div class="max-w-3xl mx-auto px-4 sm:px-6 h-full flex items-center justify-between gap-4">
         <!-- Logo -->
         <div class="flex items-center gap-2 sm:gap-3 shrink-0">
@@ -100,12 +131,34 @@ import { AuthModalComponent } from '../../../../shared/components/auth-modal/aut
               </button>
             }
           </div>
+
           @if (auth.user(); as user) {
-            <span class="user-badge hidden sm:inline">{{ user.email }}</span>
-            <button class="auth-btn" (click)="auth.signOut()">Déconnexion</button>
+            <!-- User dropdown -->
+            <div class="relative">
+              <button class="user-badge" (click)="toggleDropdown()" [attr.aria-expanded]="showDropdown()" aria-haspopup="true">
+                <span class="user-initial">{{ user.email?.[0]?.toUpperCase() ?? '?' }}</span>
+                <span class="hidden sm:inline" style="max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ user.email }}</span>
+                <lucide-icon name="chevron-down" class="w-3 h-3" style="color: var(--color-text-muted); flex-shrink: 0" />
+              </button>
+
+              @if (showDropdown()) {
+                <div class="user-dropdown" role="menu">
+                  <button class="dropdown-item" role="menuitem" (click)="openPreferences()">
+                    <lucide-icon name="settings" class="w-4 h-4" />
+                    Préférences
+                  </button>
+                  <div class="dropdown-divider"></div>
+                  <button class="dropdown-item danger" role="menuitem" (click)="signOut()">
+                    <lucide-icon name="log-out" class="w-4 h-4" />
+                    Déconnexion
+                  </button>
+                </div>
+              }
+            </div>
           } @else {
             <button class="auth-btn" (click)="showAuthModal.set(true)">Connexion</button>
           }
+
           <button (click)="toggleTheme.emit()" class="theme-btn h-8 w-8 sm:h-9 sm:w-9 flex items-center justify-center" aria-label="Basculer le thème">
             <lucide-icon [name]="isDark() ? 'sun' : 'moon'" class="h-4 w-4"></lucide-icon>
           </button>
@@ -119,6 +172,8 @@ export class HeaderComponent implements OnDestroy {
   readonly isDark = signal(false);
   readonly isMac = signal(false);
   readonly showAuthModal = signal(false);
+  readonly showPreferences = signal(false);
+  readonly showDropdown = signal(false);
 
   searchModel = signal({ query: '' });
   searchForm = form(this.searchModel);
@@ -128,6 +183,7 @@ export class HeaderComponent implements OnDestroy {
 
   private themeObserver: MutationObserver | null = null;
   private debounceTimer: ReturnType<typeof setTimeout> | null = null;
+  private dropdownListener: (() => void) | null = null;
 
   constructor() {
     this.isDark.set(document.documentElement.classList.contains('dark'));
@@ -138,6 +194,34 @@ export class HeaderComponent implements OnDestroy {
       this.themeObserver = new MutationObserver(update);
       this.themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
     });
+    effect(() => {
+      if (this.showDropdown()) {
+        this.dropdownListener = () => {
+          this.showDropdown.set(false);
+          document.removeEventListener('click', this.dropdownListener!);
+        };
+        setTimeout(() => document.addEventListener('click', this.dropdownListener!), 0);
+      } else {
+        if (this.dropdownListener) {
+          document.removeEventListener('click', this.dropdownListener);
+          this.dropdownListener = null;
+        }
+      }
+    });
+  }
+
+  toggleDropdown(): void {
+    this.showDropdown.update(v => !v);
+  }
+
+  openPreferences(): void {
+    this.showDropdown.set(false);
+    this.showPreferences.set(true);
+  }
+
+  signOut(): void {
+    this.showDropdown.set(false);
+    this.auth.signOut();
   }
 
   onSearchInput(event: Event): void {
@@ -156,5 +240,6 @@ export class HeaderComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.themeObserver?.disconnect();
     if (this.debounceTimer !== null) clearTimeout(this.debounceTimer);
+    if (this.dropdownListener) document.removeEventListener('click', this.dropdownListener);
   }
 }
