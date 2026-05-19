@@ -269,10 +269,12 @@ export class UserPreferencesComponent {
     // Init stack from auth
     this._selectedStack.set([...this.auth.stack()]);
 
-    // Init theme from localStorage
+    // Init theme from auth backend, fall back to localStorage
+    const backendTheme = this.auth.theme() as ThemeOption;
     const stored = localStorage.getItem('theme-preference') as ThemeOption | null;
-    if (stored) this.theme.set(stored);
-    else this.applyTheme(this.theme());
+    const initial = backendTheme !== 'system' ? backendTheme : (stored ?? 'system');
+    this.theme.set(initial);
+    this.applyTheme(initial);
   }
 
   toggleStack(id: string): void {
@@ -293,8 +295,8 @@ export class UserPreferencesComponent {
 
   setTheme(option: ThemeOption): void {
     this.theme.set(option);
-    localStorage.setItem('theme-preference', option);
     this.applyTheme(option);
+    this.auth.updateTheme(option);
   }
 
   private applyTheme(option: ThemeOption): void {

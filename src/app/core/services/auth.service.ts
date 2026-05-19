@@ -18,6 +18,11 @@ export class AuthService {
     return Array.isArray(meta?.['stack']) ? meta['stack'] as string[] : [];
   });
 
+  readonly theme = computed(() => {
+    const meta = this._user()?.user_metadata;
+    return (meta?.['theme'] as string) ?? 'system';
+  });
+
   init(): void {
     this.client = createClient(environment.supabaseUrl, environment.supabaseAnonKey, {
       auth: { persistSession: true, autoRefreshToken: true },
@@ -25,10 +30,21 @@ export class AuthService {
     this.client.auth.getSession().then(({ data }) => {
       this._user.set(data.session?.user ?? null);
       this._loading.set(false);
+      this.applyTheme();
     });
     this.client.auth.onAuthStateChange((_event, session) => {
       this._user.set(session?.user ?? null);
+      this.applyTheme();
     });
+  }
+
+  private applyTheme(): void {
+    const theme = this.theme();
+    const isDark =
+      theme === 'dark' ||
+      (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.classList.toggle('dark', isDark);
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
   }
 
   async signIn(email: string, password: string): Promise<{ error: string | null }> {
@@ -46,6 +62,12 @@ export class AuthService {
   async updateProfile(name: string, stack: string[] = []): Promise<{ error: string | null }> {
     if (!this.client) return { error: 'Client not initialized' };
     const { error } = await this.client.auth.updateUser({ data: { name, stack } });
+    return { error: error?.message ?? null };
+  }
+
+  async updateTheme(theme: string): Promise<{ error: string | null }> {
+    if (!this.client) return { error: 'Client not initialized' };
+    const { error } = await this.client.auth.updateUser({ data: { theme } });
     return { error: error?.message ?? null };
   }
 
