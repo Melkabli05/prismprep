@@ -153,19 +153,42 @@ const EMPTY_PROFILE: ProfileModel = { name: '' };
         <!-- Stack Tab -->
         @if (activeTab() === 'stack') {
           <div class="flex flex-col gap-3">
-            <p class="text-sm mb-2" style="color: var(--color-text-muted)">Sélectionnez vos technologies — les catégories non sélectionnées seront masquées.</p>
-            <div class="flex flex-wrap gap-2">
-              @for (cat of allCategories(); track cat.id) {
-                <button
-                  type="button"
-                  class="px-3 py-1.5 rounded-full text-sm border transition-all duration-150"
-                  [style.border-color]="isStackSelected(cat.id) ? 'var(--color-accent)' : 'var(--color-border)'"
-                  [style.background]="isStackSelected(cat.id) ? 'var(--color-accent-soft)' : 'var(--color-surface-raised)'"
-                  [style.color]="isStackSelected(cat.id) ? 'var(--color-accent)' : 'var(--color-text-secondary)'"
-                  (click)="toggleStack(cat.id)"
-                >
-                  {{ cat.title }}
-                </button>
+            <p class="text-sm mb-2" style="color: var(--color-text-muted)">Sélectionnez vos technologies — vos choix sont triés par priorité et les autres restent accessibles.</p>
+            <div class="flex flex-col gap-3">
+              @if (selectedCategories().length > 0) {
+                <div>
+                  <p class="text-xs font-medium uppercase tracking-wider mb-2" style="color: var(--color-text-muted)">Sélectionnées</p>
+                  <div class="flex flex-wrap gap-2">
+                    @for (cat of selectedCategories(); track cat.id) {
+                      <button
+                        type="button"
+                        class="px-3 py-1.5 rounded-full text-sm border transition-all duration-150"
+                        style="border-color: var(--color-accent); background: var(--color-accent-soft); color: var(--color-accent)"
+                        (click)="toggleStack(cat.id)"
+                      >
+                        {{ cat.title }}
+                        <lucide-icon name="x" class="w-3 h-3 ml-1 inline" />
+                      </button>
+                    }
+                  </div>
+                </div>
+              }
+              @if (unselectedCategories().length > 0) {
+                <div>
+                  <p class="text-xs font-medium uppercase tracking-wider mb-2" style="color: var(--color-text-muted)">Autres</p>
+                  <div class="flex flex-wrap gap-2">
+                    @for (cat of unselectedCategories(); track cat.id) {
+                      <button
+                        type="button"
+                        class="px-3 py-1.5 rounded-full text-sm border transition-all duration-150"
+                        style="border-color: var(--color-border); background: var(--color-surface-raised); color: var(--color-text-muted)"
+                        (click)="toggleStack(cat.id)"
+                      >
+                        + {{ cat.title }}
+                      </button>
+                    }
+                  </div>
+                </div>
               }
             </div>
             @if (selectedStack().length === 0) {
@@ -223,6 +246,14 @@ export class UserPreferencesComponent {
 
   private readonly _selectedStack = signal<string[]>([]);
   readonly selectedStack = this._selectedStack.asReadonly();
+
+  readonly selectedCategories = computed(() =>
+    this.allCategories().filter(c => this._selectedStack().includes(c.id))
+  );
+
+  readonly unselectedCategories = computed(() =>
+    this.allCategories().filter(c => !this._selectedStack().includes(c.id))
+  );
 
   readonly theme = signal<ThemeOption>('system');
 
