@@ -23,7 +23,8 @@ import { QuestionCardComponent } from '../question-card/question-card.component'
           (toggleBookmark)="toggleBookmark.emit($event)"
           (toggleRevealed)="toggleRevealed.emit($event)"
           (noteChange)="noteChange.emit($event)"
-          (markViewed)="markViewed.emit($event)">
+          (markViewed)="markViewed.emit($event)"
+          (openDeepDiveModal)="openDeepDiveModal.emit($event)">
         </app-question-card>
       }
     </div>
@@ -43,4 +44,5 @@ export class QuestionListComponent {
   toggleRevealed = output<string>();
   noteChange = output<{ id: string; note: string }>();
   markViewed = output<string>();
+  openDeepDiveModal = output<string>();
 }

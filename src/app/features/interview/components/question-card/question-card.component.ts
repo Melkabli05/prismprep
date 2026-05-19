@@ -1,4 +1,4 @@
-import { Component, input, output, computed, linkedSignal, effect, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, output, computed, linkedSignal, effect, ChangeDetectionStrategy } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
 import { type InterviewQuestion } from '../../../../core/models/interview.models';
 import { CodeBlockComponent } from '../../../../shared/components/code-block/code-block.component';
@@ -160,42 +160,14 @@ import { FlashcardRevealComponent } from '../../../../shared/components/flashcar
       <div class="p-4 sm:p-6 lg:p-8 pt-4 sm:pt-5">
         <div class="h-px w-full mb-4 sm:mb-6" style="background: var(--color-border-subtle)"></div>
 
-        <!-- Tab bar -->
-        @if (hasDeepDive()) {
-          <div class="flex gap-1 mb-4 p-1 rounded-xl" style="background: var(--color-surface-raised)">
-            <button type="button"
-                    class="flex-1 py-2 rounded-lg text-xs font-medium transition-all duration-150"
-                    [style.color]="activeTab() === 'answer' ? 'var(--color-accent)' : 'var(--color-text-muted)'"
-                    [style.background]="activeTab() === 'answer' ? 'var(--color-surface)' : 'transparent'"
-                    (click)="activeTab.set('answer')">
-              Réponse
-            </button>
-            <button type="button"
-                    class="flex-1 py-2 rounded-lg text-xs font-medium transition-all duration-150"
-                    [style.color]="activeTab() === 'deepdive' ? 'var(--color-accent)' : 'var(--color-text-muted)'"
-                    [style.background]="activeTab() === 'deepdive' ? 'var(--color-surface)' : 'transparent'"
-                    (click)="activeTab.set('deepdive')">
-              Deep Dive
-            </button>
-          </div>
-        }
-
         @if (isHidden()) {
           <app-flashcard-reveal
             [isRevealed]="isRevealed()"
             (toggle)="onReveal()">
-            @if (activeTab() === 'answer') {
-              <app-answer-paragraphs [answer]="question().answer"></app-answer-paragraphs>
-            } @else {
-              <app-answer-paragraphs [answer]="question().deepDive!"></app-answer-paragraphs>
-            }
+            <app-answer-paragraphs [answer]="question().answer"></app-answer-paragraphs>
           </app-flashcard-reveal>
         } @else {
-          @if (activeTab() === 'answer') {
-            <app-answer-paragraphs [answer]="question().answer"></app-answer-paragraphs>
-          } @else {
-            <app-answer-paragraphs [answer]="question().deepDive!"></app-answer-paragraphs>
-          }
+          <app-answer-paragraphs [answer]="question().answer"></app-answer-paragraphs>
         }
 
         @if (showAnswer() && question().code) {
@@ -233,6 +205,13 @@ import { FlashcardRevealComponent } from '../../../../shared/components/flashcar
             Révéler
           </button>
         }
+
+        @if (hasDeepDive()) {
+          <button (click)="openDeepDiveModal.emit(question().id)" class="action-btn">
+            <lucide-icon name="graduation-cap" class="h-3.5 w-3.5"></lucide-icon>
+            Deep Dive
+          </button>
+        }
       </div>
     </article>
   `,
@@ -253,13 +232,13 @@ export class QuestionCardComponent {
   toggleRevealed = output<string>();
   noteChange = output<{ id: string; note: string }>();
   markViewed = output<string>();
+  openDeepDiveModal = output<string>();
 
   openNotes = linkedSignal<string | null, string | null>({
     source: () => this.question().id,
     computation: () => null,
   });
 
-  readonly activeTab = signal<'answer' | 'deepdive'>('answer');
   readonly hasDeepDive = computed(() => Boolean(this.question().deepDive?.trim()));
   readonly isBookmarked = computed(() => this.bookmarks().has(this.question().id));
   readonly isRevealed = computed(() => this.revealedCards().has(this.question().id));
