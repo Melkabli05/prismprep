@@ -71,6 +71,9 @@ import { UserPreferencesComponent } from '../../../../shared/components/user-pre
       color: var(--color-text-secondary); font-size: 0.75rem;
       cursor: pointer; transition: all 150ms ease; white-space: nowrap;
     }
+    @media (max-width: 480px) {
+      .search-input { width: 100px !important; }
+    }
     .user-badge:hover { border-color: var(--color-accent); color: var(--color-accent); background: var(--color-accent-soft); }
     .user-initial {
       width: 20px; height: 20px; border-radius: 9999px;
@@ -83,6 +86,12 @@ import { UserPreferencesComponent } from '../../../../shared/components/user-pre
       min-width: 160px; border-radius: var(--radius-lg); border: 1px solid var(--color-border);
       background: var(--color-surface); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
       overflow: hidden; z-index: 100;
+    }
+    @media (max-width: 380px) {
+      .user-dropdown {
+        right: -8px;
+        min-width: 140px;
+      }
     }
     .dropdown-item {
       display: flex; align-items: center; gap: 0.5rem;
@@ -137,7 +146,7 @@ import { UserPreferencesComponent } from '../../../../shared/components/user-pre
             <div class="relative">
               <button class="user-badge" (click)="toggleDropdown()" [attr.aria-expanded]="showDropdown()" aria-haspopup="true">
                 <span class="user-initial">{{ user.email?.[0]?.toUpperCase() ?? '?' }}</span>
-                <span class="hidden sm:inline" style="max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ user.email }}</span>
+                <span class="hidden md:inline" style="max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ user.email }}</span>
                 <lucide-icon name="chevron-down" class="w-3 h-3" style="color: var(--color-text-muted); flex-shrink: 0" />
               </button>
 

@@ -32,8 +32,8 @@ const EMPTY_PROFILE: ProfileModel = { name: '' };
       (click)="close.emit()"
     >
       <div
-        class="relative w-full max-w-sm rounded-2xl border p-8"
-        style="background: var(--color-surface); border-color: var(--color-border); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25)"
+        class="relative w-full rounded-2xl border p-4 sm:p-6 md:p-8"
+        style="background: var(--color-surface); border-color: var(--color-border); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); max-width: 100vw sm:max-w-sm"
         (click)="$event.stopPropagation()"
         role="dialog"
         aria-modal="true"
@@ -77,11 +77,11 @@ const EMPTY_PROFILE: ProfileModel = { name: '' };
         }
 
         <!-- Tabs -->
-        <div class="flex gap-1 mb-6 p-1 rounded-xl" style="background: var(--color-surface-raised)">
+        <div class="flex gap-1 mb-4 sm:mb-6 p-1 rounded-xl" style="background: var(--color-surface-raised)">
           @for (tab of tabs; track tab.id) {
             <button
               type="button"
-              class="flex-1 py-2 rounded-lg text-sm font-medium transition-all duration-150"
+              class="flex-1 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-150"
               [style.color]="activeTab() === tab.id ? 'var(--color-accent)' : 'var(--color-text-muted)'"
               [style.background]="activeTab() === tab.id ? 'var(--color-surface)' : 'transparent'"
               (click)="activeTab.set(tab.id)"
