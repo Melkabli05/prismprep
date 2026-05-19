@@ -11,12 +11,14 @@ import { InterviewService } from './core/services/interview.service';
     <a href="#main-content" class="skip-link">Passer au contenu principal</a>
     @if (auth.loading()) {
       <div class="app-loader">
-        <svg viewBox="0 0 32 32" fill="none">
-          <polygon points="16,2 30,28 16,22 2,28" fill="#D97706"/>
-          <polygon points="16,2 22,14 16,11 10,14" fill="white" opacity="0.9"/>
-          <polygon points="16,22 22,14 16,17 10,14" fill="white" opacity="0.5"/>
+        <svg viewBox="0 0 32 32" fill="none" class="prism-logo">
+          <polygon points="16,2 30,28 16,22 2,28" fill="var(--color-accent)"/>
+          <polygon points="16,2 22,14 16,11 10,14" fill="var(--color-accent-text)" opacity="0.9"/>
+          <polygon points="16,22 22,14 16,17 10,14" fill="var(--color-accent-text)" opacity="0.5"/>
         </svg>
-        <span>Chargement...</span>
+        <div class="loader-dots">
+          <span></span><span></span><span></span>
+        </div>
       </div>
     } @else {
       <router-outlet />
@@ -43,18 +45,39 @@ import { InterviewService } from './core/services/interview.service';
       inset: 0;
       z-index: 9999;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       background: var(--color-bg, #0f172a);
-      flex-direction: column;
-      gap: 1rem;
+      gap: 2rem;
     }
-    .app-loader svg { width: 48px; height: 48px; }
-    .app-loader span {
-      font-family: var(--font-sans, 'DM Sans', sans-serif);
-      font-size: 0.875rem;
-      color: rgba(255,255,255,0.5);
-      letter-spacing: 0.05em;
+    .prism-logo {
+      width: 56px;
+      height: 56px;
+      animation: pulse-fade 1.5s ease-in-out infinite;
+    }
+    .loader-dots {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .loader-dots span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--color-accent);
+      animation: bounce 1.2s ease-in-out infinite;
+    }
+    .loader-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .loader-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes pulse-fade {
+      0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+      50% { opacity: 0.6; transform: scale(0.9) rotate(180deg); }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); opacity: 0.4; }
+      50% { transform: translateY(-8px); opacity: 1; }
     }
   `,
 })
