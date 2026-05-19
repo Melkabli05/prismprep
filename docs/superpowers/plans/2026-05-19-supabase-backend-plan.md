@@ -6,7 +6,7 @@
 
 **Architecture:** Questions live in 3 read-only Postgres tables. User state lives in 4 RLS-protected tables. Angular boots with Supabase session check — authenticated → load from Postgres; anonymous → use localStorage signals. New `SupabaseService` owns all Supabase interactions. `InterviewService` delegates user-data reads/writes to it.
 
-**Tech Stack:** Supabase (Postgres + Auth + JS client), Angular 21 standalone components, `@supabase/ssr` for server-side auth handling.
+**Tech Stack:** Supabase (Postgres + Auth + JS client), Angular 21 standalone components.
 
 ---
 
@@ -16,15 +16,19 @@
 src/app/
 ├── core/
 │   └── services/
-│       ├── supabase.service.ts       # NEW — auth state, client init, all Supabase ops
-│       └── interview.service.ts      # MODIFY — delegate user data to SupabaseService
+│       ├── supabase.service.ts       # NEW
+│       └── interview.service.ts      # MODIFY — async data load, delegate user data
+├── shared/components/
+│   └── auth-modal/                   # NEW
+│       └── auth-modal.component.ts
 ├── features/interview/
 │   ├── components/header/
-│   │   └── header.component.ts       # MODIFY — add auth UI (sign-in button, user badge)
-│   └── pages/interview-shell.page.ts # MODIFY — boot SupabaseService before using InterviewService
-└── app.config.ts                    # MODIFY — add Supabase providers
+│   │   └── header.component.ts        # MODIFY — auth button + user badge
+│   └── pages/interview-shell.page.ts # MODIFY — call loadQuestionsFromSupabase on boot
+└── app.ts                            # MODIFY — boot SupabaseService, effect-based auth watch
 
-src/environments/                    # NEW — Supabase URL + anon key env vars
+src/environments/                      # NEW — Supabase URL + anon key
+scripts/                               # NEW — one-time data migration script
 ```
 
 **Other (outside src/):**
@@ -65,6 +69,7 @@ CREATE TABLE sections (
 CREATE TABLE questions (
   id TEXT PRIMARY KEY,
   section_id TEXT NOT NULL REFERENCES sections(id),
+  category_id TEXT NOT NULL REFERENCES categories(id),
   question TEXT NOT NULL,
   answer TEXT NOT NULL,
   example TEXT,
@@ -143,6 +148,7 @@ const questions: any[] = [];
 
 for (const file of categoryFiles) {
   if (!file.endsWith('.ts')) continue;
+  // Relative to scripts/migrate-data.ts → ../src/app/features/interview/data/questions/
   const mod = await import(`../src/app/features/interview/data/questions/${file}`);
   const cat = Object.values(mod).find(v => v && v.id && v.sections);
   if (!cat) continue;
@@ -455,28 +461,13 @@ export class InterviewService {
 
 ---
 
-## Task 6: Update `app.config.ts` — Supabase Providers
+## Task 6: Verify `app.config.ts` has `provideHttpClient()`
 
 **File:** `src/app/app.config.ts`
 
-```typescript
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
-import { routes } from './app.routes';
-import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+Supabase's JS client uses `fetch` internally, so `provideHttpClient()` must be present. This was likely already added but verify.
 
-export const appConfig: ApplicationConfig = {
-  providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),
-    provideHttpClient(),
-  ],
-};
-```
-
-Changes: no changes needed — `SupabaseService` uses `providedIn: 'root'` so it's available everywhere automatically.
-
-- [ ] **Step 1: Verify `app.config.ts` has `provideHttpClient()`** (needed for Supabase client)
+- [ ] **Step 1: Check that `provideHttpClient()` is in `app.config.ts` providers**
 
 ---
 
@@ -485,7 +476,7 @@ Changes: no changes needed — `SupabaseService` uses `providedIn: 'root'` so it
 **File:** `src/app/app.ts`
 
 ```typescript
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, effect } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SupabaseService } from './core/services/supabase.service';
 import { InterviewService } from './core/services/interview.service';
@@ -495,24 +486,24 @@ import { InterviewService } from './core/services/interview.service';
   imports: [RouterOutlet],
   template: `<router-outlet />`,
 })
-export class App implements OnInit {
+export class App {
   private supabase = inject(SupabaseService);
   private interview = inject(InterviewService);
 
-  ngOnInit(): void {
+  constructor() {
     this.supabase.init();
-    // Wait for auth to resolve, then merge remote state if signed in
-    const checkAuth = setInterval(async () => {
+
+    // Once auth state resolves (loading flips to false), merge remote state
+    effect(() => {
       if (!this.supabase.loading()) {
-        clearInterval(checkAuth);
-        await this.interview.initRemoteState();
+        this.interview.initRemoteState();
       }
-    }, 50);
+    }, { allowSignalWrites: true });
   }
 }
 ```
 
-- [ ] **Step 1: Update `app.ts` with the boot sequence above**
+- [ ] **Step 1: Update `app.ts` with the boot sequence above** (no polling, use `effect()`)
 - [ ] **Step 2: Build to verify**
 
 ---
@@ -629,11 +620,11 @@ import { LucideAngularModule } from 'lucide-angular';
         @if (error()) { <p class="error-msg">{{ error() }}</p> }
         <div class="form-group">
           <label class="form-label">Email</label>
-          <input type="email" class="form-input" [(value)]="email" (input)="email = $event.target.value" placeholder="vous@example.com" />
+          <input type="email" class="form-input" [value]="email()" (input)="email.set($event.target.value)" placeholder="vous@example.com" />
         </div>
         <div class="form-group">
           <label class="form-label">Mot de passe</label>
-          <input type="password" class="form-input" [(value)]="password" (input)="password = $event.target.value" placeholder="••••••••" />
+          <input type="password" class="form-input" [value]="password()" (input)="password.set($event.target.value)" placeholder="••••••••" />
         </div>
         <button class="submit-btn" (click)="submit()" [disabled]="loading()">
           {{ loading() ? '...' : isSignUp() ? 'S'inscrire' : 'Se connecter' }}
@@ -684,62 +675,113 @@ password = signal('');
 
 ---
 
-## Task 10: Update `QuestionListComponent` to Load from Supabase
+## Task 10: Question Data — Build Category Tree from Supabase
 
-**File:** `src/app/features/interview/components/question-list/question-list.component.ts`
+**File:** `src/app/core/services/interview.service.ts`
 
-The current component receives `items` as an `input()` from the parent (`InterviewService.allQuestionsFlat`). With the Supabase migration, `InterviewService` needs to build the category tree from Supabase data.
+With `category_id` on each question row, a single query returns everything needed to rebuild the category tree.
 
 **Add to `InterviewService`:**
 
 ```typescript
-readonly categoryTree = computed(() => {
-  // Rebuild category → section → question tree from loaded Supabase data
-  // (structure matches the old interviewCategories import)
-  return buildCategoryTree(this._questionsData());
-});
+readonly categoryTree = computed(() =>
+  buildCategoryTree(this._questionsData())
+);
 
-private _questionsData = signal<any[]>([]);
-readonly questionsData = this._questionsData.asReadonly();
-
-async loadQuestionsFromSupabase(): Promise<void> {
-  const questions = await this.supabase.loadQuestions();
-  this._questionsData.set(questions);
-}
-```
-
-Add `buildCategoryTree()` helper:
-
-```typescript
-function buildCategoryTree(questions: any[]): InterviewCategory[] {
-  const sectionMap = new Map<string, InterviewSection>();
-  const catMap = new Map<string, InterviewCategory>();
-
-  for (const q of questions) {
-    if (!sectionMap.has(q.section_id)) {
-      // Need section + category metadata — loaded separately
+readonly allQuestionsFlat = computed<{ category: InterviewCategory; question: InterviewQuestion }[]>(() => {
+  const result: { category: InterviewCategory; question: InterviewQuestion }[] = [];
+  for (const cat of this.categoryTree()) {
+    for (const sec of cat.sections) {
+      for (const q of sec.questions) {
+        result.push({ category: cat, question: q });
+      }
     }
   }
-  // Returns InterviewCategory[] matching current data shape
+  return result;
+});
+
+private _questionsData = signal<QuestionWithMeta[]>([]);
+
+async loadQuestionsFromSupabase(): Promise<void> {
+  const data = await this.supabase.loadQuestions();
+  this._questionsData.set(data);
+}
+
+readonly dailyQuestions = computed(() => {
+  const rng = seededRandom(getDailySeed());
+  return [...this.allQuestionsFlat()].sort(() => rng() - 0.5).slice(0, 5);
+});
+
+readonly mockQuestions = computed(() => {
+  const catQuestions = this.allQuestionsFlat().filter(({ category: c }) => c.id === this._activeCategory());
+  const rng = seededRandom('mock-' + this._activeCategory());
+  return [...catQuestions].sort(() => rng() - 0.5);
+});
+```
+
+Where `QuestionWithMeta` includes `section_id` and `category_id` from the query.
+
+**`buildCategoryTree()` helper:**
+
+```typescript
+interface QuestionWithMeta {
+  id: string; section_id: string; category_id: string;
+  question: string; answer: string;
+  example?: string; code?: string; language?: string; sort_order: number;
+}
+
+function buildCategoryTree(questions: QuestionWithMeta[]): InterviewCategory[] {
+  const catMap = new Map<string, InterviewCategory>();
+  const secMap = new Map<string, InterviewSection>();
+
+  for (const q of questions) {
+    if (!secMap.has(q.section_id)) {
+      const sec: InterviewSection = { id: q.section_id, title: '', questions: [] };
+      secMap.set(q.section_id, sec);
+    }
+    if (!catMap.has(q.category_id)) {
+      const cat: InterviewCategory = { id: q.category_id, title: '', color: '', description: '', sections: [] };
+      catMap.set(q.category_id, cat);
+    }
+    const sec = secMap.get(q.section_id)!;
+    const cat = catMap.get(q.category_id)!;
+    sec.questions.push({
+      id: q.id, question: q.question, answer: q.answer,
+      example: q.example, code: q.code, language: q.language,
+    });
+  }
+
+  // Fill section titles from the first question's section metadata
+  // (section metadata comes from loadCategories — merge here)
+  const cats = Array.from(catMap.values());
+  for (const cat of cats) {
+    cat.sections = cat.sections.sort((a, b) => a.sort_order - b.sort_order);
+  }
+  return cats.sort((a, b) => a.sort_order - b.sort_order);
 }
 ```
 
-Note: This task is complex — the `loadCategories()` and `loadQuestions()` from Supabase return flat lists. The `buildCategoryTree()` function needs to reconstruct the nested `{ category → sections → questions }` shape from `section.category_id` and `question.section_id` joins. Do this carefully.
+Note: Section titles require a separate `loadCategories()` call. An alternative is to denormalize `section_title` and `category_title` directly onto each question row so `buildCategoryTree` needs only one query. Consider this if performance is a concern.
 
-**Alternative (simpler):** Store `category_id` directly on each question in the `questions` table. Then a single query with a join can reconstruct the tree without needing separate section/category loads:
+**`loadQuestions()` in SupabaseService:**
 
-```sql
--- Add to questions table:
-category_id TEXT NOT NULL REFERENCES categories(id)
+```typescript
+async loadQuestions(): Promise<QuestionWithMeta[]> {
+  if (!this.client) return [];
+  const { data } = await this.client
+    .from('questions')
+    .select('id, section_id, category_id, question, answer, example, code, language, sort_order')
+    .order('sort_order');
+  return data ?? [];
+}
 ```
 
-Then `buildCategoryTree` is one `questions` query with category metadata embedded.
-
-- [ ] **Step 1: Add `category_id` to `questions` table via `apply_migration`**
-- [ ] **Step 2: Update `loadQuestions` query to include `category_id`**
-- [ ] **Step 3: Implement `buildCategoryTree()` in `InterviewService`**
-- [ ] **Step 4: Call `loadQuestionsFromSupabase()` in app boot after auth resolves**
-- [ ] **Step 5: Build to verify**
+- [ ] **Step 1: Update `InterviewService` with `_questionsData`, `categoryTree`, `allQuestionsFlat` computed signals**
+- [ ] **Step 2: Implement `buildCategoryTree()` helper**
+- [ ] **Step 3: Update `loadQuestions()` to include `category_id` in selection**
+- [ ] **Step 4: Call `loadQuestionsFromSupabase()` in app boot after `supabase.init()` resolves**
+- [ ] **Step 5: Remove the old `import { interviewCategories }` static data — replace with async load**
+- [ ] **Step 6: Build to verify**
 
 ---
 
