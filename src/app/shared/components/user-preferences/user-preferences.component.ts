@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   output,
   signal,
@@ -278,10 +279,16 @@ export class UserPreferencesComponent {
     this._selectedStack.update(stack =>
       stack.includes(id) ? stack.filter(s => s !== id) : [...stack, id]
     );
+    this.saveStack();
   }
 
   clearStack(): void {
     this._selectedStack.set([]);
+    this.saveStack();
+  }
+
+  private saveStack(): void {
+    this.auth.updateProfile(this.profileModel().name, this._selectedStack());
   }
 
   setTheme(option: ThemeOption): void {
