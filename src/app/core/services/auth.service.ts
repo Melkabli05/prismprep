@@ -40,13 +40,21 @@ export class AuthService {
   async signIn(email: string, password: string): Promise<{ error: string | null }> {
     if (!this.client) return { error: 'Client not initialized' };
     const { error } = await this.client.auth.signInWithPassword({ email, password });
+    this.cleanQueryParams();
     return { error: error?.message ?? null };
   }
 
   async signUp(email: string, password: string, name: string): Promise<{ error: string | null }> {
     if (!this.client) return { error: 'Client not initialized' };
     const { error } = await this.client.auth.signUp({ email, password, options: { data: { name } } });
+    this.cleanQueryParams();
     return { error: error?.message ?? null };
+  }
+
+  private cleanQueryParams(): void {
+    if (window.location.search.includes('ng.')) {
+      window.history.replaceState({}, '', window.location.pathname);
+    }
   }
 
   async updateProfile(name: string, stack: string[] = []): Promise<{ error: string | null }> {
