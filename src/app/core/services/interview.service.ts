@@ -180,8 +180,10 @@ export class InterviewService {
   toggleTimer(): void { this._mockRunning.update(v => !v); }
 
   toggleTheme(): void {
-    const isDark = document.documentElement.classList.toggle('dark');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    const current = this.auth.theme();
+    const cycle: Record<string, string> = { light: 'dark', dark: 'system', system: 'light' };
+    const next = cycle[current] ?? 'system';
+    this.auth.updateTheme(next);
   }
 
   constructor() {
