@@ -32,8 +32,8 @@ const EMPTY_PROFILE: ProfileModel = { name: '' };
       (click)="close.emit()"
     >
       <div
-        class="relative w-full rounded-2xl border p-4 sm:p-5 md:p-6"
-        style="background: var(--color-surface); border-color: var(--color-border); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); max-width: 100vw sm:max-w-xs"
+        class="relative w-full rounded-2xl border p-4 sm:p-6 md:p-8"
+        style="background: var(--color-surface); border-color: var(--color-border); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); max-width: 100vw sm:max-w-[600px]"
         (click)="$event.stopPropagation()"
         role="dialog"
         aria-modal="true"
@@ -56,7 +56,7 @@ const EMPTY_PROFILE: ProfileModel = { name: '' };
           >
             <lucide-icon name="settings" class="w-6 h-6" />
           </div>
-          <h2 id="prefs-title" class="text-base sm:text-lg md:text-xl font-bold tracking-tight" style="font-family: var(--font-display); color: var(--color-text-primary)">
+          <h2 id="prefs-title" class="text-xl font-bold tracking-tight" style="font-family: var(--font-display); color: var(--color-text-primary)">
             Préférences
           </h2>
         </div>
