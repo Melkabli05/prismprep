@@ -24,7 +24,7 @@ import { LucideAngularModule } from 'lucide-angular';
       background: var(--color-surface-raised);
       border: 1px solid var(--color-border);
       color: var(--color-text-primary);
-      border-radius: 9999px;
+      border-radius: var(--radius-full);
       transition: border-color 200ms ease, box-shadow 200ms ease, background 200ms ease;
       font-size: 0.875rem;
     }
@@ -39,6 +39,33 @@ import { LucideAngularModule } from 'lucide-angular';
     }
     .search-input:focus::placeholder {
       color: var(--color-text-muted);
+    }
+    .search-icon-wrapper {
+      color: var(--color-text-placeholder);
+      transition: color 200ms ease;
+      pointer-events: none;
+    }
+    .search-input:focus ~ .search-icon-wrapper {
+      color: var(--color-text-muted);
+    }
+    .clear-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      border-radius: var(--radius-full);
+      border: none;
+      background: transparent;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      transition: background 150ms ease, color 150ms ease;
+      padding: 0;
+      flex-shrink: 0;
+    }
+    .clear-btn:hover {
+      background: var(--color-surface-active);
+      color: var(--color-text-primary);
     }
     .theme-btn {
       border: 1px solid var(--color-border);
@@ -77,19 +104,18 @@ import { LucideAngularModule } from 'lucide-angular';
         <!-- Search + Theme -->
         <div class="flex items-center gap-2 sm:gap-3">
           <div class="relative flex items-center">
-            <lucide-icon name="search" class="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 h-4 w-4 pointer-events-none"
-                         style="color: var(--color-text-placeholder)"></lucide-icon>
+            <lucide-icon name="search" class="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 search-icon-wrapper"></lucide-icon>
             <input
               id="search-input"
               type="text"
               [formField]="searchForm.query"
               (input)="onSearchInput($event)"
-              placeholder="Rechercher... (Ctrl+K)"
+              placeholder="Rechercher..."
               aria-label="Rechercher dans les questions"
-              class="search-input pl-9 sm:pl-10 pr-8 h-9 sm:h-10 w-32 sm:w-40 md:w-52 lg:w-60">
+              class="search-input pl-12 pr-9 h-9 sm:h-10 w-32 sm:w-40 md:w-52 lg:w-64">
             @if (searchForm.query().value()) {
-              <button (click)="clearSearch()" class="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 flex items-center justify-center w-5 h-5 rounded-full hover:bg-[var(--color-surface-hover)] transition-colors">
-                <lucide-icon name="x" class="h-3 w-3" style="color: var(--color-text-muted)"></lucide-icon>
+              <button (click)="clearSearch()" class="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 clear-btn" aria-label="Effacer la recherche">
+                <lucide-icon name="x" class="h-3 w-3"></lucide-icon>
               </button>
             }
           </div>
