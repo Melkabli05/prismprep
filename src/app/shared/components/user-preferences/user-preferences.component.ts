@@ -314,7 +314,7 @@ export class UserPreferencesComponent {
         this.errorMsg.set(result.error);
       } else {
         this.successMsg.set('Profil mis à jour !');
-        setTimeout(() => this.close.emit(), 1200);
+        setTimeout(() => this.successMsg.set(''), 2000);
       }
     });
   }
