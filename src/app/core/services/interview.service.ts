@@ -1,63 +1,35 @@
-import { Injectable, signal, computed, effect, inject } from '@angular/core';
+import { Injectable, signal, computed, effect, inject, linkedSignal } from '@angular/core';
 import type { InterviewCategory, InterviewQuestion, InterviewSection } from '../models/interview.models';
-import { SupabaseService, type QuestionRow } from './supabase.service';
 import { localStorageSignal, setLocalStorage } from './local-storage.service';
+import { QuestionsService } from './questions.service';
+import { UserStateService } from './user-state.service';
+import { AuthService } from './auth.service';
 
 function seededRandom(seed: string): () => number {
   let h = 0;
-  for (let i = 0; i < seed.length; i++) {
-    h = Math.imul(31, h) + seed.charCodeAt(i) | 0;
-  }
-  return () => {
-    h ^= h >>> 16;
-    h = Math.imul(h, 2246822507);
-    h ^= h >>> 13;
-    h = Math.imul(h, 3266489909);
-    return ((h ^= h >>> 16) >>> 0) / 4294967296;
-  };
+  for (let i = 0; i < seed.length; i++) h = Math.imul(31, h) + seed.charCodeAt(i) | 0;
+  return () => { h ^= h >>> 16; h = Math.imul(h, 2246822507); h ^= h >>> 13; h = Math.imul(h, 3266489909); return ((h ^= h >>> 16) >>> 0) / 4294967296; };
 }
-
-function getDailySeed(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-}
-
-function formatTime(s: number): string {
-  return `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;
-}
-
-function buildCategoryTree(questions: QuestionRow[]): InterviewCategory[] {
-  const catMap = new Map<string, InterviewCategory>();
-  const secMap = new Map<string, InterviewSection>();
-
-  for (const q of questions) {
-    if (!secMap.has(q.section_id)) {
-      secMap.set(q.section_id, { id: q.section_id, title: '', questions: [] });
-    }
-    if (!catMap.has(q.category_id)) {
-      catMap.set(q.category_id, { id: q.category_id, title: '', color: '', description: '', sections: [] });
-    }
-    const sec = secMap.get(q.section_id)!;
-    const cat = catMap.get(q.category_id)!;
-    sec.questions.push({
-      id: q.id, question: q.question, answer: q.answer,
-      example: q.example ?? undefined, code: q.code ?? undefined, language: q.language ?? undefined,
-    });
-  }
-
-  const cats = Array.from(catMap.values());
-  for (const cat of cats) {
-    const sections = cat.sections.map(sec => secMap.get(sec.id)!).filter(Boolean);
-    cat.sections = sections;
-  }
-  return cats;
-}
+function getDailySeed(): string { const d = new Date(); return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`; }
+function formatTime(s: number): string { return `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`; }
 
 @Injectable({ providedIn: 'root' })
 export class InterviewService {
-  private supabase = inject(SupabaseService);
+  readonly questions = inject(QuestionsService);
+  readonly userState = inject(UserStateService);
+  private auth = inject(AuthService);
 
-  private readonly _activeCategory = signal('rh');
+  readonly categoryTree = computed(() => this.questions.categoryTree());
+
+  /** linkedSignal — auto-resets to first category when tree loads, preserves selection if still valid */
+  private readonly _activeCategory = linkedSignal({
+    source: () => this.categoryTree(),
+    computation: (cats: InterviewCategory[], previous: { value: string } | undefined) => {
+      const prev = previous?.value ?? 'rh';
+      return cats.find(c => c.id === prev)?.id ?? cats[0]?.id ?? prev;
+    },
+  });
+
   private readonly _searchQuery = signal('');
   private readonly _flashcardMode = signal(false);
   private readonly _showBookmarksOnly = signal(false);
@@ -67,12 +39,6 @@ export class InterviewService {
   private readonly _mockTimer = signal(0);
   private readonly _mockRunning = signal(false);
   private readonly _shuffledIds = localStorageSignal<string[]>('shuffled-ids', []);
-  private readonly _revealedCards = localStorageSignal<Set<string>>('revealed-cards', new Set());
-  private readonly _bookmarks = localStorageSignal<Set<string>>('bookmarks', new Set());
-  private readonly _viewedQuestions = localStorageSignal<Set<string>>('viewed', new Set());
-  private readonly _notes = localStorageSignal<Record<string, string>>('notes', {});
-  private readonly _questionsData = signal<QuestionRow[]>([]);
-  private readonly _loaded = signal(false);
 
   readonly activeCategory = this._activeCategory.asReadonly();
   readonly searchQuery = this._searchQuery.asReadonly();
@@ -83,142 +49,47 @@ export class InterviewService {
   readonly mockInterviewIdx = this._mockInterviewIdx.asReadonly();
   readonly mockTimer = this._mockTimer.asReadonly();
   readonly mockRunning = this._mockRunning.asReadonly();
-  readonly revealedCards = this._revealedCards.asReadonly();
-  readonly bookmarks = this._bookmarks.asReadonly();
-  readonly viewedQuestions = this._viewedQuestions.asReadonly();
-  readonly notes = this._notes.asReadonly();
-  readonly loaded = this._loaded.asReadonly();
+  readonly formatTime = formatTime;
+  readonly loaded = this.questions.loaded;
 
-  readonly categoryTree = computed<InterviewCategory[]>(() => buildCategoryTree(this._questionsData()));
+  readonly bookmarks = this.userState.bookmarks;
+  readonly notes = this.userState.notes;
+  readonly revealedCards = this.userState.revealed;
+  readonly viewedQuestions = this.userState.viewed;
+  readonly bookmarkCount = computed(() => this.userState.bookmarks().size);
 
-  readonly category = computed<InterviewCategory>(() => {
+  readonly category = computed(() => {
     const cats = this.categoryTree();
-    return cats.find(c => c.id === this._activeCategory()) ?? cats[0] ?? {
-      id: 'rh', title: 'Entretien RH', color: '', description: '', sections: [],
-    };
+    return cats.find(c => c.id === this._activeCategory()) ?? cats[0] ?? { id: 'rh', title: 'Entretien RH', color: '', description: '', sections: [] };
   });
 
   readonly allQuestionsFlat = computed<{ category: InterviewCategory; question: InterviewQuestion }[]>(() => {
     const result: { category: InterviewCategory; question: InterviewQuestion }[] = [];
-    for (const cat of this.categoryTree()) {
-      for (const sec of cat.sections) {
-        for (const q of sec.questions) {
-          result.push({ category: cat, question: q });
-        }
-      }
-    }
+    for (const cat of this.categoryTree()) for (const sec of cat.sections) for (const q of sec.questions) result.push({ category: cat, question: q });
     return result;
   });
 
   readonly searchResults = computed(() => {
     const q = this._searchQuery().toLowerCase().trim();
-    if (!q) return null;
-    return this.allQuestionsFlat().filter(
-      ({ question }) =>
-        question.question.toLowerCase().includes(q) ||
-        question.answer.toLowerCase().includes(q) ||
-        (question.code?.toLowerCase().includes(q) ?? false)
-    );
+    if (!q || q.length < 2) return null;
+    return this.allQuestionsFlat().filter(({ question }) =>
+      question.question.toLowerCase().includes(q));
   });
 
-  readonly dailyQuestions = computed(() => {
-    const rng = seededRandom(getDailySeed());
-    return [...this.allQuestionsFlat()].sort(() => rng() - 0.5).slice(0, 5);
-  });
-
-  readonly mockQuestions = computed(() => {
-    const catQuestions = this.allQuestionsFlat().filter(({ category: c }) => c.id === this._activeCategory());
-    const rng = seededRandom('mock-' + this._activeCategory());
-    return [...catQuestions].sort(() => rng() - 0.5);
-  });
-
-  readonly bookmarkCount = computed(() => this._bookmarks().size);
+  readonly dailyQuestions = computed(() => { const rng = seededRandom(getDailySeed()); return [...this.allQuestionsFlat()].sort(() => rng() - 0.5).slice(0, 5); });
+  readonly mockQuestions = computed(() => { const rng = seededRandom('mock-' + this._activeCategory()); return [...this.allQuestionsFlat().filter(({ category: c }) => c.id === this._activeCategory())].sort(() => rng() - 0.5); });
 
   readonly categoryProgress = computed(() => {
     const cat = this.category();
     const total = cat.sections.reduce((a, s) => a + s.questions.length, 0);
-    const viewed = cat.sections.reduce(
-      (a, s) => a + s.questions.filter(q => this._viewedQuestions().has(q.id)).length, 0
-    );
+    const viewed = cat.sections.reduce((a, s) => a + s.questions.filter(q => this.userState.viewed().has(q.id)).length, 0);
     return { total, viewed, percent: total > 0 ? Math.round((viewed / total) * 100) : 0 };
   });
 
-  constructor() {
-    effect(() => setLocalStorage('shuffled-ids', this._shuffledIds()));
-    let timerId: ReturnType<typeof setInterval> | undefined;
-    effect(() => {
-      if (this._mockRunning()) {
-        timerId = setInterval(() => this._mockTimer.update(t => t + 1), 1000);
-      } else {
-        if (timerId !== undefined) {
-          clearInterval(timerId);
-          timerId = undefined;
-        }
-      }
-    });
-  }
-
-  async loadQuestions(): Promise<void> {
-    const data = await this.supabase.loadQuestions();
-    this._questionsData.set(data);
-    this._loaded.set(true);
-  }
-
-  async initRemoteState(): Promise<void> {
-    if (!this.supabase.isAuthenticated()) return;
-    const remote = await this.supabase.loadUserState();
-    if (!remote) return;
-    this._bookmarks.set(new Set([...this._bookmarks(), ...remote.bookmarks]));
-    this._notes.set({ ...remote.notes, ...this._notes() });
-    this._revealedCards.set(new Set([...this._revealedCards(), ...remote.revealed]));
-    this._viewedQuestions.set(new Set([...this._viewedQuestions(), ...remote.viewed]));
-  }
-
-  setCategory(id: string): void {
-    this._activeCategory.set(id);
-    this._shuffledIds.set([]);
-  }
-  setSearchQuery(q: string): void { this._searchQuery.set(q); }
-  setFlashcardMode(v: boolean): void { this._flashcardMode.set(v); }
-  setShowBookmarksOnly(v: boolean): void { this._showBookmarksOnly.set(v); }
-  setShowDailyChallenge(v: boolean): void { this._showDailyChallenge.set(v); }
-  setShowMockInterview(v: boolean): void { this._showMockInterview.set(v); }
-  setMockInterviewIdx(i: number): void { this._mockInterviewIdx.set(i); }
-  setMockTimer(v: number): void { this._mockTimer.set(v); }
-  setMockRunning(v: boolean): void { this._mockRunning.set(v); }
-
-  toggleBookmark(id: string): void {
-    const next = new Set(this._bookmarks());
-    if (next.has(id)) next.delete(id); else next.add(id);
-    this._bookmarks.set(next);
-    this.supabase.toggleBookmark(id);
-  }
-
-  toggleRevealedCard(id: string): void {
-    const next = new Set(this._revealedCards());
-    next.add(id);
-    this._revealedCards.set(next);
-    this.supabase.addRevealed(id);
-  }
-
-  resetRevealedCards(): void { this._revealedCards.set(new Set()); }
-
-  updateNote(id: string, note: string): void {
-    this._notes.set({ ...this._notes(), [id]: note });
-    this.supabase.upsertNote(id, note);
-  }
-
-  markViewed(id: string): void {
-    const next = new Set(this._viewedQuestions());
-    next.add(id);
-    this._viewedQuestions.set(next);
-    this.supabase.addViewed(id);
-  }
-
-  shuffleCurrentCategory(): void {
-    const ids = this.category().sections.flatMap(s => s.questions.map(q => q.id));
-    this._shuffledIds.set([...ids].sort(() => Math.random() - 0.5));
-  }
+  /** Template helpers — expose so the dumb shell can call them directly */
+  readonly isSearching = computed(() => this._searchQuery().trim().length > 0);
+  readonly totalQuestions = computed(() => this.allQuestionsFlat().length);
+  readonly categoryCount = computed(() => this.categoryTree().length);
 
   getOrderedQuestions(section: InterviewSection): InterviewQuestion[] {
     const ids = this._shuffledIds();
@@ -226,21 +97,74 @@ export class InterviewService {
     return [...section.questions].sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
   }
 
-  toggleMockInterview(): void {
-    this._showMockInterview.update(v => !v);
-    this._showDailyChallenge.set(false);
-    this.setMockInterviewIdx(0);
-    this.setMockTimer(0);
-    this.setMockRunning(false);
-    this.resetRevealedCards();
+  getFilteredQuestions(section: InterviewSection): InterviewQuestion[] {
+    const questions = this.getOrderedQuestions(section);
+    return this._showBookmarksOnly() ? questions.filter(q => this.userState.bookmarks().has(q.id)) : questions;
   }
 
-  toggleDailyChallenge(): void {
-    this._showDailyChallenge.update(v => !v);
-    this._showMockInterview.set(false);
+  toQuestionList(questions: InterviewQuestion[]) {
+    return questions.map(q => ({ category: this.category(), question: q }));
   }
 
-  readonly formatTime = formatTime;
+  onFlashcardModeChange(v: boolean): void { this.setFlashcardMode(v); }
+  prevMock(): void { this.setMockInterviewIdx(Math.max(0, this._mockInterviewIdx() - 1)); this.resetRevealedCards(); }
+  nextMock(): void { this.setMockInterviewIdx(this._mockInterviewIdx() + 1); this.resetRevealedCards(); }
+  finishMock(): void { this.setShowMockInterview(false); this.setMockRunning(false); this.setMockTimer(0); }
+
+  init(): void {
+    this.questions.init();
+  }
+
+  async initRemoteState(): Promise<void> {
+    const client = this.questions.getClient();
+    if (!client || !this.auth.uid || !this.questions.loaded()) return;
+    await this.userState.loadRemote(client, this.auth.uid);
+  }
+
+  setCategory(id: string): void { this._activeCategory.set(id); this._shuffledIds.set([]); }
+  setSearchQuery(q: string): void { this._searchQuery.set(q); }
+  setFlashcardMode(v: boolean): void { this._flashcardMode.set(v); if (v) this.userState.resetRevealed(); }
+  setShowBookmarksOnly(v: boolean): void { this._showBookmarksOnly.set(v); }
+  setShowDailyChallenge(v: boolean): void { this._showDailyChallenge.set(v); this._showMockInterview.set(false); }
+  setShowMockInterview(v: boolean): void { this._showMockInterview.set(v); this._showDailyChallenge.set(false); this.setMockInterviewIdx(0); this.setMockTimer(0); this.setMockRunning(false); this.userState.resetRevealed(); }
+  setMockInterviewIdx(i: number): void { this._mockInterviewIdx.set(i); }
+  setMockTimer(v: number): void { this._mockTimer.set(v); }
+  setMockRunning(v: boolean): void { this._mockRunning.set(v); }
+
+  toggleBookmark(id: string): void {
+    const client = this.questions.getClient();
+    this.userState.toggleBookmark(id);
+    if (client && this.auth.uid) this.userState.syncBookmark(client, this.auth.uid, id);
+  }
+
+  toggleRevealedCard(id: string): void {
+    const client = this.questions.getClient();
+    this.userState.toggleRevealed(id);
+    if (client && this.auth.uid) this.userState.syncRevealed(client, this.auth.uid, id);
+  }
+
+  resetRevealedCards(): void { this.userState.resetRevealed(); }
+
+  updateNote(id: string, note: string): void {
+    const client = this.questions.getClient();
+    this.userState.updateNote(id, note);
+    if (client && this.auth.uid) this.userState.syncNote(client, this.auth.uid, id, note);
+  }
+
+  markViewed(id: string): void {
+    const client = this.questions.getClient();
+    this.userState.markViewed(id);
+    if (client && this.auth.uid) this.userState.syncViewed(client, this.auth.uid, id);
+  }
+
+  shuffleCurrentCategory(): void {
+    const ids = this.category().sections.flatMap(s => s.questions.map(q => q.id));
+    this._shuffledIds.set([...ids].sort(() => Math.random() - 0.5));
+  }
+
+  toggleMockInterview(): void { this._showMockInterview.update(v => !v); this._showDailyChallenge.set(false); this.setMockInterviewIdx(0); this.setMockTimer(0); this.setMockRunning(false); this.userState.resetRevealed(); }
+  toggleDailyChallenge(): void { this._showDailyChallenge.update(v => !v); this._showMockInterview.set(false); }
+
   startTimer(): void { this._mockRunning.set(true); }
   stopTimer(): void { this._mockRunning.set(false); }
   toggleTimer(): void { this._mockRunning.update(v => !v); }
@@ -248,5 +172,19 @@ export class InterviewService {
   toggleTheme(): void {
     const isDark = document.documentElement.classList.toggle('dark');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  }
+
+  constructor() {
+    effect(() => setLocalStorage('shuffled-ids', this._shuffledIds()));
+    let intervalId: ReturnType<typeof setInterval> | undefined;
+    effect(() => {
+      const running = this._mockRunning();
+      if (running) {
+        intervalId = setInterval(() => this._mockTimer.update(t => t + 1), 1000);
+      } else {
+        if (intervalId !== undefined) { clearInterval(intervalId); intervalId = undefined; }
+        this._mockTimer.set(0);
+      }
+    });
   }
 }

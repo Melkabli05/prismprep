@@ -2,7 +2,7 @@ import { Component, inject, signal, output, effect, ChangeDetectionStrategy, OnD
 import { form, FormField } from '@angular/forms/signals';
 import { LucideAngularModule } from 'lucide-angular';
 import { SearchShortcutDirective } from '../../../../shared/directives/search-shortcut.directive';
-import { SupabaseService } from '../../../../core/services/supabase.service';
+import { AuthService } from '../../../../core/services/auth.service';
 import { AuthModalComponent } from '../../../../shared/components/auth-modal/auth-modal.component';
 
 @Component({
@@ -100,9 +100,9 @@ import { AuthModalComponent } from '../../../../shared/components/auth-modal/aut
               </button>
             }
           </div>
-          @if (supabase.user(); as user) {
+          @if (auth.user(); as user) {
             <span class="user-badge hidden sm:inline">{{ user.email }}</span>
-            <button class="auth-btn" (click)="signOut()">Déconnexion</button>
+            <button class="auth-btn" (click)="auth.signOut()">Déconnexion</button>
           } @else {
             <button class="auth-btn" (click)="showAuthModal.set(true)">Connexion</button>
           }
@@ -115,7 +115,7 @@ import { AuthModalComponent } from '../../../../shared/components/auth-modal/aut
   `,
 })
 export class HeaderComponent implements OnDestroy {
-  readonly supabase = inject(SupabaseService);
+  readonly auth = inject(AuthService);
   readonly isDark = signal(false);
   readonly isMac = signal(false);
   readonly showAuthModal = signal(false);
@@ -127,6 +127,7 @@ export class HeaderComponent implements OnDestroy {
   toggleTheme = output<void>();
 
   private themeObserver: MutationObserver | null = null;
+  private debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor() {
     this.isDark.set(document.documentElement.classList.contains('dark'));
@@ -142,19 +143,18 @@ export class HeaderComponent implements OnDestroy {
   onSearchInput(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
     this.searchModel.update(m => ({ ...m, query: value }));
-    this.searchChange.emit(value);
+    if (this.debounceTimer !== null) clearTimeout(this.debounceTimer);
+    this.debounceTimer = setTimeout(() => this.searchChange.emit(value), 150);
   }
 
   clearSearch(): void {
+    if (this.debounceTimer !== null) clearTimeout(this.debounceTimer);
     this.searchModel.update(m => ({ ...m, query: '' }));
     this.searchChange.emit('');
   }
 
-  async signOut(): Promise<void> {
-    await this.supabase.signOut();
-  }
-
   ngOnDestroy(): void {
     this.themeObserver?.disconnect();
+    if (this.debounceTimer !== null) clearTimeout(this.debounceTimer);
   }
 }

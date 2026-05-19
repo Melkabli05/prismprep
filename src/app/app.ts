@@ -1,6 +1,6 @@
 import { Component, inject, effect, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { SupabaseService } from './core/services/supabase.service';
+import { AuthService } from './core/services/auth.service';
 import { InterviewService } from './core/services/interview.service';
 
 @Component({
@@ -30,18 +30,17 @@ import { InterviewService } from './core/services/interview.service';
   `,
 })
 export class App {
-  private supabase = inject(SupabaseService);
+  private auth = inject(AuthService);
   private interview = inject(InterviewService);
 
   constructor() {
-    this.supabase.init();
-    this.interview.loadQuestions();
+    this.auth.init();
+    this.interview.init();
 
-    // Once Supabase auth finishes loading, sync remote state if signed in
     effect(() => {
-      if (!this.supabase.loading()) {
+      if (!this.auth.loading() && this.interview.loaded()) {
         this.interview.initRemoteState();
       }
-    }, { allowSignalWrites: true });
+    });
   }
 }

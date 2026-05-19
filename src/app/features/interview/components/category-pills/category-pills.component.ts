@@ -1,5 +1,5 @@
-import { Component, input, output, computed, ChangeDetectionStrategy } from '@angular/core';
-import { interviewCategories } from '../../data';
+import { Component, input, output, computed, ChangeDetectionStrategy, inject } from '@angular/core';
+import { InterviewService } from '../../../../core/services/interview.service';
 
 @Component({
   selector: 'app-category-pills',
@@ -68,7 +68,7 @@ import { interviewCategories } from '../../data';
   template: `
     <div class="max-w-3xl mx-auto px-4 sm:px-6 pt-4 sm:pt-6 pb-2">
       <div class="flex items-center gap-2 overflow-x-auto pb-2">
-        @for (cat of categories; track cat.id) {
+        @for (cat of categories(); track cat.id) {
           <button (click)="categoryChange.emit(cat.id)"
                   class="category-pill shrink-0"
                   [class.category-pill-active]="activeCategory() === cat.id"
@@ -86,14 +86,15 @@ import { interviewCategories } from '../../data';
   `,
 })
 export class CategoryPillsComponent {
+  readonly svc = inject(InterviewService);
   activeCategory = input<string>('rh');
   categoryChange = output<string>();
 
-  readonly categories = interviewCategories;
+  readonly categories = computed(() => this.svc.categoryTree());
 
   readonly categoryTotals = computed(() =>
     Object.fromEntries(
-      this.categories.map(cat => [cat.id, cat.sections.reduce((a, s) => a + s.questions.length, 0)])
+      this.categories().map(cat => [cat.id, cat.sections.reduce((a, s) => a + s.questions.length, 0)])
     )
   );
 }
