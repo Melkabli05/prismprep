@@ -1,5 +1,7 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, effect, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { SupabaseService } from './core/services/supabase.service';
+import { InterviewService } from './core/services/interview.service';
 
 @Component({
   selector: 'app-root',
@@ -24,11 +26,22 @@ import { RouterOutlet } from '@angular/router';
       text-decoration: none;
       transition: top 200ms ease;
     }
-    .skip-link:focus {
-      top: 0;
-      outline: 2px solid var(--color-accent);
-      outline-offset: 2px;
-    }
+    .skip-link:focus { top: 0; outline: 2px solid var(--color-accent); outline-offset: 2px; }
   `,
 })
-export class App {}
+export class App {
+  private supabase = inject(SupabaseService);
+  private interview = inject(InterviewService);
+
+  constructor() {
+    this.supabase.init();
+    this.interview.loadQuestions();
+
+    // Once Supabase auth finishes loading, sync remote state if signed in
+    effect(() => {
+      if (!this.supabase.loading()) {
+        this.interview.initRemoteState();
+      }
+    }, { allowSignalWrites: true });
+  }
+}

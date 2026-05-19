@@ -1,6 +1,6 @@
-import { Injectable, signal, computed, effect } from '@angular/core';
-import { interviewCategories } from '../../features/interview/data';
+import { Injectable, signal, computed, effect, inject } from '@angular/core';
 import type { InterviewCategory, InterviewQuestion, InterviewSection } from '../models/interview.models';
+import { SupabaseService, type QuestionRow } from './supabase.service';
 import { localStorageSignal, setLocalStorage } from './local-storage.service';
 
 function seededRandom(seed: string): () => number {
@@ -26,8 +26,37 @@ function formatTime(s: number): string {
   return `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;
 }
 
+function buildCategoryTree(questions: QuestionRow[]): InterviewCategory[] {
+  const catMap = new Map<string, InterviewCategory>();
+  const secMap = new Map<string, InterviewSection>();
+
+  for (const q of questions) {
+    if (!secMap.has(q.section_id)) {
+      secMap.set(q.section_id, { id: q.section_id, title: '', questions: [] });
+    }
+    if (!catMap.has(q.category_id)) {
+      catMap.set(q.category_id, { id: q.category_id, title: '', color: '', description: '', sections: [] });
+    }
+    const sec = secMap.get(q.section_id)!;
+    const cat = catMap.get(q.category_id)!;
+    sec.questions.push({
+      id: q.id, question: q.question, answer: q.answer,
+      example: q.example ?? undefined, code: q.code ?? undefined, language: q.language ?? undefined,
+    });
+  }
+
+  const cats = Array.from(catMap.values());
+  for (const cat of cats) {
+    const sections = cat.sections.map(sec => secMap.get(sec.id)!).filter(Boolean);
+    cat.sections = sections;
+  }
+  return cats;
+}
+
 @Injectable({ providedIn: 'root' })
 export class InterviewService {
+  private supabase = inject(SupabaseService);
+
   private readonly _activeCategory = signal('rh');
   private readonly _searchQuery = signal('');
   private readonly _flashcardMode = signal(false);
@@ -42,6 +71,8 @@ export class InterviewService {
   private readonly _bookmarks = localStorageSignal<Set<string>>('bookmarks', new Set());
   private readonly _viewedQuestions = localStorageSignal<Set<string>>('viewed', new Set());
   private readonly _notes = localStorageSignal<Record<string, string>>('notes', {});
+  private readonly _questionsData = signal<QuestionRow[]>([]);
+  private readonly _loaded = signal(false);
 
   readonly activeCategory = this._activeCategory.asReadonly();
   readonly searchQuery = this._searchQuery.asReadonly();
@@ -56,21 +87,27 @@ export class InterviewService {
   readonly bookmarks = this._bookmarks.asReadonly();
   readonly viewedQuestions = this._viewedQuestions.asReadonly();
   readonly notes = this._notes.asReadonly();
+  readonly loaded = this._loaded.asReadonly();
 
-  readonly category = computed(() =>
-    interviewCategories.find(c => c.id === this._activeCategory()) ?? interviewCategories[0]
-  );
+  readonly categoryTree = computed<InterviewCategory[]>(() => buildCategoryTree(this._questionsData()));
+
+  readonly category = computed<InterviewCategory>(() => {
+    const cats = this.categoryTree();
+    return cats.find(c => c.id === this._activeCategory()) ?? cats[0] ?? {
+      id: 'rh', title: 'Entretien RH', color: '', description: '', sections: [],
+    };
+  });
 
   readonly allQuestionsFlat = computed<{ category: InterviewCategory; question: InterviewQuestion }[]>(() => {
-    const qs: { category: InterviewCategory; question: InterviewQuestion }[] = [];
-    for (const cat of interviewCategories) {
+    const result: { category: InterviewCategory; question: InterviewQuestion }[] = [];
+    for (const cat of this.categoryTree()) {
       for (const sec of cat.sections) {
         for (const q of sec.questions) {
-          qs.push({ category: cat, question: q });
+          result.push({ category: cat, question: q });
         }
       }
     }
-    return qs;
+    return result;
   });
 
   readonly searchResults = computed(() => {
@@ -101,17 +138,12 @@ export class InterviewService {
     const cat = this.category();
     const total = cat.sections.reduce((a, s) => a + s.questions.length, 0);
     const viewed = cat.sections.reduce(
-      (a, s) => a + s.questions.filter(q => this._viewedQuestions().has(q.id)).length,
-      0
+      (a, s) => a + s.questions.filter(q => this._viewedQuestions().has(q.id)).length, 0
     );
     return { total, viewed, percent: total > 0 ? Math.round((viewed / total) * 100) : 0 };
   });
 
   constructor() {
-    effect(() => setLocalStorage('revealed-cards', Array.from(this._revealedCards())));
-    effect(() => setLocalStorage('bookmarks', Array.from(this._bookmarks())));
-    effect(() => setLocalStorage('viewed', Array.from(this._viewedQuestions())));
-    effect(() => setLocalStorage('notes', this._notes()));
     effect(() => setLocalStorage('shuffled-ids', this._shuffledIds()));
     let timerId: ReturnType<typeof setInterval> | undefined;
     effect(() => {
@@ -126,11 +158,26 @@ export class InterviewService {
     });
   }
 
+  async loadQuestions(): Promise<void> {
+    const data = await this.supabase.loadQuestions();
+    this._questionsData.set(data);
+    this._loaded.set(true);
+  }
+
+  async initRemoteState(): Promise<void> {
+    if (!this.supabase.isAuthenticated()) return;
+    const remote = await this.supabase.loadUserState();
+    if (!remote) return;
+    this._bookmarks.set(new Set([...this._bookmarks(), ...remote.bookmarks]));
+    this._notes.set({ ...remote.notes, ...this._notes() });
+    this._revealedCards.set(new Set([...this._revealedCards(), ...remote.revealed]));
+    this._viewedQuestions.set(new Set([...this._viewedQuestions(), ...remote.viewed]));
+  }
+
   setCategory(id: string): void {
     this._activeCategory.set(id);
     this._shuffledIds.set([]);
   }
-
   setSearchQuery(q: string): void { this._searchQuery.set(q); }
   setFlashcardMode(v: boolean): void { this._flashcardMode.set(v); }
   setShowBookmarksOnly(v: boolean): void { this._showBookmarksOnly.set(v); }
@@ -144,26 +191,28 @@ export class InterviewService {
     const next = new Set(this._bookmarks());
     if (next.has(id)) next.delete(id); else next.add(id);
     this._bookmarks.set(next);
+    this.supabase.toggleBookmark(id);
   }
 
   toggleRevealedCard(id: string): void {
     const next = new Set(this._revealedCards());
     next.add(id);
     this._revealedCards.set(next);
+    this.supabase.addRevealed(id);
   }
 
-  resetRevealedCards(): void {
-    this._revealedCards.set(new Set());
-  }
+  resetRevealedCards(): void { this._revealedCards.set(new Set()); }
 
   updateNote(id: string, note: string): void {
     this._notes.set({ ...this._notes(), [id]: note });
+    this.supabase.upsertNote(id, note);
   }
 
   markViewed(id: string): void {
     const next = new Set(this._viewedQuestions());
     next.add(id);
     this._viewedQuestions.set(next);
+    this.supabase.addViewed(id);
   }
 
   shuffleCurrentCategory(): void {
@@ -192,13 +241,9 @@ export class InterviewService {
   }
 
   readonly formatTime = formatTime;
-
   startTimer(): void { this._mockRunning.set(true); }
   stopTimer(): void { this._mockRunning.set(false); }
-
-  toggleTimer(): void {
-    this._mockRunning.update(v => !v);
-  }
+  toggleTimer(): void { this._mockRunning.update(v => !v); }
 
   toggleTheme(): void {
     const isDark = document.documentElement.classList.toggle('dark');
