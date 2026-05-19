@@ -313,6 +313,7 @@ export class AuthModalComponent {
           } else {
             this.successMsg.set('Compte créé ! Vérifiez votre email pour confirmer votre inscription.');
             this.signUpModel.set(EMPTY_SIGN_UP);
+            this.close.emit();
           }
         } finally {
           this.loading.set(false);
