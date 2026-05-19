@@ -4,6 +4,7 @@ import { localStorageSignal, setLocalStorage } from './local-storage.service';
 import { QuestionsService } from './questions.service';
 import { UserStateService } from './user-state.service';
 import { AuthService } from './auth.service';
+import { ThemeService } from './theme.service';
 
 function seededRandom(seed: string): () => number {
   let h = 0;
@@ -18,6 +19,7 @@ export class InterviewService {
   readonly questions = inject(QuestionsService);
   readonly userState = inject(UserStateService);
   private auth = inject(AuthService);
+  private theme = inject(ThemeService);
 
   readonly categoryTree = computed(() => this.questions.categoryTree());
 
@@ -179,12 +181,7 @@ export class InterviewService {
   stopTimer(): void { this._mockRunning.set(false); }
   toggleTimer(): void { this._mockRunning.update(v => !v); }
 
-  toggleTheme(): void {
-    const current = this.auth.theme();
-    const cycle: Record<string, string> = { light: 'dark', dark: 'system', system: 'light' };
-    const next = cycle[current] ?? 'system';
-    this.auth.updateTheme(next);
-  }
+  toggleTheme(): void { this.theme.toggle(); }
 
   constructor() {
     effect(() => setLocalStorage('shuffled-ids', this._shuffledIds()));

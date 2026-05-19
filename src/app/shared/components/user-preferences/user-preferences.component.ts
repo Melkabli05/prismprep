@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
   output,
   signal,
@@ -11,8 +10,7 @@ import { form, FormField, required } from '@angular/forms/signals';
 import { LucideAngularModule } from 'lucide-angular';
 import { AuthService } from '../../../core/services/auth.service';
 import { InterviewService } from '../../../core/services/interview.service';
-
-type ThemeOption = 'light' | 'dark' | 'system';
+import { ThemeService, ThemeOption } from '../../../core/services/theme.service';
 type Tab = 'profile' | 'theme' | 'stack';
 
 interface ProfileModel {
@@ -216,6 +214,7 @@ const EMPTY_PROFILE: ProfileModel = { name: '' };
 export class UserPreferencesComponent {
   private readonly auth = inject(AuthService);
   private readonly interview = inject(InterviewService);
+  private readonly themeService = inject(ThemeService);
 
   readonly close = output<void>();
 
@@ -255,8 +254,7 @@ export class UserPreferencesComponent {
     this.allCategories().filter(c => !this._selectedStack().includes(c.id))
   );
 
-  readonly theme = signal<ThemeOption>('system');
-
+  readonly theme = this.themeService.theme;
   readonly isStackSelected = (id: string) => this._selectedStack().includes(id);
 
   constructor() {
@@ -268,13 +266,6 @@ export class UserPreferencesComponent {
 
     // Init stack from auth
     this._selectedStack.set([...this.auth.stack()]);
-
-    // Init theme from auth backend, fall back to localStorage
-    const backendTheme = this.auth.theme() as ThemeOption;
-    const stored = localStorage.getItem('theme-preference') as ThemeOption | null;
-    const initial = backendTheme !== 'system' ? backendTheme : (stored ?? 'system');
-    this.theme.set(initial);
-    this.applyTheme(initial);
   }
 
   toggleStack(id: string): void {
@@ -293,19 +284,7 @@ export class UserPreferencesComponent {
     this.auth.updateProfile(this.profileModel().name, this._selectedStack());
   }
 
-  setTheme(option: ThemeOption): void {
-    this.theme.set(option);
-    this.applyTheme(option);
-    this.auth.updateTheme(option);
-  }
-
-  private applyTheme(option: ThemeOption): void {
-    const isDark =
-      option === 'dark' ||
-      (option === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    document.documentElement.classList.toggle('dark', isDark);
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-  }
+  setTheme(option: ThemeOption): void { this.themeService.setTheme(option); }
 
   saveProfile(): void {
     this.errorMsg.set('');

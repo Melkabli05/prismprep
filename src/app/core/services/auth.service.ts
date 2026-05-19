@@ -18,6 +18,7 @@ export class AuthService {
     return Array.isArray(meta?.['stack']) ? meta['stack'] as string[] : [];
   });
 
+  /** Exposes theme preference from backend for ThemeService consumption */
   readonly theme = computed(() => {
     const meta = this._user()?.user_metadata;
     return (meta?.['theme'] as string) ?? 'system';
@@ -30,21 +31,10 @@ export class AuthService {
     this.client.auth.getSession().then(({ data }) => {
       this._user.set(data.session?.user ?? null);
       this._loading.set(false);
-      this.applyTheme();
     });
     this.client.auth.onAuthStateChange((_event, session) => {
       this._user.set(session?.user ?? null);
-      this.applyTheme();
     });
-  }
-
-  private applyTheme(): void {
-    const theme = this.theme();
-    const isDark =
-      theme === 'dark' ||
-      (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    document.documentElement.classList.toggle('dark', isDark);
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
   }
 
   async signIn(email: string, password: string): Promise<{ error: string | null }> {
