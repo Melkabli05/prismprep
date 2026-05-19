@@ -1,60 +1,194 @@
 @import 'tailwindcss';
-@plugin "daisyui";
 
-/* Light theme */
-:root {
-  --radius: 0.75rem;
-  --background: oklch(0.985 0.002 100);
-  --foreground: oklch(0.22 0.01 60);
-  --card: oklch(0.995 0.002 100);
-  --card-foreground: oklch(0.22 0.01 60);
-  --popover: oklch(0.995 0.002 100);
-  --popover-foreground: oklch(0.22 0.01 60);
-  --primary: oklch(0.25 0.01 60);
-  --primary-foreground: oklch(0.98 0.002 100);
-  --secondary: oklch(0.96 0.004 100);
-  --secondary-foreground: oklch(0.25 0.01 60);
-  --muted: oklch(0.96 0.004 100);
-  --muted-foreground: oklch(0.48 0.01 60);
-  --accent: oklch(0.94 0.008 100);
-  --accent-foreground: oklch(0.25 0.01 60);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.91 0.004 100);
-  --input: oklch(0.91 0.004 100);
-  --ring: oklch(0.65 0.01 60);
+@theme {
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.875rem;
+  --radius-xl: 1.125rem;
+  --radius-full: 9999px;
 }
 
-/* Dark theme */
+:root {
+  /* ── Backgrounds ─────────────────────────────────────────
+     Warm parchment base — reduces eye strain vs pure white.
+     Cards sit on this with subtle elevation.               */
+  --color-bg: #FAFAF7;
+  --color-surface: #FFFFFF;
+  --color-surface-raised: #FDFDF9;
+  --color-surface-hover: #F4F3EF;
+  --color-surface-active: #EEEDE7;
+
+  /* ── Borders ───────────────────────────────────────────── */
+  --color-border: #E2E0D9;
+  --color-border-subtle: #EBE9E2;
+  --color-border-strong: #C8C5BC;
+
+  /* ── Text ────────────────────────────────────────────────
+     Softer than pure black — less harsh on the eyes.
+     Warm neutrals, never pure gray.                      */
+  --color-text-primary: #1E1D1A;
+  --color-text-secondary: #5C5A54;
+  --color-text-muted: #9A9890;
+  --color-text-placeholder: #B5B2A8;
+
+  /* ── Accent — Deep Indigo ────────────────────────────────
+     Rich but not saturated — easy on the eyes, not garish.
+     Works for interactive states, links, progress bars.  */
+  --color-accent: #4444D0;
+  --color-accent-hover: #3333B0;
+  --color-accent-soft: #EEEEF8;
+  --color-accent-text: #FFFFFF;
+
+  /* ── Semantic Colors ─────────────────────────────────────
+     Carefully balanced saturation for long study sessions.
+     Muted, never neon.                                    */
+  --color-amber: #B07D00;
+  --color-amber-soft: #FEF4E0;
+  --color-success: #1A7A3C;
+  --color-success-soft: #E8F7EE;
+  --color-error: #C42020;
+  --color-error-soft: #FDEAEA;
+  --color-info: #1A6FAA;
+  --color-info-soft: #E5F3FB;
+
+  /* ── Code block ────────────────────────────────────────── */
+  --color-code-bg: #F5F4F0;
+  --color-code-border: #E2E0D9;
+
+  /* ── Syntax tokens — Warm palette matching the app ─────── */
+  --color-token-keyword:   #7C3AED;
+  --color-token-string:    #15803D;
+  --color-token-comment:   #9A9890;
+  --color-token-number:    #B45309;
+  --color-token-operator:  #0891B2;
+  --color-token-punctuation: #6B7280;
+  --color-token-type:      #B45309;
+  --color-token-function:  #0369A1;
+
+  /* ── Shadows — Soft, warm, never harsh ─────────────────── */
+  --shadow-sm: 0 1px 2px 0 rgb(60 55 45 / 0.04);
+  --shadow-card: 0 1px 4px 0 rgb(60 55 45 / 0.05), 0 1px 2px -1px rgb(60 55 45 / 0.04);
+  --shadow-card-hover: 0 4px 16px -4px rgb(60 55 45 / 0.09), 0 2px 6px -2px rgb(60 55 45 / 0.06);
+}
+
 .dark {
-  --background: oklch(0.17 0.005 60);
-  --foreground: oklch(0.90 0.005 80);
-  --card: oklch(0.20 0.005 60);
-  --card-foreground: oklch(0.90 0.005 80);
-  --popover: oklch(0.20 0.005 60);
-  --popover-foreground: oklch(0.90 0.005 80);
-  --primary: oklch(0.90 0.005 80);
-  --primary-foreground: oklch(0.20 0.005 60);
-  --secondary: oklch(0.27 0.005 60);
-  --secondary-foreground: oklch(0.90 0.005 80);
-  --muted: oklch(0.27 0.005 60);
-  --muted-foreground: oklch(0.64 0.008 80);
-  --accent: oklch(0.27 0.005 60);
-  --accent-foreground: oklch(0.90 0.005 80);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  /* ── Backgrounds — Warm charcoal, never cold black ─────── */
+  --color-bg: #141412;
+  --color-surface: #1E1D1B;
+  --color-surface-raised: #242320;
+  --color-surface-hover: #2A2926;
+  --color-surface-active: #302E2B;
+
+  /* ── Borders ───────────────────────────────────────────── */
+  --color-border: #2E2D29;
+  --color-border-subtle: #262420;
+  --color-border-strong: #3E3D38;
+
+  /* ── Text — Off-white, warm, comfortable ───────────────── */
+  --color-text-primary: #F2F0EC;
+  --color-text-secondary: #8E8C86;
+  --color-text-muted: #6A6862;
+  --color-text-placeholder: #524F49;
+
+  /* ── Accent — Lighter indigo for dark mode contrast ────── */
+  --color-accent: #6565E0;
+  --color-accent-hover: #7878F0;
+  --color-accent-soft: #1E1E38;
+  --color-accent-text: #FFFFFF;
+
+  /* ── Semantic — Brighter for dark mode visibility ───────── */
+  --color-amber: #D4A000;
+  --color-amber-soft: #3A2800;
+  --color-success: #28A050;
+  --color-success-soft: #0D2A1A;
+  --color-error: #E83030;
+  --color-error-soft: #3A0D0D;
+  --color-info: #2890CC;
+  --color-info-soft: #0A2035;
+
+  /* ── Code block ────────────────────────────────────────── */
+  --color-code-bg: #1E1D1B;
+  --color-code-border: #2E2D29;
+
+  /* ── Syntax tokens — Brighter for dark mode ─────────────── */
+  --color-token-keyword:   #A78BFA;
+  --color-token-string:    #86EFAC;
+  --color-token-comment:   #6B7280;
+  --color-token-number:    #FB923C;
+  --color-token-operator:  #67E8F9;
+  --color-token-punctuation: #9CA3AF;
+  --color-token-type:      #FCD34D;
+  --color-token-function:  #6EE7B7;
+
+  /* ── Shadows — Darker, softer ─────────────────────────── */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.2);
+  --shadow-card: 0 1px 4px 0 rgb(0 0 0 / 0.25), 0 1px 2px -1px rgb(0 0 0 / 0.18);
+  --shadow-card-hover: 0 4px 16px -4px rgb(0 0 0 / 0.35), 0 2px 6px -2px rgb(0 0 0 / 0.22);
 }
 
 @layer base {
   * {
-    border-color: var(--border);
+    border-color: var(--color-border);
   }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    background-color: var(--background);
-    color: var(--foreground);
-    font-size: 15px;
+    background-color: var(--color-bg);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    font-size: 16px;
     line-height: 1.75;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 250ms ease, color 250ms ease, border-color 250ms ease;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    color: var(--color-text-primary);
+  }
+
+  code, pre {
+    font-family: var(--font-mono);
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-accent-text);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+
+  /* ── Smooth custom scrollbar ─────────────────────────────── */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-muted);
+  }
+  ::-webkit-scrollbar-corner {
+    background: transparent;
   }
 }

@@ -1,0 +1,208 @@
+<app-header
+  (toggleTheme)="svc.toggleTheme()"
+  (searchChange)="svc.setSearchQuery($event)">
+</app-header>
+
+<app-toolbar
+  [flashcardMode]="svc.flashcardMode()"
+  [showBookmarksOnly]="svc.showBookmarksOnly()"
+  [showDailyChallenge]="svc.showDailyChallenge()"
+  [showMockInterview]="svc.showMockInterview()"
+  [bookmarkCount]="svc.bookmarkCount()"
+  (flashcardModeChange)="onFlashcardModeChange($event)"
+  (bookmarksOnlyChange)="svc.setShowBookmarksOnly($event)"
+  (shuffleChange)="svc.shuffleCurrentCategory()"
+  (dailyChallengeChange)="svc.toggleDailyChallenge()"
+  (mockInterviewChange)="svc.toggleMockInterview()">
+</app-toolbar>
+
+<app-category-pills
+  [activeCategory]="svc.activeCategory()"
+  (categoryChange)="svc.setCategory($event)">
+</app-category-pills>
+
+<main id="main-content" class="flex-1 w-full">
+
+  @if (isSearching()) {
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+      <p class="text-sm mb-6 sm:mb-8" style="color: var(--color-text-muted)">
+        {{ svc.searchResults()?.length ?? 0 }} résultat{{ (svc.searchResults()?.length ?? 0) !== 1 ? 's' : '' }} pour "{{ svc.searchQuery() }}"
+      </p>
+      @if ((svc.searchResults()?.length ?? 0) === 0) {
+        <div class="flex flex-col items-center justify-center py-24 gap-5">
+          <div class="w-16 h-16 rounded-full flex items-center justify-center" style="background: var(--color-surface-hover)">
+            <lucide-icon name="search-slash" class="h-7 w-7" style="color: var(--color-text-muted)"></lucide-icon>
+          </div>
+          <p class="text-sm" style="color: var(--color-text-muted)">Aucun résultat pour cette recherche</p>
+        </div>
+      } @else {
+        <app-question-list
+          [items]="svc.searchResults() ?? []"
+          [flashcardMode]="svc.flashcardMode()"
+          [revealedCards]="svc.revealedCards()"
+          [bookmarks]="svc.bookmarks()"
+          [notes]="svc.notes()"
+          [highlightQuery]="svc.searchQuery()"
+          [totalInCategory]="0"
+          [indexInCategory]="0"
+          (toggleBookmark)="svc.toggleBookmark($event)"
+          (toggleRevealed)="svc.toggleRevealedCard($event)"
+          (noteChange)="svc.updateNote($event.id, $event.note)"
+          (markViewed)="svc.markViewed($event)">
+        </app-question-list>
+      }
+    </div>
+  }
+
+  @else if (svc.showDailyChallenge()) {
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+      <app-section-header
+        title="Défi du jour"
+        [subtitle]="todayDate() + ' — 5 questions aléatoires'"
+        iconName="calendar">
+      </app-section-header>
+      <app-question-list
+        [items]="svc.dailyQuestions()"
+        [flashcardMode]="svc.flashcardMode()"
+        [revealedCards]="svc.revealedCards()"
+        [bookmarks]="svc.bookmarks()"
+        [notes]="svc.notes()"
+        [highlightQuery]="''"
+        [totalInCategory]="5"
+        [indexInCategory]="1"
+        (toggleBookmark)="svc.toggleBookmark($event)"
+        (toggleRevealed)="svc.toggleRevealedCard($event)"
+        (noteChange)="svc.updateNote($event.id, $event.note)"
+        (markViewed)="svc.markViewed($event)">
+      </app-question-list>
+    </div>
+  }
+
+  @else if (svc.showMockInterview()) {
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-10">
+        <app-section-header
+          title="Simulation d'entretien"
+          [subtitle]="svc.category().title + ' — Question ' + (svc.mockInterviewIdx() + 1) + ' sur ' + svc.mockQuestions().length"
+          iconName="clock">
+        </app-section-header>
+        <div class="flex items-center gap-3 sm:gap-4">
+          <span class="font-mono font-bold text-2xl sm:text-3xl lg:text-4xl tabular-nums"
+                style="font-family: var(--font-mono); color: var(--color-text-primary)">
+            {{ svc.formatTime(svc.mockTimer()) }}
+          </span>
+          <button (click)="svc.toggleTimer()"
+                  class="timer-btn"
+                  [class.timer-btn-running]="svc.mockRunning()"
+                  [class.timer-btn-paused]="!svc.mockRunning()">
+            <lucide-icon [name]="svc.mockRunning() ? 'pause' : 'play'" class="h-4 w-4"></lucide-icon>
+            {{ svc.mockRunning() ? 'Pause' : 'Démarrer' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="progress-track mb-10">
+        <div class="progress-fill" [style.width.%]="(svc.mockInterviewIdx() + 1) / svc.mockQuestions().length * 100"></div>
+      </div>
+
+      @if (svc.mockQuestions()[svc.mockInterviewIdx()]) {
+        <app-question-card
+          [question]="svc.mockQuestions()[svc.mockInterviewIdx()].question"
+          [categoryName]="svc.mockQuestions()[svc.mockInterviewIdx()].category.title"
+          [categoryColor]="svc.mockQuestions()[svc.mockInterviewIdx()].category.color"
+          [flashcardMode]="true"
+          [revealedCards]="svc.revealedCards()"
+          [bookmarks]="svc.bookmarks()"
+          [notes]="svc.notes()"
+          [highlightQuery]="''"
+          [totalInCategory]="svc.mockQuestions().length"
+          [indexInCategory]="svc.mockInterviewIdx() + 1"
+          (toggleBookmark)="svc.toggleBookmark($event)"
+          (toggleRevealed)="svc.toggleRevealedCard($event)"
+          (noteChange)="svc.updateNote($event.id, $event.note)"
+          (markViewed)="svc.markViewed($event)">
+        </app-question-card>
+      }
+
+      <div class="flex items-center justify-between mt-8 gap-4">
+        <button (click)="prevMock()"
+                class="nav-btn"
+                [disabled]="svc.mockInterviewIdx() === 0"
+                style="border-color: var(--color-border); color: var(--color-text-secondary)">
+          <lucide-icon name="chevron-left" class="h-4 w-4"></lucide-icon>
+          Précédent
+        </button>
+        @if (svc.mockInterviewIdx() < svc.mockQuestions().length - 1) {
+          <button (click)="nextMock()" class="nav-btn nav-btn-primary">
+            Suivant
+            <lucide-icon name="chevron-right" class="h-4 w-4"></lucide-icon>
+          </button>
+        } @else {
+          <button (click)="finishMock()" class="nav-btn nav-btn-finish">
+            <lucide-icon name="check-circle-2" class="h-4 w-4"></lucide-icon>
+            Terminer
+          </button>
+        }
+      </div>
+    </div>
+  }
+
+  @else {
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+      <div class="mb-8 sm:mb-10">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-4 sm:mb-5 gap-2">
+          <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight"
+              style="font-family: var(--font-display); color: var(--color-text-primary); letter-spacing: -0.025em; line-height: 1.1">
+            {{ svc.category().title }}
+          </h1>
+          <span class="text-xs sm:text-sm shrink-0" style="color: var(--color-text-muted)">
+            {{ svc.categoryProgress().viewed }}<span style="opacity: 0.35">/</span>{{ svc.categoryProgress().total }} réponses vues
+          </span>
+        </div>
+        <div class="progress-track mb-5">
+          <div class="progress-fill" [style.width.%]="svc.categoryProgress().percent"></div>
+        </div>
+        <p class="text-base leading-relaxed" style="color: var(--color-text-secondary)">
+          {{ svc.category().description }}
+        </p>
+      </div>
+
+      <div class="space-y-8 sm:space-y-12">
+        @for (section of svc.category().sections; track section.id) {
+          @let filtered = getFilteredQuestions(section);
+          @if (filtered.length > 0) {
+            <section>
+              <h2 class="text-xs font-semibold uppercase tracking-widest mb-5"
+                  style="color: var(--color-text-muted)">
+                {{ section.title }}
+              </h2>
+              <div style="display: flex; flex-direction: column; gap: 1.75rem;">
+                <app-question-list
+                  [items]="toQuestionList(filtered)"
+                  [flashcardMode]="svc.flashcardMode()"
+                  [revealedCards]="svc.revealedCards()"
+                  [bookmarks]="svc.bookmarks()"
+                  [notes]="svc.notes()"
+                  [highlightQuery]="''"
+                  [totalInCategory]="section.questions.length"
+                  [indexInCategory]="1"
+                  (toggleBookmark)="svc.toggleBookmark($event)"
+                  (toggleRevealed)="svc.toggleRevealedCard($event)"
+                  (noteChange)="svc.updateNote($event.id, $event.note)"
+                  (markViewed)="svc.markViewed($event)">
+                </app-question-list>
+              </div>
+            </section>
+          }
+        }
+      </div>
+    </div>
+  }
+</main>
+
+<footer style="border-top: 1px solid var(--color-border); background: var(--color-surface)">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-4 sm:py-5 flex flex-col sm:flex-row items-center justify-between gap-2">
+    <span class="text-xs" style="color: var(--color-text-muted)">Prism — {{ totalQuestions() }} questions · {{ categoryCount }} catégories</span>
+    <span class="text-xs" style="color: var(--color-text-muted)">{{ svc.categoryProgress().percent }}% complété</span>
+  </div>
+</footer>
