@@ -72,8 +72,8 @@ import { InterviewService } from './core/services/interview.service';
     .loader-dots span:nth-child(3) { animation-delay: 0.4s; }
 
     @keyframes pulse-fade {
-      0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
-      50% { opacity: 0.6; transform: scale(0.9) rotate(180deg); }
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.9); }
     }
     @keyframes bounce {
       0%, 100% { transform: translateY(0); opacity: 0.4; }
