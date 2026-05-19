@@ -1,11 +1,12 @@
 import { Component, input, output, signal, effect, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { form, FormField } from '@angular/forms/signals';
 import { LucideAngularModule } from 'lucide-angular';
+import { SearchShortcutDirective } from '../../../../shared/directives/search-shortcut.directive';
 
 @Component({
   selector: 'app-header',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LucideAngularModule, FormField],
+  imports: [LucideAngularModule, FormField, SearchShortcutDirective],
   styles: `
     :host {
       display: block;
@@ -47,6 +48,23 @@ import { LucideAngularModule } from 'lucide-angular';
     }
     .search-input:focus ~ .search-icon-wrapper {
       color: var(--color-text-muted);
+    }
+    .search-kbd {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 18px;
+      padding: 0 0.375rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border);
+      background: var(--color-surface-hover);
+      font-size: 0.6875rem;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      font-family: var(--font-sans);
+      pointer-events: none;
+      flex-shrink: 0;
+      white-space: nowrap;
     }
     .clear-btn {
       display: flex;
@@ -103,7 +121,7 @@ import { LucideAngularModule } from 'lucide-angular';
 
         <!-- Search + Theme -->
         <div class="flex items-center gap-2 sm:gap-3">
-          <div class="relative flex items-center">
+          <div class="relative flex items-center" appSearchShortcut>
             <lucide-icon name="search" class="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 search-icon-wrapper"></lucide-icon>
             <input
               id="search-input"
@@ -112,7 +130,10 @@ import { LucideAngularModule } from 'lucide-angular';
               (input)="onSearchInput($event)"
               placeholder="Rechercher..."
               aria-label="Rechercher dans les questions"
-              class="search-input pl-12 pr-9 h-9 sm:h-10 w-32 sm:w-40 md:w-52 lg:w-64">
+              class="search-input pl-12 pr-24 sm:pr-28 h-9 sm:h-10 w-32 sm:w-40 md:w-52 lg:w-64">
+            <div class="absolute right-9 sm:right-10 flex items-center gap-1">
+              <kbd class="search-kbd hidden sm:flex">{{ isMac() ? '⌘K' : 'Ctrl+K' }}</kbd>
+            </div>
             @if (searchForm.query().value()) {
               <button (click)="clearSearch()" class="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 clear-btn" aria-label="Effacer la recherche">
                 <lucide-icon name="x" class="h-3 w-3"></lucide-icon>
@@ -129,6 +150,7 @@ import { LucideAngularModule } from 'lucide-angular';
 })
 export class HeaderComponent implements OnDestroy {
   readonly isDark = signal(false);
+  readonly isMac = signal(false);
 
   searchModel = signal({ query: '' });
   searchForm = form(this.searchModel);
@@ -140,6 +162,7 @@ export class HeaderComponent implements OnDestroy {
 
   constructor() {
     this.isDark.set(document.documentElement.classList.contains('dark'));
+    this.isMac.set(navigator.platform.toUpperCase().includes('MAC'));
     effect(() => {
       const update = () => this.isDark.set(document.documentElement.classList.contains('dark'));
       if (this.themeObserver) this.themeObserver.disconnect();
