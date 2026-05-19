@@ -37,6 +37,11 @@ export class App {
     this.auth.init();
     this.interview.init();
 
+    // Clean Supabase auth callback query params on app load
+    if (window.location.search.includes('ng.')) {
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+
     effect(() => {
       if (!this.auth.loading() && this.interview.loaded()) {
         this.interview.initRemoteState();
