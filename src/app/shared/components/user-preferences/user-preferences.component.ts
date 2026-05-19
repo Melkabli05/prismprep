@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
   output,
   signal,
@@ -33,7 +32,7 @@ const EMPTY_PROFILE: ProfileModel = { name: '' };
     >
       <div
         class="relative w-full rounded-2xl border p-4 sm:p-6 md:p-8"
-        style="background: var(--color-surface); border-color: var(--color-border); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); max-width: 100vw sm:max-w-[600px]"
+        style="background: var(--color-surface); border-color: var(--color-border); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); max-width: min(600px, 100vw)"
         (click)="$event.stopPropagation()"
         role="dialog"
         aria-modal="true"
