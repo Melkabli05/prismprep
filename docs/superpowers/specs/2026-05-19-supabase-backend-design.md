@@ -50,9 +50,8 @@ On **sign-out**: clear Supabase-persisted signals but keep local state untouched
 
 ## 3. Auth Design
 
-### 3.1 Providers
-- **Email/password** — primary auth method
-- **Magic link** — passwordless option
+### 3.1 Provider
+- **Email/password** — primary and only auth method
 
 ### 3.2 Anonymous Session
 - App works fully without auth, using existing localStorage signals
