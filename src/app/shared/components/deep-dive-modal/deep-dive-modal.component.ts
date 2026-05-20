@@ -5,12 +5,12 @@ import {
   output,
 } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
-import { AnswerParagraphsComponent } from '../answer-paragraphs/answer-paragraphs.component';
+import { DeepDiveContentComponent } from './deep-dive-content.component';
 
 @Component({
   selector: 'app-deep-dive-modal',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LucideAngularModule, AnswerParagraphsComponent],
+  imports: [LucideAngularModule, DeepDiveContentComponent],
   template: `
     <div
       class="fixed inset-0 z-50 flex items-center justify-center h-screen p-4"
@@ -52,7 +52,7 @@ import { AnswerParagraphsComponent } from '../answer-paragraphs/answer-paragraph
 
         <!-- Content -->
         <div class="p-6" style="max-height: 70vh; overflow-y: auto">
-          <app-answer-paragraphs [answer]="deepDive()"></app-answer-paragraphs>
+          <app-deep-dive-content [content]="deepDive()"></app-deep-dive-content>
         </div>
       </div>
     </div>

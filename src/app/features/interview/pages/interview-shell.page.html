@@ -74,7 +74,8 @@
         (toggleBookmark)="svc.toggleBookmark($event)"
         (toggleRevealed)="svc.toggleRevealedCard($event)"
         (noteChange)="svc.updateNote($event.id, $event.note)"
-        (markViewed)="svc.markViewed($event)">
+        (markViewed)="svc.markViewed($event)"
+        (openDeepDiveModal)="openDeepDive($event)">
       </app-question-list>
     </div>
   }
@@ -195,7 +196,8 @@
                   (toggleBookmark)="svc.toggleBookmark($event)"
                   (toggleRevealed)="svc.toggleRevealedCard($event)"
                   (noteChange)="svc.updateNote($event.id, $event.note)"
-                  (markViewed)="svc.markViewed($event)">
+                  (markViewed)="svc.markViewed($event)"
+                  (openDeepDiveModal)="openDeepDive($event)">
                 </app-question-list>
               </div>
             </section>
