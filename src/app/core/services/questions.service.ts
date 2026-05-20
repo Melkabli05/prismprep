@@ -1,6 +1,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
+import { interviewCategories } from '../../features/interview/data';
 import type { InterviewCategory, InterviewSection } from '../models/interview.models';
 
 export interface QuestionRow {
@@ -24,7 +25,9 @@ export class QuestionsService {
 
   /** Tree recomputes whenever _questions changes */
   readonly categoryTree = computed<InterviewCategory[]>(() =>
-    this.buildTreeInternal(this._questions())
+    environment.useStaticData
+      ? interviewCategories as InterviewCategory[]
+      : this.buildTreeInternal(this._questions())
   );
 
   init(): void {
@@ -35,6 +38,11 @@ export class QuestionsService {
   getClient(): SupabaseClient | null { return this.client; }
 
   async load(): Promise<void> {
+    if (environment.useStaticData) {
+      this._questions.set([]);
+      this._loaded.set(true);
+      return;
+    }
     if (!this.client) { console.warn('[QuestionsService] Client not initialized'); return; }
     try {
       const [questionsRes, sectionsRes, categoriesRes] = await Promise.all([
@@ -48,7 +56,6 @@ export class QuestionsService {
       console.log('[QuestionsService] Loaded', questionsRes.data?.length ?? 0, 'questions,', sections.length, 'sections,', categories.length, 'categories');
       this._questions.set(questionsRes.data ?? []);
       this._loaded.set(true);
-      // Store metadata for tree building
       (this as any)._sections = sections;
       (this as any)._categories = categories;
     } catch (e) {
