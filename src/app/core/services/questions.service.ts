@@ -1,7 +1,6 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
-import { interviewCategories } from '../../features/interview/data';
 import type { InterviewCategory, InterviewSection } from '../models/interview.models';
 
 export interface QuestionRow {
@@ -23,11 +22,8 @@ export class QuestionsService {
   readonly questions = this._questions.asReadonly();
   readonly loaded = this._loaded.asReadonly();
 
-  /** Tree recomputes whenever _questions changes */
   readonly categoryTree = computed<InterviewCategory[]>(() =>
-    environment.useStaticData
-      ? interviewCategories as InterviewCategory[]
-      : this.buildTreeInternal(this._questions())
+    this.buildTreeInternal(this._questions())
   );
 
   init(): void {
@@ -38,11 +34,6 @@ export class QuestionsService {
   getClient(): SupabaseClient | null { return this.client; }
 
   async load(): Promise<void> {
-    if (environment.useStaticData) {
-      this._questions.set([]);
-      this._loaded.set(true);
-      return;
-    }
     if (!this.client) { console.warn('[QuestionsService] Client not initialized'); return; }
     try {
       const [questionsRes, sectionsRes, categoriesRes] = await Promise.all([
@@ -70,7 +61,6 @@ export class QuestionsService {
     const catMap = new Map<string, InterviewCategory>();
     const secMap = new Map<string, InterviewSection>();
 
-    // Pre-populate sections and categories with their metadata
     for (const s of this.sections) {
       secMap.set(s.id, { id: s.id, title: s.title, questions: [] });
     }
@@ -78,7 +68,6 @@ export class QuestionsService {
       catMap.set(c.id, { id: c.id, title: c.title, color: c.color, description: c.description, sections: [] });
     }
 
-    // Assign questions to their sections
     for (const q of questions) {
       if (!secMap.has(q.section_id)) secMap.set(q.section_id, { id: q.section_id, title: '', questions: [] });
       if (!catMap.has(q.category_id)) catMap.set(q.category_id, { id: q.category_id, title: '', color: '', description: '', sections: [] });
@@ -89,10 +78,8 @@ export class QuestionsService {
       });
     }
 
-    // Assign sections to their categories
     for (const cat of catMap.values()) {
-      const catSections = secMap.values();
-      cat.sections = Array.from(catSections).filter(sec => {
+      cat.sections = Array.from(secMap.values()).filter(sec => {
         const sectionRow = this.sections.find(s => s.id === sec.id);
         return sectionRow && sectionRow.category_id === cat.id;
       });
