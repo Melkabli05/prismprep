@@ -1,138 +1,201 @@
-import { Component, input, computed, signal, ChangeDetectionStrategy, inject, ViewEncapsulation } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  ViewEncapsulation,
+  computed,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
-const KEYWORDS = new Set([
-  'const', 'let', 'var', 'function', 'class', 'interface', 'type', 'enum', 'return',
-  'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'break', 'continue', 'default',
-  'try', 'catch', 'finally', 'throw', 'new', 'delete', 'typeof', 'instanceof',
-  'import', 'export', 'from', 'as', 'async', 'await', 'yield', 'static', 'public',
-  'private', 'protected', 'readonly', 'extends', 'implements', 'abstract', 'super',
-  'this', 'null', 'undefined', 'true', 'false', 'void', 'in', 'of', 'get', 'set',
+// ─── Token sets ──────────────────────────────────────────────────────────────
+
+const JS_TS_KEYWORDS = new Set([
+  'abstract', 'as', 'asserts', 'async', 'await',
+  'break', 'case', 'catch', 'class', 'const', 'continue',
+  'constructor', 'declare', 'default', 'delete', 'do',
+  'else', 'enum', 'export', 'extends',
+  'false', 'finally', 'for', 'from', 'function',
+  'get', 'if', 'implements', 'import', 'in', 'infer', 'instanceof', 'interface', 'is',
+  'keyof', 'let', 'namespace', 'new', 'null',
+  'of', 'override', 'package', 'private', 'protected', 'public',
+  'readonly', 'return', 'satisfies', 'set', 'static', 'super', 'switch',
+  'this', 'throw', 'true', 'try', 'type', 'typeof',
+  'undefined', 'var', 'void', 'while', 'yield',
 ]);
 
-const TYPES = new Set([
-  'string', 'number', 'boolean', 'any', 'void', 'never', 'unknown', 'object',
-  'Array', 'Promise', 'Set', 'Map', 'Record', 'Partial', 'Required', 'Readonly',
-  'string', 'String', 'int', 'float', 'double', 'Boolean', 'char', 'void',
-  'Integer', 'Long', 'Float', 'Double', 'Character', 'Byte', 'Short',
-  'Component', 'input', 'output', 'signal', 'computed', 'effect', 'inject',
-  'Injectable', 'Pipe', 'Directive', 'ChangeDetectionStrategy', 'OnInit', 'OnDestroy',
-  'ElementRef', 'inject',
+const JAVA_KEYWORDS = new Set([
+  'abstract', 'assert', 'boolean', 'break', 'byte', 'case', 'catch', 'char',
+  'class', 'continue', 'default', 'do', 'double', 'else', 'enum', 'extends',
+  'false', 'final', 'finally', 'float', 'for', 'if', 'implements', 'import',
+  'instanceof', 'int', 'interface', 'long', 'native', 'new', 'null', 'package',
+  'private', 'protected', 'public', 'return', 'short', 'static', 'strictfp',
+  'super', 'switch', 'synchronized', 'this', 'throw', 'throws', 'transient',
+  'true', 'try', 'void', 'volatile', 'while',
+]);
+
+const SQL_KEYWORDS = new Set([
+  'ADD', 'ALL', 'ALTER', 'AND', 'AS', 'ASC',
+  'BETWEEN', 'BY', 'CASE', 'CREATE', 'CROSS',
+  'DELETE', 'DESC', 'DISTINCT', 'DROP',
+  'ELSE', 'END', 'EXISTS',
+  'FALSE', 'FOREIGN', 'FROM', 'FULL',
+  'GROUP', 'HAVING', 'IN', 'INDEX', 'INNER', 'INSERT', 'INTO', 'IS',
+  'JOIN', 'KEY', 'LEFT', 'LIKE', 'LIMIT',
+  'NOT', 'NULL', 'OFFSET', 'ON', 'OR', 'ORDER', 'OUTER',
+  'PRIMARY', 'REFERENCES', 'RIGHT',
+  'SELECT', 'SET',
+  'TABLE', 'THEN', 'TRUE', 'UNION', 'UPDATE', 'VALUES',
+  'WHEN', 'WHERE',
+  // aggregate functions
+  'AVG', 'COUNT', 'MAX', 'MIN', 'SUM',
 ]);
 
 const LANG_KEYWORDS: Record<string, Set<string>> = {
-  java: new Set(['public', 'private', 'protected', 'class', 'interface', 'enum', 'extends', 'implements', 'static', 'final', 'abstract', 'synchronized', 'volatile', 'transient', 'native', 'throws', 'import', 'package', 'instanceof', 'super', 'this', 'true', 'false', 'null', 'return']),
-  sql: new Set(['SELECT', 'FROM', 'WHERE', 'JOIN', 'LEFT', 'RIGHT', 'INNER', 'OUTER', 'ON', 'AND', 'OR', 'NOT', 'IN', 'LIKE', 'GROUP', 'BY', 'ORDER', 'HAVING', 'LIMIT', 'OFFSET', 'INSERT', 'INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE', 'CREATE', 'TABLE', 'INDEX', 'DROP', 'ALTER', 'ADD', 'PRIMARY', 'KEY', 'FOREIGN', 'REFERENCES', 'NULL', 'AS', 'DISTINCT', 'COUNT', 'SUM', 'AVG', 'MAX', 'MIN', 'UNION', 'ALL', 'EXISTS', 'BETWEEN', 'CASE', 'WHEN', 'THEN', 'ELSE', 'END', 'ASC', 'DESC', 'INSERT', 'UPDATE', 'DELETE', 'SELECT', 'FROM', 'JOIN']),
-  ts: new Set(['const', 'let', 'var', 'function', 'class', 'interface', 'type', 'enum', 'return', 'if', 'else', 'for', 'while', 'import', 'export', 'from', 'as', 'async', 'await', 'public', 'private', 'protected', 'readonly', 'static', 'new', 'this', 'true', 'false', 'null', 'undefined', 'typeof', 'instanceof', 'interface', 'implements', 'extends', 'abstract', 'override', 'constructor', 'get', 'set', 'keyof', 'infer', 'typeof', 'declare', 'namespace', 'as', 'is', 'asserts', 'satisfies']),
-  typescript: new Set(['const', 'let', 'var', 'function', 'class', 'interface', 'type', 'enum', 'return', 'if', 'else', 'for', 'while', 'import', 'export', 'from', 'as', 'async', 'await', 'public', 'private', 'protected', 'readonly', 'static', 'new', 'this', 'true', 'false', 'null', 'undefined', 'typeof', 'instanceof', 'interface', 'implements', 'extends', 'abstract', 'override', 'constructor', 'get', 'set', 'keyof', 'infer', 'typeof', 'declare', 'namespace', 'as', 'is', 'asserts', 'satisfies']),
-  html: new Set(['html', 'head', 'body', 'div', 'span', 'p', 'a', 'img', 'ul', 'ol', 'li', 'table', 'tr', 'td', 'th', 'form', 'input', 'button', 'label', 'select', 'option', 'textarea', 'script', 'style', 'link', 'meta', 'title', 'header', 'footer', 'nav', 'main', 'section', 'article', 'aside', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'class', 'id', 'src', 'href', 'alt', 'type', 'name', 'value', 'placeholder', 'required', 'disabled']),
+  ts: JS_TS_KEYWORDS,
+  typescript: JS_TS_KEYWORDS,
+  js: JS_TS_KEYWORDS,
+  javascript: JS_TS_KEYWORDS,
+  java: JAVA_KEYWORDS,
+  sql: SQL_KEYWORDS,
 };
 
-function escHtml(s: string): string {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+// ─── HTML escape ─────────────────────────────────────────────────────────────
+
+function esc(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
-function tokenize(code: string, lang: string): string {
-  const extra = LANG_KEYWORDS[lang] ?? LANG_KEYWORDS['ts'];
-  const allKw = new Set([...KEYWORDS, ...extra]);
-  const allTypes = new Set([...TYPES]);
-  let result = '';
-  const lines = code.split('\n');
+// ─── Tokenizer ───────────────────────────────────────────────────────────────
 
-  for (let lineIdx = 0; lineIdx < lines.length; lineIdx++) {
-    const line = lines[lineIdx];
-    result += `<span class="cl">`;
+/**
+ * Produces HTML with syntax-highlighting <span> tags.
+ * Output is constructed entirely from escaped source text — safe to trust.
+ */
+function tokenize(code: string, lang: string): string {
+  const keywords = LANG_KEYWORDS[lang] ?? JS_TS_KEYWORDS;
+  const isSql = lang === 'sql';
+  const isJsTs = lang === 'ts' || lang === 'typescript' || lang === 'js' || lang === 'javascript';
+
+  const lines = code.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trimEnd().split('\n');
+  const out: string[] = [];
+
+  for (const line of lines) {
+    let row = '';
     let i = 0;
+
     while (i < line.length) {
-      if (line.slice(i, i + 2) === '//') {
-        result += `<span class="co">${escHtml(line.slice(i))}</span>`;
-        break;
+      const ch = line[i];
+      const ch2 = line.slice(i, i + 2);
+
+      // Single-line comments: // or (SQL/Java) --
+      if (ch2 === '//' || (isSql && ch2 === '--')) {
+        row += `<span class="co">${esc(line.slice(i))}</span>`;
+        i = line.length;
+        continue;
       }
-      if (line.slice(i, i + 2) === '/*') {
+
+      // Block comment start: /* (consume to end of line; multi-line handled as-is)
+      if (ch2 === '/*') {
         const end = line.indexOf('*/', i + 2);
-        const endIdx = end >= 0 ? end + 2 : line.length;
-        result += `<span class="co">${escHtml(line.slice(i, endIdx))}</span>`;
-        i = endIdx;
+        const slice = end >= 0 ? line.slice(i, end + 2) : line.slice(i);
+        row += `<span class="co">${esc(slice)}</span>`;
+        i += slice.length;
         continue;
       }
-      if (line[i] === '-' && line[i + 1] === '-') {
-        result += `<span class="co">${escHtml(line.slice(i))}</span>`;
-        break;
-      }
-      if (line[i] === '"') {
+
+      // Decorator / annotation: @Word
+      if (ch === '@') {
         let j = i + 1;
-        while (j < line.length && (line[j] !== '"' || line[j - 1] === '\\')) j++;
-        result += `<span class="cs">${escHtml(line.slice(i, j + 1))}</span>`;
-        i = j + 1;
-        continue;
-      }
-      if (line[i] === "'") {
-        let j = i + 1;
-        while (j < line.length && (line[j] !== "'" || line[j - 1] === '\\')) j++;
-        result += `<span class="cs">${escHtml(line.slice(i, j + 1))}</span>`;
-        i = j + 1;
-        continue;
-      }
-      if (line[i] === '`') {
-        let j = i + 1;
-        while (j < line.length && line[j] !== '`') { if (line[j] === '\\') j++; j++; }
-        result += `<span class="cs">${escHtml(line.slice(i, j + 1))}</span>`;
-        i = j + 1;
-        continue;
-      }
-      if (line[i] === '@') {
-        let j = i + 1;
-        while (j < line.length && /[a-zA-Z0-9_]/.test(line[j])) j++;
-        result += `<span class="ct">${escHtml(line.slice(i, j))}</span>`;
+        while (j < line.length && /\w/.test(line[j])) j++;
+        row += `<span class="ct">${esc(line.slice(i, j))}</span>`;
         i = j;
         continue;
       }
-      if (/[0-9]/.test(line[i])) {
-        let j = i;
-        while (j < line.length && /[0-9.xXa-fA-F]/.test(line[j])) j++;
-        result += `<span class="cn">${escHtml(line.slice(i, j))}</span>`;
+
+      // String literals: ", ', `
+      if (ch === '"' || ch === "'" || ch === '`') {
+        const quote = ch;
+        let j = i + 1;
+        while (j < line.length) {
+          if (line[j] === '\\') { j += 2; continue; }  // skip escaped char
+          if (line[j] === quote) { j++; break; }
+          j++;
+        }
+        row += `<span class="cs">${esc(line.slice(i, j))}</span>`;
         i = j;
         continue;
       }
-      if (/[a-zA-Z_$]/.test(line[i])) {
+
+      // Numbers (int, float, hex)
+      if (/[0-9]/.test(ch) || (ch === '.' && /[0-9]/.test(line[i + 1] ?? ''))) {
         let j = i;
-        while (j < line.length && /[a-zA-Z0-9_$]/.test(line[j])) j++;
+        while (j < line.length && /[0-9.xXa-fA-FbBoO_]/.test(line[j])) j++;
+        row += `<span class="cn">${esc(line.slice(i, j))}</span>`;
+        i = j;
+        continue;
+      }
+
+      // Identifiers and keywords
+      if (/[a-zA-Z_$]/.test(ch)) {
+        let j = i;
+        while (j < line.length && /\w/.test(line[j])) j++;
         const word = line.slice(i, j);
-        if (allKw.has(word)) {
-          result += `<span class="ck">${escHtml(word)}</span>`;
-        } else if (allTypes.has(word) || /^[A-Z][a-zA-Z0-9_]*$/.test(word)) {
-          result += `<span class="ct">${escHtml(word)}</span>`;
+        const checkWord = isSql ? word.toUpperCase() : word;
+
+        if (keywords.has(checkWord)) {
+          row += `<span class="ck">${esc(word)}</span>`;
+        } else if (/^[A-Z][a-zA-Z0-9_]*$/.test(word)) {
+          row += `<span class="ct">${esc(word)}</span>`;
         } else if (line[j] === '(') {
-          result += `<span class="cf">${escHtml(word)}</span>`;
+          row += `<span class="cf">${esc(word)}</span>`;
         } else {
-          result += `<span class="cp">${escHtml(word)}</span>`;
+          row += esc(word);
         }
         i = j;
         continue;
       }
-      if (/[+\-*/%=<>!&|^~?:]/.test(line[i])) {
+
+      // Operators (JS/TS only — avoid misclassifying SQL symbols)
+      if (isJsTs && /[+\-*/%=<>!&|^~?]/.test(ch)) {
         let j = i;
-        while (j < line.length && /[+\-*/%=<>!&|^~?:.]/.test(line[j])) j++;
-        result += `<span class="co">${escHtml(line.slice(i, j))}</span>`;
+        while (j < line.length && /[+\-*/%=<>!&|^~?.]/.test(line[j])) j++;
+        row += `<span class="co2">${esc(line.slice(i, j))}</span>`;
         i = j;
         continue;
       }
-      if (/[()\[\]{}.',;:]/.test(line[i])) {
-        result += `<span class="cp">${escHtml(line[i])}</span>`;
+
+      // Punctuation
+      if (/[()\[\]{}.,'";:`]/.test(ch)) {
+        row += `<span class="cp">${esc(ch)}</span>`;
         i++;
         continue;
       }
-      result += escHtml(line[i]);
+
+      row += esc(ch);
       i++;
     }
-    result += `</span>\n`;
+
+    out.push(row);
   }
-  return result.trimEnd();
+
+  return out.join('\n');
 }
+
+// ─── Component ───────────────────────────────────────────────────────────────
 
 @Component({
   selector: 'app-code-block',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  // ViewEncapsulation.None is intentional: <pre> and token spans must be styled
+  // globally because [innerHTML] content is inserted outside Angular's shadow DOM.
+  // All rules are scoped under .code-block to limit bleed.
   encapsulation: ViewEncapsulation.None,
   styles: `
     .code-block {
@@ -142,14 +205,14 @@ function tokenize(code: string, lang: string): string {
       overflow: hidden;
       background: var(--color-code-bg);
     }
-    .code-header {
+    .code-block .code-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0.5rem 0.875rem;
       border-bottom: 1px solid var(--color-code-border);
     }
-    .code-lang {
+    .code-block .code-lang {
       display: flex;
       align-items: center;
       gap: 0.375rem;
@@ -159,7 +222,7 @@ function tokenize(code: string, lang: string): string {
       letter-spacing: 0.08em;
       color: var(--color-text-muted);
     }
-    .copy-btn {
+    .code-block .copy-btn {
       display: inline-flex;
       align-items: center;
       gap: 0.3rem;
@@ -173,14 +236,12 @@ function tokenize(code: string, lang: string): string {
       background: transparent;
       color: var(--color-text-muted);
     }
-    .copy-btn:hover {
+    .code-block .copy-btn:hover {
       background: var(--color-border);
       color: var(--color-text-secondary);
     }
-    .copy-btn-copied {
-      color: var(--color-success);
-    }
-    pre {
+    .code-block .copy-btn-copied { color: var(--color-success); }
+    .code-block pre {
       margin: 0;
       padding: 1rem 1.25rem;
       overflow-x: auto;
@@ -190,34 +251,49 @@ function tokenize(code: string, lang: string): string {
       background: transparent;
       tab-size: 2;
     }
-    pre code {
-      display: block;
-      background: transparent;
-    }
-    /* Token colors — from global design system */
-    .ck { color: var(--color-token-keyword); }
-    .cs { color: var(--color-token-string); }
-    .co { color: var(--color-token-comment); font-style: italic; }
-    .cn { color: var(--color-token-number); }
-    .co2 { color: var(--color-token-operator); }
-    .cp { color: var(--color-token-punctuation); }
-    .ct { color: var(--color-token-type); }
-    .cf { color: var(--color-token-function); }
-    .cl { display: block; }
+    .code-block pre code { display: block; background: transparent; }
+
+    /* Token colors — mapped from design system CSS vars */
+    .code-block .ck  { color: var(--color-token-keyword); }
+    .code-block .cs  { color: var(--color-token-string); }
+    .code-block .co  { color: var(--color-token-comment); font-style: italic; }
+    .code-block .co2 { color: var(--color-token-operator); }
+    .code-block .cp  { color: var(--color-token-punctuation); }
+    .code-block .ct  { color: var(--color-token-type); }
+    .code-block .cf  { color: var(--color-token-function); }
   `,
   template: `
+    @let lang = language() ?? 'code';
+
     <div class="code-block">
       <div class="code-header">
         <div class="code-lang">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-          {{ language() ?? 'code' }}
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="16 18 22 12 16 6" />
+            <polyline points="8 6 2 12 8 18" />
+          </svg>
+          {{ lang }}
         </div>
-        <button (click)="copyCode()" class="copy-btn" [class.copy-btn-copied]="copied()" [attr.aria-label]="copied() ? 'Code copié' : 'Copier le code'">
+        <button
+          type="button"
+          class="copy-btn"
+          [class.copy-btn-copied]="copied()"
+          [attr.aria-label]="copied() ? 'Code copié' : 'Copier le code'"
+          (click)="copyCode()"
+        >
           @if (copied()) {
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            Copié!
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            Copié !
           } @else {
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+              <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+            </svg>
             Copier
           }
         </button>
@@ -227,20 +303,32 @@ function tokenize(code: string, lang: string): string {
   `,
 })
 export class CodeBlockComponent {
-  code = input.required<string>();
-  language = input<string>();
+  readonly code = input.required<string>();
+  readonly language = input<string>();
 
-  readonly copied = signal(false);
-  private sanitizer = inject(DomSanitizer);
+  protected readonly copied = signal(false);
 
-  readonly highlightedHtml = computed<SafeHtml>(() =>
-    this.sanitizer.bypassSecurityTrustHtml(tokenize(this.code(), (this.language() ?? 'ts').toLowerCase()))
+  private readonly sanitizer = inject(DomSanitizer);
+  private readonly destroyRef = inject(DestroyRef);
+  private copyTimer: ReturnType<typeof setTimeout> | null = null;
+
+  // tokenize() only emits escaped text inside <span> tags — safe to bypass.
+  protected readonly highlightedHtml = computed<SafeHtml>(() =>
+    this.sanitizer.bypassSecurityTrustHtml(
+      tokenize(this.code(), (this.language() ?? 'ts').toLowerCase())
+    )
   );
 
   copyCode(): void {
     navigator.clipboard.writeText(this.code()).then(() => {
+      if (this.copyTimer !== null) clearTimeout(this.copyTimer);
+
       this.copied.set(true);
-      setTimeout(() => this.copied.set(false), 2000);
-    }).catch(() => {});
+      this.copyTimer = setTimeout(() => this.copied.set(false), 2000);
+
+      this.destroyRef.onDestroy(() => {
+        if (this.copyTimer !== null) clearTimeout(this.copyTimer);
+      });
+    });
   }
 }

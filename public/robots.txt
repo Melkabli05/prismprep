@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Block admin/private areas
+Disallow: /api/
+Disallow: /auth/
+Disallow: /callback/
+
+Sitemap: https://prismprep.dev/sitemap.xml

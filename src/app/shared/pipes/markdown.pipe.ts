@@ -1,150 +1,200 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import MarkdownIt from 'markdown-it';
 
-const KEYWORDS = new Set([
-  'const', 'let', 'var', 'function', 'class', 'interface', 'type', 'enum', 'return',
-  'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'break', 'continue', 'default',
-  'try', 'catch', 'finally', 'throw', 'new', 'delete', 'typeof', 'instanceof',
-  'import', 'export', 'from', 'as', 'async', 'await', 'yield', 'static', 'public',
-  'private', 'protected', 'readonly', 'extends', 'implements', 'abstract', 'super',
-  'this', 'null', 'undefined', 'true', 'false', 'void', 'in', 'of', 'get', 'set',
+// ─── Token sets ──────────────────────────────────────────────────────────────
+
+const JS_TS_KEYWORDS = new Set([
+  'abstract', 'as', 'asserts', 'async', 'await',
+  'break', 'case', 'catch', 'class', 'const', 'continue',
+  'constructor', 'declare', 'default', 'delete', 'do',
+  'else', 'enum', 'export', 'extends',
+  'false', 'finally', 'for', 'from', 'function',
+  'get', 'if', 'implements', 'import', 'in', 'infer', 'instanceof', 'interface', 'is',
+  'keyof', 'let', 'namespace', 'new', 'null',
+  'of', 'override', 'package', 'private', 'protected', 'public',
+  'readonly', 'return', 'satisfies', 'set', 'static', 'super', 'switch',
+  'this', 'throw', 'true', 'try', 'type', 'typeof',
+  'undefined', 'var', 'void', 'while', 'yield',
 ]);
 
-const TYPES = new Set([
-  'string', 'number', 'boolean', 'any', 'void', 'never', 'unknown', 'object',
-  'Array', 'Promise', 'Set', 'Map', 'Record', 'Partial', 'Required', 'Readonly',
-  'string', 'String', 'int', 'float', 'double', 'Boolean', 'char', 'void',
-  'Integer', 'Long', 'Float', 'Double', 'Character', 'Byte', 'Short',
-  'Component', 'input', 'output', 'signal', 'computed', 'effect', 'inject',
-  'Injectable', 'Pipe', 'Directive', 'ChangeDetectionStrategy', 'OnInit', 'OnDestroy',
-  'ElementRef', 'inject',
+const JAVA_KEYWORDS = new Set([
+  'abstract', 'assert', 'boolean', 'break', 'byte', 'case', 'catch', 'char',
+  'class', 'continue', 'default', 'do', 'double', 'else', 'enum', 'extends',
+  'false', 'final', 'finally', 'float', 'for', 'if', 'implements', 'import',
+  'instanceof', 'int', 'interface', 'long', 'native', 'new', 'null', 'package',
+  'private', 'protected', 'public', 'return', 'short', 'static', 'strictfp',
+  'super', 'switch', 'synchronized', 'this', 'throw', 'throws', 'transient',
+  'true', 'try', 'void', 'volatile', 'while',
+]);
+
+const SQL_KEYWORDS = new Set([
+  'ADD', 'ALL', 'ALTER', 'AND', 'AS', 'ASC',
+  'BETWEEN', 'BY', 'CASE', 'CREATE', 'CROSS',
+  'DELETE', 'DESC', 'DISTINCT', 'DROP',
+  'ELSE', 'END', 'EXISTS',
+  'FALSE', 'FOREIGN', 'FROM', 'FULL',
+  'GROUP', 'HAVING', 'IN', 'INDEX', 'INNER', 'INSERT', 'INTO', 'IS',
+  'JOIN', 'KEY', 'LEFT', 'LIKE', 'LIMIT',
+  'NOT', 'NULL', 'OFFSET', 'ON', 'OR', 'ORDER', 'OUTER',
+  'PRIMARY', 'REFERENCES', 'RIGHT',
+  'SELECT', 'SET',
+  'TABLE', 'THEN', 'TRUE', 'UNION', 'UPDATE', 'VALUES',
+  'WHEN', 'WHERE',
+  'AVG', 'COUNT', 'MAX', 'MIN', 'SUM',
 ]);
 
 const LANG_KEYWORDS: Record<string, Set<string>> = {
-  java: new Set(['public', 'private', 'protected', 'class', 'interface', 'enum', 'extends', 'implements', 'static', 'final', 'abstract', 'synchronized', 'volatile', 'transient', 'native', 'throws', 'import', 'package', 'instanceof', 'super', 'this', 'true', 'false', 'null', 'return']),
-  sql: new Set(['SELECT', 'FROM', 'WHERE', 'JOIN', 'LEFT', 'RIGHT', 'INNER', 'OUTER', 'ON', 'AND', 'OR', 'NOT', 'IN', 'LIKE', 'GROUP', 'BY', 'ORDER', 'HAVING', 'LIMIT', 'OFFSET', 'INSERT', 'INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE', 'CREATE', 'TABLE', 'INDEX', 'DROP', 'ALTER', 'ADD', 'PRIMARY', 'KEY', 'FOREIGN', 'REFERENCES', 'NULL', 'AS', 'DISTINCT', 'COUNT', 'SUM', 'AVG', 'MAX', 'MIN', 'UNION', 'ALL', 'EXISTS', 'BETWEEN', 'CASE', 'WHEN', 'THEN', 'ELSE', 'END', 'ASC', 'DESC']),
-  ts: new Set(['const', 'let', 'var', 'function', 'class', 'interface', 'type', 'enum', 'return', 'if', 'else', 'for', 'while', 'import', 'export', 'from', 'as', 'async', 'await', 'public', 'private', 'protected', 'readonly', 'static', 'new', 'this', 'true', 'false', 'null', 'undefined', 'typeof', 'instanceof', 'interface', 'implements', 'extends', 'abstract', 'override', 'constructor', 'get', 'set', 'keyof', 'infer', 'declare', 'namespace', 'is', 'asserts', 'satisfies']),
-  typescript: new Set(['const', 'let', 'var', 'function', 'class', 'interface', 'type', 'enum', 'return', 'if', 'else', 'for', 'while', 'import', 'export', 'from', 'as', 'async', 'await', 'public', 'private', 'protected', 'readonly', 'static', 'new', 'this', 'true', 'false', 'null', 'undefined', 'typeof', 'instanceof', 'interface', 'implements', 'extends', 'abstract', 'override', 'constructor', 'get', 'set', 'keyof', 'infer', 'declare', 'namespace', 'is', 'asserts', 'satisfies']),
-  html: new Set(['html', 'head', 'body', 'div', 'span', 'p', 'a', 'img', 'ul', 'ol', 'li', 'table', 'tr', 'td', 'th', 'form', 'input', 'button', 'label', 'select', 'option', 'textarea', 'script', 'style', 'link', 'meta', 'title', 'header', 'footer', 'nav', 'main', 'section', 'article', 'aside', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'class', 'id', 'src', 'href', 'alt', 'type', 'name', 'value', 'placeholder', 'required', 'disabled']),
+  ts: JS_TS_KEYWORDS,
+  typescript: JS_TS_KEYWORDS,
+  js: JS_TS_KEYWORDS,
+  javascript: JS_TS_KEYWORDS,
+  java: JAVA_KEYWORDS,
+  sql: SQL_KEYWORDS,
 };
 
-function escHtml(s: string): string {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+// ─── HTML escape ─────────────────────────────────────────────────────────────
+
+function esc(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
-function tokenize(code: string, lang: string): string {
-  const extra = LANG_KEYWORDS[lang] ?? LANG_KEYWORDS['ts'];
-  const allKw = new Set([...KEYWORDS, ...extra]);
-  const allTypes = new Set([...TYPES]);
-  let result = '';
-  const lines = code.split('\n');
+// ─── Tokenizer ───────────────────────────────────────────────────────────────
 
-  for (let lineIdx = 0; lineIdx < lines.length; lineIdx++) {
-    const line = lines[lineIdx];
-    result += `<span class="cl">`;
+/**
+ * Produces HTML with syntax-highlighting <span> tags.
+ * Output is constructed entirely from escaped source text — safe to trust.
+ */
+function tokenize(code: string, lang: string): string {
+  const keywords = LANG_KEYWORDS[lang] ?? JS_TS_KEYWORDS;
+  const isSql = lang === 'sql';
+  const isJsTs = lang === 'ts' || lang === 'typescript' || lang === 'js' || lang === 'javascript';
+
+  const lines = code.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trimEnd().split('\n');
+  const out: string[] = [];
+
+  for (const line of lines) {
+    let row = '';
     let i = 0;
+
     while (i < line.length) {
-      if (line.slice(i, i + 2) === '//') {
-        result += `<span class="co">${escHtml(line.slice(i))}</span>`;
-        break;
+      const ch = line[i];
+      const ch2 = line.slice(i, i + 2);
+
+      // Single-line comments: // or (SQL) --
+      if (ch2 === '//' || (isSql && ch2 === '--')) {
+        row += `<span class="co">${esc(line.slice(i))}</span>`;
+        i = line.length;
+        continue;
       }
-      if (line.slice(i, i + 2) === '/*') {
+
+      // Block comment: /* ... */ (single-line only; multi-line falls back gracefully)
+      if (ch2 === '/*') {
         const end = line.indexOf('*/', i + 2);
-        const endIdx = end >= 0 ? end + 2 : line.length;
-        result += `<span class="co">${escHtml(line.slice(i, endIdx))}</span>`;
-        i = endIdx;
+        const slice = end >= 0 ? line.slice(i, end + 2) : line.slice(i);
+        row += `<span class="co">${esc(slice)}</span>`;
+        i += slice.length;
         continue;
       }
-      if (line[i] === '-' && line[i + 1] === '-') {
-        result += `<span class="co">${escHtml(line.slice(i))}</span>`;
-        break;
-      }
-      if (line[i] === '"') {
+
+      // Decorator / annotation: @Word
+      if (ch === '@') {
         let j = i + 1;
-        while (j < line.length && (line[j] !== '"' || line[j - 1] === '\\')) j++;
-        result += `<span class="cs">${escHtml(line.slice(i, j + 1))}</span>`;
-        i = j + 1;
-        continue;
-      }
-      if (line[i] === "'") {
-        let j = i + 1;
-        while (j < line.length && (line[j] !== "'" || line[j - 1] === '\\')) j++;
-        result += `<span class="cs">${escHtml(line.slice(i, j + 1))}</span>`;
-        i = j + 1;
-        continue;
-      }
-      if (line[i] === '`') {
-        let j = i + 1;
-        while (j < line.length && line[j] !== '`') { if (line[j] === '\\') j++; j++; }
-        result += `<span class="cs">${escHtml(line.slice(i, j + 1))}</span>`;
-        i = j + 1;
-        continue;
-      }
-      if (line[i] === '@') {
-        let j = i + 1;
-        while (j < line.length && /[a-zA-Z0-9_]/.test(line[j])) j++;
-        result += `<span class="ct">${escHtml(line.slice(i, j))}</span>`;
+        while (j < line.length && /\w/.test(line[j])) j++;
+        row += `<span class="ct">${esc(line.slice(i, j))}</span>`;
         i = j;
         continue;
       }
-      if (/[0-9]/.test(line[i])) {
-        let j = i;
-        while (j < line.length && /[0-9.xXa-fA-F]/.test(line[j])) j++;
-        result += `<span class="cn">${escHtml(line.slice(i, j))}</span>`;
+
+      // String literals: ", ', `
+      if (ch === '"' || ch === "'" || ch === '`') {
+        const quote = ch;
+        let j = i + 1;
+        while (j < line.length) {
+          if (line[j] === '\\') { j += 2; continue; }
+          if (line[j] === quote) { j++; break; }
+          j++;
+        }
+        row += `<span class="cs">${esc(line.slice(i, j))}</span>`;
         i = j;
         continue;
       }
-      if (/[a-zA-Z_$]/.test(line[i])) {
+
+      // Numbers (int, float, hex, binary, octal, numeric separators)
+      if (/[0-9]/.test(ch) || (ch === '.' && /[0-9]/.test(line[i + 1] ?? ''))) {
         let j = i;
-        while (j < line.length && /[a-zA-Z0-9_$]/.test(line[j])) j++;
+        while (j < line.length && /[0-9.xXa-fA-FbBoO_]/.test(line[j])) j++;
+        row += `<span class="cn">${esc(line.slice(i, j))}</span>`;
+        i = j;
+        continue;
+      }
+
+      // Identifiers and keywords
+      if (/[a-zA-Z_$]/.test(ch)) {
+        let j = i;
+        while (j < line.length && /\w/.test(line[j])) j++;
         const word = line.slice(i, j);
-        if (allKw.has(word)) {
-          result += `<span class="ck">${escHtml(word)}</span>`;
-        } else if (allTypes.has(word) || /^[A-Z][a-zA-Z0-9_]*$/.test(word)) {
-          result += `<span class="ct">${escHtml(word)}</span>`;
+        const checkWord = isSql ? word.toUpperCase() : word;
+
+        if (keywords.has(checkWord)) {
+          row += `<span class="ck">${esc(word)}</span>`;
+        } else if (/^[A-Z][a-zA-Z0-9_]*$/.test(word)) {
+          row += `<span class="ct">${esc(word)}</span>`;
         } else if (line[j] === '(') {
-          result += `<span class="cf">${escHtml(word)}</span>`;
+          row += `<span class="cf">${esc(word)}</span>`;
         } else {
-          result += `<span class="cp">${escHtml(word)}</span>`;
+          row += esc(word);
         }
         i = j;
         continue;
       }
-      if (/[+\-*/%=<>!&|^~?:]/.test(line[i])) {
+
+      // Operators (JS/TS only)
+      if (isJsTs && /[+\-*/%=<>!&|^~?]/.test(ch)) {
         let j = i;
-        while (j < line.length && /[+\-*/%=<>!&|^~?:.]/.test(line[j])) j++;
-        result += `<span class="co">${escHtml(line.slice(i, j))}</span>`;
+        while (j < line.length && /[+\-*/%=<>!&|^~?.]/.test(line[j])) j++;
+        row += `<span class="co2">${esc(line.slice(i, j))}</span>`;
         i = j;
         continue;
       }
-      if (/[()\[\]{}.',;:]/.test(line[i])) {
-        result += `<span class="cp">${escHtml(line[i])}</span>`;
+
+      // Punctuation
+      if (/[()\[\]{}.,'";:`]/.test(ch)) {
+        row += `<span class="cp">${esc(ch)}</span>`;
         i++;
         continue;
       }
-      result += escHtml(line[i]);
+
+      row += esc(ch);
       i++;
     }
-    result += `</span>\n`;
+
+    out.push(row);
   }
-  return result.trimEnd();
+
+  return out.join('\n');
 }
 
+// ─── Code block builder ──────────────────────────────────────────────────────
+
+const CODE_ICON = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>`;
+
 function buildCodeBlock(code: string, lang: string): string {
-  const langLabel = lang || 'text';
-  const highlighted = tokenize(code, langLabel);
-  const langIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>`;
+  const label = lang || 'text';
   return `<div class="code-block">
   <div class="code-header">
-    <div class="code-lang">${langIcon}${langLabel}</div>
+    <div class="code-lang">${CODE_ICON}${label}</div>
   </div>
-  <pre><code class="language-${langLabel}">${highlighted}</code></pre>
+  <pre><code class="language-${label}">${tokenize(code, label.toLowerCase())}</code></pre>
 </div>`;
 }
 
-@Pipe({
-  name: 'markdown',
-})
+// ─── Pipe ────────────────────────────────────────────────────────────────────
+
+@Pipe({ name: 'markdown' })
 export class MarkdownPipe implements PipeTransform {
   private readonly md = new MarkdownIt({
     html: false,
@@ -155,20 +205,20 @@ export class MarkdownPipe implements PipeTransform {
 
   transform(text: string): string {
     if (!text?.trim()) return '';
+
     let html = this.md.render(text);
 
-    // Replace markdown-it code blocks with CodeBlockComponent-style blocks
-    // markdown-it renders code blocks as <pre><code class="language-X">...</code></pre>
+    // markdown-it HTML-escapes code block content; decode before re-highlighting.
     html = html.replace(
-      /<pre><code class="language-([^"]*)">([\s\S]*?)<\/code><\/pre>/g,
-      (match, langClass, codeContent) => {
-        const decoded = codeContent
+      /<pre><code(?:\s+class="language-([^"]*)")?>([\s\S]*?)<\/code><\/pre>/g,
+      (_match, lang: string | undefined, escaped: string) => {
+        const code = escaped
           .replace(/&amp;/g, '&')
           .replace(/&lt;/g, '<')
           .replace(/&gt;/g, '>')
           .replace(/&quot;/g, '"')
           .replace(/&#39;/g, "'");
-        return buildCodeBlock(decoded, langClass);
+        return buildCodeBlock(code, lang ?? 'text');
       }
     );
 

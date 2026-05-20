@@ -1,6 +1,7 @@
-import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, effect, ChangeDetectionStrategy } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
 import { InterviewService } from '../../../core/services/interview.service';
+import { SeoService } from '../../../core/services/seo.service';
 import { interviewCategories } from '../data';
 import type { InterviewSection, InterviewQuestion } from '../../../core/models/interview.models';
 import { DeepDiveModalComponent } from '../../../shared/components/deep-dive-modal/deep-dive-modal.component';
@@ -31,22 +32,54 @@ import { SectionHeaderComponent } from '../../../shared/components/section-heade
 export class InterviewShellPage {
   /** Smart component — reads everything from the centralized service */
   readonly svc = inject(InterviewService);
+  private readonly seo = inject(SeoService);
   readonly categories = interviewCategories;
   todayDate = () => new Date().toLocaleDateString('fr-FR');
 
   readonly deepDiveQuestion = signal<InterviewQuestion | null>(null);
   readonly showDeepDiveModal = signal(false);
 
+  constructor() {
+    this.seo.updatePage({
+      title: 'Prism',
+      description: 'Entraînez-vous aux entretiens techniques SQL et Angular avec des questions détaillées et des réponses approfondies.',
+      route: '',
+    });
+
+    // Update SEO meta when active category changes
+    effect(() => {
+      const cat = this.svc.activeCategory();
+      const catData = interviewCategories.find(c => c.id === cat);
+      if (catData && !this.showDeepDiveModal()) {
+        this.seo.updatePage({
+          title: catData.title,
+          description: catData.description,
+          route: cat,
+        });
+      }
+    });
+  }
+
   openDeepDive(questionId: string): void {
     const flat = this.svc.allQuestionsFlat().find(q => q.question.id === questionId);
     if (flat) {
       this.deepDiveQuestion.set(flat.question);
       this.showDeepDiveModal.set(true);
+      this.seo.updatePage({
+        title: flat.question.question,
+        description: flat.question.answer.replace(/[*#`_\n]/g, ' ').slice(0, 160),
+        route: `question/${questionId}`,
+      });
     }
   }
 
   closeDeepDive(): void {
     this.showDeepDiveModal.set(false);
     this.deepDiveQuestion.set(null);
+    this.seo.updatePage({
+      title: 'Prism',
+      description: 'Entraînez-vous aux entretiens techniques SQL et Angular avec des questions détaillées et des réponses approfondies.',
+      route: '',
+    });
   }
 }
