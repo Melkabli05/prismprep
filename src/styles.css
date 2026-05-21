@@ -137,6 +137,12 @@
 
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+
+  /* Momentum scrolling on iOS */
+  .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
   }
 
   body {
@@ -187,21 +193,43 @@
 
   /* ── Smooth custom scrollbar ─────────────────────────────── */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
   ::-webkit-scrollbar-track {
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
     background: var(--color-border);
-    border-radius: 4px;
+    border-radius: 9999px;
+    transition: background 200ms ease;
   }
   ::-webkit-scrollbar-thumb:hover {
     background: var(--color-text-muted);
   }
+  ::-webkit-scrollbar-thumb:active {
+    background: var(--color-accent);
+  }
   ::-webkit-scrollbar-corner {
     background: transparent;
+  }
+
+  /* Firefox scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+  }
+
+  /* Smooth scroll anchor links */
+  a[href*='#'] {
+    scroll-margin-top: 5rem;
+  }
+
+  /* Scroll into view smoothness */
+  @media (prefers-reduced-motion: no-preference) {
+    * {
+      scroll-behavior: smooth;
+    }
   }
 }
 
