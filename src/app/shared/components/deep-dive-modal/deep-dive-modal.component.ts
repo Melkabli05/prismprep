@@ -142,6 +142,14 @@ export class DeepDiveModalComponent {
   readonly searchQuery = signal('');
   readonly showSearch = signal(false);
 
+  constructor() {
+    document.body.style.overflow = 'hidden';
+  }
+
+  ngOnDestroy(): void {
+    document.body.style.overflow = '';
+  }
+
   readonly readingTime = computed(() => {
     const words = this.deepDive().split(/\s+/).length;
     return Math.ceil(words / 200);
