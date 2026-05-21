@@ -204,3 +204,10 @@
     background: transparent;
   }
 }
+
+mark.search-match {
+  background: var(--color-amber-soft);
+  color: var(--color-amber);
+  padding: 0.05em 0.2em;
+  border-radius: var(--radius-sm);
+}
