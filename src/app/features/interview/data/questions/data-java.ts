@@ -15,39 +15,646 @@ export const javaCategory: InterviewCategory = {
           question: "Modificateurs d'accès",
           answer: "Quatre niveaux du plus restrictif au plus ouvert : **`private`** (classe uniquement), **`default`/`package`** (même package), **`protected`** (package + sous-classes), **`public`** (accès total).\n\nLe principe est d'utiliser le niveau __le plus restrictif possible__ — un champ devrait presque toujours être `private` avec des *getters/setters*.",
         
-          deepDive: `# Les modificateurs d'accès en Java\\n\\n## Les quatre niveaux de visibilité\\n\\nJava propose quatre modificateurs d'accès, du plus restrictif au plus permissif :\\n\\n| Modificateur | Classe | Package | Sous-classe | Monde |\\n|-------------|--------|---------|-------------|-------|  \\n| \`private\` | ✓ | ✗ | ✗ | ✗ |\\n| default (aucun) | ✓ | ✓ | ✗ | ✗ |\\n| \`protected\` | ✓ | ✓ | ✓ | ✗ |\\n| \`public\` | ✓ | ✓ | ✓ | ✓ |\\n\\n## private — le plus restrictif\\n\\n\`private\` restreint l'accès au **sein de la classe uniquement**. Une méthode ou un champ privé n'est accessible que depuis la classe où il est déclaré.\\n\\n\`\`\`java\\npublic class Utilisateur {\\n    private String motDePasse;  // Accessible uniquement dans Utilisateur\\n    \\n    private boolean validerMotDePasse(String mdp) {\\n        return this.motDePasse.equals(mdp);\\n    }\\n    \\n    public void changerMotDePasse(String ancien, String nouveau) {\\n        if (validerMotDePasse(ancien)) {  // ✓ Accessible ici\\n            this.motDePasse = nouveau;\\n        }\\n    }\\n}\\n\`\`\`\\n\\n**Usage typique** : encapsulation des champs internes, méthodes utilitaires privées, helpers algorithmiques.\\n\\n## default (package-private)\\n\\nQuand aucun modificateur n'est précisé, le membre a une visibilité **limited au package**. Toute classe du même package peut y accéder, mais pas les sous-classes ou classes externes.\\n\\n\`\`\`java\\n// Fichier: com.app.service.AuthService\\package com.app.service;\\n\\nclass Interne {  // default — package-private\\n    void methode() {}  // Accessible par toute classe du package com.app.service\\n}\\n\\npublic class AuthService {\\n    void helper() {  // default — accessible dans tout le package\\n        new Interne().methode();  // ✓\\n    }\\n}\\n\`\`\`\\n\\n**Usage typique** : membres \\"package-private\\" pour organiser le code interne d'un package sans les exposers à l'extérieur.\\n\\n## protected — pour l'héritage\\n\\n\`protected\` permet l'accès depuis :\\n- La classe elle-même\\n- Toutes les classes du même package\\n- **Les sous-classes (même si elles sont dans un autre package)**\\n\\n\`\`\`java\\n// Classe mère\\npublic class Animal {\\n    protected String nom;  // Accessible par Animal et ses sous-classes\\n    \\n    protected void decrire() {\\n        System.out.println("Animal: " + nom);\\n    }\\n}\\n\\n// Sous-classe dans un autre package\\npublic class Chien extends Animal {\\n    public void presenter() {\\n        this.nom = "Rex";  // ✓ Accessible via héritage\\n        this.decrire();    // ✓ Accessible via héritage\\n    }\\n}\\n\\n// Classe non liée dans un autre package\\npublic class Test {\\n    public void demo() {\\n        Chien c = new Chien();\\n        c.nom = "Max";  // ✗ Erreur de compilation — protected\\n    }\\n}\\n\`\`\`\\n\\n**Usage typique** : méthodes conçues pour être surchargées par des sous-classes, hooks internes d'extension.\\n\\n## public — visibilité totale\\n\\n\`public\` rend le membre accessible depuis **n'importe quel endroit** du code, dans tout projet.\\n\\n\`\`\`java\\npublic class Config {\\n    public static final String API_URL = "https://api.example.com";  // Accessible partout\\n    \\n    public void initialiser() {  // Accessible partout\\n        // ...\\n    }\\n}\\n\`\`\`\\n\\n## Règle générale : principe du moindre privilège\\n\\n> Préférez \`private\` par défaut. N'exposez que ce qui doit l'être.\\n\\nChaque niveau de visibilité supplémentaires constitue une **public API** qu'il faudra maintenir indéfiniment. Une méthode \`public\` dans une bibliothèque signifie qu'elle ne peut jamais être supprimée sans casser le code des utilisateurs.\\n\\n## Bonnes pratiques\\n\\n1. **Champs toujours \`private\`** — jamais \`public\` pour un champ. Utilisez des getters/setters si besoin.\\n2. **\`protected\` pour les hooks** — méthodes conçues pour être overridées par des sous-classes.\\n3. **\`public\` pour l'API** — méthodes meant to be used by other classes.\\n4. **Evitez le default** — sa signification implicite est souvent source de confusion.\\n\\n## Membres statiques (static)\\n\\nLes champs et méthodes \`static\` ne sont pas affectés par les modificateurs d'accès de la même façon :\\n\\n\`\`\`java\\npublic class Compteur {\\n    private static int total = 0;  // Accessible via la classe, pas par instance\\n    public static int getTotal() { return total; }  // Point d'accès contrôlé\\n}\\n\`\`\`\\n\\n\`static\` ne modifie pas la visibilité — c'est un concept orthogonale. Un champ \`private static\` est accessible depuis n'importe où via \`Classe.membre\` si le membre lui-même est \`public\`.\\n\\n## Classes et interfaces\\n\\n| Élément | Modificateurs possibles |\\n|---------|------------------------|\\n| Classe/Interface top-level | \`public\` ou default (package-private) |\\n| Classe/Interface interne (nested) | \`public\`, \`protected\`, \`private\`, default |\\n\\nUne classe top-level ne peut PAS être \`private\` — cela n'aurait aucun sens (elle serait inaccessible).\\n\\n## Résumé rapide\\n\\n\`\`\`java\\npublic class Exemple {\\n    public    String a = "accessible partout";\\n    protected String b = "accessible dans le package + sous-classes";\\n              String c = "accessible dans le package uniquement";\\n    private   String d = "accessible dans cette classe uniquement";\\n}\\n\`\`\`\\n\\nSource : [Oracle Java Documentation — Controlling Access](https://docs.oracle.com/javase/tutorial/java/javaOO/accesscontrol.html)`},
+          deepDive: `# Les modificateurs d'accès en Java
+
+## Qu'est-ce que c'est ?
+
+Les modificateurs d'accès en Java contrôlent la visibilité des classes, méthodes et attributs. Ils définissent qui peut accéder à quoi dans votre code Java.
+
+## Syntaxe et exemples
+
+\`\`\`java
+public class MaClasse {
+    public String attributPublic;      // Accessible partout
+    protected String attributProtege; // Accessible dans le package + sous-classes
+    String attributPackage;          // Accessible dans le package uniquement
+    private String attributPrive;    // Accessible dans cette classe uniquement
+}
+\`\`\`
+
+| Modificateur | Classe | Package | Sous-classe | Monde |
+|-------------|--------|---------|-------------|-------|
+| \`private\` | ✓ | ✗ | ✗ | ✗ |
+| default (aucun) | ✓ | ✓ | ✗ | ✗ |
+| \`protected\` | ✓ | ✓ | ✓ | ✗ |
+| \`public\` | ✓ | ✓ | ✓ | ✓ |
+
+### Exemple avec private
+
+\`\`\`java
+public class Utilisateur {
+    private String motDePasse;
+
+    private boolean validerMotDePasse(String mdp) {
+        return this.motDePasse.equals(mdp);
+    }
+
+    public void changerMotDePasse(String ancien, String nouveau) {
+        if (validerMotDePasse(ancien)) {
+            this.motDePasse = nouveau;
+        }
+    }
+}
+\`\`\`
+
+### Exemple avec protected
+
+\`\`\`java
+public class Animal {
+    protected String nom;
+    protected void decrire() {
+        System.out.println("Animal: " + nom);
+    }
+}
+
+public class Chien extends Animal {
+    public void presenter() {
+        this.nom = "Rex";      // ✓ Via héritage
+        this.decrire();        // ✓ Via héritage
+    }
+}
+\`\`\`
+
+## Bonnes pratiques
+
+1. **Utilisez \`private\` par défaut** — encapsulez les champs internes
+2. **\`protected\` pour les hooks** — méthodes conçues pour être surchargées
+3. **\`public\` pour l'API** — méthodes meant to be used by other classes
+4. **Évitez le modificateur default** — sa signification implicite est source de confusion
+
+## Pièges courants
+
+1. **Ne rendez jamais un champ \`public\`** — utilisez des getters/setters
+2. **Attention aux classes inner static vs non-static** — les-inner non-static ont accès aux champs de l'instance
+3. **\`private\` ne signifie pas immutable** — utilisez \`final\` pour cela
+
+Source : [Oracle Java Documentation — Controlling Access](https://docs.oracle.com/javase/tutorial/java/javaOO/accesscontrol.html)`},
         {
           id: 'java-2',
           question: 'static',
           answer: "**`static`** signifie que le membre appartient à la classe, pas à l'instance. Une variable `static` est partagée entre toutes les instances ; une méthode `static` s'appelle sans instancier (ex. `Math.PI`). `this` est interdit dans un contexte `static`.\n\nUtile pour constantes, utilitaires, compteurs partagés. __À utiliser avec modération__ : trop de `static` = design procédural, et les méthodes `static` sont difficiles à *mocker*.",
           example: "Math.PI — pas besoin de new Math().",
         
-          deepDive: `# Le modificateur static en Java\\n\\n## Qu'est-ce que c'est ?\\n\\nLe mot-cle \`static\` en Java signifie qu'un membre (attribut ou methode) appartient a la classe elle-meme, et non a une instance particuliere. Il est partage par toutes les instances de la classe.\\n\\n## static applique aux champs (variables de classe)\\n\\n\`\`\`java\\npublic class Compteur {\\n    public static int instanceCount = 0;\\n\\n    public Compteur() {\\n        instanceCount++;\\n    }\\n}\\n\\nCompteur c1 = new Compteur();\\nCompteur c2 = new Compteur();\\n\\nSystem.out.println(Compteur.instanceCount);  // 2\\n\`\`\`\\n\\nLes champs \`static\` sont parfaits pour :\\n- **Compteurs** partages par toutes les instances\\n- **Constantes** liees a la classe (avec \`final\`)\\n- **Configuration** commune a toutes les instances\\n\\n## static applique aux methodes\\n\\n\`\`\`java\\npublic class MathHelper {\\n    public static int doubler(int x) {\\n        return x * 2;\\n    }\\n}\\n\\nint result = MathHelper.doubler(5);  // 10\\n\`\`\`\\n\\n### Restrictions des methodes static\\n\\nUne methode \`static\` ne peut PAS :\\n- Acceder a \`this\` ou \`super\`\\n- Appeler directement une methode non-static\\n\\n\`\`\`java\\npublic class Exemple {\\n    private int instanceVar = 10;\\n\\n    public static void bonExemple(Exemple e) {\\n        System.out.println(e.instanceVar);  // OK via instance\\n    }\\n}\\n\`\`\`\\n\\n## static et le bloc d'initialisation\\n\\n\`\`\`java\\npublic class Config {\\n    public static final String DB_URL;\\n\\n    static {\\n        DB_URL = System.getenv("DB_URL");\\n    }\\n}\\n\`\`\`\\n\\nLe bloc \`static { }\` s'execute une seule fois au chargement de la classe.\\n\\n## Inner classes static\\n\\n\`\`\`java\\npublic class Externe {\\n    public static class Interne { }\\n}\\n\\nExterne.Interne obj = new Externe.Interne();\\n\`\`\`\\n\\nUne classe interne \`static\` n'a pas besoin d'une instance de sa classe mere.\\n\\n## Import static\\n\\n\`\`\`java\\nimport static java.lang.Math.PI;\\n\\npublic class Calcul {\\n    public double circonference(double rayon) {\\n        return 2 * PI * rayon;\\n    }\\n}\\n\`\`\`\\n\\n## Constantes static final\\n\\n\`\`\`java\\npublic class Constants {\\n    public static final double TAUX_TVA = 20.0;\\n    public static final String APP_NAME = "PrismPrep";\\n}\\n\\ndouble prix = 100 * (1 + Constants.TAUX_TVA / 100);\\n\`\`\`\\n\\nPar convention, les constantes s'ecrivent en MAJUSCULES_AVEC_UNDERSCORES.\\n\\n## Pieges courants\\n\\n### 1. Modifier un etat partage sans synchronisation\\n\\n\`\`\`java\\nprivate static int count = 0;\\n\\npublic static void increment() {\\n    count++;  // Non thread-safe\\n}\\n\\n// Utiliser AtomicInteger pour les environnements multithreads\\n\`\`\`\\n\\n### 2. Confusion static vs instance\\n\\n\`\`\`java\\npublic class Utilisateur {\\n    private String nom;           // Une valeur par instance\\n    private static int total = 0; // Une seule valeur partagee\\n}\\n\`\`\`\\n\\n### 3. Polymorphisme et static\\n\\nOn ne peut PAS surcharger une methode \`static\` — le polymorphisme ne s'applique qu'aux methodes d'instance.\\n\\n## Bonnes pratiques\\n\\n1. **Preferez les methodes static** quand la methode n'accede a aucune donnee d'instance\\n2. **Utilisez \`static final\` pour les constantes**\\n3. **Evitez les champs static mutables**\\n4. **Ne pas abuser du static** — si une methode a besoin de \`this\`, elle ne doit pas etre static\\n\\nSource : [Oracle Java Documentation - Understanding Class Members](https://docs.oracle.com/javase/tutorial/java/javaOO/classmembers.html)`},
+          deepDive: `# Le modificateur static en Java
+
+## Qu'est-ce que c'est ?
+
+Le mot-clé \`static\` en Java signifie qu'un membre (attribut ou méthode) appartient à la classe elle-même, et non à une instance particulière. Il est partagé par toutes les instances de la classe.
+
+## Syntaxe et exemples
+
+### static appliqué aux champs
+
+\`\`\`java
+public class Compteur {
+    public static int instanceCount = 0;
+
+    public Compteur() {
+        instanceCount++;
+    }
+}
+
+Compteur c1 = new Compteur();
+Compteur c2 = new Compteur();
+
+System.out.println(Compteur.instanceCount);  // 2
+\`\`\`
+
+Les champs \`static\` sont parfaits pour :
+- **Compteurs** partagés par toutes les instances
+- **Constantes** liées à la classe (avec \`final\`)
+- **Configuration** commune à toutes les instances
+
+### static appliqué aux méthodes
+
+\`\`\`java
+public class MathHelper {
+    public static int doubler(int x) {
+        return x * 2;
+    }
+}
+
+int result = MathHelper.doubler(5);  // 10
+\`\`\`
+
+### Restrictions des méthodes static
+
+Une méthode \`static\` ne peut PAS :
+- Accéder à \`this\` ou \`super\`
+- Appeler directement une méthode non-static
+
+\`\`\`java
+public class Exemple {
+    private int instanceVar = 10;
+
+    public static void bonExemple(Exemple e) {
+        System.out.println(e.instanceVar);  // OK via instance
+    }
+}
+\`\`\`
+
+### Bloc d'initialisation static
+
+\`\`\`java
+public class Config {
+    public static final String DB_URL;
+
+    static {
+        DB_URL = System.getenv("DB_URL");
+    }
+}
+\`\`\`
+
+### Inner classes static
+
+\`\`\`java
+public class Externe {
+    public static class Interne { }
+}
+
+Externe.Interne obj = new Externe.Interne();
+\`\`\`
+
+### Import static
+
+\`\`\`java
+import static java.lang.Math.PI;
+
+public class Calcul {
+    public double circonference(double rayon) {
+        return 2 * PI * rayon;
+    }
+}
+\`\`\`
+
+## Bonnes pratiques
+
+1. **Préférez les méthodes static** quand la méthode n'accède à aucune donnée d'instance
+2. **Utilisez \`static final\` pour les constantes**
+3. **Évitez les champs static mutables**
+4. **Ne pas abuser du static** — si une méthode a besoin de \`this\`, elle ne doit pas être static
+
+## Pièges courants
+
+### 1. Modifier un état partagé sans synchronisation
+
+\`\`\`java
+private static int count = 0;
+
+public static void increment() {
+    count++;  // Non thread-safe
+}
+
+// Utiliser AtomicInteger pour les environnements multithreads
+\`\`\`
+
+### 2. Confusion static vs instance
+
+\`\`\`java
+public class Utilisateur {
+    private String nom;           // Une valeur par instance
+    private static int total = 0; // Une seule valeur partagée
+}
+\`\`\`
+
+### 3. Polymorphisme et static
+
+On ne peut PAS surcharger une méthode \`static\` — le polymorphisme ne s'applique qu'aux méthodes d'instance.
+
+Source : [Oracle Java Documentation - Understanding Class Members](https://docs.oracle.com/javase/tutorial/java/javaOO/classmembers.html)`},
         {
           id: 'java-3',
           question: 'final vs finally vs finalize',
           answer: "**`final`** empêche la modification : variable non réassignable, méthode non redéfinissable, classe non étendue (ex. `String`). **`finally`** est un bloc qui s'exécute toujours après `try-catch`, idéal pour libérer les ressources. **`finalize`** est une méthode de `Object` appelée par le GC avant suppression — __dépréciée depuis Java 9__.\n\nOn utilise aujourd'hui `try-with-resources` ou `AutoCloseable` à la place.",
         
-          deepDive: `# final, finally et finalize en Java\\n\\n## final — restriction definitive\\n\\n\`final\` signifie "je ne peux pas etre change" selon le contexte :\\n\\n### Variable finale — valeur immuable\\n\\n\`\`\`java\\npublic class MathConstants {\\n    public static final double PI = 3.14159265359;\\n    public static final int MAX_RETRY = 3;\\n}\\n\\n// MAX_RETRY = 5;  // Erreur de compilation\\n\`\`\`\\n\\nUne variable \`final\` doit etre initialisee a sa declaration, dans le constructeur, ou dans un initialiseur static.\\n\\n### Methode finale — non surchargable\\n\\n\`\`\`java\\npublic class Parent {\\n    public final void afficher() {\\n        System.out.println("Methode finale");\\n    }\\n}\\n\\npublic class Enfant extends Parent {\\n    // @Override\\n    // public void afficher() {}  // Erreur - impossible de surcharger\\n}\\n\`\`\`\\n\\n### Classe finale — non heritable\\n\\n\`\`\`java\\npublic final class String {\\n    // String ne peut PAS etre heritee\\n}\\n\`\`\`\\n\\n## finally — nettoyage garantie\\n\\n\`finally\` s'execue **toujours**, que l'exception soit jetee ou non :\\n\\n\`\`\`java\\npublic void lireFichier(String chemin) {\\n    FileInputStream fis = null;\\n    try {\\n        fis = new FileInputStream(chemin);\\n    } catch (IOException e) {\\n        System.err.println("Erreur: " + e.getMessage());\\n    } finally {\\n        if (fis != null) {\\n            fis.close();  // Toujours execute\\n        }\\n    }\\n}\\n\`\`\`\\n\\n### try-with-resources (preferable depuis Java 7)\\n\\n\`\`\`java\\npublic void lireFichier(String chemin) {\\n    try (FileInputStream fis = new FileInputStream(chemin)) {\\n        // ... - fis.close() appele automatiquement\\n    } catch (IOException e) {\\n        System.err.println("Erreur: " + e.getMessage());\\n    }\\n}\\n\`\`\`\\n\\n### finally et return — piege\\n\\nSi \`finally\` contient un \`return\`, il **supprime** l'exception en cours :\\n\\n\`\`\`java\\npublic int mauvaisExemple() {\\n    try {\\n        int x = 10 / 0;\\n        return 1;\\n    } catch (ArithmeticException e) {\\n        return 2;\\n    } finally {\\n        return 3;  // Surcharge - retourne 3\\n    }\\n}\\n\`\`\`\\n\\n**Evitez de mettre \`return\` dans un bloc \`finally\`**.\\n\\n## finalize — DEPRECATED\\n\\n\`finalize()\` etait appelee par le Garbage Collector avant de recuperer un objet. Deprecated depuis Java 9, retiree depuis Java 18.\\n\\n\`\`\`java\\n@Override\\nprotected void finalize() throws Throwable {\\n    // Ne pas utiliser - utiliser try-with-resources\\n}\\n\`\`\`\\n\\n### Pourquoi ne pas l'utiliser ?\\n\\n1. **Pas de garantie d'appel**\\n2. **Performance degradee**\\n3. **Execution non deterministe**\\n\\n### Alternative : Cleaner (Java 9+)\\n\\n\`\`\`java\\npublic class Fichier implements AutoCloseable {\\n    private final Cleaner cleaner = Cleaner.create();\\n    private final FileHandle handle;\\n\\n    @Override\\n    public void close() {\\n        cleaner.register(this, () -> closeFile(handle));\\n    }\\n}\\n\`\`\`\\n\\n## Resume\\n\\n| Mot-cle | Role | Quand utiliser |\\n|---------|------|----------------|\\n| \`final\` | Valeur/methode/classe non modifiable | Constantes, methodes critiques, classes non herisables |\\n| \`finally\` | Bloc de nettoyage | Fermer les ressources non AutoCloseable |\\n| \`finalize\` | Deprecated | Ne pas utiliser\\n\\nSource : [Oracle Java Documentation - Execution Control](https://docs.oracle.com/javase/tutorial/essential/exceptions/finally.html)`},
+          deepDive: `# final, finally et finalize en Java
+
+## Qu'est-ce que c'est ?
+
+Ces trois mots-clés en Java ont des rôles distincts mais complémentaires dans la gestion du comportement et du nettoyage du code.
+
+## Syntaxe et exemples
+
+### final — restriction définitive
+
+\`\`\`java
+// Variable finale — valeur immuable
+public class MathConstants {
+    public static final double PI = 3.14159265359;
+    public static final int MAX_RETRY = 3;
+}
+
+// MAX_RETRY = 5;  // Erreur de compilation
+\`\`\`
+
+\`\`\`java
+// Méthode finale — non surchargable
+public class Parent {
+    public final void afficher() {
+        System.out.println("Méthode finale");
+    }
+}
+
+public class Enfant extends Parent {
+    // @Override
+    // public void afficher() {}  // Erreur - impossible de surcharger
+}
+\`\`\`
+
+\`\`\`java
+// Classe finale — non héritable
+public final class String {
+    // String ne peut PAS être héritée
+}
+\`\`\`
+
+### finally — nettoyage garanti
+
+\`\`\`java
+public void lireFichier(String chemin) {
+    FileInputStream fis = null;
+    try {
+        fis = new FileInputStream(chemin);
+    } catch (IOException e) {
+        System.err.println("Erreur: " + e.getMessage());
+    } finally {
+        if (fis != null) {
+            fis.close();  // Toujours exécuté
+        }
+    }
+}
+\`\`\`
+
+### try-with-resources (préférable depuis Java 7)
+
+\`\`\`java
+public void lireFichier(String chemin) {
+    try (FileInputStream fis = new FileInputStream(chemin)) {
+        // ... - fis.close() appelé automatiquement
+    } catch (IOException e) {
+        System.err.println("Erreur: " + e.getMessage());
+    }
+}
+\`\`\`
+
+### finally et return — piège
+
+\`\`\`java
+public int mauvaisExemple() {
+    try {
+        int x = 10 / 0;
+        return 1;
+    } catch (ArithmeticException e) {
+        return 2;
+    } finally {
+        return 3;  // Surcharge - retourne 3
+    }
+}
+\`\`\`
+
+**Évitez de mettre \`return\` dans un bloc \`finally\`**.
+
+### finalize — DÉPRÉCIÉ
+
+\`\`\`java
+@Override
+protected void finalize() throws Throwable {
+    // Ne pas utiliser - utiliser try-with-resources
+}
+\`\`\`
+
+Deprecated depuis Java 9, retirée depuis Java 18.
+
+## Bonnes pratiques
+
+1. **Utilisez \`final\` pour les constantes** — jamais de modification possible
+2. **Méthodes finales pour les contrats** — garantit un comportement non modifiable
+3. **Classes finales pour les utilitaires** — empêche l'héritage non prévu
+
+## Pièges courants
+
+1. **\`finally\` avec return** — supprime l'exception en cours
+2. **\`finalize\` n'est pas fiable** — pas de garantie d'appel, performance dégradée
+3. **Classe finale sans champs finals** — contradiction si les champs sont mutables
+
+Source : [Oracle Java Documentation - Execution Control](https://docs.oracle.com/javase/tutorial/essential/exceptions/finally.html)`},
         {
           id: 'java-4',
           question: 'transient',
           answer: "**`transient`** exclut un champ de la sérialisation. Cas d'usage : données sensibles (mot de passe), champs calculables (recalculés à la désérialisation), références non sérialisables (évite `NotSerializableException`).\n\nÀ la désérialisation, le champ prend sa valeur par défaut (`null`, `0`…).",
         
-          deepDive: `# Le modificateur transient en Java\\n\\n## Qu'est-ce que c'est ?\\n\\n\`transient\` indique au mecanisme de serialisation (Serializable) d'ignorer un champ lors de la conversion en bytes. Le champ ne sera pas inclus dans le flux serialise.\\n\\n## Probleme resolu\\n\\nCertains champs ne peuvent pas etre serialises :\\n- **References a des objets non serialisables** (FileInputStream, DatabaseConnection)\\n- **Donnees temporaires** (cache, etat intermediate)\\n- **Donnees sensibles** (passwords, tokens)\\n\\n## Exemple fondamental\\n\\n\`\`\`java\\npublic class Utilisateur implements Serializable {\\n    private static final long serialVersionUID = 1L;\\n\\n    private String nom;\\n    private transient String motDePasse;  // Ignore lors de la serialisation\\n    private transient Instant dateConnexion;\\n\\n    public Utilisateur(String nom, String motDePasse) {\\n        this.nom = nom;\\n        this.motDePasse = motDePasse;\\n        this.dateConnexion = Instant.now();\\n    }\\n}\\n\\n// Serialisation\\nbyte[] data = serialize(new Utilisateur("Alice", "secret123"));\\n\\n// Deserialisation\\nUtilisateur restored = deserialize(data);\\nSystem.out.println(restored.motDePasse);  // null\\nSystem.out.println(restored.dateConnexion);  // null\\n\`\`\`\\n\\n## Champs transient et valeur par defaut\\n\\nApres deserialisation, les champs \`transient\` valent :\\n- \`null\` pour les objets\\n- \`0\` pour les nombres primitifs\\n- \`false\` pour les booleens\\n\\n## Usage typique\\n\\n### 1. Donnees sensibles\\n\\n\`\`\`java\\npublic class Session implements Serializable {\\n    private String userId;\\n    private transient String token;  // Ne pas serialiser\\n}\\n\`\`\`\\n\\n### 2. Ressources systeme\\n\\n\`\`\`java\\npublic class CacheDonnees implements Serializable {\\n    private String donneeId;\\n    private transient FileInputStream fluxFichier;  // Non serialisable\\n}\\n\`\`\`\\n\\n### 3. Champs calculables\\n\\n\`\`\`java\\npublic class Commande implements Serializable {\\n    private List<Ligne> lignes;\\n    private transient BigDecimal totalCalcule;  // Recompute apres\\n}\\n\`\`\`\\n\\n## static et transient\\n\\nLes champs \`static\` ne sont jamais serialises (ils appartiennent a la classe). Ajouter \`transient\` sur un champ static est redondant.\\n\\n## Bonnes pratiques\\n\\n1. **たくない fields doivent etre transient** — ressources non serialisables, donnees sensibles\\n2. **Initialisez les champs transient** avec des valeurs par defaut coherentes\\n3. **Considerer Externalizable** pour un controle plus fin\\n4. **Ne vous basez pas sur la valeur par defaut** — recreer ou recalculer explicitement\\n\\nSource : [Oracle Java Documentation - Object Serialization](https://docs.oracle.com/javase/tutorial/essential/io/serialization.html)`},
+          deepDive: `# Le modificateur transient en Java
+
+## Qu'est-ce que c'est ?
+
+\`transient\` indique au mécanisme de sérialisation (Serializable) d'ignorer un champ lors de la conversion en bytes. Le champ ne sera pas inclus dans le flux sérialisé.
+
+## Syntaxe et exemples
+
+### Problème résolu
+
+Certains champs ne peuvent pas être sérialisés :
+- **Références à des objets non sérialisables** (FileInputStream, DatabaseConnection)
+- **Données temporaires** (cache, état intermédiaire)
+- **Données sensibles** (mots de passe, tokens)
+
+### Exemple fondamental
+
+\`\`\`java
+public class Utilisateur implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private String nom;
+    private transient String motDePasse;  // Ignoré lors de la sérialisation
+    private transient Instant dateConnexion;
+
+    public Utilisateur(String nom, String motDePasse) {
+        this.nom = nom;
+        this.motDePasse = motDePasse;
+        this.dateConnexion = Instant.now();
+    }
+}
+
+// Sérialisation
+byte[] data = serialize(new Utilisateur("Alice", "secret123"));
+
+// Désérialisation
+Utilisateur restored = deserialize(data);
+System.out.println(restored.motDePasse);     // null
+System.out.println(restored.dateConnexion); // null
+\`\`\`
+
+### Champs transient et valeur par défaut
+
+Après désérialisation, les champs \`transient\` valent :
+- \`null\` pour les objets
+- \`0\` pour les nombres primitifs
+- \`false\` pour les booléens
+
+### Usage typique
+
+\`\`\`java
+// Données sensibles
+public class Session implements Serializable {
+    private String userId;
+    private transient String token;  // Ne pas serialiser
+}
+
+// Ressources système
+public class CacheDonnees implements Serializable {
+    private String donneeId;
+    private transient FileInputStream fluxFichier;  // Non serialisable
+}
+
+// Champs calculables
+public class Commande implements Serializable {
+    private List<Ligne> lignes;
+    private transient BigDecimal totalCalcule;  // Recomputer après
+}
+\`\`\`
+
+### static et transient
+
+Les champs \`static\` ne sont jamais sérialisés (ils appartiennent à la classe). Ajouter \`transient\` sur un champ static est redondant.
+
+## Bonnes pratiques
+
+1. **たくない fields doivent être transient** — ressources non sérialisables, données sensibles
+2. **Initialisez les champs transient** avec des valeurs par défaut cohérentes
+3. **Considérez Externalizable** pour un contrôle plus fin
+4. **Ne vous basez pas sur la valeur par défaut** — recréez ou recalculez explicitement
+
+## Pièges courants
+
+1. **Oublier de réinitialiser** — les champs transient valent null/0 après désérialisation
+2. **Sérialiser involontairement des données sensibles** — mot de passe en clair
+3. **transient sur un champ static** — inutile, les champs static ne sont jamais sérialisés
+
+Source : [Oracle Java Documentation - Object Serialization](https://docs.oracle.com/javase/tutorial/essential/io/serialization.html)`},
         {
           id: 'java-5',
           question: 'Généricité',
           answer: "Paramétrer les types : `List<String>` garantit le type à la compilation, plus besoin de *caster*. Fonctionne par **type erasure** : les types génériques sont effacés au runtime (pas de `new T()` ni `instanceof T`).\n\nBornes : `<T extends Comparable<T>>` restreint le type, *wildcards* (`? extends T`, `? super T`) pour la flexibilité API. Indispensable — utilisé partout (`Collections`, `Stream`s, `Optional`).",
           example: "List<String> = que des String. Pas besoin de caster.",
         
-          deepDive: `# La genericite en Java\\n\\n## Qu'est-ce que c'est ?\\n\\nLa genericite (generics) permet d'ecrire du code qui opere sur des types non-specifiques, decides a l'utilisation.\\n\\n## Probleme avant Java 5 — casts risqués\\n\\n\`\`\`java\\n// Sans generics - necessite un cast\\nList liste = new ArrayList();\\nliste.add("texte");\\nString s = (String) liste.get(0);  // OK\\n\\nliste.add(42);\\nString s2 = (String) liste.get(1);  // ClassCastException !\\n\`\`\`\\n\\n## Solution avec generics\\n\\n\`\`\`java\\nList<String> liste = new ArrayList<>();\\nliste.add("texte");\\nString s = liste.get(0);  // Pas de cast - type assure\\n\\n// liste.add(42);  // Erreur de compilation - 42 n'est pas un String\\n\`\`\`\\n\\n## Classes parametrees\\n\\n\`\`\`java\\npublic class Boite<T> {\\n    private T contenu;\\n\\n    public void mettre(T item) {\\n        this.contenu = item;\\n    }\\n\\n    public T obtenir() {\\n        return contenu;\\n    }\\n}\\n\\nBoite<String> boiteTextes = new Boite<>();\\nboiteTextes.mettre("Hello");\\nString texte = boiteTextes.obtenir();\\n\`\`\`\\n\\n## Types borne (Bounded types)\\n\\nLimiter les types avec \`extends\` :\\n\\n\`\`\`java\\npublic class Sommeur<T extends Number> {\\n    private T valeur;\\n\\n    public double asDouble() {\\n        return valeur.doubleValue();  // Toutes les sous-classes de Number ont cette methode\\n    }\\n}\\n\\nSommeur<Integer> s1 = new Sommeur<>();  // OK\\nSommeur<Double> s2 = new Sommeur<>();   // OK\\n// Sommeur<String> s3 = new Sommeur<>();  // Erreur\\n\`\`\`\\n\\n## Methodes generiques\\n\\n\`\`\`java\\npublic static <T> T premier(List<T> liste) {\\n    if (liste == null || liste.isEmpty()) return null;\\n    return liste.get(0);\\n}\\n\\nString p = premier(List.of("a", "b", "c"));  // String infere\\nInteger n = premier(List.of(1, 2, 3));    // Integer infere\\n\`\`\`\\n\\n## Wildcards\\n\\n### ? extends T — covariance (lecture seule)\\n\\n\`\`\`java\\npublic void afficher(List<? extends Number> liste) {\\n    for (Number n : liste) {\\n        System.out.println(n.doubleValue());  // Lecture OK\\n    }\\n    // liste.add(42);  // Erreur - pas d'ecriture\\n}\\n\`\`\`\\n\\n### ? super T — contravariance (ecriture possible)\\n\\n\`\`\`java\\npublic void ajouter(List<? super Integer> liste) {\\n    liste.add(42);  // OK - ecriture\\n    // Integer n = liste.get(0);  // Erreur - type inconnu\\n}\\n\`\`\`\\n\\n## Conventions de nommage\\n\\n| Lettre | Usage |\\n|--------|-------|\\n| \`T\` | Type (generique) |\\n| \`E\` | Element (collections) |\\n| \`K\` / \`V\` | Cle / Valeur (Map) |\\n| \`R\` | Resultat |\\n\\n## Type erasure\\n\\nLes generiques Java sont **effaces a la compilation** (type erasure). Le bytecode ne contient pas les types generiques :\\n\\n\`\`\`java\\nList<String> strings = new ArrayList<>();\\nList<Integer> nombres = new ArrayList<>();\\n\\nstrings.getClass() == nombres.getClass();  // true - les deux sont juste List\\n\`\`\`\\n\\nImplications :\\n- Pas de \`new T()\` — utiliser \`Class<T>\`\\n- Pas de \`instanceof T\`\\n- Les surcharges basees sur le type generique ne sont pas possibles\\n\\n## Bonnes pratiques\\n\\n1. **Utilisez les wildcards** pour les signatures de methodes qui ne produisent pas de T\\n2. **Prefererez ? extends T** pour la lecture, ? super T pour l'ecriture\\n3. **N'utilisez pas de raw types** — toujours specifier le type parametre\\n\\nSource : [Oracle Java Documentation - Generics](https://docs.oracle.com/javase/tutorial/java/generics/)`},
+          deepDive: `# La généricité en Java
+
+## Qu'est-ce que c'est ?
+
+La généricité (generics) permet d'écrire du code qui opère sur des types non-spécifiques, décidé à l'utilisation. Elle offre une sécurité de type à la compilation.
+
+## Syntaxe et exemples
+
+### Problème avant Java 5 — casts risqués
+
+\`\`\`java
+// Sans generics - nécessaire un cast
+List liste = new ArrayList();
+liste.add("texte");
+String s = (String) liste.get(0);  // OK
+
+liste.add(42);
+String s2 = (String) liste.get(1);  // ClassCastException !
+\`\`\`
+
+### Solution avec generics
+
+\`\`\`java
+List<String> liste = new ArrayList<>();
+liste.add("texte");
+String s = liste.get(0);  // Pas de cast - type assuré
+
+// liste.add(42);  // Erreur de compilation - 42 n'est pas un String
+\`\`\`
+
+### Classes paramétrées
+
+\`\`\`java
+public class Boite<T> {
+    private T contenu;
+
+    public void mettre(T item) {
+        this.contenu = item;
+    }
+
+    public T obtenir() {
+        return contenu;
+    }
+}
+
+Boite<String> boiteTextes = new Boite<>();
+boiteTextes.mettre("Hello");
+String texte = boiteTextes.obtenir();
+\`\`\`
+
+### Types bornés (Bounded types)
+
+\`\`\`java
+public class Sommeur<T extends Number> {
+    private T valeur;
+
+    public double asDouble() {
+        return valeur.doubleValue();
+    }
+}
+
+Sommeur<Integer> s1 = new Sommeur<>();  // OK
+Sommeur<Double> s2 = new Sommeur<>();   // OK
+// Sommeur<String> s3 = new Sommeur<>();  // Erreur
+\`\`\`
+
+### Méthodes génériques
+
+\`\`\`java
+public static <T> T premier(List<T> liste) {
+    if (liste == null || liste.isEmpty()) return null;
+    return liste.get(0);
+}
+
+String p = premier(List.of("a", "b", "c"));  // String inféré
+Integer n = premier(List.of(1, 2, 3));       // Integer inféré
+\`\`\`
+
+### Wildcards
+
+\`\`\`java
+// ? extends T — covariance (lecture seule)
+public void afficher(List<? extends Number> liste) {
+    for (Number n : liste) {
+        System.out.println(n.doubleValue());  // Lecture OK
+    }
+    // liste.add(42);  // Erreur - pas d'écriture
+}
+
+// ? super T — contravariance (écriture possible)
+public void ajouter(List<? super Integer> liste) {
+    liste.add(42);  // OK - écriture
+    // Integer n = liste.get(0);  // Erreur - type inconnu
+}
+\`\`\`
+
+## Bonnes pratiques
+
+1. **Utilisez les wildcards** pour les signatures de méthodes qui ne produisent pas de T
+2. **Préférez ? extends T** pour la lecture, ? super T pour l'écriture
+3. **N'utilisez pas de raw types** — toujours spécifier le type paramètre
+4. **Utilisez \`T extends Comparable<T>\`** pour les types comparables
+
+## Pièges courants
+
+1. **Type erasure** — les generics sont effacés à la compilation, pas de \`new T()\`
+2. **\`instanceof T\`** impossible — utiliser \`instanceof\` avec le type brut
+3. **Surcharges basées sur le type générique** impossibles
+4. **Wildcards avec ? extends** — pas d'écriture possible
+
+Source : [Oracle Java Documentation - Generics](https://docs.oracle.com/javase/tutorial/java/generics/)`},
         {
           id: 'java-6',
           question: 'Classe finale / méthode finale',
           answer: "`final` sur une classe empêche l'héritage (ex. : `String` est finale pour garantir son **immuabilité**). `final` sur une méthode empêche la redéfinition dans les sous-classes, utile pour les comportements critiques qui doivent rester identiques.\n\n**Classe finale** = pas d'héritage, **méthode finale** = pas de redéfinition. Objectif : **sécurité** et **prévisibilité** du comportement.",
         
-          deepDive: `# Classe finale et methode finale en Java\\n\\n## Classe finale — non heritable\\n\\nUne classe \`final\` ne peut pas avoir de sous-classes. Utilisez-la quand le comportement de sous-classement serait dangereux ou absurde.\\n\\n\`\`\`java\\npublic final class String {\\n    // String ne peut PAS etre heritee\\n    // Aucune classe ne peut etendre String\\n}\\n\\n// public class MaString extends String {}  // Erreur de compilation\\n\`\`\`\\n\\n### Quand utiliser une classe finale\\n\\n1. **Classes utility** qui ne doivent pas etre modifiees\\n2. **Immutabilite** desiree — une classe finale avec des champs finals est vraiment immutable\\n3. **Classes avec des invariants critiques** qui dependent d'un comportement specifique\\n\\n\`\`\`java\\npublic final class ConfigService {\\n    public static final String DEFAULT_API = "https://api.example.com";\\n\\n    private ConfigService() {}  // Pas de constructeur public - classe non instanciable\\n\\n    public static String getApiUrl() {\\n        return DEFAULT_API;\\n    }\\n}\\n\`\`\`\\n\\n## Methode finale — non surchargable\\n\\nUne methode \`final\` ne peut pas etre surchargee par une sous-classe. Elle garantit que le comportement de la methode ne changera jamais.\\n\\n\`\`\`java\\npublic class Parent {\\n    public final void afficher() {\\n        System.out.println("Parent.afficher()");\\n    }\\n\\n    public void pouvoirEtreSurcharge() {\\n        System.out.println("Parent.pouvoirEtreSurcharge()");\\n    }\\n}\\n\\npublic class Enfant extends Parent {\\n    // @Override\\n    // public void afficher() {}  // Erreur de compilation\\n\\n    @Override\\n    public void pouvoirEtreSurcharge() {\\n        System.out.println("Enfant.pouvoirEtreSurcharge()");\\n    }\\n}\\n\`\`\`\\n\\n### Quand utiliser une methode finale\\n\\n1. **Methodes qui font partie d'un contrat** — par exemple \`Object.equals()\`\\n2. **Methodes utilitaires** dont le comportement ne doit pas changer\\n3. **Methodes dans une classe non finale** ou vous voulez permettre l'heritage mais pas la surcharge\\n\\n\`\`\`java\\npublic class Document {\\n    private List<String> contenu = new ArrayList<>();\\n\\n    // methode finale car elle fait partie d'un contrat invariant\\n    public final Date getDateCreation() {\\n        return this.dateCreation;\\n    }\\n\\n    public void ajouterLigne(String ligne) {\\n        this.contenu.add(ligne);\\n    }\\n}\\n\`\`\`\\n\\n## Classe finale + methode finale = contrat figé\\n\\nQuand une classe est \`final\` et toutes ses methodes sont \`final\`, vous avez un **contrat immutable** :\\n\\n\`\`\`java\\npublic final class Temperature {\\n    public static final Temperature ABSOLU_ZERO = new Temperature(-273.15);\\n\\n    private final double celsius;\\n\\n    private Temperature(double celsius) {\\n        this.celsius = celsius;\\n    }\\n\\n    // Methode finale - comportement non modifiable\\n    public final double asCelsius() {\\n        return celsius;\\n    }\\n\\n    public final double asFahrenheit() {\\n        return celsius * 9/5 + 32;\\n    }\\n}\\n\\n// Aucun sous-classe possible, aucune methode ne peut etre surchargee\\n\`\`\`\\n\\n## Anti-patterns a eviter\\n\\n### 1. Classe finale avec des champs non finals\\n\\n\`\`\`java\\npublic final class MauvaisExemple {\\n    private int valeur;  // Peut changer - contradiction avec "final"\\n}\\n\`\`\`\\n\\nPour une vraie immutabilite, tous les champs doivent etre \`final\`.\\n\\n### 2. Heritage quand il n'est pas prevu\\n\\nSi vous pensez qu'une classe pourrait etre heritee un jour, **ne la rendez pas finale** des le debut. Il est plus facile de rendre quelque chose non-final que de retirer l'heritage apres.\\n\\n## Combinaison avec static\\n\\n\`\`\`java\\npublic final class Constants {\\n    private Constants() {}  // Constructeur prive - classe non instanciable\\n\\n    public static final String APP_NAME = "PrismPrep";\\n    public static final int MAX_RETRY = 3;\\n}\\n\`\`\`\\n\\n\`final\` sur une classe + constructeur prive = pattern singleton.\\n\\n## Resume\\n\\n| Modificateur | Effet | Usage |\\n|-------------|-------|-------|\\n| \`final class C\` | C ne peut pas etre heritee | Classes utility, immutabilite |\\n| \`final method()\` | Methode ne peut pas etre surcharge | Contrats invariants |\\n| \`final field\` | Valeur ne peut pas etre modifiee apres initialisation | Constantes, champs immuables |\\n\\nSource : [Oracle Java Documentation - Classes](https://docs.oracle.com/javase/tutorial/java/IandI/final.html)`},
+          deepDive: `# Classe finale et méthode finale en Java
+
+## Qu'est-ce que c'est ?
+
+\`final\` sur une classe signifie qu'elle ne peut pas être héritée. \`final\` sur une méthode signifie qu'elle ne peut pas être surchargée.
+
+## Syntaxe et exemples
+
+### Classe finale — non héritable
+
+\`\`\`java
+public final class String {
+    // String ne peut PAS être héritée
+}
+
+// public class MaString extends String {}  // Erreur de compilation
+\`\`\`
+
+\`\`\`java
+// Classe utility avec constructeur privé
+public final class ConfigService {
+    public static final String DEFAULT_API = "https://api.example.com";
+
+    private ConfigService() {}  // Pas de constructeur public
+
+    public static String getApiUrl() {
+        return DEFAULT_API;
+    }
+}
+\`\`\`
+
+### Méthode finale — non surchargable
+
+\`\`\`java
+public class Parent {
+    public final void afficher() {
+        System.out.println("Parent.afficher()");
+    }
+
+    public void pouvoirEtreSurcharge() {
+        System.out.println("Parent.pouvoirEtreSurcharge()");
+    }
+}
+
+public class Enfant extends Parent {
+    // @Override
+    // public void afficher() {}  // Erreur de compilation
+
+    @Override
+    public void pouvoirEtreSurcharge() {
+        System.out.println("Enfant.pouvoirEtreSurcharge()");
+    }
+}
+\`\`\`
+
+### Classe finale + méthode finale = contrat figé
+
+\`\`\`java
+public final class Temperature {
+    public static final Temperature ABSOLU_ZERO = new Temperature(-273.15);
+
+    private final double celsius;
+
+    private Temperature(double celsius) {
+        this.celsius = celsius;
+    }
+
+    public final double asCelsius() {
+        return celsius;
+    }
+
+    public final double asFahrenheit() {
+        return celsius * 9/5 + 32;
+    }
+}
+\`\`\`
+
+### Combinaison avec static
+
+\`\`\`java
+public final class Constants {
+    private Constants() {}  // Constructeur privé - classe non instanciable
+
+    public static final String APP_NAME = "PrismPrep";
+    public static final int MAX_RETRY = 3;
+}
+\`\`\`
+
+## Bonnes pratiques
+
+1. **Utilisez une classe finale** pour les classes utility qui ne doivent pas être modifiées
+2. **Utilisez une méthode finale** pour les méthodes qui font partie d'un contrat
+3. **Rendez une classe finale si vous voulez l'immutabilité** — combinez avec des champs finals
+4. **\`final\` sur une classe + constructeur privé = pattern singleton**
+
+## Pièges courants
+
+1. **Classe finale avec champs non finals** — contradiction, les champs peuvent changer
+2. **Héritage retiré après coup** — il est plus facile de rendre quelque chose non-final que de retirer l'héritage
+3. **Méthode finale dans une classe non finale** — permet l'héritage mais pas la surcharge de cette méthode
+
+Source : [Oracle Java Documentation - Classes](https://docs.oracle.com/javase/tutorial/java/IandI/final.html)`},
         {
           id: 'java-7',
           question: 'try-with-resources',
@@ -55,7 +662,132 @@ export const javaCategory: InterviewCategory = {
           code: 'try (FileInputStream fis = new FileInputStream("f.txt");\n     BufferedReader br = new BufferedReader(new InputStreamReader(fis))) {\n    String line = br.readLine();\n} // fermeture automatique',
           language: 'java',
         
-          deepDive: `# try-with-resources en Java\\n\\n## Qu'est-ce que c'est ?\\n\\n\`try-with-resources\` est un mecanisme introduit dans Java 7 qui permet de declarer une ou plusieurs ressources qui seront fermees automatiquement a la fin du bloc, meme si une exception est jetee.\\n\\n## Syntaxe\\n\\n\`\`\`java\\ntry (Type1 res1 = new Type1(); Type2 res2 = new Type2()) {\\n    // utilisation des ressources\\n} catch (Exception e) {\\n    // gestion d'exception\\n}\\n\`\`\`\\n\\nLa ressource doit implementer l'interface \`AutoCloseable\`.\\n\\n## Exemple fondamental\\n\\n\`\`\`java\\n// Avant Java 7 — gestion manuelle fastidieuse\\nFileInputStream fis = null;\\ntry {\\n    fis = new FileInputStream("monfichier.txt");\\n    int data = fis.read();\\n} catch (IOException e) {\\n    e.printStackTrace();\\n} finally {\\n    if (fis != null) {\\n        try {\\n            fis.close();\\n        } catch (IOException e) {\\n            e.printStackTrace();\\n        }\\n    }\\n}\\n\\n// Avec try-with-resources\\ntry (FileInputStream fis = new FileInputStream("monfichier.txt")) {\\n    int data = fis.read();\\n} catch (IOException e) {\\n    e.printStackTrace();\\n}\\n// fis.close() appele automatiquement\\n\`\`\`\\n\\n## Multiples ressources\\n\\n\`\`\`java\\ntry (\\n    FileInputStream fis = new FileInputStream("fichier.txt");\\n    BufferedReader reader = new BufferedReader(new InputStreamReader(fis))\\n) {\\n    String ligne;\\n    while ((ligne = reader.readLine()) != null) {\\n        System.out.println(ligne);\\n    }\\n}  // Les deux sont fermees dans l'ordre inverse\\n\`\`\`\\n\\nLes ressources sont fermees dans l'ordre **inverse** de leur declaration.\\n\\n## Interface AutoCloseable\\n\\n\`\`\`java\\npublic interface AutoCloseable {\\n    void close() throws Exception;\\n}\\n\`\`\`\\n\\nToute classe qui implemente \`AutoCloseable\` peut etre utilisee dans un try-with-resources.\\n\\n\`\`\`java\\npublic class Connexion implements AutoCloseable {\\n    @Override\\n    public void close() {\\n        System.out.println("Connexion fermee");\\n    }\\n}\\n\\ntry (Connexion c = new Connexion()) {\\n    System.out.println("Utilisation de la connexion");\\n}\\n// "Connexion fermee" affiche automatiquement\\n\`\`\`\\n\\n## Suppression des exceptions\\n\\nQuand une exception est jetee dans le try et une autre dans le close(), la deuxieme est **supprimee** (surpressed). L'exception du try est propagate.\\n\\n\`\`\`java\\ntry (Resource r = new Resource()) {\\n    throw new RuntimeException("exception dans try");\\n}  // RuntimeException propagate, exception du close() surpressed\\n\\n// Pour recuperer les exceptions surpressees\\ntry {\\n    // ...\\n} catch (Exception e) {\\n    for (Throwable t : e.getSuppressed()) {\\n        System.err.println("Surpressed: " + t);\\n    }\\n}\\n\`\`\`\\n\\n## Capture de ressource avec variables finales\\n\\nDepuis Java 9, vous pouvez utiliser une variable pre-declaree :\\n\\n\`\`\`java\\nPath path = Paths.get("fichier.txt");\\n\\ntry (path) {  // path doit etre effective final\\n    Files.lines(path).forEach(System.out::println);\\n}\\n\`\`\`\\n\\n## Ressources et exceptions<br>\\n\\nLa methode \`close()\` est appelee meme si une exception est jetee. Si \`close()\` jette aussi une exception, elle est surpressede.\\n\\n## Bonnes pratiques\\n\\n1. **Toujours utiliser try-with-resources** pour les ressources qui implementent AutoCloseable\\n2. **Ne retournez jamais dans un try-with-resources** — le close automatique serait perturbe\\n3. **Evitez les ressources qui peuvent etre null** — verifiez avant\\n4. **Utilisez des classes wrapper** si vous avez besoin de personnaliser le comportement de close\\n\\n## Exemples de classes AutoCloseable\\n\\n- \`InputStream\`, \`OutputStream\`\\n- \`Reader\`, \`Writer\`\\n- \`Connection\` (JDBC)\\n- \`ResultSet\`, \`Statement\`\\n- \`Scanner\`\\n- \`Channel\`, \`ByteChannel\`\\n\\nSource : [Oracle Java Documentation - Try-with-resources](https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html)`},
+          deepDive: `# try-with-resources en Java
+
+## Qu'est-ce que c'est ?
+
+\`try-with-resources\` est un mécanisme introduit dans Java 7 qui permet de déclarer une ou plusieurs ressources qui seront fermées automatiquement à la fin du bloc, même si une exception est jetée.
+
+## Syntaxe et exemples
+
+\`\`\`java
+try (Type1 res1 = new Type1(); Type2 res2 = new Type2()) {
+    // utilisation des ressources
+} catch (Exception e) {
+    // gestion d'exception
+}
+\`\`\`
+
+La ressource doit implémenter l'interface \`AutoCloseable\`.
+
+### Exemple fondamental
+
+\`\`\`java
+// Avant Java 7 — gestion manuelle fastidieuse
+FileInputStream fis = null;
+try {
+    fis = new FileInputStream("monfichier.txt");
+    int data = fis.read();
+} catch (IOException e) {
+    e.printStackTrace();
+} finally {
+    if (fis != null) {
+        try {
+            fis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+// Avec try-with-resources
+try (FileInputStream fis = new FileInputStream("monfichier.txt")) {
+    int data = fis.read();
+} catch (IOException e) {
+    e.printStackTrace();
+}
+// fis.close() appelé automatiquement
+\`\`\`
+
+### Multiples ressources
+
+\`\`\`java
+try (
+    FileInputStream fis = new FileInputStream("fichier.txt");
+    BufferedReader reader = new BufferedReader(new InputStreamReader(fis))
+) {
+    String ligne;
+    while ((ligne = reader.readLine()) != null) {
+        System.out.println(ligne);
+    }
+}
+// Les deux sont fermées dans l'ordre inverse
+\`\`\`
+
+### Interface AutoCloseable
+
+\`\`\`java
+public interface AutoCloseable {
+    void close() throws Exception;
+}
+\`\`\`
+
+\`\`\`java
+public class Connexion implements AutoCloseable {
+    @Override
+    public void close() {
+        System.out.println("Connexion fermée");
+    }
+}
+
+try (Connexion c = new Connexion()) {
+    System.out.println("Utilisation de la connexion");
+}
+// "Connexion fermée" affiché automatiquement
+\`\`\`
+
+### Suppression des exceptions
+
+\`\`\`java
+try (Resource r = new Resource()) {
+    throw new RuntimeException("exception dans try");
+}
+// RuntimeException propagée, exception du close() surpressée
+
+// Pour récupérer les exceptions surpressées
+try {
+    // ...
+} catch (Exception e) {
+    for (Throwable t : e.getSuppressed()) {
+        System.err.println("Surpressée: " + t);
+    }
+}
+\`\`\`
+
+### Capture de ressource avec variables finales (Java 9+)
+
+\`\`\`java
+Path path = Paths.get("fichier.txt");
+
+try (path) {  // path doit être effectively final
+    Files.lines(path).forEach(System.out::println);
+}
+\`\`\`
+
+## Bonnes pratiques
+
+1. **Toujours utiliser try-with-resources** pour les ressources qui implémentent AutoCloseable
+2. **Ne retournez jamais dans un try-with-resources** — le close automatique serait perturbé
+3. **Évitez les ressources qui peuvent être null** — vérifiez avant
+4. **Utilisez des classes wrapper** si vous avez besoin de personnaliser le comportement de close
+
+## Pièges courants
+
+1. **Oublier d'implémenter AutoCloseable** — la ressource ne sera pas fermée automatiquement
+2. **\`close()\` qui jette une exception** — l'exception originale peut être surpressée
+3. **Ressources qui dépendent les unes des autres** — fermez dans l'ordre inverse
+
+Source : [Oracle Java Documentation - Try-with-resources](https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html)`},
       ],
     },
     {
@@ -67,19 +799,328 @@ export const javaCategory: InterviewCategory = {
           question: 'Garbage Collection',
           answer: "Le **GC** libère automatiquement les objets non référencés. L'algorithme principal est **mark-and-sweep** : marquage des objets accessibles depuis les racines, puis suppression des non-marqués.\n\nLa **JVM** est organisée en générations : **Young Generation** (objets éphémères) et **Old Generation** (objets durables). On ne contrôle pas le moment de l'exécution du GC (`System.gc()` n'est qu'une suggestion). Mettre les références à `null` quand elles ne sont plus nécessaires aide le GC.",
         
-          deepDive: `# Garbage Collection en Java\\n\\n## Qu'est-ce que c'est ?\\n\\nLe Garbage Collector (GC) est un mecanisme automatique de Java qui libere la memoire prise par des objets qui ne sont plus references. Plus besoin de faire \`delete\` comme en C++.\\n\\n## Le probleme de la memoire manuelle\\n\\n\`\`\`cpp\\n// C++ - gestion manuelle\\nMyObject* obj = new MyObject();\\n// ... utiliser obj\\ndelete obj;  // Oublier = fuite memoire\\n// Utiliser apres delete = corruption memoire\\n\`\`\`\\n\\n\`\`\`java\\n// Java - gestion automatique\\nMyObject obj = new MyObject();\\n// ... utiliser obj\\nobj = null;  // L'objet devient eligible pour le GC\\n// Pas de delete - le GC s'en occupe\\n\`\`\`\\n\\n## Comment le GC detecte-t-il les objets inutiles ?\\n\\nUn objet est eligible pour le GC quand **plus aucune reference active** ne pointe vers lui.\\n\\n\`\`\`java\\npublic class Exemple {\\n    void methode() {\\n        Object obj = new Object();  // reference vers l'objet\\n        obj = null;  // Plus aucune reference - eligible pour GC\\n    }\\n}\\n\`\`\`\\n\\n## Generation de memoire (Hotspot)\\n\\nLa JVM utilise un система generatif qui divise la memoire selon la duree de vie des objets :\\n\\n| Generation | Description | Utilisation |\\n|-----------|-------------|-------------|\\n| **Young Generation** | Objets nouveaux | Eden + 2 Survivor spaces (S0, S1) |\\n| **Old Generation** | Objets longue duree | Tenured space |\\n| **Metaspace** | Meta-informations des classes | Depuis Java 8 (remplace PermGen) |\\n\\n### Cycle de vie d'un objet\\n\\n\`\`\`\\n[new Object()] → Eden → Survivor S0 → Survivor S1 → Old Generation → GC\\n\`\`\`\\n\\nQuand Eden est plein, un **Minor GC** se produit. Les objets vivnats sont deplaces vers Survivor spaces.\\n\\nQuand Old Generation est plein, un **Full GC** (Major GC) se produit - plus lent et blocant.\\n\\n## Types de Garbage Collectors\\n\\n### Serial GC (-XX:+UseSerialGC)\\n- Un seul thread\\n- Stop-the-world (STW) pendant le GC\\n- Pour machines mono-core ou petit footprint\\n\\n### Parallel GC (-XX:+UseParallelGC)\\n- Plusieurs threads (parallel)\\n- Par defaut sur serveur\\n- STW mais plus rapide\\n\\n### CMS GC (-XX:+UseConcMarkSweepGC)\\n- Concurrent Mark Sweep\\n- Threads en parallele avec l'application\\n- Deprecated depuis Java 9\\n\\n### G1 GC (-XX:+UseG1GC)\\n- Garbage First\\n- Par defaut depuis Java 9\\n- Divise la memoire en regions\\n- Meilleure latence\\n\\n### ZGC (-XX:+UseZGC)\\n- Very low latency\\n- Concurrent compacting\\n- Pour tres grandes memoires\\n\\n### Shenandoah (depuis Java 12)\\n- Concurrent compacting\\n- Pauses STW independantes de la taille du heap\\n\\n## Comment choisir le GC\\n\\n\`\`\`bash\\n# Utiliser G1 (par defaut moderne)\\njava -XX:+UseG1GC -jar monapp.jar\\n\\n# Pour faible latence\\njava -XX:+UseZGC -jar monapp.jar\\n\\n# Pour tres gros heap (>100GB)\\njava -XX:+UseZGC -Xmx128G -jar monapp.jar\\n\`\`\`\\n\\n## Monitoring du GC\\n\\n\`\`\`bash\\n# Voir les options GC\\njava -XX:+PrintCommandLineFlags -version\\n\\n# Activer les logs GC\\njava -Xlog:gc*=info:file=gc.log -jar monapp.jar\\n\\n# Analyser avec jstat\\njstat -gcutil <pid> 1000  # toutes les secondes\\n\`\`\`\\n\\n## Recommandations\\n\\n1. **Dimensionnez le heap correctement** — \`-Xms\` et \`-Xmx\` egaux pour eviter les resizing\\n2. **Surveillez la ratio de promotion** — si beaucoup d'objets passent rapidement a Old, augmentez le heap young\\n3. **Choisissez le GC selon votre cas** — throughput vs latency\\n4. **Evitez les allocations courtes superflues** — objets temporaires qui saturent le young\\n\\nSource : [Oracle Java Documentation - Garbage Collection](https://docs.oracle.com/javase/tutorial/essential/environment/garbage.html)`},
+          deepDive: `# Garbage Collection en Java
+
+## Qu'est-ce que c'est ?
+
+Le Garbage Collector (GC) est un mécanisme automatique de Java qui libère la mémoire prise par des objets qui ne sont plus référencés. Plus besoin de faire \`delete\` comme en C++.
+
+## Syntaxe et exemples
+
+### Le problème de la mémoire manuelle
+
+\`\`\`cpp
+// C++ - gestion manuelle
+MyObject* obj = new MyObject();
+// ... utiliser obj
+delete obj;  // Oublier = fuite mémoire
+// Utiliser après delete = corruption mémoire
+\`\`\`
+
+\`\`\`java
+// Java - gestion automatique
+MyObject obj = new MyObject();
+// ... utiliser obj
+obj = null;  // L'objet devient éligible pour le GC
+// Pas de delete - le GC s'en occupe
+\`\`\`
+
+### Comment le GC détecte-t-il les objets inutiles ?
+
+\`\`\`java
+public class Exemple {
+    void methode() {
+        Object obj = new Object();  // référence vers l'objet
+        obj = null;  // Plus aucune référence - éligible pour GC
+    }
+}
+\`\`\`
+
+## Génération de mémoire (Hotspot)
+
+| Generation | Description | Utilisation |
+|-----------|-------------|-------------|
+| **Young Generation** | Objets nouveaux | Eden + 2 Survivor spaces (S0, S1) |
+| **Old Generation** | Objets longue durée | Tenured space |
+| **Metaspace** | Méta-informations des classes | Depuis Java 8 (remplace PermGen) |
+
+### Cycle de vie d'un objet
+
+\`\`\`
+[new Object()] → Eden → Survivor S0 → Survivor S1 → Old Generation → GC
+\`\`\`
+
+Quand Eden est plein, un **Minor GC** se produit. Quand Old Generation est plein, un **Full GC** se produit.
+
+## Types de Garbage Collectors
+
+\`\`\`bash
+# Serial GC - un seul thread, stop-the-world
+java -XX:+UseSerialGC -jar monapp.jar
+
+# Parallel GC - plusieurs threads, par défaut sur serveur
+java -XX:+UseParallelGC -jar monapp.jar
+
+# G1 GC - Garbage First, par défaut depuis Java 9
+java -XX:+UseG1GC -jar monapp.jar
+
+# ZGC - très faible latence
+java -XX:+UseZGC -jar monapp.jar
+
+# Shenandoah (Java 12+) - pauses indépendantes de la taille du heap
+java -XX:+UseShenandoahGC -jar monapp.jar
+\`\`\`
+
+## Monitoring du GC
+
+\`\`\`bash
+# Voir les options GC
+java -XX:+PrintCommandLineFlags -version
+
+# Activer les logs GC
+java -Xlog:gc*=info:file=gc.log -jar monapp.jar
+
+# Analyser avec jstat
+jstat -gcutil <pid> 1000  # toutes les secondes
+\`\`\`
+
+## Bonnes pratiques
+
+1. **Dimensionnez le heap correctement** — \`-Xms\` et \`-Xmx\` égaux pour éviter les resizing
+2. **Surveillez la ratio de promotion** — si beaucoup d'objets passent rapidement à Old, augmentez le heap young
+3. **Choisissez le GC selon votre cas** — throughput vs latency
+4. **Évitez les allocations courtes superflues** — objets temporaires qui saturent le young
+
+## Pièges courants
+
+1. **Ne pas dimensionner le heap** — OutOfMemoryError fréquente
+2. **Trop d'objets dans la Old Generation** — Full GC fréquents et bloquants
+3. **Références strong dans les collections** — fuir la mémoire involontairement
+4. **Finalizers** — performance dégradée, comportement non déterministe
+
+Source : [Oracle Java Documentation - Garbage Collection](https://docs.oracle.com/javase/tutorial/essential/environment/garbage.html)`},
         {
           id: 'java-9',
           question: 'StackOverflowError vs OutOfMemoryError',
           answer: "**`StackOverflowError`** : la pile d'exécution est pleine, typiquement par récursion infinie (stack ~512Ko-1Mo). **`OutOfMemoryError`** : le tas (*heap*) est saturé, par exemple une liste qui grandit indéfiniment.\n\n`StackOverflow` se diagnostique facilement via la trace d'appels ; `OutOfMemory` nécessite souvent un profiling (`JVisualVM`, `Eclipse MAT`). En production : `-Xmx` pour le heap, `-Xss` pour la stack.",
         
-          deepDive: `# StackOverflowError vs OutOfMemoryError\\n\\n## StackOverflowError\\n\\nSe produit quand la **pile d'execution** (call stack) depasse sa taille maximale. Generalement cause par une recursion infinie.\\n\\n### Cause typique — recursion infinie\\n\\n\`\`\`java\\npublic class RecursionInfinie {\\n    public int factorielle(int n) {\\n        return n * factorielle(n - 1);  // Pas de cas de base\\n    }\\n}\\n\\nnew RecursionInfinie().factorielle(1);  // StackOverflowError\\n\`\`\`\\n\\n### Solution — cas de base ou iteration\\n\\n\`\`\`java\\npublic int factorielle(int n) {\\n    if (n <= 1) return 1;  // Cas de base\\n    return n * factorielle(n - 1);\\n}\\n\\n// Ou version iterative (pas de stack overflow)\\npublic int factorielleIteratif(int n) {\\n    int result = 1;\\n    for (int i = 2; i <= n; i++) {\\n        result *= i;\\n    }\\n    return result;\\n}\\n\`\`\`\\n\\n### Autres causes\\n\\n- Recursion mutuelle (A appelle B, B appelle A)\\n- Methodes avec trop de variables locales\\n- Deep nested method calls (mauvais design)\\n\\n## OutOfMemoryError\\n\\nSe produit quand la **heap** ne peut plus allouer d'objets. Signifiegeneralement une fuite memoire ou un dimensionnement insuffisant.\\n\\n### Cause typique — fuite memoire\\n\\n\`\`\`java\\nList<Object> liste = new ArrayList<>();\\n\\nwhile (true) {\\n    liste.add(new Object());  // Ne jamais liberer\\n}\\n\`\`\`\\n\\n### Cause typique — allocation excessive\\n\\n\`\`\`java\\n// Charger un gros fichier en memoire\\nbyte[] toutLeFichier = Files.readAllBytes(Paths.get("grosfichier.txt"));  // OOM si fichier > heap\\n\`\`\`\\n\\n### Solution — dimensionner correctement\\n\\n\`\`\`bash\\n# Lancer avec assez de heap\\njava -Xms256m -Xmx2g -jar monapp.jar\\n\\n# Pour diagnostiquer\\njava -XX:+HeapDumpOnOutOfMemory -XX:HeapDumpPath=/tmp/dump.hprof -jar monapp.jar\\n\`\`\`\\n\\n### Types de OutOfMemoryError\\n\\n| Type | Cause | Solution |\\n|------|-------|----------|\\n| \`Java heap space\` | Trop d'objets crees | Augmenter heap, corriger fuites |\\n| \`GC overhead limit exceeded\` | GC passe trop de temps | Augmenter heap, optimier allocations |\\n| \`Unable to allocate\` | Memoire native saturee | Reduire heap, fermer ressources |\\n| \`Metaspace\` | Trop de classes chargees | Augmenter Metaspace |\\n\\n## Comment debugger\\n\\n\`\`\`bash\\n# Voir l'etat de la memoire\\njstat -gc <pid>\\n\\n# Heap dump sur OOM\\njava -XX:+HeapDumpOnOutOfMemory -XX:HeapDumpPath=/tmp/dump.hprof -jar monapp.jar\\n\\n# Analyser avec JProfiler ou VisualVM\\njvisualvm --heapdump=/tmp/dump.hprof\\n\`\`\`\\n\\n## Prevention\\n\\n1. **Evitez la recursion** non contraintee — toujours un cas de base\\n2. **Surveillez les allocations** — ne chargez pas de gros fichiers en une fois\\n3. **Utilisez des WeakReference** pour les caches\\n4. **Profilez regulierement** avec jstat ou Java Mission Control\\n\\nSource : [Oracle Java Documentation - Common Problems](https://docs.oracle.com/javase/tutorial/essential/environment/problems.html)`},
+          deepDive: `# StackOverflowError vs OutOfMemoryError
+
+## Qu'est-ce que c'est ?
+
+Ces deux erreurs indiquent des problèmes de mémoire mais dans des régions différentes de la JVM.
+
+## StackOverflowError
+
+Se produit quand la **pile d'exécution** (call stack) dépasse sa taille maximale. Généralement causé par une récursion infinie.
+
+### Syntaxe et exemples
+
+\`\`\`java
+// Récursion infinie - cause typique
+public class RecursionInfinie {
+    public int factorielle(int n) {
+        return n * factorielle(n - 1);  // Pas de cas de base
+    }
+}
+
+new RecursionInfinie().factorielle(1);  // StackOverflowError
+\`\`\`
+
+\`\`\`java
+// Solution — cas de base
+public int factorielle(int n) {
+    if (n <= 1) return 1;  // Cas de base
+    return n * factorielle(n - 1);
+}
+
+// Ou version itérative (pas de stack overflow)
+public int factorielleIteratif(int n) {
+    int result = 1;
+    for (int i = 2; i <= n; i++) {
+        result *= i;
+    }
+    return result;
+}
+\`\`\`
+
+## OutOfMemoryError
+
+Se produit quand la **heap** ne peut plus allouer d'objets. Signifie généralement une fuite mémoire ou un dimensionnement insuffisant.
+
+\`\`\`java
+// Fuite mémoire - cause typique
+List<Object> liste = new ArrayList<>();
+
+while (true) {
+    liste.add(new Object());  // Ne jamais libérer
+}
+\`\`\`
+
+\`\`\`java
+// Allocation excessive
+byte[] toutLeFichier = Files.readAllBytes(Paths.get("grosfichier.txt"));  // OOM si fichier > heap
+\`\`\`
+
+### Types de OutOfMemoryError
+
+| Type | Cause | Solution |
+|------|-------|----------|
+| \`Java heap space\` | Trop d'objets créés | Augmenter heap, corriger fuites |
+| \`GC overhead limit exceeded\` | GC passe trop de temps | Augmenter heap, optimiser allocations |
+| \`Unable to allocate\` | Mémoire native saturée | Réduire heap, fermer ressources |
+| \`Metaspace\` | Trop de classes chargées | Augmenter Metaspace |
+
+## Comment déboguer
+
+\`\`\`bash
+# Voir l'état de la mémoire
+jstat -gc <pid>
+
+# Heap dump sur OOM
+java -XX:+HeapDumpOnOutOfMemory -XX:HeapDumpPath=/tmp/dump.hprof -jar monapp.jar
+
+# Analyser avec VisualVM
+jvisualvm --heapdump=/tmp/dump.hprof
+\`\`\`
+
+\`\`\`bash
+# Dimensionner correctement
+java -Xms256m -Xmx2g -jar monapp.jar
+\`\`\`
+
+## Bonnes pratiques
+
+1. **Ajoutez toujours un cas de base** dans les fonctions récursives
+2. **Surveillez les allocations** — ne chargez pas de gros fichiers d'un coup
+3. **Profilez régulièrement** avec jstat ou Java Mission Control
+4. **Vérifiez les références** dans les collections
+
+## Pièges courants
+
+1. **Récursion sans cas de base** — erreur classique
+2. **Collections qui grandissent indéfiniment** — pas d'éviction
+3. **ThreadLocal non nettoyé** — fuite par thread réutilisé
+4. **Images ou fichiers volumineux chargés en mémoire** — streaming instead
+
+Source : [Oracle Java Documentation - Common Problems](https://docs.oracle.com/javase/tutorial/essential/environment/problems.html)`},
         {
           id: 'java-10',
           question: 'Fuites mémoire en Java',
           answer: "Le GC nettoie les objets *inaccessibles*, mais pas les objets **oubliés dans des collections statiques**, les **listeners non désenregistrés**, les **cachées sans taille limite**, ou les **références vers des objets externes** non fermés (`Connection`, `Stream`).\n\nDétection : monitoring de la mémoire (`JVisualVM`, heap dump), tests de charge avec analyse de l'évolution du heap. __Prévention : toujours fermer les ressources, limiter les cachées, utiliser `WeakReference` quand approprié.__",
         
-          deepDive: `# Fuites memoire en Java\\n\\n## Qu'est-ce que c'est ?\\n\\nUne fuite memoire (memory leak) se produit quand des objets ne sont plus utilises mais ne sont pas liberes par le Garbage Collector, accumulant de la memoire au fil du temps.\\n\\n## Causes frequentes\\n\\n### 1. References statiques\\n\\n\`\`\`java\\npublic class Cache {\\n    private static List<Object> cache = new ArrayList<>();\\n\\n    public static void ajouter(Object o) {\\n        cache.add(o);  // Grandit indefiniment\\n    }\\n}\\n\`\`\`\\n\\nLes champs \`static\` vivent toute la duree du programme.\\n\\n### 2. Collections mal gerees\\n\\n\`\`\`java\\nMap<Key, Value> cache = new HashMap<>();\\n\\npublic void put(Key k, Value v) {\\n    cache.put(k, v);  // Grandit sans limite\\n}\\n\`\`\`\\n\\nSolution : utiliser \`WeakHashMap\` ou un mecanisme d'eviction LRU.\\n\\n### 3. Listeners non retires\\n\\n\`\`\`java\\npublic class EventManager {\\n    private static List<Listener> listeners = new ArrayList<>();\\n\\n    public void addListener(Listener l) {\\n        listeners.add(l);\\n    }\\n}\\n\`\`\`\\n\\nOubli de \`removeListener()\` — fuite si des objets ne sont jamais desenregistres.\\n\\n### 4. ThreadLocal non nettoyage\\n\\n\`\`\`java\\npublic class MonThread implements Runnable {\\n    private static ThreadLocal<Connection> threadConnection = new ThreadLocal<>();\\n\\n    public void run() {\\n        threadConnection.set(creerConnection());\\n        // Si le thread est recycle sans remove(), fuite\\n    }\\n}\\n\`\`\`\\n\\nSolution : toujours appeler \`threadConnection.remove()\` dans un finally block.\\n\\n### 5. Ressources non fermees\\n\\n\`\`\`java\\npublic void lireFichier(String path) {\\n    FileInputStream fis = new FileInputStream(path);\\n    // Si exception avant close(), fuite\\n}\\n\\n// Solution : try-with-resources\\npublic void lireFichier(String path) {\\n    try (FileInputStream fis = new FileInputStream(path)) {\\n        // ...\\n    }\\n}\\n\`\`\`\\n\\n## Comment detecter\\n\\n### Heap dumps\\n\\n\`\`\`bash\\njmap -dump:format=b,file=heap.hprof <pid>\\n\\n# Ou au demarrage\\njava -XX:+HeapDumpOnOutOfMemory -XX:HeapDumpPath=/tmp/dump.hprof -jar monapp.jar\\n\`\`\`\\n\\n### Monitoring avec jstat\\n\\n\`\`\`bash\\njstat -gc <pid> 1000\\n\\n# Si Old generation grandit sans jamais redescendre — fuite probable\\n\`\`\`\\n\\n## Prevention\\n\\n1. **Evitez les champs static mutables**\\n2. **Utilisez des WeakReference** pour les caches\\n3. **Fermez toujours les ressources** (try-with-resources)\\n4. **Desenregistrez les listeners** quand ils ne sont plus utilises\\n5. **Nettoyez les ThreadLocal** dans un finally block\\n\\n## Exemple avec WeakHashMap\\n\\n\`\`\`java\\nimport java.util.WeakHashMap;\\n\\npublic class CacheFaible {\\n    private WeakHashMap<Key, Value> cache = new WeakHashMap<>();\\n\\n    public Value get(Key k) {\\n        return cache.get(k);\\n    }\\n\\n    public void put(Key k, Value v) {\\n        cache.put(k, v);\\n    }\\n}\\n\`\`\`\\n\\nLes entrees sont collectees quand la cle n'a plus d'autre reference.\\n\\nSource : [Oracle Java Documentation](https://docs.oracle.com/javase/tutorial/essential/environment/understandingMemory.html)`},
+          deepDive: `# Fuites mémoire en Java
+
+## Qu'est-ce que c'est ?
+
+Une fuite mémoire (memory leak) se produit quand des objets ne sont plus utilisés mais ne sont pas libérés par le Garbage Collector, accumulant de la mémoire au fil du temps.
+
+## Syntaxe et exemples
+
+### 1. Références statiques
+
+\`\`\`java
+public class Cache {
+    private static List<Object> cache = new ArrayList<>();
+
+    public static void ajouter(Object o) {
+        cache.add(o);  // Grandit indéfiniment
+    }
+}
+\`\`\`
+
+Les champs \`static\` vivent toute la durée du programme.
+
+### 2. Collections mal gérées
+
+\`\`\`java
+Map<Key, Value> cache = new HashMap<>();
+
+public void put(Key k, Value v) {
+    cache.put(k, v);  // Grandit sans limite
+}
+\`\`\`
+
+Solution : utiliser \`WeakHashMap\` ou un mécanisme d'éviction LRU.
+
+### 3. Listeners non retirés
+
+\`\`\`java
+public class EventManager {
+    private static List<Listener> listeners = new ArrayList<>();
+
+    public void addListener(Listener l) {
+        listeners.add(l);
+    }
+}
+\`\`\`
+
+Oubli de \`removeListener()\` — fuite si des objets ne sont jamais désenregistrés.
+
+### 4. ThreadLocal non nettoyé
+
+\`\`\`java
+public class MonThread implements Runnable {
+    private static ThreadLocal<Connection> threadConnection = new ThreadLocal<>();
+
+    public void run() {
+        threadConnection.set(creerConnection());
+        // Si le thread est recyclé sans remove(), fuite
+    }
+}
+\`\`\`
+
+Solution : toujours appeler \`threadConnection.remove()\` dans un finally block.
+
+### 5. Ressources non closes
+
+\`\`\`java
+// Mauvais - fuite si exception avant close()
+public void lireFichier(String path) {
+    FileInputStream fis = new FileInputStream(path);
+    // ...
+    fis.close();
+}
+
+// Bon - try-with-resources
+public void lireFichier(String path) {
+    try (FileInputStream fis = new FileInputStream(path)) {
+        // ...
+    }
+}
+\`\`\`
+
+## Comment détecter
+
+\`\`\`bash
+# Heap dump
+jmap -dump:format=b,file=heap.hprof <pid>
+
+# Ou au démarrage
+java -XX:+HeapDumpOnOutOfMemory -XX:HeapDumpPath=/tmp/dump.hprof -jar monapp.jar
+
+# Monitoring avec jstat
+jstat -gc <pid> 1000
+# Si Old generation grandit sans jamais redescendre — fuite probable
+\`\`\`
+
+## Bonnes pratiques
+
+1. **Évitez les champs static mutables**
+2. **Utilisez des WeakReference** pour les caches
+3. **Fermez toujours les ressources** (try-with-resources)
+4. **Désenregistrez les listeners** quand ils ne sont plus utilisés
+5. **Nettoyez les ThreadLocal** dans un finally block
+
+## Pièges courants
+
+1. **Static collections qui grandissent** — sans mécanisme d'éviction
+2. **Listeners oubliés** — jamais retirés
+3. **ThreadLocal non nettoyé** — thread recyclé
+4. **Ressources non fermées** — exception avant close()
+5. **Objets closables dans des collections** — référence maintenue
+
+Source : [Oracle Java Documentation](https://docs.oracle.com/javase/tutorial/essential/environment/understandingMemory.html)`},
       ],
     },
     {
@@ -93,7 +1134,116 @@ export const javaCategory: InterviewCategory = {
           code: 'try {\n    Connection c = DriverManager.getConnection(url);\n} catch (SQLException e) {\n    System.err.println("Erreur: " + e.getMessage());\n} finally {\n    // fermer la connexionion\n}',
           language: 'java',
         
-          deepDive: `# Gestion des exceptions en Java\\n\\n## Hiérarchie des exceptions\\n\\n\`\`\`\\nThrowable\\n├── Error (erreurs systeme - ne pas catcher)\\n│   ├── OutOfMemoryError\\n│   └── StackOverflowError\\n└── Exception\\n    ├── RuntimeException (unchecked)\\n    │   ├── NullPointerException\\n    │   ├── IllegalArgumentException\\n    │   └── IndexOutOfBoundsException\\n    └── IOException (checked)\\n        ├── FileNotFoundException\\n        └── SQLException\\n\`\`\`\\n\\n## Checked vs Unchecked\\n\\n### Checked — obligatoir a catcher ou declarer\\n\\nLes exceptions checked doivent etre catcher ou declarées avec \`throws\`. Le compilateur les force.\\n\\n\`\`\`java\\npublic void lireFichier(String path) throws IOException {\\n    FileReader reader = new FileReader(path);\\n    reader.read();\\n    reader.close();\\n}\\n\`\`\`\\n\\n### Unchecked — optionnel\\n\\nLes RuntimeException n'ont pas besoin d'etre declarees. Elles indiquent generalement une erreur de programmation.\\n\\n\`\`\`java\\npublic int diviser(int a, int b) {\\n    return a / b;  // ArithmeticException si b == 0 — unchecked\\n}\\n\`\`\`\\n\\n## Try-catch-finally\\n\\n\`\`\`java\\ntry {\\n    int resultat = diviser(10, 0);\\n} catch (ArithmeticException e) {\\n    System.err.println("Division par zero: " + e.getMessage());\\n} catch (Exception e) {\\n    System.err.println("Autre erreur: " + e.getMessage());\\n} finally {\\n    System.out.println("Toujours execute");\\n}\\n\`\`\`\\n\\n## Multi-catch\\n\\n\`\`\`java\\ntry {\\n    // operation qui peut echouer\\n} catch (IOException | ParseException e) {\\n    // Traite les deux memes de facon\\n    System.err.println("Erreur: " + e.getMessage());\\n}\\n\`\`\`\\n\\n## try-with-resources (preferable)\\n\\n\`\`\`java\\ntry (FileReader reader = new FileReader("fichier.txt")) {\\n    int c;\\n    while ((c = reader.read()) != -1) {\\n        System.out.print((char) c);\\n    }\\n} catch (IOException e) {\\n    System.err.println("Erreur de lecture: " + e.getMessage());\\n}\\n\`\`\`\\n\\n## Relancer une exception\\n\\n\`\`\`java\\npublic void methode1() {\\n    try {\\n        // operation risky\\n    } catch (IOException e) {\\n        // Log ou traitement\\n        throw new MonExceptionPersonnalise("details", e);  // Envelopper\\n    }\\n}\\n\`\`\`\\n\\n## Bonnes pratiques\\n\\n1. **Ne catcher pas trop largement** — \`catch (Exception e)\` masque les bugs\\n2. **Preferez try-with-resources** pour les ressources AutoCloseable\\n3. **Relancez avec contexte** — \`throw new SpecificException("message", cause)\`\\n4. **Ne loggez pas et relancez pas** — choisit un seul\\n5. **Evitez les exceptions pour le flux normal** — utilisez des codes de retour\\n\\nSource : [Oracle Java Documentation - Exceptions](https://docs.oracle.com/javase/tutorial/essential/exceptions/)`},
+          deepDive: `# Gestion des exceptions en Java
+
+## Qu'est-ce que c'est ?
+
+Une exception est un événement qui se produit pendant l'exécution d'un programme et qui interrompt le flux normal des instructions. En Java, les exceptions sont des objets qui héritent de la classe \`Throwable\`.
+
+### Hiérarchie des exceptions
+
+\`\`\`
+Throwable
+├── Error (erreurs système - ne pas catcher)
+│   ├── OutOfMemoryError
+│   └── StackOverflowError
+└── Exception
+    ├── RuntimeException (unchecked)
+    │   ├── NullPointerException
+    │   ├── IllegalArgumentException
+    │   └── IndexOutOfBoundsException
+    └── IOException (checked)
+        ├── FileNotFoundException
+        └── SQLException
+\`\`\`
+
+## Syntaxe et exemples
+
+### Checked vs Unchecked
+
+Les exceptions **checked** doivent être catchées ou déclarées avec \`throws\`. Le compilateur les force.
+
+\`\`\`java
+public void lireFichier(String path) throws IOException {
+    FileReader reader = new FileReader(path);
+    reader.read();
+    reader.close();
+}
+\`\`\`
+
+Les **RuntimeException** (unchecked) n'ont pas besoin d'être déclarées. Elles indiquent généralement une erreur de programmation.
+
+\`\`\`java
+public int diviser(int a, int b) {
+    return a / b;  // ArithmeticException si b == 0 — unchecked
+}
+\`\`\`
+
+### Try-catch-finally
+
+\`\`\`java
+try {
+    int resultat = diviser(10, 0);
+} catch (ArithmeticException e) {
+    System.err.println("Division par zéro: " + e.getMessage());
+} catch (Exception e) {
+    System.err.println("Autre erreur: " + e.getMessage());
+} finally {
+    System.out.println("Toujours exécuté");
+}
+\`\`\`
+
+### Multi-catch
+
+\`\`\`java
+try {
+    // opération qui peut échouer
+} catch (IOException | ParseException e) {
+    System.err.println("Erreur: " + e.getMessage());
+}
+\`\`\`
+
+### Try-with-resources (préférable)
+
+\`\`\`java
+try (FileReader reader = new FileReader("fichier.txt")) {
+    int c;
+    while ((c = reader.read()) != -1) {
+        System.out.print((char) c);
+    }
+} catch (IOException e) {
+    System.err.println("Erreur de lecture: " + e.getMessage());
+}
+\`\`\`
+
+### Relancer une exception
+
+\`\`\`java
+public void méthode1() {
+    try {
+        // opération risquée
+    } catch (IOException e) {
+        throw new MonExceptionPersonnalisée("détails", e);
+    }
+}
+\`\`\`
+
+## Bonnes pratiques
+
+1. **Ne catchez pas trop largement** — \`catch (Exception e)\` masque les bugs
+2. **Préférez try-with-resources** pour les ressources AutoCloseable
+3. **Relancez avec contexte** — \`throw new SpecificException("message", cause)\`
+4. **Ne loggez pas et ne relancez pas** — choisissez un seul
+5. **Évitez les exceptions pour le flux normal** — utilisez des codes de retour
+
+## Pièges courants
+
+1. **Catcher \`Exception\` trop largement** — masque les bugs et rend le débogage difficile
+2. **Oublier de fermer les ressources** — utilisez toujours try-with-resources
+3. **Avaler les exceptions** — ne pas traiter ni relancer une exception catchée
+4. **Utiliser des exceptions pour le flux normal** — utilise des codes de retour quand c'est possible
+
+Source : [Oracle Java Documentation - Exceptions](https://docs.oracle.com/javase/tutorial/essential/exceptions/)`},
         {
           id: 'java-12',
           question: 'throw vs throws',
@@ -101,13 +1251,228 @@ export const javaCategory: InterviewCategory = {
           code: 'void verifier(int v) throws IllegalArgumentException {\n    if (v < 0) throw new IllegalArgumentException("Négatif");\n}',
           language: 'java',
         
-          deepDive: `# throw vs throws en Java\\n\\n## throw — declencher une exception\\n\\n\`throw\` est utilise pour **declencher** (jeter) une exception explicitement.\\n\\n\`\`\`java\\npublic void verifierAge(int age) {\\n    if (age < 0) {\\n        throw new IllegalArgumentException("L'age ne peut pas etre negatif: " + age);\\n    }\\n    if (age > 150) {\\n        throw new IllegalArgumentException("Age invalide: " + age);\\n    }\\n}\\n\`\`\`\\n\\n### Creer sa propre exception\\n\\n\`\`\`java\\npublic class MontantInvalideException extends RuntimeException {\\n    public MontantInvalideException(String message) {\\n        super(message);\\n    }\\n}\\n\\npublic void traiterPaiement(double montant) {\\n    if (montant < 0) {\\n        throw new MontantInvalideException("Le montant ne peut pas etre negatif");\\n    }\\n}\\n\`\`\`\\n\\n## throws — declarer une exception\\n\\n\`throws\` declare qu'une methode **peut** lever des exceptions (signature de la methode).\\n\\n\`\`\`java\\npublic void lireFichier(String path) throws IOException {\\n    FileReader reader = new FileReader(path);  // Declare qu'elle peut lever IOException\\n    reader.read();\\n    reader.close();\\n}\\n\`\`\`\\n\\n### Declaration de plusieurs exceptions\\n\\n\`\`\`java\\npublic void maMethode() throws IOException, ParseException {\\n    // ...\\n}\\n\`\`\`\\n\\n## Difference fondamentale\\n\\n| Mot-cle | Role | Ou |\\n|---------|------|-----|\\n| \`throw\` | Declenche une exception | Dans le corps de la methode |\\n| \`throws\` | Declare les exceptions possibles | Dans la signature de la methode |\\n\\n## Exemple combine\\n\\n\`\`\`java\\npublic int lireEntier(String chemin) throws FileNotFoundException, IOException {\\n    FileReader reader = new FileReader(chemin);  // FileNotFoundException\\n    BufferedReader br = new BufferedReader(reader);\\n    String ligne = br.readLine();  // IOException\\n    br.close();\\n    return Integer.parseInt(ligne.trim());  // NumberFormatException — unchecked\\n}\\n\`\`\`\\n\\n## Erreurs courantes\\n\\n### 1. Confondre throw et throws\\n\\n\`\`\`java\\n// Erreur\\npublic void demo() {\\n    throw new Exception("message");  // Une methode ne peut pas "throw" une checked directement\\n}\\n\\n// Correct\\npublic void demo() throws Exception {\\n    throw new Exception("message");  // Declaration + declenchement\\n}\\n\`\`\`\\n\\n### 2. Oublier throws sur la methode appellante\\n\\n\`\`\`java\\npublic voidappelante() {\\n    try {\\n        lireFichier("test.txt");  // Erreur de compilation — declare IOException\\n    } catch (IOException e) {\\n        // OK\\n    }\\n}\\n\`\`\`\\n\\n## RuntimeException et throws\\n\\nLes RuntimeException (unchecked) n'ont pas besoin d'etre declarees avec \`throws\` :\\n\\n\`\`\`java\\npublic int diviser(int a, int b) throws RuntimeException {  // Inutile\\n    if (b == 0) {\\n        throw new ArithmeticException("Division par zero");\\n    }\\n    return a / b;\\n}\\n\\n// Mieux\\npublic int diviser(int a, int b) {  // Pas de throws necessaire\\n    if (b == 0) {\\n        throw new ArithmeticException("Division par zero");\\n    }\\n    return a / b;\\n}\\n\`\`\`\\n\\n## Resume\\n\\n- **\`throw\`** = je jette maintenant cette exception\\n- **\`throws\`** = cette methode peut lever cette exception (je la propage)\\n\\nSource : [Oracle Java Documentation - Exception Handling](https://docs.oracle.com/javase/tutorial/essential/exceptions/throwing.html)`},
+          deepDive: `# throw vs throws en Java
+
+## Qu'est-ce que c'est ?
+
+\`throw\` et \`throws\` sont deux mots-clés liés aux exceptions mais avec des rôles différents.
+
+
+## Syntaxe et exemples
+
+### throw — déclencher une exception
+
+\`throw\` est utilisé pour **déclencher** (jeter) une exception explicitement.
+
+
+\`\`\`java
+public void vérifierÂge(int âge) {
+    if (âge < 0) {
+        throw new IllegalArgumentException("L'âge ne peut pas être négatif: " + âge);
+    }
+    if (âge > 150) {
+        throw new IllegalArgumentException("Âge invalide: " + âge);
+    }
+}
+\`\`\`
+
+### Créer sa propre exception
+
+
+\`\`\`java
+public class MontantInvalideException extends RuntimeException {
+    public MontantInvalideException(String message) {
+        super(message);
+    }
+}
+
+public void traiterPaiement(double montant) {
+    if (montant < 0) {
+        throw new MontantInvalideException("Le montant ne peut pas être négatif");
+    }
+}
+\`\`\`
+
+
+### throws — déclarer une exception
+
+\`throws\` déclare qu'une méthode **peut** lever des exceptions (dans la signature de la méthode).
+
+\`\`\`java
+public void lireFichier(String path) throws IOException {
+    FileReader reader = new FileReader(path);
+    reader.read();
+    reader.close();
+}
+\`\`\`
+
+### Déclaration de plusieurs exceptions
+
+\`\`\`java
+public void maMéthode() throws IOException, ParseException {
+    // ...
+}
+\`\`\`
+
+
+## Différence fondamentale
+
+| Mot-clé | Rôle | Où |
+|---------|------|-----|
+| \`throw\` | Déclenche une exception | Dans le corps de la méthode |
+| \`throws\` | Déclare les exceptions possibles | Dans la signature de la méthode |
+
+
+## Exemple combiné
+
+\`\`\`java
+public int lireEntier(String chemin) throws FileNotFoundException, IOException {
+    FileReader reader = new FileReader(chemin);
+    BufferedReader br = new BufferedReader(reader);
+    String ligne = br.readLine();
+    br.close();
+    return Integer.parseInt(ligne.trim());
+}
+\`\`\`
+
+## Bonnes pratiques
+
+1. **Utilisez \`throw\` pour les conditions invalides** — quand quelque chose ne devrait jamais arriver
+2. **Déclarez les checked exceptions avec \`throws\`** — dans la signature de la méthode
+3. **Créez des exceptions personnalisées** — pour un domaine métier spécifique
+4. **Enveloppez les exceptions** — \`throw new SpecificException("message", cause)\` pour chaîner
+
+## Pièges courants
+
+
+### Confusion entre throw et throws
+
+\`\`\`java
+// Erreur
+public void démo() {
+    throw new Exception("message");  // Une méthode ne peut pas "throw" une checked directement
+}
+
+// Correct
+public void démo() throws Exception {
+    throw new Exception("message");  // Déclaration + déclenchement
+}
+\`\`\`
+
+### Oublier throws sur la méthode appelante
+
+\`\`\`java
+public void méthodeAppelante() {
+    try {
+        lireFichier("test.txt");  // Erreur de compilation — declare IOException
+    } catch (IOException e) {
+        // OK
+    }
+}
+\`\`\`
+
+### RuntimeException et throws
+
+Les RuntimeException (unchecked) n'ont pas besoin d'être déclarées avec \`throws\` :
+
+\`\`\`java
+public int diviser(int a, int b) throws RuntimeException {  // Inutile
+    if (b == 0) {
+        throw new ArithmeticException("Division par zéro");
+    }
+    return a / b;
+}
+\`\`\`
+
+Source : [Oracle Java Documentation - Exception Handling](https://docs.oracle.com/javase/tutorial/essential/exceptions/throwing.html)`},
         {
           id: 'java-13',
           question: 'Checked vs Unchecked',
           answer: "**Checked** : vérifiées à la compilation, le compilateur oblige à les gérer (`try-catch` ou `throws`) — ex. `IOException`, `SQLException`. Impossible de les ignorer.\n\n**Unchecked** (sous-classes de `RuntimeException`) : non vérifiées, représentent des erreurs de programmation — ex. `NullPointerException`.\n\nEn pratique : **checked** pour les erreurs métier prévisibles, **unchecked** pour les bugs de programmation.",
         
-          deepDive: `# Checked vs Unchecked en Java\\n\\n## Difference fondamentale\\n\\n| Type | Obligation | Heritage | Exemples |\\n|------|------------|-----------|----------|\\n| **Checked** | catcher ou declarer | Exception (pas RuntimeException) | IOException, SQLException |\\n| **Unchecked** | optionnel | RuntimeException | NullPointerException, IllegalArgumentException |\\n\\n## Checked — le compilateur force\\n\\nLes checked exceptions doivent etre catcher ou declarees avec throws.\\n\\n\`\`\`java\\n// Erreur de compilation - IOException non geree\\npublic void lire() {\\n    FileReader reader = new FileReader("fichier.txt");\\n}\\n\\n// Correct - declaree\\npublic void lire() throws IOException {\\n    FileReader reader = new FileReader("fichier.txt");\\n}\\n\\n// Correct - catchee\\npublic void lire() {\\n    try {\\n        FileReader reader = new FileReader("fichier.txt");\\n    } catch (IOException e) {\\n        System.err.println("Fichier non trouve: " + e.getMessage());\\n    }\\n}\\n\`\`\`\\n\\n## Unchecked — le compilateur ignore\\n\\nLes RuntimeException et leurs sous-classes sont unchecked. Pas besoin de les declarer.\\n\\n\`\`\`java\\npublic int diviser(int a, int b) {\\n    if (b == 0) {\\n        throw new ArithmeticException("Division par zero");\\n    }\\n    return a / b;\\n}\\n\`\`\`\\n\\n## Quand utiliser quoi\\n\\n### Checked — erreurs recuperables\\n\\nPour des conditions previsibles que lappelant peut remedier :\\n\\n- Fichier non trouve\\n- Connexion BD perdue\\n- Donnees invalides\\n\\n### Unchecked — erreurs de programmation\\n\\nPour des bugs dans le code :\\n\\n- Argument null\\n- Valeur hors limites\\n- Violation de contrat\\n\\n## Bonnes pratiques\\n\\n1. Ne creez pas de checked exceptions pour des erreurs de programmation\\n2. Converissez les checked en unchecked quand lappelant ne peut pas remedier\\n3. Evitez les exceptions pour le flux normal\\n\\nSource : [Oracle Java Documentation](https://docs.oracle.com/javase/tutorial/essential/exceptions/definition.html)`},
+          deepDive: `# Checked vs Unchecked en Java
+
+## Qu'est-ce que c'est ?
+
+En Java, les exceptions sont divisées en deux catégories principales : les exceptions **checked** (vérifiées) et **unchecked** (non vérifiées). Cette distinction détermine si le compilateur exige ou non de les gérer.
+
+## Différence fondamentale
+
+| Type | Obligation | Héritage | Exemples |
+|------|------------|----------|----------|
+| **Checked** | Catcher ou déclarer | \`Exception\` (pas \`RuntimeException\`) | \`IOException\`, \`SQLException\` |
+| **Unchecked** | Optionnel | \`RuntimeException\` | \`NullPointerException\`, \`IllegalArgumentException\` |
+
+## Syntaxe et exemples
+
+### Checked — le compilateur force
+
+Les checked exceptions doivent être catchées ou déclarées avec \`throws\`.
+
+\`\`\`java
+// Erreur de compilation - IOException non gérée
+public void lire() {
+    FileReader reader = new FileReader("fichier.txt");
+}
+
+// Correct - déclarée
+public void lire() throws IOException {
+    FileReader reader = new FileReader("fichier.txt");
+}
+
+// Correct - catchée
+public void lire() {
+    try {
+        FileReader reader = new FileReader("fichier.txt");
+    } catch (IOException e) {
+        System.err.println("Fichier non trouvé: " + e.getMessage());
+    }
+}
+\`\`\`
+
+### Unchecked — le compilateur ignore
+
+Les \`RuntimeException\` et leurs sous-classes sont unchecked. Pas besoin de les déclarer.
+
+\`\`\`java
+public int diviser(int a, int b) {
+    if (b == 0) {
+        throw new ArithmeticException("Division par zéro");
+    }
+    return a / b;
+}
+\`\`\`
+
+## Bonnes pratiques
+
+### Checked — erreurs récupérables
+
+Pour des conditions prévisibles que l'appelant peut remédier :
+
+- Fichier non trouvé
+- Connexion BD perdue
+- Données invalides
+
+### Unchecked — erreurs de programmation
+
+Pour des bugs dans le code :
+
+- Argument null
+- Valeur hors limites
+- Violation de contrat
+
+1. **Ne créez pas de checked exceptions pour des erreurs de programmation**
+2. **Convertissez les checked en unchecked** quand l'appelant ne peut pas remédier
+3. **Évitez les exceptions pour le flux normal**
+
+## Pièges courants
+
+1. **Créer une checked exception pour une erreur de programmation** — utilisez \`RuntimeException\`
+2. ** catcher \`Exception\` trop largement** — masque les bugs
+3. **Oublier de déclarer les checked exceptions** — erreur de compilation
+4. **Utiliser des exceptions pour le flux normal** — préférez des codes de retour
+
+Source : [Oracle Java Documentation](https://docs.oracle.com/javase/tutorial/essential/exceptions/definition.html)`},
       ],
     },
     {
@@ -119,13 +1484,249 @@ export const javaCategory: InterviewCategory = {
           question: 'Array vs ArrayList',
           answer: "**`Array`** : taille fixe, accepte les primitives, syntaxe crochets. **`ArrayList`** : taille dynamique, objets uniquement (*autoboxing* pour les primitives), méthodes `add`/`get`/`remove`.\n\n`ArrayList` est plus flexible et préférée dans la plupart des cas. `Array` reste utile pour les performances critiques ou les tailles connues à l'avance.",
         
-          deepDive: `# Array vs ArrayList en Java\\n\\n## Difference fondamentale\\n\\n| Caracteristique | Array | ArrayList |\\n|----------------|-------|----------|\\n| Taille | Fixe aprs creation | Variable dynamiquement |\\n| Type | Primitif et Objet | Objet uniquement |\\n| Performance | Plus rapide | Legerement plus lent (autoboxing) |\\n| Syntaxe | \`Type[] arr = new Type[n]\` | \`ArrayList<Type> list = new ArrayList<>()\` |\\n\\n## Array — taille fixe\\n\\n\`\`\`java\\n// Declaration et allocation\\nString[] noms = new String[3];\\nnoms[0] = "Alice";\\nnoms[1] = "Bob";\\nnoms[2] = "Charlie";\\n\\n// Taille fixe - pas de add() possible\\n// noms[3] = "Diana";  // ArrayIndexOutOfBoundsException\\n\\n// Initialisation avec valeurs\\nint[] nombres = {1, 2, 3, 4, 5};\\n\`\`\`\\n\\n## ArrayList — taille variable\\n\\n\`\`\`java\\nimport java.util.ArrayList;\\n\\nArrayList<String> noms = new ArrayList<>();\\nnoms.add("Alice");   // Grandit automatiquement\\nnoms.add("Bob");\\nnoms.add("Charlie");\\nnoms.add("Diana");   // Pas de probleme - taille dynamique\\n\\n// Acces par index\\nString premier = noms.get(0);\\n\\n// Taille\\nint taille = noms.size();  // 4\\n\\n// Suppression\\nnoms.remove("Bob");  // Retire Bob\\n\`\`\`\\n\\n## Conversion entre Array et ArrayList\\n\\n\`\`\`java\\n// Array vers ArrayList\\nString[] tableau = {"a", "b", "c"};\\nArrayList<String> liste = new ArrayList<>(Arrays.asList(tableau));\\n\\n// ArrayList vers Array\\nArrayList<String> liste2 = new ArrayList<>();\\nliste2.add("x");\\nliste2.add("y");\\nString[] tableau2 = liste2.toArray(new String[0]);\\n\`\`\`\\n\\n## Quand utiliser quoi\\n\\n### Array - quand vous savez la taille\\n\\n- Taille connue a lavance et ne changera pas\\n- Performance critique (pas de surcout dynamique)\\n- Travail avec primitifs (int[], double[], etc.)\\n\\n\`\`\`java\\n// Matrice de 3x3 - taille fixee\\nint[][] matrice = new int[3][3];\\n\\n// Buffer de taille connue\\nbyte[] buffer = new byte[1024];\\n\`\`\`\\n\\n### ArrayList - quand la taille varie\\n\\n- Nombre delements imprévisible\\n- Ajouts et suppressions frequents\\n- Manipulation facile (add, remove, contains)\\n\\n\`\`\`java\\nArrayList<String> utilisateurs = new ArrayList<>();\\nutilisateurs.add("Alice");  // taille = 1\\nutilisateurs.add("Bob");     // taille = 2\\nutilisateurs.add("Charlie"); // taille = 3\\n\`\`\`\\n\\n## Pieges courants\\n\\n1. **Array de primitifs vs ArrayList** - ArrayList ne peut pas stocker \`int\` directement, il stocke \`Integer\` (autoboxing)\\n\\n\`\`\`java\\n// Mauvais - ArrayList ne peut pas stocker int\\nArrayList<int> integers = new ArrayList<>();  // Erreur\\n\\n// Correct\\nArrayList<Integer> integers = new ArrayList<>();\\n\`\`\`\\n\\n2. **Taille fixe des arrays** - essayer dutiliser un index hors limites lance une exception\\n\\nSource : [Oracle Java Documentation - Arrays](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/arrays.html)`},
+          deepDive: `# Array vs ArrayList en Java
+
+## Qu'est-ce que c'est ?
+
+Un **Array** est une structure de données primitive qui stocke des éléments de même type dans un bloc de mémoire contigu. Une **ArrayList** est une collection dynamique qui implémente l'interface \`List\` et peut grandir automatiquement.
+
+## Différence fondamentale
+
+
+| Caractéristique | Array | ArrayList |
+|----------------|-------|----------|
+| Taille | Fixe après création | Variable dynamiquement |
+| Type | Primitif et Objet | Objet uniquement |
+| Performance | Plus rapide | Légèrement plus lent (autoboxing) |
+| Syntaxe | \`Type[] arr = new Type[n]\` | \`ArrayList<Type> list = new ArrayList<>()\` |
+
+## Syntaxe et exemples
+
+### Array — taille fixe
+
+\`\`\`java
+// Déclaration et allocation
+String[] noms = new String[3];
+noms[0] = "Alice";
+noms[1] = "Bob";
+noms[2] = "Charlie";
+
+// Taille fixe - pas de add() possible
+// noms[3] = "Diana";  // ArrayIndexOutOfBoundsException
+
+// Initialisation avec valeurs
+int[] nombres = {1, 2, 3, 4, 5};
+\`\`\`
+
+### ArrayList — taille variable
+
+\`\`\`java
+import java.util.ArrayList;
+
+ArrayList<String> noms = new ArrayList<>();
+noms.add("Alice");   // Grandit automatiquement
+noms.add("Bob");
+noms.add("Charlie");
+noms.add("Diana");   // Pas de problème - taille dynamique
+
+// Accès par index
+String premier = noms.get(0);
+
+// Taille
+int taille = noms.size();  // 4
+
+// Suppression
+noms.remove("Bob");  // Retire Bob
+\`\`\`
+
+### Conversion entre Array et ArrayList
+
+\`\`\`java
+// Array vers ArrayList
+String[] tableau = {"a", "b", "c"};
+ArrayList<String> liste = new ArrayList<>(Arrays.asList(tableau));
+
+// ArrayList vers Array
+ArrayList<String> liste2 = new ArrayList<>();
+liste2.add("x");
+liste2.add("y");
+String[] tableau2 = liste2.toArray(new String[0]);
+\`\`\`
+
+## Bonnes pratiques
+
+### Array — quand vous savez la taille
+
+- Taille connue à l'avance et ne changera pas
+- Performance critique (pas de surcoût dynamique)
+- Travail avec primitifs (\`int[]\`, \`double[]\`, etc.)
+
+\`\`\`java
+// Matrice de 3x3 - taille fixee
+int[][] matrice = new int[3][3];
+
+// Buffer de taille connue
+byte[] buffer = new byte[1024];
+\`\`\`
+
+### ArrayList — quand la taille varie
+
+- Nombre d'éléments imprévisible
+- Ajouts et suppressions fréquents
+- Manipulation facile (\`add\`, \`remove\`, \`contains\`)
+
+\`\`\`java
+ArrayList<String> utilisateurs = new ArrayList<>();
+utilisateurs.add("Alice");  // taille = 1
+utilisateurs.add("Bob");     // taille = 2
+utilisateurs.add("Charlie"); // taille = 3
+\`\`\`
+
+## Pièges courants
+
+1. **Array de primitifs vs ArrayList** — ArrayList ne peut pas stocker \`int\` directement, il stocke \`Integer\` (autoboxing)
+
+
+\`\`\`java
+// Mauvais - ArrayList ne peut pas stocker int
+ArrayList<int> integers = new ArrayList<>();  // Erreur
+
+// Correct
+ArrayList<Integer> integers = new ArrayList<>();
+\`\`\`
+
+2. **Taille fixe des arrays** — essayer d'utiliser un index hors limites lance une \`ArrayIndexOutOfBoundsException\`
+3. **Oublier la capacité initiale** — pour les ArrayList avec beaucoup d'éléments, spécifiez \`new ArrayList<>(capacité)\`
+
+Source : [Oracle Java Documentation - Arrays](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/arrays.html)`},
         {
           id: 'java-15',
           question: 'ArrayList vs LinkedList',
           answer: "**`ArrayList`** (tableau dynamique) : accès par index O(1), insertion/suppression en milieu O(n), meilleure localité cachée. **`LinkedList`** (liste doublement chaînée) : insertion/suppression O(1) si on a le nœud, accès par index O(n).\n\nEn pratique, `ArrayList` est préférée dans 90% des cas grâce à l'accès rapide et la mémoire contiguë. `LinkedList` est pertinente pour les insertions/suppressions fréquentes en tête ou en milieu.",
         
-          deepDive: `# ArrayList vs LinkedList en Java\\n\\n## Difference fondamentale\\n\\n| Operation | ArrayList | LinkedList |\\n|------------|-----------|------------|\\n| Acces par index | O(1) - Acces direct | O(n) - Parcours depuis debut |\\n| Ajout en fin | O(1) amorti | O(1) |\\n| Insertion au milieu | O(n) - Decalage | O(1) si position connue |\\n| Suppression | O(n) - Decalage | O(1) si position connue |\\n| Memoire | Contigu - moins de RAM | Noeuds chainés - plus de RAM |\\n\\n## ArrayList — acces rapide, modification lente au milieu\\n\\n\`\`\`java\\nimport java.util.ArrayList;\\n\\nArrayList<String> liste = new ArrayList<>();\\nliste.add("Alice");\\nliste.add("Bob");\\nliste.add("Charlie");\\n\\n// Acces par index - O(1)\\nString deuxieme = liste.get(1);  // "Bob" - tres rapide\\n\\n// Ajout en fin - O(1) amorti\\nliste.add("Diana");  // Rapide\\n\\n// Insertion au milieu - O(n)\\nliste.add(1, "Ben");  // Decale tous les elements apres l'index 1\\n\`\`\`\\n\\n## LinkedList — modification rapide, acces lent\\n\\n\`\`\`java\\nimport java.util.LinkedList;\\n\\nLinkedList<String> liste = new LinkedList<>();\\nliste.add("Alice");\\nliste.add("Bob");\\nliste.add("Charlie");\\n\\n// Acces par index - O(n)\\nString deuxieme = liste.get(1);  // "Bob" - doitle parcourir depuis le debut\\n\\n// Insertion au milieu - O(1) si on a un iterateur\\nListIterator<String> it = liste.listIterator(1);\\nit.add("Ben");  // Insertion directe sans decalage\\n\\n// Ajout en fin - O(1)\\nliste.add("Diana");  // Rapide\\n\`\`\`\\n\\n## Acces par index — demonstration\\n\\n\`\`\`java\\nArrayList<String> al = new ArrayList<>();\\nLinkedList<String> ll = new LinkedList<>();\\n\\n// Les deux ont 10 000 elements\\nfor (int i = 0; i < 10000; i++) {\\n    al.add("item" + i);\\n    ll.add("item" + i);\\n}\\n\\n// Acces a l'element 5000\\nal.get(5000);  // Instant - adresse memoire directe\\nll.get(5000);  // Doit parcourir 5000 noeuds\\n\`\`\`\\n\\n## Insertion — demonstration\\n\\n\`\`\`java\\nArrayList<String> al = new ArrayList<>();\\nLinkedList<String> ll = new LinkedList<>();\\n\\n// Ajout de 10 000 elements\\nfor (int i = 0; i < 10000; i++) {\\n    al.add(i, "item" + i);  // Decale tous les elements\\n    ll.add(i, "item" + i);  // Insertion directe\\n}\\n\`\`\`\\n\\n## Quand utiliser quoi\\n\\n### ArrayList - dans la plupart des cas\\n\\n- Acces frequel par index\\n- Ajouts en fin de liste\\n- Modification au milieu rare\\n\\n\`\`\`java\\nArrayList<String> noms = new ArrayList<>();\\nnoms.add("Alice");\\nnoms.add("Bob");\\nString troisieme = noms.get(2);  // Acces rapide\\n\`\`\`\\n\\n### LinkedList - cas speciaux\\n\\n- Insertions et suppressions frequentes au milieu ou au debut\\n- Mise en oeuvre de piles (Stack) ou files (Queue)\\n\\n\`\`\`java\\nLinkedList<String> pile = new LinkedList<>();\\npile.push("A");\\npile.push("B");\\npile.pop();  // Retire "B" - O(1)\\n\`\`\`\\n\\n## Performance comparaison\\n\\n\`\`\`java\\nimport java.util.*;\\n\\npublic class Comparaison {\\n    public static void main(String[] args) {\\n        int n = 100000;\\n\\n        // ArrayList - ajout en fin\\n        ArrayList<Long> al = new ArrayList<>();\\n        long debut = System.nanoTime();\\n        for (int i = 0; i < n; i++) al.add(i);\\n        System.out.println("ArrayList ajout fin: " + (System.nanoTime() - debut) / 1e6 + "ms");\\n\\n        // LinkedList - ajout en fin\\n        LinkedList<Long> ll = new LinkedList<>();\\n        debut = System.nanoTime();\\n        for (int i = 0; i < n; i++) ll.add(i);\\n        System.out.println("LinkedList ajout fin: " + (System.nanoTime() - debut) / 1e6 + "ms");\\n    }\\n}\\n\`\`\`\\n\\nSource : [Oracle Java Documentation - Collections](https://docs.oracle.com/javase/tutorial/collections/implementations/list.html)`},
+          deepDive: `# ArrayList vs LinkedList en Java
+
+## Qu'est-ce que c'est ?
+
+\`ArrayList\` et \`LinkedList\` sont deux implémentations de l'interface \`List\` en Java. Elles ont des performances différentes selon les opérations effectuées.
+
+## Différence fondamentale
+
+| Opération | ArrayList | LinkedList |
+|-----------|-----------|------------|
+| Accès par index | O(1) - Accès direct | O(n) - Parcours depuis début |
+| Ajout en fin | O(1) amorti | O(1) |
+| Insertion au milieu | O(n) - Décalage | O(1) si position connue |
+| Suppression | O(n) - Décalage | O(1) si position connue |
+| Mémoire | Contiguë - moins de RAM | Nœuds chainés - plus de RAM |
+
+## Syntaxe et exemples
+
+### ArrayList — accès rapide, modification lente au milieu
+
+\`\`\`java
+import java.util.ArrayList;
+
+ArrayList<String> liste = new ArrayList<>();
+liste.add("Alice");
+liste.add("Bob");
+liste.add("Charlie");
+
+// Accès par index - O(1)
+String deuxième = liste.get(1);  // "Bob" - très rapide
+
+// Ajout en fin - O(1) amorti
+liste.add("Diana");  // Rapide
+
+// Insertion au milieu - O(n)
+liste.add(1, "Ben");  // Décale tous les éléments après l'index 1
+\`\`\`
+
+### LinkedList — modification rapide, accès lent
+
+\`\`\`java
+import java.util.LinkedList;
+
+LinkedList<String> liste = new LinkedList<>();
+liste.add("Alice");
+liste.add("Bob");
+liste.add("Charlie");
+
+// Accès par index - O(n)
+String deuxième = liste.get(1);  // "Bob" - doit parcourir depuis le début
+
+// Insertion au milieu - O(1) si on a un itérateur
+ListIterator<String> it = liste.listIterator(1);
+it.add("Ben");  // Insertion directe sans décalage
+
+// Ajout en fin - O(1)
+liste.add("Diana");  // Rapide
+\`\`\`
+
+### Accès par index — démonstration
+
+\`\`\`java
+ArrayList<String> al = new ArrayList<>();
+LinkedList<String> ll = new LinkedList<>();
+
+// Les deux ont 10 000 éléments
+for (int i = 0; i < 10000; i++) {
+    al.add("item" + i);
+    ll.add("item" + i);
+}
+
+// Accès à l'élément 5000
+al.get(5000);  // Instantané - adresse mémoire directe
+ll.get(5000);  // Doit parcourir 5000 nœuds
+\`\`\`
+
+### Insertion — démonstration
+
+\`\`\`java
+ArrayList<String> al = new ArrayList<>();
+LinkedList<String> ll = new LinkedList<>();
+
+// Ajout de 10 000 éléments au début
+for (int i = 0; i < 10000; i++) {
+    al.add(0, "item" + i);  // Décalage de tous les éléments
+    ll.add(0, "item" + i);  // Insertion directe
+}
+\`\`\`
+
+## Bonnes pratiques
+
+### ArrayList - dans la plupart des cas
+
+- Accès fréquent par index
+- Ajouts en fin de liste
+- Modification au milieu rare
+
+\`\`\`java
+ArrayList<String> noms = new ArrayList<>();
+noms.add("Alice");
+noms.add("Bob");
+String troisième = noms.get(2);  // Accès rapide
+\`\`\`
+
+### LinkedList - cas spéciaux
+
+- Insertions et suppressions fréquentes au milieu ou au début
+- Mise en œuvre de piles (Stack) ou files (Queue)
+
+\`\`\`java
+LinkedList<String> pile = new LinkedList<>();
+pile.push("A");
+pile.push("B");
+pile.pop();  // Retire "B" - O(1)
+\`\`\`
+
+## Pièges courants
+
+1. **Utiliser LinkedList pour l'accès par index** — O(n) rend les opérations lentes
+2. **Confondre les opérations** — \`add(index, element)\` est O(n) pour ArrayList mais O(1) pour LinkedList avec itérateur
+3. **Utiliser \`get(n)\` dans une boucle** — très lent avec LinkedList, privilégiez l'itérateur
+
+Source : [Oracle Java Documentation - Collections](https://docs.oracle.com/javase/tutorial/collections/implementations/list.html)`},
         {
           id: 'java-16',
           question: 'String vs StringBuilder vs StringBuffer',
@@ -133,52 +1734,54 @@ export const javaCategory: InterviewCategory = {
         
           deepDive: `# String, StringBuilder et StringBuffer en Java
 
-## Rappel fondamental
+## Qu'est-ce que c'est ?
 
-En Java, les chaines de caracteres sont **immuables** — une fois creees, elles ne peuvent pas etre modifiees. Toute operation de concatenation cree un nouvel objet.
+En Java, les chaînes de caractères sont **immuables** — une fois créées, elles ne peuvent pas être modifiées. Toute opération de concaténation crée un nouvel objet. Pour pallier ce problème, Java propose \`StringBuilder\` et \`StringBuffer\`.
 
-## Le probleme avec String
+## Syntaxe et exemples
+
+### Le problème avec String
 
 \`\`\`java
 String result = "";
 for (int i = 0; i < 1000; i++) {
-    result += "element" + i;  // Creer 1000 objets String temporaires !
+    result += "élément" + i;  // Crée 1000 objets String temporaires !
 }
 \`\`\`
 
-Chaque += cree :
+Chaque \`+=\` crée :
 1. Un nouveau buffer String
-2. La copie de lancien contenu
-3. Lajout du nouveau texte
+2. La copie de l'ancien contenu
+3. L'ajout du nouveau texte
 4. Le garbage collector doit recycler les anciens objets
 
-**Performance : O(n2) en temps, O(n) en objets crees**
+**Performance : O(n²) en temps, O(n) en objets créés**
 
-## StringBuilder — la solution performante
+### StringBuilder — la solution performante
 
 \`\`\`java
 StringBuilder sb = new StringBuilder();
 for (int i = 0; i < 1000; i++) {
-    sb.append("element");
+    sb.append("élément");
     sb.append(i);
 }
 String result = sb.toString();
 \`\`\`
 
 StringBuilder maintient un **buffer redimensionnable** :
-- Append = ajout direct au buffer
-- Pas de creation dobjets intermediaires
+- \`append\` = ajout direct au buffer
+- Pas de création d'objets intermédiaires
 - **Performance : O(n) en temps, O(n) en espace**
 
-## Constructeurs utiles
+### Constructeurs utiles
 
 \`\`\`java
-StringBuilder sb1 = new StringBuilder();           // Capacite par defaut : 16
-StringBuilder sb2 = new StringBuilder(50);         // Capacite explicite
+StringBuilder sb1 = new StringBuilder();           // Capacité par défaut : 16
+StringBuilder sb2 = new StringBuilder(50);         // Capacité explicite
 StringBuilder sb3 = new StringBuilder("Bonjour");   // Init avec contenu
 \`\`\`
 
-## Methodes principales
+### Méthodes principales
 
 \`\`\`java
 StringBuilder sb = new StringBuilder("Hello");
@@ -190,33 +1793,41 @@ sb.replace(0, 5, "Hi");     // "HiWorld"
 sb.reverse();               // "dlroW iH"
 sb.length();                 // 7
 sb.capacity();               // 23 (ou plus)
-sb.ensureCapacity(100);      // Garantit min 100 de capacite
+sb.ensureCapacity(100);      // Garantit min 100 de capacité
 \`\`\`
 
-## StringBuffer — thread-safe mais plus lent
+
+### StringBuffer — thread-safe mais plus lent
 
 \`\`\`java
 StringBuffer sbf = new StringBuffer("Hello");
-// Toutes les methodes sont synchronisees
+// Toutes les méthodes sont synchronisées
 sbf.append(" World");  // Thread-safe mais plus lent
 \`\`\`
 
-| Characteristique | String | StringBuilder | StringBuffer |
-|-----------------|--------|---------------|--------------|
-| Mutabilite | Immuable | Mutable | Mutable |
-| Performance | Tres lente | Rapide | Plus lente (sync) |
+## Différence fondamentale
+
+| Caractéristique | String | StringBuilder | StringBuffer |
+|-----------------|--------|---------------|---------------|
+| Mutabilité | Immuable | Mutable | Mutable |
+| Performance | Très lente | Rapide | Plus lente (sync) |
 | Thread-safe | Oui (immuable) | Non | Oui |
-| Utilisation | Donnees statiques | Usage general | Acces multi-thread |
+| Utilisation | Données statiques | Usage général | Accès multi-thread |
 
-## Quand utiliser quoi
+## Bonnes pratiques
 
-- **StringBuilder** : toute concatenation en boucle
-- **String** : chaines statiques ou courtes concatenations uniques
-- **StringBuffer** : contextes multi-thread (rare — preferez ConcurrentHashMap ou dautres approches)
+- **StringBuilder** : toute concaténation en boucle
+- **String** : chaînes statiques ou courtes concaténations uniques
+- **StringBuffer** : contextes multi-thread (rare — préférez \`ConcurrentHashMap\` ou d'autres approches)
 
-## Pieges courants
+1. **Utilisez StringBuilder** pour toute concaténation en boucle
+2. **Utilisez String** pour les chaînes courtes
+3. **Spéculez la capacité** si vous connaissez la taille : \`new StringBuilder(tailleEstimée)\`
+
+## Pièges courants
 
 ### Confusion avec toString()
+
 
 \`\`\`java
 StringBuilder sb = new StringBuilder("test");
@@ -231,7 +1842,7 @@ String result = sb.toString();
 // MAUVAIS
 String s = "";
 for (String part : parts) {
-    s = s + part;  // Creer un nouvel objet a chaque iteration
+    s = s + part;  // Crée un nouvel objet à chaque itération
 }
 
 // BON
@@ -242,11 +1853,9 @@ for (String part : parts) {
 String s = sb.toString();
 \`\`\`
 
-## Bonnes pratiques
+### Oublier la capacité initiale
 
-1. **Utilisez StringBuilder** pour toute concatenation en boucle
-2. **Utilisez String** pour les chaines courtes
-3. **Speculez la capacite** si vous connaissez la taille : \`new StringBuilder(estimatedSize)\`
+Sans taille estimée, StringBuilder commence avec 16 caractères et redimensionne dynamiquement.
 
 Source : [Oracle Java Documentation - Strings](https://docs.oracle.com/javase/tutorial/java/data/strings.html)`},
         {
@@ -258,11 +1867,13 @@ Source : [Oracle Java Documentation - Strings](https://docs.oracle.com/javase/tu
         
           deepDive: `# HashMap en Java
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ?
 
-HashMap est une structure de donnees qui stocke des paires **cle-valeur**. Elle utilise une fonction de hachage pour indexer les entrees, permettant des operations **O(1)** en moyenne.
+HashMap est une structure de données qui stocke des paires **clé-valeur**. Elle utilise une fonction de hachage pour indexer les entrées, permettant des opérations **O(1)** en moyenne.
 
-## Creation et utilisation basique
+## Syntaxe et exemples
+
+### Création et utilisation basique
 
 \`\`\`java
 import java.util.HashMap;
@@ -284,44 +1895,42 @@ scores.remove("Bob");           // Supprime la paire
 scores.remove("Alice", 95);    // Supprime seulement si valeur correspond
 \`\`\`
 
-## Fonctionnement interne — buckets et hashing
-
-### Hashing de la cle
+### Fonctionnement interne — buckets et hachage
 
 \`\`\`java
 int hash = key.hashCode();  // Fonction de hachage native
-int index = hash % capacity;  // Determine le bucket
+int index = hash % capacity;  // Détermine le bucket
 \`\`\`
 
-### Collision handling — chaining
+### Gestion des collisions — chaining
 
-Quand deux cles ont le meme hash, HashMap utilise des **linked lists** (ou arbres depuis Java 8) pour stocker les collisions.
+Quand deux clés ont le même hash, HashMap utilise des **linked lists** (ou arbres depuis Java 8) pour stocker les collisions.
 
 ### Performance et load factor
 
-| Operation | Average | Worst case |
-|-----------|---------|-------------|
+| Opération | Moyenne | Pire cas |
+|-----------|---------|----------|
 | get/put | O(1) | O(n) |
 | containsKey | O(1) | O(n) |
-| iteration | O(n) | O(n) |
+| itération | O(n) | O(n) |
 
-Le **load factor** (defaut 0.75) determine quand redimensionner. Un load factor plus bas = moins de collisions mais plus de memoire.
+Le **load factor** (défaut 0.75) détermine quand redimensionner. Un load factor plus bas = moins de collisions mais plus de mémoire.
 
 \`\`\`java
-HashMap<String, String> map = new HashMap<>(16, 0.5f);  // Redimensionne a 50%
+HashMap<String, String> map = new HashMap<>(16, 0.5f);  // Redimensionne à 50%
 \`\`\`
 
-## Nullite et clonage
+### Nullité et clonage
 
 \`\`\`java
 HashMap<String, Integer> map = new HashMap<>();
-map.put(null, 1);     // Une cle null autorisee
-map.put("key", null); // Une valeur null autorisee
+map.put(null, 1);     // Une clé null autorisée
+map.put("key", null); // Une valeur null autorisée
 
 HashMap<String, Integer> copy = new HashMap<>(original);
 \`\`\`
 
-## Exemple de parcours
+### Exemple de parcours
 
 \`\`\`java
 HashMap<String, Integer> ages = new HashMap<>();
@@ -338,24 +1947,42 @@ ages.forEach((key, value) ->
 );
 \`\`\`
 
-## HashMap vs Hashtable
+## Bonnes pratiques
 
-| Caracteristique | HashMap | Hashtable |
+1. **Spéculez la capacité** si vous connaissez le nombre d'éléments : \`new HashMap<>(tailleAttendée * 2)\`
+2. **Utilisez des clés immuables** — si la clé change son hashCode, la lookup échouera
+3. **Évitez les objets complexes comme clés** — préférez \`Integer\`, \`String\`, \`Enum\`
+4. **Utilisez \`computeIfAbsent\`** pour le lazy loading
+
+## Pièges courants
+
+### HashMap vs Hashtable
+
+| Caractéristique | HashMap | Hashtable |
 |----------------|---------|-----------|
 | Thread-safe | Non | Oui (sync) |
-| Autorise null cle | Oui (1) | Non |
+| Autorise null clé | Oui (1) | Non |
 | Autorise null valeur | Oui | Non |
 | Performance | Plus rapide | Plus lente (sync) |
 | Introduit | Java 1.2 | Java 1.0 |
 
-**Recommendation** : utilisez ConcurrentHashMap pour les environnements multi-thread.
+**Recommandation** : utilisez \`ConcurrentHashMap\` pour les environnements multi-thread.
 
-## Bonnes pratiques
+### Clé qui change son hashCode
 
-1. **Speculez la capacite** si vous connaissez le nombre delements : \`new HashMap<>(expectedSize * 2)\`
-2. **Utilisez des cles immuables** — si la cle change son hashCode, la lookup echouera
-3. **Evitez les objets complexes comme cles** — preerez Integer, String, Enum
-4. **Utilisez computeIfAbsent** pour le lazy loading
+\`\`\`java
+// MAUVAIS
+class CleMutable {
+    private String value;
+    public int hashCode() { return value.hashCode(); }
+}
+
+// Une fois la clé utilisée dans HashMap, ne modifiez pas ses valeurs utilisées pour hashCode()
+\`\`\`
+
+### Utiliser un objet mutable comme clé
+
+Si l'objet clé est modifié après insertion, le hashCode change et la clé devient introuvable.
 
 Source : [Oracle Java Documentation - HashMap](https://docs.oracle.com/javase/tutorial/collections/interfaces/map.html)`},
         {
@@ -367,11 +1994,13 @@ Source : [Oracle Java Documentation - HashMap](https://docs.oracle.com/javase/tu
         
           deepDive: `# ConcurrentHashMap en Java
 
-## Pourquoi ConcurrentHashMap ?
+## Qu'est-ce que c'est ?
 
-HashMap nest pas thread-safe. Hashtable est synchronise mais **bloque tout le tableau** pour chaque operation — catastrophique pour la performance. ConcurrentHashMap offre une synchronisation **fine** : chaque bucket est synchro independamment.
+\`ConcurrentHashMap\` est une implémentation thread-safe de \`Map\` conçue pour les environnements multi-thread. Contrairement à \`Hashtable\` qui bloque tout le tableau pour chaque opération, \`ConcurrentHashMap\` utilise une synchronisation **fine** au niveau du bucket.
 
-## Approche synchronisee vs ConcurrentHashMap
+## Syntaxe et exemples
+
+### Approche synchronisée vs ConcurrentHashMap
 
 \`\`\`java
 // Hashtable - un seul lock pour tout
@@ -382,21 +2011,21 @@ synchronized(ht) {
 
 // ConcurrentHashMap - lock par bucket
 ConcurrentHashMap<String, Integer> chm = new ConcurrentHashMap<>();
-chm.put(key, value);  // Only buckets[index] bloque
+chm.put(key, value);  // Seul le bucket concerné est bloqué
 \`\`\`
 
-## Operations atomiques
+### Opérations atomiques
 
 \`\`\`java
 ConcurrentHashMap<String, Integer> map = new ConcurrentHashMap<>();
 
 map.putIfAbsent("key", 1);  // Ajoute seulement si absent
 map.computeIfAbsent("key", k -> expensiveOperation());
-map.merge("counter", 1, Integer::sum);  // Incrementation thread-safe
+map.merge("counter", 1, Integer::sum);  // Incrémentation thread-safe
 map.replace("key", 1, 2);  // Remplace seulement si valeur actuelle = 1
 \`\`\`
 
-## Acces et modifications concurrentes
+### Accès et modifications concurrentes
 
 \`\`\`java
 ConcurrentHashMap<String, Integer> scores = new ConcurrentHashMap<>();
@@ -409,15 +2038,16 @@ scores.remove("Alice");                 // O(1) average
 
 scores.getOrDefault("Eve", 0);
 
-// Iteration stable pendant modifications concurrentes
+// Itération stable pendant les modifications concurrentes
 map.forEach((k, v) -> { /* ... */ });
 \`\`\`
 
-## Segmentation interne
+### Segmentation interne
 
-Depuis Java 8, ConcurrentHashMap nutilise plus un tableau de segments fixes. Elle utilise un array de **buckets** avec des **locks par node** (plus fin que par bucket).
+Depuis Java 8, ConcurrentHashMap n'utilise plus un tableau de segments fixes. Elle utilise un array de **buckets** avec des **locks par node** (plus fin que par bucket).
 
-## Methodes specifiques
+
+### Méthodes spécifiques
 
 \`\`\`java
 ConcurrentHashMap<String, Integer> map = new ConcurrentHashMap<>();
@@ -427,20 +2057,30 @@ map.putIfAbsent("key", 1);  // Ajoute si absent
 map.remove("key", 1);       // Supprime si valeur = 1
 map.replace("key", 1, 2);   // Remplace si valeur = 1
 map.size();          // Approximatif en concurrent (rapide)
-map.mappingCount();  // Retourne long (prefere)
+map.mappingCount();  // Retourne long (préféré)
 \`\`\`
 
-## Performance comparee
+## Bonnes pratiques
 
-| Operation | HashMap | Hashtable | ConcurrentHashMap |
+1. **Évitez les opérations composées non atomiques** — utilisez \`remove(key, expectedValue)\` au lieu de check-then-remove
+2. **Utilisez les méthodes atomiques** — \`computeIfAbsent\`, \`merge\`, \`replace\`
+3. **N'utilisez pas \`size()\` dans une boucle** — approximatif en concurrent, utilisez \`mappingCount()\`
+4. **Itération** — utilisez \`forEach\` au lieu de \`entrySet()\` pour éviter les \`ConcurrentModificationException\`
+
+## Pièges courants
+
+### Performance comparée
+
+
+| Opération | HashMap | Hashtable | ConcurrentHashMap |
 |-----------|---------|-----------|-------------------|
 | get (single thread) | O(1) | O(1) | O(1) |
 | get (multi thread) | Unsafe | O(1)* | O(1) |
 | put (multi thread) | Unsafe | O(n)* | O(1) |
 
-* serialise par synchronized
+* sérialisé par synchronized
 
-## Pattern: compteur partage
+### Pattern: compteur partagé
 
 \`\`\`java
 ConcurrentHashMap<String, AtomicInteger> counters = new ConcurrentHashMap<>();
@@ -453,12 +2093,9 @@ int total = counters.values().stream()
     .sum();
 \`\`\`
 
-## Bonnes pratiques
+### Itération concurrente
 
-1. **Evitez les operations composees non atomiques** — utilisez \`remove(key, expectedValue)\` au lieu de check-then-remove
-2. **Utilisez les methodes atomiques** — \`computeIfAbsent\`, \`merge\`, \`replace\`
-3. **Nutilisez pas size() dans une boucle** — approximatif en concurrent, utilisez \`mappingCount()\`
-4. **Iteration** — utilisez \`forEach\` au lieu de \`entrySet()\` pour eviter les ConcurrentModificationException
+L'itération sur ConcurrentHashMap pendant des modifications concurrentes ne lève pas \`ConcurrentModificationException\`, mais les résultats peuvent ne pas refléter toutes les modifications.
 
 Source : [Oracle Java Documentation - ConcurrentHashMap](https://docs.oracle.com/javase/tutorial/collections/implementations/queue.html)`},
         {
@@ -470,112 +2107,122 @@ Source : [Oracle Java Documentation - ConcurrentHashMap](https://docs.oracle.com
         
           deepDive: `# Comparable vs Comparator en Java
 
-## Concepts fondamentaux
+## Qu'est-ce que c'est ?
 
-- **Comparable** : defini comment un objet se compare a un **autre objet du meme type** (ordre naturel)
-- **Comparator** : defini comment comparer deux objets **externement** (ordre personnalise)
+- **Comparable** : définit comment un objet se compare à un **autre objet du même type** (ordre naturel)
+- **Comparator** : définit comment comparer deux objets **externement** (ordre personnalisé)
 
-## Comparable — ordre naturel
+## Syntaxe et exemples
+
+### Comparable — ordre naturel
+
 
 \`\`\`java
-public class Etudiant implements Comparable<Etudiant> {
+public class Étudiant implements Comparable<Étudiant> {
     private String nom;
     private int moyenne;
 
-    public Etudiant(String nom, int moyenne) {
+    public Étudiant(String nom, int moyenne) {
         this.nom = nom;
         this.moyenne = moyenne;
     }
 
     @Override
-    public int compareTo(Etudiant autre) {
-        return Integer.compare(autre.moyenne, this.moyenne);  // Tri decroissant
+    public int compareTo(Étudiant autre) {
+        return Integer.compare(autre.moyenne, this.moyenne);  // Tri décroissant
     }
 }
 
-List<Etudiant> etudiants = new ArrayList<>();
-Collections.sort(etudiants);  // Utilise compareTo()
+List<Étudiant> étudiants = new ArrayList<>();
+Collections.sort(étudiants);  // Utilise compareTo()
 \`\`\`
 
-## Comparator — ordre personnalise
+### Comparator — ordre personnalisé
 
 \`\`\`java
-public class Etudiant {
+public class Étudiant {
     private String nom;
     private int moyenne;
 }
 
-Comparator<Etudiant> parMoyenne = (e1, e2) -> Integer.compare(e1.getMoyenne(), e2.getMoyenne());
-Comparator<Etudiant> parNom = (e1, e2) -> e1.getNom().compareTo(e2.getNom());
+Comparator<Étudiant> parMoyenne = (e1, e2) -> Integer.compare(e1.getMoyenne(), e2.getMoyenne());
+Comparator<Étudiant> parNom = (e1, e2) -> e1.getNom().compareTo(e2.getNom());
 
-etudiants.sort(parMoyenne);
-etudiants.sort(parNom);
+étudiants.sort(parMoyenne);
+étudiants.sort(parNom);
 
-Collections.sort(etudiants, parNom);
+Collections.sort(étudiants, parNom);
 \`\`\`
 
-## Tri multi-criteres avec Comparator
+### Tri multi-critères avec Comparator
 
 \`\`\`java
-Comparator<Etudiant> multiTri =
-    Comparator.comparingInt(Etudiant::getMoyenne)
-              .thenComparing(Etudiant::getNom);
+Comparator<Étudiant> multiTri =
+    Comparator.comparingInt(Étudiant::getMoyenne)
+              .thenComparing(Étudiant::getNom);
 
-etudiants.sort(multiTri);
+étudiants.sort(multiTri);
 \`\`\`
 
-## Comparator.comparing factories (Java 8+)
+### Comparator.comparing factories (Java 8+)
 
 \`\`\`java
-List<Etudiant> tris = etudiants.stream()
-    .sorted(Comparator.comparing(Etudiant::getMoyenne))
+List<Étudiant> tris = étudiants.stream()
+    .sorted(Comparator.comparing(Étudiant::getMoyenne))
     .toList();
 
-List<Etudiant> decroissant = etudiants.stream()
-    .sorted(Comparator.comparing(Etudiant::getMoyenne).reversed())
+List<Étudiant> décroissant = étudiants.stream()
+    .sorted(Comparator.comparing(Étudiant::getMoyenne).reversed())
     .toList();
 
-Comparator<Etudiant> nullSafe = Comparator.nullsFirst(
-    Comparator.comparing(Etudiant::getNom)
+Comparator<Étudiant> nullSafe = Comparator.nullsFirst(
+    Comparator.comparing(Étudiant::getNom)
 );
 \`\`\`
 
-## Comparaison: quand utiliser quoi
+## Différence fondamentale
 
-| Critere | Comparable | Comparator |
+| Critère | Comparable | Comparator |
 |---------|------------|------------|
-| Qui definit lordre | La classe elle-meme | Classe externe |
-| Nombre dordres possibles | Un seul (naturel) | Plusieurs (multiples comparators) |
+| Qui définit l'ordre | La classe elle-même | Classe externe |
+| Nombre d'ordres possibles | Un seul (naturel) | Plusieurs (multiples comparators) |
 | Modifie la classe | Oui | Non |
-| Collections.sort | Oui (pas de deuxieme arg) | Oui (avec comparator) |
+| Collections.sort | Oui (pas de deuxième arg) | Oui (avec comparator) |
 
-## Pieges courants
+## Bonnes pratiques
+
+1. **Implémentez Comparable** quand il y a un ordre naturel évident
+2. **Utilisez Comparator** pour plusieurs ordres de tri
+3. **Utilisez \`Comparator.comparing\`** pour du code plus lisible
+4. **Gérez les nulls** avec \`nullsFirst\` ou \`nullsLast\`
+
+## Pièges courants
 
 ### 1. Violer la relation transitive
 
 \`\`\`java
 // MAUVAIS
-public int compareTo(Etudiant autre) {
+public int compareTo(Étudiant autre) {
     if (this.moyenne != autre.moyenne)
         return this.moyenne - autre.moyenne;
     // Oubli dans certains cas...
 }
 
-// BON - inclure TOUS les criteres
-public int compareTo(Etudiant autre) {
+// BON - inclure TOUS les critères
+public int compareTo(Étudiant autre) {
     int cmp = Integer.compare(this.moyenne, autre.moyenne);
     if (cmp != 0) return cmp;
     return this.nom.compareTo(autre.nom);
 }
 \`\`\`
 
-### 2. Utiliser subtraction pour les entiers
+### 2. Utiliser la soustraction pour les entiers
 
 \`\`\`java
-// DANGEREUX - peut deborder
+// DANGEREUX - peut déborder
 return this.prix - p.prix;
 
-// SUR - utiliser Integer.compare
+// BON - utiliser Integer.compare
 return Integer.compare(this.prix, p.prix);
 \`\`\`
 
@@ -589,126 +2236,81 @@ Source : [Oracle Java Documentation - Object Ordering](https://docs.oracle.com/j
         
           deepDive: `# Les Records en Java (Java 14+)
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ?
 
-Les **records** sont une nouvelle forme de classes avec une syntaxe compacte pour creer des classes de donnees **immuables**. Le compilateur genere automatiquement equals(), hashCode(), toString() et le constructeur.
+Un **Record** est un nouveau type de classe en Java (preview en Java 14, final en Java 16) qui permet de creer des classes de donnees immuables avec un minimum de code. Le compilateur genere automatiquement :
+- Constructeur avec tous les champs
+- Getters (appeles par le nom du champ, sans "get")
+- equals(), hashCode() et toString()
 
-## Declaration
-
+Syntaxe de base :
 \`\`\`java
-// Avant Java 14 - classe traditionnelle
-public class Point {
-    private final int x;
-    private final int y;
-    public Point(int x, int y) { this.x = x; this.y = y; }
-    public int x() { return x; }
-    public int y() { return y; }
-    @Override public String toString() { return "Point(x=" + x + ", y=" + y + ")"; }
-    // equals, hashCode...
-}
+public record User(int id, String name, String email) {}
+\`\`\`
 
-// Avec record - declaration en une ligne
+Les champs sont automatiquement prives et finals.
+
+## Syntaxe et exemples
+
+### Declaration simple
+\`\`\`java
 public record Point(int x, int y) {}
 \`\`\`
 
-Le compilateur genere automatiquement :
-- private final int x; et private final int y;
-- Constructeur Point(int x, int y)
-- Getters x() et y() (sans "get")
-- toString() : Point[x=1, y=2]
-- equals() et hashCode()
-
-## Utilisation
-
+### Utilisation
 \`\`\`java
 Point p = new Point(10, 20);
-int x = p.x();  // Pas de getX(), juste x()
-int y = p.y();
-
-Point p1 = new Point(1, 2);
-Point p2 = new Point(1, 2);
-p1.equals(p2);  // true - contenu identique
-
-Map<Point, String> map = new HashMap<>();
-map.put(new Point(1, 2), "centre");
+System.out.println(p.x()); // 10
+System.out.println(p.y()); // 20
+System.out.println(p); // Point[x=10, y=20]
 \`\`\`
 
-## Records avec validation
-
+### Constructeur compact (validation)
 \`\`\`java
-public record Temperature(double celsius) {
-    public Temperature {
-        if (celsius < -273.15) {
-            throw new IllegalArgumentException("Temperature absolue negative!");
-        }
-    }
-}
-
-Temperature t = new Temperature(25.0);  // OK
-Temperature invalid = new Temperature(-300);  // IllegalArgumentException
-\`\`\`
-
-## Records avec methodes
-
-\`\`\`java
-public record Temperature(double celsius) {
-    public double toFahrenheit() {
-        return celsius * 9/5 + 32;
-    }
-
-    public static Temperature fromFahrenheit(double f) {
-        return new Temperature((f - 32) * 5/9);
-    }
-
-    public static Temperature ZERO_ABSOLU = new Temperature(-273.15);
-}
-\`\`\`
-
-## Records vs Classes traditionnels
-
-| Characteristique | Record | Class traditionnelle |
-|----------------|--------|---------------------|
-| Immutabilite | Native (final fields) | Manuelle |
-| Constructeur | Auto-genere ou custom | Manual |
-| Getters | Auto-genere (x() pas getX()) | Manual |
-| equals/hashCode | Auto-genere | Manual |
-| heritage | Ne peut pas heriter | Peut heriter |
-| Peut etre subclass | Non (final par defaut) | Oui |
-
-## Cas dutilisation recommands
-
-\`\`\`java
-// 1. DTO / Data Transfer Object
-public record UtilisateurDTO(String nom, String email, int age) {}
-
-// 2. Resultat de methodes multiples
-public record OperationResult(boolean success, String message, Object data) {}
-
-// 3. Cl Composite pour HashMap/HashSet
-public record Coordonnees(int x, int y) {}
-
-// 4. Configuration avec validation
-public record AppConfig(String dbUrl, String dbUser, int maxConnections) {
-    public AppConfig {
-        if (maxConnections < 1) throw new IllegalArgumentException();
+public record User(int id, String name) {
+    public User {
+        if (name == null || name.isBlank())
+            throw new IllegalArgumentException("Name cannot be null");
+        name = name.strip();
     }
 }
 \`\`\`
 
-## Limites des records
-
+### Methodes static
 \`\`\`java
-// Un record ne peut pas :
-// 1. Heriter dune classe
-public record MonPoint(int x, int y) extends Shape { }  // ERREUR
-// 2. Avoir des champs mutables - x et y sont implicitement final
-// 3. Ajouter des attributs apres la declaration
-public record Point(int x, int y) {
-    private int z;  // ERREUR
+public record Color(int r, int g, int b) {
+    public static Color RED = new Color(255, 0, 0);
 }
 \`\`\`
 
-Source : [Oracle Java Documentation - Records](https://docs.oracle.com/javase/tutorial/record/)`},
+### Records generiques
+\`\`\`java
+public record Pair<T, U>(T first, U second) {}
+\`\`\`
+
+### Pattern matching (Java 16+)
+\`\`\`java
+if (obj instanceof Point(int x, int y)) {
+    System.out.println("X: " + x);
+}
+\`\`\`
+
+## Bonnes pratiques
+
+- **Immuabilite** : ne pas ajouter de setters, les champs restent finals
+- **Constructeur compact** : valider ou normaliser les champs a la creation
+- **Interfaces** : un record peut implementer une interface (mais pas heriter d'une classe)
+- **Records locaux** : declaration dans une methode pour regrouper des donnees temporaires
+- **Sealed records** : combiner avec sealed pour controler les sous-types
+
+## Pieges courants
+
+- **Null** : les champs peuvent etre null, verifier avant utilisation
+- **Pas d'heritage de classe** : un record ne peut pas etendre une classe
+- **Pas de modification** : une fois cree, l'etat est immutable
+- **Serialization** : ne pas utiliser pour RMI ou corba sans precautions
+
+Source : [Oracle Java Documentation - Records](https://docs.oracle.com/en/java/javase/21/docs/api/java.se/java/lang/Record.html)`},
       ],
     },
     {
@@ -724,52 +2326,52 @@ Source : [Oracle Java Documentation - Records](https://docs.oracle.com/javase/tu
         
           deepDive: `# Les expressions Lambda en Java
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ?
 
-Une expression lambda est une **fonction anonyme** — un bloc de code que vous pouvez passer comme argument a une methode. Elles permettent un style de programmation **fonctionnel** plus concis.
+Une expression lambda est une **fonction anonyme** — un bloc de code que vous pouvez passer comme argument à une méthode. Elles permettent un style de programmation **fonctionnel** plus concis.
 
-## Syntaxe de base
+## Syntaxe et exemples
 
 \`\`\`java
-// Syntaxe complete
+// Syntaxe complète
 Comparator<String> comp = (String a, String b) -> {
     return a.length() - b.length();
 };
 
-// Syntaxe simplifiee - infErence de type
+// Syntaxe simplifiée - inférence de type
 Comparator<String> comp2 = (a, b) -> a.length() - b.length();
 
-// Sans parametres
+// Sans paramètres
 Runnable r = () -> System.out.println("Hello");
 
-// Un seul parametre - parentheses optionnelles
+// Un seul paramètre - parenthèses optionnelles
 ActionListener listener = e -> System.out.println("Clicked");
 \`\`\`
 
-## Method references
+### Method references
 
-Les method references sont un shorthand pour les lambdas qui appellent une methode existante :
+Les method references sont un shorthand pour les lambdas qui appellent une méthode existante :
 
 \`\`\`java
-// Syntaxe: Classe::methodeInstance ou Classe::methodeStatic
+// Syntaxe: Classe::méthodeInstance ou Classe::méthodeStatic
 
-// Methode dinstance
+// Méthode d'instance
 String::toUpperCase    // x -> x.toUpperCase()
 System.out::println    // x -> System.out.println(x)
 
-// Methode statique
+// Méthode statique
 Math::max              // (a, b) -> Math.max(a, b)
 
 // Constructeur
 ArrayList::new          // () -> new ArrayList()
 \`\`\`
 
-## Functional interfaces
+### Interfaces fonctionnelles
 
-Une lambda doit implementer une **interface fonctionnelle** (une seule methode abstraite) :
+Une lambda doit implémenter une **interface fonctionnelle** (une seule méthode abstraite) :
 
 \`\`\`java
-//java.util.function contient les plus courantes:
+// java.util.function contient les plus courantes :
 
 // Function<T, R> - transforme T en R
 Function<String, Integer> toLength = String::length;
@@ -780,24 +2382,24 @@ Consumer<String> printer = System.out::println;
 // Supplier<T> - fournit T
 Supplier<LocalDateTime> now = LocalDateTime::now;
 
-// Predicate<T> - test boolean sur T
+// Predicate<T> - test booléen sur T
 Predicate<String> isLong = s -> s.length() > 10;
 \`\`\`
 
-## Closures et variables externs
+### Closures et variables externes
 
-Les lambdas peuvent **capturer** des variables de leur portee (closure). Les variables capturees doivent etre **effectively final** :
+Les lambdas peuvent **capturer** des variables de leur portée (closure). Les variables capturées doivent être **effectively final** :
 
 \`\`\`java
 int facteur = 10;
-List<Integer> resultats = nums.stream()
-    .map(n -> n * facteur)  // Accede a facteur
+List<Integer> résultats = nums.stream()
+    .map(n -> n * facteur)  // Accède à facteur
     .toList();
 
 // facteur = 20;  // ERREUR - facteur est effectively final
 \`\`\`
 
-## Composition de fonctions
+### Composition de fonctions
 
 \`\`\`java
 Function<Integer, Integer> double = x -> x * 2;
@@ -810,7 +2412,7 @@ Function<Integer, Integer> addThenDouble = double.compose(addTen);
 addThenDouble.apply(5);  // (5 + 10) * 2 = 30
 \`\`\`
 
-## Predicates combines
+### Predicates combinés
 
 \`\`\`java
 Predicate<String> isLong = s -> s.length() > 5;
@@ -823,10 +2425,16 @@ Predicate<String> notLong = isLong.negate();
 
 ## Bonnes pratiques
 
-1. **Preferer les method references** quand la lambda appelle une methode existante
-   - list.stream().map(String::toUpperCase) au lieu de s -> s.toUpperCase()
-2. **Eviter les lambdas trop longues** — extraire dans une methode
-3. **Eviter les effets de bord dans les lambdas**
+- **Préférer les method references** quand la lambda appelle une méthode existante
+  - \`list.stream().map(String::toUpperCase)\` au lieu de \`s -> s.toUpperCase()\`
+- **Éviter les lambdas trop longues** — extraire dans une méthode
+- **Éviter les effets de bord dans les lambdas**
+
+## Pièges courants
+
+- Utiliser une lambda dans un contexte non-fonctionnel (plusieurs méthodes abstraites)
+- Capturer des variables non-finales ou mutables
+- Créer des lambdas avec des effets de bord (modification d'état externe)
 
 Source : [Oracle Java Documentation - Lambda Expressions](https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html)`},
         {
@@ -838,11 +2446,13 @@ Source : [Oracle Java Documentation - Lambda Expressions](https://docs.oracle.co
         
           deepDive: `# Les Streams en Java
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ?
 
-Les Streams representent un **pipeline de donnees** pour traiter des collections de maniere fonctionnelle et declarative. Ils ne stockent pas de donnees — ils parcourent une source et appliquent des operations.
+Les Streams représentent un **pipeline de données** pour traiter des collections de manière fonctionnelle et déclarative. Ils ne stockent pas de données — ils parcourent une source et appliquent des opérations.
 
-## Structure dun pipeline Stream
+## Syntaxe et exemples
+
+### Structure d'un pipeline Stream
 
 \`\`\`
 Source (Collection) -> Intermediate ops (filter/map) -> Terminal op (collect/forEach)
@@ -860,7 +2470,7 @@ List<String> result = names.stream()           // 1. Source
     .toList();                                // 5. Terminal (eager)
 \`\`\`
 
-## Creation de Streams
+### Création de Streams
 
 \`\`\`java
 List<String> list = List.of("a", "b", "c");
@@ -876,9 +2486,9 @@ IntStream.range(1, 5);      // 1, 2, 3, 4
 IntStream.rangeClosed(1, 5); // 1, 2, 3, 4, 5
 \`\`\`
 
-## Operations intermediaires
+### Opérations intermédiaires
 
-### filter — garder les elements qui satisfont un predicat
+#### filter — garder les éléments qui satisfont un prédicat
 
 \`\`\`java
 List<Integer> pairs = nums.stream()
@@ -886,7 +2496,7 @@ List<Integer> pairs = nums.stream()
     .toList();
 \`\`\`
 
-### map — transformer chaque element
+#### map — transformer chaque élément
 
 \`\`\`java
 List<String> upper = names.stream()
@@ -898,7 +2508,7 @@ List<Integer> lengths = names.stream()
     .toList();
 \`\`\`
 
-### flatMap — aplanir les collections imbriquees
+#### flatMap — aplanir les collections imbriquées
 
 \`\`\`java
 List<List<Integer>> nested = List.of(List.of(1, 2), List.of(3, 4), List.of(5));
@@ -908,17 +2518,17 @@ List<Integer> flat = nested.stream()
     .toList();
 \`\`\`
 
-### distinct, sorted, limit, skip
+#### distinct, sorted, limit, skip
 
 \`\`\`java
 List<Integer> uniques = avecDoublons.stream().distinct().toList();
-List<String> trie = names.stream().sorted().toList();
+List<String> trié = names.stream().sorted().toList();
 List<Integer> page2 = nums.stream().skip(20).limit(20).toList();
 \`\`\`
 
-## Operations terminales
+### Opérations terminales
 
-### collect — reunir les resultats
+#### collect — réunir les résultats
 
 \`\`\`java
 List<String> list = stream.collect(Collectors.toList());
@@ -928,7 +2538,7 @@ Map<Integer, List<String>> byLength = stream.collect(Collectors.groupingBy(Strin
 String joined = stream.collect(Collectors.joining(", "));
 \`\`\`
 
-### reduce — accumuler en une seule valeur
+#### reduce — accumuler en une seule valeur
 
 \`\`\`java
 int sum = IntStream.of(1, 2, 3, 4, 5).reduce(0, (a, b) -> a + b);  // 15
@@ -937,14 +2547,14 @@ String longest = Stream.of("apple", "banana", "cherry")
     .reduce("", (a, b) -> a.length() > b.length() ? a : b);  // "banana"
 \`\`\`
 
-### forEach
+#### forEach
 
 \`\`\`java
 names.forEach(System.out::println);
 names.forEach(name -> System.out.println("Hello " + name));
 \`\`\`
 
-## Paralleisme
+### Parallélisme
 
 \`\`\`java
 list.parallelStream()
@@ -952,14 +2562,20 @@ list.parallelStream()
     .toList();
 \`\`\`
 
-**Quand utiliser le parallele** : grandes collections, operations coouteuses (CPU-bound). Pour de petites collections, le parallele est souvent plus lent.
+**Quand utiliser le parallélisme** : grandes collections, opérations coûteuses (CPU-bound). Pour de petites collections, le parallélisme est souvent plus lent.
 
 ## Bonnes pratiques
 
-1. **Eviter les operations avec effets de bord** (forEach avec attribution)
-2. **Ne pas reutiliser un Stream** — un stream ne peut etre consume quune fois
-3. **Preferez les operations courtes** (filter avant map)
-4. **Utilisez le parallele judicieusement**
+- **Éviter les opérations avec effets de bord** (forEach avec mutation)
+- **Ne pas réutiliser un Stream** — un stream ne peut être consumé qu'une fois
+- **Préférer les opérations courtes** (filter avant map)
+- **Utiliser le parallélisme judicieusement**
+
+## Pièges courants
+
+- Consummer un Stream plusieurs fois ( AlreadyHasBeenProcessedException )
+- Oublier le terminal operation (le pipeline ne s'exécute pas)
+- Utiliser des opérations mutables dans des contextes concurrents
 
 Source : [Oracle Java Documentation - Streams](https://docs.oracle.com/javase/tutorial/streams/)`},
         {
@@ -971,21 +2587,13 @@ Source : [Oracle Java Documentation - Streams](https://docs.oracle.com/javase/tu
         
           deepDive: `# Optional en Java
 
-## Le probleme des null
+## Qu'est-ce que c'est ?
 
-Les references null causent des NullPointerException — lune des erreurs les plus courantes en Java. Optional est une approche fonctionnelle pour representer labsence de valeur.
+Optional est une approche fonctionnelle pour représenter l'absence de valeur, résolvant le problème des références null qui causent des NullPointerException.
 
-\`\`\`java
-// Probleme classique
-String name = getName();
-int length = name.length();  // NullPointerException si name est null
+## Syntaxe et exemples
 
-// Solution avec Optional
-Optional<String> name = getNameOptional();
-int length = name.orElse("").length();  // Pas de NPE
-\`\`\`
-
-## Creation dOptional
+### Création d'Optional
 
 \`\`\`java
 Optional<String> opt1 = Optional.of("value");        // NullPointerException si null
@@ -993,7 +2601,7 @@ Optional<String> opt2 = Optional.ofNullable(null);   // Retourne empty Optional
 Optional<String> empty = Optional.empty();
 \`\`\`
 
-## Inspection (sans exception)
+### Inspection (sans exception)
 
 \`\`\`java
 Optional<String> opt = Optional.of("hello");
@@ -1003,22 +2611,22 @@ opt.isEmpty();      // false (Java 11+)
 
 opt.ifPresent(value -> System.out.println("Value: " + value));
 
-// get() - a eviter (jette NoSuchElementException si empty)
+// get() - à éviter (jette NoSuchElementException si empty)
 opt.get();  // "hello" - OK
 Optional.empty().get();  // NoSuchElementException !
 \`\`\`
 
-## Extraction avec orElse
+### Extraction avec orElse
 
 \`\`\`java
 Optional<String> opt = Optional.ofNullable(possiblyNull);
 
 String result = opt.orElse("default");  // "default" si empty
-String result = opt.orElseGet(() -> computeDefault());  // Appele seulement si empty
+String result = opt.orElseGet(() -> computeDefault());  // Appelé seulement si empty
 String result = opt.orElseThrow(() -> new IllegalStateException("Value required"));
 \`\`\`
 
-## Transformation (sans condition)
+### Transformation (sans condition)
 
 \`\`\`java
 Optional<User> user = findById(1);
@@ -1028,7 +2636,7 @@ Optional<String> email = user.flatMap(u -> u.getEmail());  // Optional<String>
 Optional<User> adult = user.filter(u -> u.getAge() >= 18);
 \`\`\`
 
-## Chaining avec Optional
+### Chaining avec Optional
 
 \`\`\`java
 String city = employee.stream()
@@ -1040,10 +2648,10 @@ String city = employee.stream()
     .orElse("Unknown");
 \`\`\`
 
-## Optional dans les retourner de methodes
+### Optional dans les retours de méthodes
 
 \`\`\`java
-// Ancien style - null pour "pas de resultat"
+// Ancien style - null pour "pas de résultat"
 User findById(int id) { return null; }  // NPE risque
 
 // Nouveau style - Optional explicite
@@ -1056,10 +2664,16 @@ Optional<User> findById(int id) {
 
 ## Bonnes pratiques
 
-1. **Utilisez Optional pour les retours de methodes** qui peuvent ne pas avoir de resultat — jamais null
-2. **Nutilisez pas Optional comme champ** (probleme de serialization)
-3. **Nutilisez pas Optional pour les parametres** — preferez des surcharges
-4. **PrEFerez orElseGet** quand le default est coUteux a calculer (lazy)
+- **Utilisez Optional pour les retours de méthodes** qui peuvent ne pas avoir de résultat — jamais null
+- **Utilisez orElseGet** quand le default est coûteux à calculer (lazy)
+- **Préférez map/flatMap/filter** pour transformer les valeurs
+
+## Pièges courants
+
+- **Ne pas utiliser Optional comme champ** (problème de sérialisation)
+- **Ne pas utiliser Optional pour les paramètres** — préférer des surcharges
+- **Ne jamais appeler get() sans isPresent()** — risque de NoSuchElementException
+- **Ne pas utiliser Optional pour wrapper un primitive** — utilisez OptionalInt, OptionalLong, OptionalDouble
 
 Source : [Oracle Java Documentation - Optional](https://docs.oracle.com/javase/tutorial/essential/env/misc.html)`},
         {
@@ -1071,9 +2685,11 @@ Source : [Oracle Java Documentation - Optional](https://docs.oracle.com/javase/t
         
           deepDive: `# Les interfaces fonctionnelles en Java
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ?
 
-Une interface fonctionnelle est une interface avec **une seule methode abstraite**. Elle peut avoir des methodes par defaut ou statiques, mais une seule methode abstraite (SAM).
+Une interface fonctionnelle est une interface avec **une seule méthode abstraite**. Elle peut avoir des méthodes par défaut ou statiques, mais une seule méthode abstraite (SAM).
+
+## Syntaxe et exemples
 
 \`\`\`java
 @FunctionalInterface
@@ -1086,30 +2702,30 @@ public interface Converter<T, R> {
 }
 \`\`\`
 
-## Lannotation @FunctionalInterface
+### L'annotation @FunctionalInterface
 
 \`\`\`java
 @FunctionalInterface
 public interface Printable {
     void print(String content);
-};
+}
 
-// Le compilateur verifie que linterface a exactement une methode abstraite
+// Le compilateur vérifie que l'interface a exactement une méthode abstraite
 \`\`\`
 
-## Interfaces fonctionnelles predefinies (java.util.function)
+### Interfaces fonctionnelles prédéfinies (java.util.function)
 
-### Function<T, R> — transforme T en R
+#### Function<T, R> — transforme T en R
 
 \`\`\`java
 Function<String, Integer> strToInt = Integer::parseInt;
 Function<String, String> f = s -> s.toUpperCase();
 Function<String, String> g = s -> s + "!";
-Function<String, String> composed = f.andThen(g);  // s -> f(s) puis g(result)
+Function<String, String> composed = f.andThen(g);  // s -> f(s) puis g(résultat)
 composed.apply("hello");  // "HELLO!"
 \`\`\`
 
-### Consumer<T> — consume T, ne retourne rien
+#### Consumer<T> — consume T, ne retourne rien
 
 \`\`\`java
 Consumer<String> printer = System.out::println;
@@ -1117,7 +2733,7 @@ Consumer<String> combined = printer.andThen(logger);
 combined.accept("Test");  // Affiche "Test" puis "LOG: Test"
 \`\`\`
 
-### Supplier<T> — fournit T
+#### Supplier<T> — fournit T
 
 \`\`\`java
 Supplier<LocalDateTime> now = LocalDateTime::now;
@@ -1127,7 +2743,7 @@ LocalDateTime dt = now.get();
 List<String> list = listFactory.get();
 \`\`\`
 
-### Predicate<T> — test booleen sur T
+#### Predicate<T> — test booléen sur T
 
 \`\`\`java
 Predicate<String> isLong = s -> s.length() > 5;
@@ -1138,7 +2754,7 @@ Predicate<String> orCombined = isLong.or(hasA);
 Predicate<String> negated = isLong.negate();
 \`\`\`
 
-### UnaryOperator<T> et BinaryOperator<T>
+#### UnaryOperator<T> et BinaryOperator<T>
 
 \`\`\`java
 UnaryOperator<Integer> double = n -> n * 2;
@@ -1151,16 +2767,28 @@ BinaryOperator<Integer> max = Integer::max;
 BinaryOperator<Integer> min = Integer::min;
 \`\`\`
 
-## Synthese: quand utiliser quoi
+### Synthèse : quand utiliser quoi
 
-| Besoin | Interface | Example |
+| Besoin | Interface | Exemple |
 |--------|-----------|---------|
 | Transformer T -> R | Function<T,R> | s -> s.length() |
-| Consummer T (void) | Consumer<T> | s -> System.out.println(s) |
-| Creer T | Supplier<T> | () -> new ArrayList<>() |
+| Consommer T (void) | Consumer<T> | s -> System.out.println(s) |
+| Créer T | Supplier<T> | () -> new ArrayList<>() |
 | Tester T (bool) | Predicate<T> | s -> s.isEmpty() |
 | Deux T -> T | BinaryOperator<T> | Integer::sum |
 | T -> T | UnaryOperator<T> | n -> n * 2 |
+
+## Bonnes pratiques
+
+- **Marquez vos interfaces fonctionnelles avec @FunctionalInterface** pour la vérification à la compilation
+- **Préférez les interfaces prédéfinies** de java.util.function
+- **Utilisez les method references** pour plus de lisibilité
+
+## Pièges courants
+
+- Déclarer une interface fonctionnelle sans vérifier qu'elle n'a qu'une seule méthode abstraite
+- Ajouter par erreur une deuxième méthode abstraite (plus tard, lors de maintenance)
+- Utiliser des interfaces non-fonctionnelles avec des lambdas
 
 Source : [Oracle Java Documentation - Lambda Expressions](https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html)`},
         {
@@ -1172,25 +2800,23 @@ Source : [Oracle Java Documentation - Lambda Expressions](https://docs.oracle.co
         
           deepDive: `# Les Sealed Classes en Java (Java 17+)
 
-## Motivation
+## Qu'est-ce que c'est ?
 
-Les sealed classes限制哪些类可以继承一个类或实现一个接口。通过明确列出允许的子类，编译器可以：
+Les sealed classes limitent quels classes peuvent hériter d'une classe ou implémenter une interface. En listant explicitement les sous-classes autorisées, le compilateur peut garantir l'exhaustivité dans les expressions switch et améliorer la sécurité des types.
 
-1. **Garantir lexhaustivite** dans les expressions switch
-2. **Ameliorer la securite** des types en empechant les implementations non autorisees
-3. **Modeliser des choix fermees** (algebraic data types)
+## Syntaxe et exemples
 
-## Declaration
+### Déclaration de base
 
 \`\`\`java
 public sealed class Shape permits Circle, Rectangle, Triangle {
     // Classe abstraite par nature
 }
 
-// Les sous-classes doivent etre :
-// - final (ne peut plus etre heritee)
-// - sealed (heritee mais restriction)
-// - non-sealed (heritage libre)
+// Les sous-classes doivent être :
+// - final (ne peut plus être héritée)
+// - sealed (héritée mais restriction)
+// - non-sealed (héritage libre)
 \`\`\`
 
 ### Les trois modificateurs pour les sous-classes
@@ -1198,18 +2824,18 @@ public sealed class Shape permits Circle, Rectangle, Triangle {
 \`\`\`java
 public sealed class Animal permits Dog, Cat, Bird {}
 
-final class Dog extends Animal {}  // Choix termine
+final class Dog extends Animal {}  // Choix terminé
 
 sealed class Cat extends Animal permits PersianCat, SiameseCat {}
 final class PersianCat extends Cat {}
 final class SiameseCat extends Cat {}
 
-non-sealed class Bird extends Animal {}  // Heritage libre
+non-sealed class Bird extends Animal {}  // Héritage libre
 class Eagle extends Bird {}
 class Penguin extends Bird {}
 \`\`\`
 
-## Switch exhaustif avec sealed
+### Switch exhaustif avec sealed
 
 \`\`\`java
 public sealed class Shape permits Circle, Rectangle, Square {
@@ -1223,9 +2849,9 @@ public sealed class Shape permits Circle, Rectangle, Square {
 }
 \`\`\`
 
-Sans sealed, le compilateur ne peut pas verifier si tous les cas sont coveres.
+Sans sealed, le compilateur ne peut pas vérifier si tous les cas sont couverts.
 
-## Exemple: State Machine pattern
+### Exemple : State Machine pattern
 
 \`\`\`java
 public sealed class State permits Idle, Running, Paused, Stopped {}
@@ -1245,33 +2871,39 @@ State next(State current) {
 }
 \`\`\`
 
-## Sealed vs Enum vs Abstract
+### Sealed vs Enum vs Abstract
 
-| Characteristique | Sealed | Enum | Abstract |
+| Caractéristique | Sealed | Enum | Abstract |
 |----------------|--------|------|----------|
 | Instances finies | Oui | Oui | Non |
-| Donnees par instance | Oui | Limite | Oui |
-| heritage controle | Oui | Non (immuable) | Non |
-| instances multiples illimitees | Non | Non | Oui |
+| Données par instance | Oui | Limité | Oui |
+| Héritage contrôlé | Oui | Non (immuable) | Non |
+| Instances multiples illimitées | Non | Non | Oui |
 
 \`\`\`java
-// Enum - cas fixes et sans donnees
+// Enum - cas fixes et sans données
 enum Direction { NORTH, SOUTH, EAST, WEST }
 
-// Sealed - cas avec etats
+// Sealed - cas avec états
 sealed interface Expr permits Literal, Binary, Unary {}
 
-// Abstract - heritage libre
+// Abstract - héritage libre
 abstract class Shape { abstract double area(); }
 \`\`\`
 
-## Cas dutilisation typiques
+## Bonnes pratiques
 
-1. **Algebraic Data Types** — modeliser des etats avec un nombre fini de variantes
-2. **State Machines** — transitions detat avec verification compile-time
-3. **Strategy Pattern ferme** — algorithmes fixes mais interchangeables
+- **Utilisez sealed pour les types fermés** — choix finis de variantes
+- **Combinez avec record** pour des données immuables : \`sealed interface Expr permits Literal, Binary { record Literal(Value v) implements Expr {} }\`
+- **Exploitez le switch exhaustif** pour éviter les cas non gérés
 
-Source : [Oracle Java Documentation - Sealed Classes](https://docs.oracle.com/javase/tutorial/essential/concurrency/signals.html)`},
+## Pièges courants
+
+- Oublier de déclarer \`permits\` (erreur de compilation en Java 17+)
+- Toutes les sous-classes ne doivent pas être dans le même module (module visibility)
+- Utiliser sealed quand un héritage ouvert est nécessaire
+
+Source : [Oracle Java Documentation - Sealed Classes](https://docs.oracle.com/javase/tutorial/java/javaOO/classdecl.html)`},
       ],
     },
     {
@@ -1285,13 +2917,15 @@ Source : [Oracle Java Documentation - Sealed Classes](https://docs.oracle.com/ja
         
           deepDive: `# synchronized vs volatile en Java
 
-## Le probleme de la visibilite memoire
+## Qu'est-ce que c'est ?
 
-En Java multi-thread, chaque thread a sa propre **vision du cache CPU**. Une modification faite par un thread peut ne pas etre visible immediatement par les autres.
+En Java multi-thread, chaque thread a sa propre **vision du cache CPU**. Une modification faite par un thread peut ne pas être visible immédiatement par les autres. Les mots-clés \`synchronized\` et \`volatile\` résolvent ce problème de manière différente.
 
-## volatile — visibilite garantie
+## Syntaxe et exemples
 
-volatile guarantees that **any thread reading the field will see the most recent write** made by any other thread.
+### volatile — visibilité garantie
+
+volatile garantit que **tout thread lisant le champ verra la dernière écriture** faite par n'importe quel autre thread.
 
 \`\`\`java
 public class SharedData {
@@ -1301,37 +2935,37 @@ public class SharedData {
 
 // Thread 1                       // Thread 2
 shared.ready = true;              while (!shared.ready) { }  // Sortira de la boucle
-shared.count = 42;                System.out.println(shared.count);  // Affichera 42
+shared.count = 42;               System.out.println(shared.count);  // Affichera 42
 \`\`\`
 
-### Ce que volatile garantit
+#### Ce que volatile garantit
 
-1. **Visibilite immediate** — toute ecriture est visible par les lectures suivantes
-2. **Pas de reordering** — le compilateur/CPU ne reorganisera pas les operations volatile
+1. **Visibilité immédiate** — toute écriture est visible par les lectures suivantes
+2. **Pas de reordering** — le compilateur/CPU ne réorganisera pas les opérations volatile
 
-### Ce que volatile ne garantit PAS
+#### Ce que volatile ne garantit PAS
 
 \`\`\`java
 volatile int counter = 0;
 
 // Thread 1                       // Thread 2
-counter++;                        // Non thread-safe! counter++ est:
+counter++;                        // Non thread-safe! counter++ est :
 //   1. Lire counter (ex: 0)
-//   2. Incrementer (0 -> 1)
-//   3. Ecrire counter (1)
-//   Si les deux threads font ++ en meme temps: 1 au lieu de 2
+//   2. Incrémenter (0 -> 1)
+//   3. Écrire counter (1)
+//   Si les deux threads font ++ en même temps: 1 au lieu de 2
 \`\`\`
 
-## synchronized — exclusion mutuelle
+### synchronized — exclusion mutuelle
 
-synchronized garantit **atomicite** (operation non-interrompable) et **visibilite** :
+synchronized garantit **atomicité** (opération non-interrompable) et **visibilité** :
 
 \`\`\`java
 public class Counter {
     private int count = 0;
 
     public synchronized void increment() {
-        count++;  // Operation atomique - pas de race condition
+        count++;  // Opération atomique - pas de race condition
     }
 
     public synchronized int getCount() {
@@ -1340,30 +2974,30 @@ public class Counter {
 }
 \`\`\`
 
-### Comment ca marche
+#### Comment ça marche
 
-Chaque objet Java a un **intrinsic lock**. Quand un thread entre dans un bloc synchronized, il acquiert le lock. Les autres threads sont bloques jusqua ce que le premier thread libere le lock.
+Chaque objet Java a un **intrinsic lock**. Quand un thread entre dans un bloc synchronized, il acquiert le lock. Les autres threads sont bloqués jusqu'à ce que le premier thread libère le lock.
 
 \`\`\`java
-synchronized (this) { /* Acces aux champs partages */ }
-synchronized (Counter.class) { /* Acces aux champs static */ }
+synchronized (this) { /* Accès aux champs partagés */ }
+synchronized (Counter.class) { /* Accès aux champs static */ }
 
-public synchronized void increment() { }  // Equivalent a synchronized(this)
+public synchronized void increment() { }  // Équivalent à synchronized(this)
 \`\`\`
 
-## Comparaison volatile vs synchronized
+### Comparaison volatile vs synchronized
 
-| Caracteristique | volatile | synchronized |
+| Caractéristique | volatile | synchronized |
 |----------------|----------|--------------|
-| Visibilite inter-thread | Oui | Oui |
-| Atomicite | Non | Oui |
-| Bloquage | Non | Oui (acquire lock) |
-| Performance | Tres rapide | Plus lent |
+| Visibilité inter-thread | Oui | Oui |
+| Atomicité | Non | Oui |
+| Blocage | Non | Oui (acquire lock) |
+| Performance | Très rapide | Plus lent |
 | Deadlock | Aucun | Possible |
 
-## Cas dutilisation
+### Cas d'utilisation
 
-### volatile — quand la lecture est souvent plus frequente que lecriture
+#### volatile — quand la lecture est souvent plus fréquente que l'écriture
 
 \`\`\`java
 private volatile boolean running = true;
@@ -1374,26 +3008,26 @@ public void run() {
 }
 \`\`\`
 
-### synchronized — operations composites sur des donnees partagees
+#### synchronized — opérations composites sur des données partagées
 
 \`\`\`java
 private int counter = 0;
 
 public void increment() {
     synchronized (this) {
-        counter++;  // Lecture + increment + ecriture
+        counter++;  // Lecture + incrément + écriture
     }
 }
 \`\`\`
 
-## Alternatives modernes
+### Alternatives modernes
 
 \`\`\`java
-// java.util.concurrent.atomic - operations atomiques sur primitives
+// java.util.concurrent.atomic - opérations atomiques sur primitives
 private final AtomicInteger counter = new AtomicInteger(0);
 
 counter.incrementAndGet();       // Thread-safe, non-blocking
-counter.getAndIncrement();      // Lecture + increment
+counter.getAndIncrement();      // Lecture + incrément
 counter.compareAndSet(5, 10);   // Atomique: si == 5, alors = 10
 
 AtomicLong counter2 = new AtomicLong(0);
@@ -1402,10 +3036,17 @@ counter2.incrementAndGet();
 
 ## Bonnes pratiques
 
-1. **volatile pour les flags** (stop, ready, initialized)
-2. **synchronized pour les operations composites** (compteur++, check-then-act)
-3. **Atomic* pour les compteurs** dans des environnements concurrentiels
-4. **Eviter de synchroniser sur this** — utiliser un lock prive
+- **volatile pour les flags** (stop, ready, initialized)
+- **synchronized pour les opérations composites** (compteur++, check-then-act)
+- **Atomic* pour les compteurs** dans des environnements concurrentiels
+- **Éviter de synchroniser sur this** — utiliser un lock privé
+
+## Pièges courants
+
+- Croire que volatile suffit pour les compteurs (counter++ n'est pas atomique)
+- Créer des deadlocks avec synchronized (blocage circulaire)
+- Oublier de déclarer une variable comme volatile dans un contexte multi-thread
+- Utiliser des primitives primitives au lieu de Atomic* pour les compteurs
 
 Source : [Oracle Java Documentation - Concurrency](https://docs.oracle.com/javase/tutorial/essential/concurrency/atomic.html)`},
         {
@@ -1417,16 +3058,13 @@ Source : [Oracle Java Documentation - Concurrency](https://docs.oracle.com/javas
         
           deepDive: `# ExecutorService et CompletableFuture en Java
 
-## Le probleme des Threads
+## Qu'est-ce que c'est ?
 
-Creer un thread par tache est inefficace. Les problemes : creation onereuse, pas de gestion centralisee, difficile a coordonner.
+Créer un thread par tâche est inefficace. ExecutorService fournit un **pool de threads** réutilisables, et CompletableFuture permet une **programmation asynchrone** avec composition.
 
-\`\`\`java
-// MAUVAIS - un thread par tache
-new Thread(() -> downloadFile(url)).start();
-\`\`\`
+## Syntaxe et exemples
 
-## ExecutorService — pool de threads
+### ExecutorService — pool de threads
 
 \`\`\`java
 ExecutorService executor = Executors.newFixedThreadPool(4);   // 4 threads
@@ -1440,12 +3078,12 @@ executor.shutdownNow();
 executor.awaitTermination(10, TimeUnit.SECONDS);
 \`\`\`
 
-## ExecutorService avec return et exceptions
+### ExecutorService avec return et exceptions
 
 \`\`\`java
 ExecutorService executor = Executors.newFixedThreadPool(2);
 
-// Callable - retourne un resultat
+// Callable - retourne un résultat
 Future<Integer> future = executor.submit(() -> {
     Thread.sleep(1000);
     return 42;
@@ -1459,7 +3097,7 @@ try {
 }
 \`\`\`
 
-## CompletableFuture — programmation asynchrone
+### CompletableFuture — programmation asynchrone
 
 CompletableFuture est un Future enrichi pour la composition et le chaining :
 
@@ -1469,7 +3107,7 @@ CompletableFuture<String> async = CompletableFuture.supplyAsync(() -> {
 });
 \`\`\`
 
-### Operations de transformation
+#### Opérations de transformation
 
 \`\`\`java
 CompletableFuture<String> cf = CompletableFuture
@@ -1482,7 +3120,7 @@ CompletableFuture<Integer> result = cf
     .exceptionally(ex -> 0);
 \`\`\`
 
-### Combinaison de plusieurs CompletableFutures
+#### Combinaison de plusieurs CompletableFutures
 
 \`\`\`java
 CompletableFuture<String> f1 = CompletableFuture.supplyAsync(() -> "Hello");
@@ -1493,7 +3131,7 @@ CompletableFuture<Void> both = CompletableFuture.allOf(f1, f2);
 CompletableFuture<Object> first = CompletableFuture.anyOf(f1, f2);
 \`\`\`
 
-## Exemple complet
+### Exemple complet
 
 \`\`\`java
 public CompletableFuture<String> fetchUserData(Long userId) {
@@ -1508,22 +3146,29 @@ public CompletableFuture<String> fetchUserData(Long userId) {
 }
 \`\`\`
 
-## Thread pool strategies
+### Thread pool strategies
 
 \`\`\`java
-// I/O bound - taches courtes et nombreuses
+// I/O bound - tâches courtes et nombreuses
 ExecutorService ioPool = Executors.newCachedThreadPool();
 
-// CPU bound - taches longues
+// CPU bound - tâches longues
 ExecutorService cpuPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 \`\`\`
 
 ## Bonnes pratiques
 
-1. **Specifiez toujours un ExecutorService** pour les operations async
-2. **Shutdown quand lapplication finit** — sinon les threads restent actifs
-3. **Utilisez thenCompose** au lieu de thenApply quand le resultat est un autre CompletableFuture
-4. **Utilisez exceptionally** pour gerer centrally les erreurs
+- **Spécifiez toujours un ExecutorService** pour les opérations async
+- **Shutdown quand l'application finit** — sinon les threads restent actifs
+- **Utilisez thenCompose** au lieu de thenApply quand le résultat est un autre CompletableFuture
+- **Utilisez exceptionally** pour gérer centralement les erreurs
+
+## Pièges courants
+
+- Oublier le shutdown (threads orphelins, application ne se termine pas)
+- Utiliser un FixedThreadPool avec trop de threads (OOM)
+- Bloquer sur future.get() dans un thread du pool (deadlock)
+- Ne pas gérer les exceptions dans les CompletableFuture
 
 Source : [Oracle Java Documentation - Executors](https://docs.oracle.com/javase/tutorial/essential/concurrency/executors.html)`},
         {
@@ -1531,13 +3176,15 @@ Source : [Oracle Java Documentation - Executors](https://docs.oracle.com/javase/
           question: 'Réflexion',
           answer: "Capacité d'un programme à s'inspecter et se modifier au runtime : instancier via `Class.forName()`, invoquer des méthodes par nom, accéder aux champs `private` via `setAccessible(true)`.\n\nUtilisé par **Spring** (injection de dépendances, scan d'annotations) et **Hibernate** (mapping O/R). Inconvénients : plus lent, contourne la vérification de type et l'encapsulation, risque de sécurité. __Indispensable pour les frameworks, à éviter dans le code métier__.",
         
-          deepDive: `# La reflexion en Java (Reflection API)
+          deepDive: `# La réflexion en Java (Reflection API)
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ?
 
-La reflexion permet a un programme d**inspecter et manipuler** ses propres classes, methodes et champs a lexecution — meme ceux qui sont prives. Cest une forme dintrospection dynamique.
+La réflexion permet à un programme d'**inspecter et manipuler** ses propres classes, méthodes et champs à l'exécution — même ceux qui sont privés. C'est une forme d'introspection dynamique.
 
-## Classes fondamentales
+## Syntaxe et exemples
+
+### Classes fondamentales
 
 \`\`\`java
 import java.lang.reflect.*;
@@ -1547,7 +3194,7 @@ Class<?> clazz = "hello".getClass();        // Via instance
 Class<?> clazz = Class.forName("java.lang.String");  // Par nom
 \`\`\`
 
-## Inspection de classe
+### Inspection de classe
 
 \`\`\`java
 Class<?> clazz = MyClass.class;
@@ -1565,7 +3212,7 @@ Method[] methods = clazz.getDeclaredMethods();
 Field[] fields = clazz.getDeclaredFields();
 \`\`\`
 
-## Instantiation dynamique
+### Instanciation dynamique
 
 \`\`\`java
 Class<?> clazz = Class.forName("com.example.MyClass");
@@ -1574,7 +3221,7 @@ Constructor<?> ctor = clazz.getDeclaredConstructor(String.class, int.class);
 Object obj = ctor.newInstance("Hello", 42);
 \`\`\`
 
-## Acces aux champs
+### Accès aux champs
 
 \`\`\`java
 class Person {
@@ -1595,7 +3242,7 @@ int age = (int) ageField.get(p);
 ageField.set(p, 30);
 \`\`\`
 
-## Acces aux methodes
+### Accès aux méthodes
 
 \`\`\`java
 class Calculator {
@@ -1611,48 +3258,48 @@ multiplyMethod.setAccessible(true);
 int product = (int) multiplyMethod.invoke(calc, 3, 4);  // 12
 \`\`\`
 
-## Usage legitime
+### Usage légitime
 
-### 1. Framework (Spring, Hibernate, JUnit)
+#### 1. Framework (Spring, Hibernate, JUnit)
 
 \`\`\`java
-// Spring utilise la reflexion pour injecter les dependances
+// Spring utilise la réflexion pour injecter les dépendances
 @Autowired
 private UserService userService;
 \`\`\`
 
-### 2. Jackson/Gson JSON mapping
+#### 2. Jackson/Gson JSON mapping
 
 \`\`\`java
 ObjectMapper mapper = new ObjectMapper();
 String json = mapper.writeValueAsString(myObject);
 \`\`\`
 
-### 3. JUnit test runners
+#### 3. JUnit test runners
 
 \`\`\`java
 @Test
-public void myTest() { }  // JUnit trouve cette methode via reflexion
+public void myTest() { }  // JUnit trouve cette méthode via réflexion
 \`\`\`
 
-## Risques et limitations
+### Risques et limitations
 
-### 1. Performance degradee
+#### 1. Performance dégradée
 
 \`\`\`java
-// Linvocation par reflexion est plus lente que lappel direct
+// L'invocation par réflexion est plus lente que l'appel direct
 Method method = clazz.getMethod("doSomething", String.class);
 method.invoke(obj, "test");  // Plus lent que obj.doSomething("test")
 \`\`\`
 
-### 2. Violation de lencapsulation
+#### 2. Violation de l'encapsulation
 
 \`\`\`java
-field.setAccessible(true);  // Acceder auchamp prive
-field.set(obj, value);      // Modifier meme les finals
+field.setAccessible(true);  // Accéder au champ privé
+field.set(obj, value);      // Modifier même les finals
 \`\`\`
 
-### 3. Pas de compile-time checking
+#### 3. Pas de compile-time checking
 
 \`\`\`java
 Method m = clazz.getMethod("doSomethng");  // typo - no error until runtime!
@@ -1660,10 +3307,17 @@ Method m = clazz.getMethod("doSomethng");  // typo - no error until runtime!
 
 ## Bonnes pratiques
 
-1. **Cachez les objets Method/Constructor** — ils coCutent cher a acquerir
-2. **Utilisez setAccessible judicieusement** — seulement quand necessaire
-3. **Limitez lusage** — la reflexion est un outil, pas un pattern de design
-4. **Preferez les alternatives** quand possible (MethodHandle, Function, conteneur DI)
+- **Cachez les objets Method/Constructor** — ils coûtent cher à acquérir
+- **Utilisez setAccessible judicieusement** — seulement quand nécessaire
+- **Limitez l'usage** — la réflexion est un outil, pas un pattern de design
+- **Préférez les alternatives** quand possible (MethodHandle, Function, conteneur DI)
+
+## Pièges courants
+
+- Utiliser la réflexion pour accéder aux champs privés sans nécessité
+- Ne pas gérer les exceptions (InvocationTargetException)
+- Créer une dépendance forte sur la structure interne des classes
+- Oublier que la réflexion est plus lente que l'appel direct
 
 Source : [Oracle Java Documentation - Reflection](https://docs.oracle.com/javase/tutorial/reflect/)`},
         {
@@ -1675,23 +3329,27 @@ Source : [Oracle Java Documentation - Reflection](https://docs.oracle.com/javase
         
           deepDive: `# Covariance et Contravariance en Java (Wildcards)
 
-## Le probleme: pourquoi String nest pas un sous-type de Object dans les generiques
+## Qu'est-ce que c'est ?
+
+Les génériques en Java sont **invariants** par défaut — List<String> n'est pas un sous-type de List<Object>. Les wildcards (? extends T, ? super T) permettent de retrouver une forme de variance.
+
+## Syntaxe et exemples
+
+### Le problème : pourquoi String n'est pas un sous-type de Object dans les génériques
 
 \`\`\`java
 List<String> strings = new ArrayList<>();
 // List<Object> objects = strings;  // ERREUR de compilation!
 \`\`\`
 
-Cest intentional — les generiques sont **invariants**. List<String> nest pas un sous-type de List<Object> car cela causerait des problemes :
+C'est intentionnel — les génériques sont invariants. Si List<String> était un sous-type de List<Object>, cela causerait des problèmes :
 
 \`\`\`java
 List<String> strings = new ArrayList<>();
-List<Object> objects = strings;  // Si c-etait autorise
+List<Object> objects = strings;  // Si c'était autorisé
 objects.add(42);  // Ajouter un Integer dans une List<String> !
 String s = strings.get(0);  // ClassCastException!
 \`\`\`
-
-## Les wildcards retablissent la variance
 
 ### ? extends T — covariance (lecture seule)
 
@@ -1700,14 +3358,14 @@ List<String> strings = List.of("a", "b");
 List<? extends Object> objects = strings;  // OK
 
 for (Object obj : objects) {
-    System.out.println(obj);  // Tous les elements sont des Object
+    System.out.println(obj);  // Tous les éléments sont des Object
 }
 
-// Ecriture - INTERDITE
+// Écriture - INTERDITE
 objects.add("hello");  // ERREUR
 \`\`\`
 
-### ? super T — contravariance (ecriture seule)
+### ? super T — contravariance (écriture seule)
 
 \`\`\`java
 List<Object> objects = new ArrayList<>();
@@ -1719,18 +3377,18 @@ strings.add("world");  // OK
 Object obj = strings.get(0);  // OK mais retourne Object
 \`\`\`
 
-## Tableau recapitulatif
+### Tableau récapitulatif
 
-| Wildcard | Direction | Lecture | Ecriture | Example |
+| Wildcard | Direction | Lecture | Écriture | Exemple |
 |----------|------------|---------|----------|---------|
-| ? extends T | Producer | OK (type T) | Interdit | List<? extends Number> |
-| ? super T | Consumer | OK (type Object) | OK (type T) | List<? super Integer> |
+| ? extends T | Producteur | OK (type T) | Interdit | List<? extends Number> |
+| ? super T | Consommateur | OK (type Object) | OK (type T) | List<? super Integer> |
 | none | Both | OK | OK | List<Number> |
 
-## Le principe PECS (Producer Extends, Consumer Super)
+### Le principe PECS (Producer Extends, Consumer Super)
 
 \`\`\`java
-// Si la collection PRODUIT des donnees ( lecture ) -> ? extends T
+// Si la collection PRODUIT des données (lecture) -> ? extends T
 public double sum(List<? extends Number> list) {
     double total = 0;
     for (Number n : list) {
@@ -1739,41 +3397,38 @@ public double sum(List<? extends Number> list) {
     return total;
 }
 
-// Si la collection CONSOMME des donnees ( ecriture ) -> ? super T
+// Si la collection CONSOMME des données (écriture) -> ? super T
 public void addAll(List<? super Integer> list) {
     list.add(1);
     list.add(2);
 }
 \`\`\`
 
-## En pratique: tri et comparateur
+### Capture des wildcards
 
-\`\`\`java
-List<String> names = List.of("Alice", "Bob", "Charlie");
-names.sort(Comparator.naturalOrder());
-
-// Comparator<String> est un sous-type de Comparator<? super String>
-// donc String peut etre compare avec un comparateur de super-types
-\`\`\`
-
-## Capture des wildcards
-
-Le compilateur "capture" le type exact dun wildcard :
+Le compilateur "capture" le type exact d'un wildcard :
 
 \`\`\`java
 List<Integer> ints = new ArrayList<>();
 ints.add(1);
 
 List<? extends Number> numbers = ints;  // Capture le type exact (Integer)
-Number n = numbers.get(0);  // Retourne Integer (captured)
+Number n = numbers.get(0);  // Retourne Integer (capturé)
 \`\`\`
 
 ## Bonnes pratiques
 
-1. **Utilisez ? extends T** pour les retours de methodes (producer)
-2. **Utilisez ? super T** pour les parametres dentree (consumer)
-3. **Nutilisez pas de wildcard** quand vous avez besoin des deux
-4. **PrEFerez les bound explicites** : ? extends Number vs ?
+- **Utilisez ? extends T** pour les retours de méthodes (producer)
+- **Utilisez ? super T** pour les paramètres d'entrée (consumer)
+- **N'utilisez pas de wildcard** quand vous avez besoin des deux
+- **Préférez les bounds explicites** : ? extends Number vs ?
+
+## Pièges courants
+
+- Utiliser ? sans distinction (oubli de PECS)
+- Croire que ? extends T permet l'écriture (interdit !)
+- Utiliser un wildcard quand un type concret est nécessaire
+- Oublier que les wildcards fonctionnent avec les méthodes, pas les classes
 
 Source : [Oracle Java Documentation - Generics](https://docs.oracle.com/javase/tutorial/java/generics/wildcards.html)`},
         {
@@ -1783,15 +3438,21 @@ Source : [Oracle Java Documentation - Generics](https://docs.oracle.com/javase/t
           code: 'public enum Status {\n    SUCCESS(200, "OK"),\n    NOT_FOUND(404, "Not Found");\n\n    private final int code;\n    private final String message;\n\n    Status(int code, String message) {\n        this.code = code;\n        this.message = message;\n    }\n}',
           language: 'java',
         
-          deepDive: `# Les Enum avances en Java
+          deepDive: `# Les Enum avancés en Java
 
-## Enum basique vs Enum avance
+## Qu'est-ce que c'est ?
+
+Les enums en Java sont bien plus qu'une simple liste de constantes. Ils peuvent avoir des champs, des méthodes, des constructeur, et implémenter des interfaces pour créer des types complexes et type-safe.
+
+## Syntaxe et exemples
+
+### Enum basique vs Enum avancé
 
 \`\`\`java
 // Enum simple
 enum Direction { NORTH, SOUTH, EAST, WEST }
 
-// Enum avance - avec champs, methodes, constructeur
+// Enum avancé - avec champs, méthodes, constructeur
 enum Planet {
     MERCURY(3.303e+23, 2.4397e6),
     VENUS(4.869e+24, 6.0518e6),
@@ -1820,7 +3481,7 @@ enum Planet {
 }
 \`\`\`
 
-## Enum comme singleton
+### Enum comme singleton
 
 \`\`\`java
 public enum DatabaseConnection {
@@ -1835,7 +3496,7 @@ public enum DatabaseConnection {
 DatabaseConnection.INSTANCE.connect();
 \`\`\`
 
-## Enum avec interface
+### Enum avec interface
 
 \`\`\`java
 interface Operation {
@@ -1854,7 +3515,7 @@ enum BasicOperation implements Operation {
 }
 \`\`\`
 
-## Enum avec etat et comportement
+### Enum avec état et comportement
 
 \`\`\`java
 enum State {
@@ -1880,7 +3541,7 @@ enum State {
 }
 \`\`\`
 
-## EnumSet et EnumMap
+### EnumSet et EnumMap
 
 \`\`\`java
 import java.util.EnumSet;
@@ -1892,27 +3553,22 @@ EnumSet<Color> set3 = EnumSet.range(Color.RED, Color.BLUE);
 
 EnumMap<State, String> stateNames = new EnumMap<>(State.class);
 stateNames.put(State.RUNNING, "En cours");
-stateNames.put(State.STOPPED, "Arrete");
+stateNames.put(State.STOPPED, "Arrêté");
 \`\`\`
 
 ## Bonnes pratiques
 
-1. **Utilisez des enums pour les valeurs finies** — etats, directions, codes
-2. **Ajoutez des fields et methods** pour enrichir la semantique
-3. **Utilisez enum au lieu de int constants** — type-safe, switchable
-4. **Evitez les enums avec des etats complexes** — considerer une classe separee
+- **Utilisez des enums pour les valeurs finies** — états, directions, codes
+- **Ajoutez des fields et methods** pour enrichir la sémantique
+- **Utilisez enum au lieu de int constants** — type-safe, switchable
+- **Implémentez des interfaces** pour créer des hiérarchies de types spécialisées
 
-\`\`\`java
-// Bien - enum
-public enum Status { ACTIVE, INACTIVE }
+## Pièges courants
 
-// Bien - champs finals (immuable)
-enum GoodPlanet {
-    MERCURY(3.303e23);
-    private final double mass;
-    GoodPlanet(double mass) { this.mass = mass; }
-}
-\`\`\`
+- **Évitez les enums avec des états complexes** — considérer une classe séparée
+- Ne pas utiliser le pattern Singleton via enum (non thread-safe par défaut)
+- Oublier que les enums sont déjà des singletons dans le système de types
+- Ajouter trop de logique dans un enum (violation du SRP)
 
 Source : [Oracle Java Documentation - Enum Types](https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html)`},
       ],
