@@ -301,10 +301,10 @@ ngAfterViewInit() {
         {
           id: 'ng-12',
           question: 'Standalone components',
-          answer: "Depuis Angular 14+, les composants peuvent se passer de \`NgModule\`. On importe directement les dépendances dans le composant via \`imports: [CommonModule, RouterModule]\`.\n\nAvantages : **simplification**, **lazy loading** plus facile, meilleur **tree-shaking**. En Angular 21, standalone est le **défaut** (\`ng new\` crée par défaut un projet standalone).",
+          answer: "Depuis Angular 14+, les composants peuvent se passer de \`NgModule\`. On importe directement les dépendances dans le composant via \`imports: [CommonModule, RouterModule]\`.\n\nAvantages : **simplification**, **lazy loading** plus facile, meilleur **tree-shaking**. Depuis Angular 17, standalone est le **défaut** (\`ng new\` crée par défaut un projet standalone).",
           code: '@Component({\n    selector: "app-user",\n    standalone: true,\n    imports: [CommonModule, FormsModule],\n    template: "<p>{{ user.name }}</p>"\n})\nexport class UserComponent { ... }',
           language: 'typescript',
-          deepDive: `Les standalone components permettent de construire des applications Angular sans aucun NgModule. C'est le mode par défaut depuis Angular 21.
+          deepDive: `Les standalone components permettent de construire des applications Angular sans aucun NgModule. C'est le mode par défaut depuis Angular 17.
 
 ## Approche classique vs Standalone
 

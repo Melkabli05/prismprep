@@ -54,6 +54,10 @@ const LANG_KEYWORDS: Record<string, Set<string>> = {
 
 // ─── HTML escape ─────────────────────────────────────────────────────────────
 
+function slugify(text: string): string {
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
 function esc(s: string): string {
   return s
     .replace(/&/g, '&amp;')
@@ -203,10 +207,16 @@ export class MarkdownPipe implements PipeTransform {
     breaks: false,
   });
 
-  transform(text: string): string {
+  transform(text: string, searchQuery?: string): string {
     if (!text?.trim()) return '';
 
     let html = this.md.render(text);
+
+    // Add id attributes to h2 headings for TOC navigation
+    html = html.replace(/<h2>([^<]+)<\/h2>/g, (_match, text) => {
+      const id = slugify(text);
+      return `<h2 id="${id}">${text}</h2>`;
+    });
 
     // markdown-it HTML-escapes code block content; decode before re-highlighting.
     html = html.replace(
@@ -222,6 +232,16 @@ export class MarkdownPipe implements PipeTransform {
       }
     );
 
+    if (searchQuery?.trim()) {
+      html = this.highlightSearch(html, searchQuery.trim());
+    }
+
     return html;
+  }
+
+  private highlightSearch(html: string, query: string): string {
+    const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(${escaped})`, 'gi');
+    return html.replace(regex, '<mark class="search-match">$1</mark>');
   }
 }
