@@ -1,4 +1,4 @@
-import { Component, input, output, computed, signal, ChangeDetectionStrategy, inject, ElementRef, afterRenderEffect, viewChildren } from '@angular/core';
+import { Component, input, output, computed, signal, ChangeDetectionStrategy, inject, viewChildren } from '@angular/core';
 import { InterviewService } from '../../../../core/services/interview.service';
 
 @Component({
@@ -6,30 +6,10 @@ import { InterviewService } from '../../../../core/services/interview.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
   styles: `
-    :host {
-      display: block;
-    }
+    :host { display: block; }
 
     .pills-wrapper {
       position: relative;
-    }
-
-    .slides-indicator-track {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: var(--color-border-subtle);
-      pointer-events: none;
-    }
-
-    .slides-indicator {
-      position: absolute;
-      bottom: 0;
-      height: 2px;
-      border-radius: 9999px;
-      transition: left 250ms cubic-bezier(0.4, 0, 0.2, 1), width 250ms cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .scroll-container {
@@ -46,7 +26,6 @@ import { InterviewService } from '../../../../core/services/interview.service';
       -ms-overflow-style: none;
       -webkit-overflow-scrolling: touch;
       scroll-behavior: smooth;
-      scroll-padding-left: 1rem;
     }
     .pills-track::-webkit-scrollbar { display: none; }
 
@@ -68,6 +47,7 @@ import { InterviewService } from '../../../../core/services/interview.service';
     }
     .category-pill-active {
       background: var(--color-surface);
+      color: var(--color-text-primary);
       border-color: var(--color-border);
       box-shadow: var(--shadow-card);
       transform: translateY(-1px);
@@ -85,16 +65,6 @@ import { InterviewService } from '../../../../core/services/interview.service';
       color: var(--color-text-secondary);
     }
 
-    /* Color dot for inactive pills */
-    .color-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: currentColor;
-      opacity: 0.4;
-      flex-shrink: 0;
-    }
-
     .count-badge {
       display: inline-flex;
       align-items: center;
@@ -106,6 +76,14 @@ import { InterviewService } from '../../../../core/services/interview.service';
       font-size: 0.6875rem;
       font-weight: 600;
       transition: background 180ms ease, color 180ms ease;
+    }
+    .count-badge-active {
+      background: var(--color-accent-soft);
+      color: var(--color-accent);
+    }
+    .count-badge-inactive {
+      background: var(--color-surface-hover);
+      color: var(--color-text-muted);
     }
 
     /* Scroll arrow buttons */
@@ -137,12 +115,8 @@ import { InterviewService } from '../../../../core/services/interview.service';
       background: var(--color-surface-hover);
       color: var(--color-text-primary);
     }
-    .scroll-arrow-left {
-      left: 0;
-    }
-    .scroll-arrow-right {
-      right: 0;
-    }
+    .scroll-arrow-left { left: 0; }
+    .scroll-arrow-right { right: 0; }
     .scroll-arrow-left:hover { transform: translateY(-50%) translateX(-1px); }
     .scroll-arrow-right:hover { transform: translateY(-50%) translateX(1px); }
 
@@ -183,16 +157,6 @@ import { InterviewService } from '../../../../core/services/interview.service';
   template: `
     <div class="max-w-3xl mx-auto px-4 sm:px-6 pt-4 sm:pt-6 pb-2">
       <div class="pills-wrapper">
-        <!-- Slide indicator -->
-        <div class="slides-indicator-track">
-          <div
-            class="slides-indicator"
-            [style.left.px]="indicatorLeft()"
-            [style.width.px]="indicatorWidth()"
-            [style.background]="activeColor()">
-          </div>
-        </div>
-
         <!-- Scroll arrows -->
         <button
           class="scroll-arrow scroll-arrow-left"
@@ -221,20 +185,12 @@ import { InterviewService } from '../../../../core/services/interview.service';
                 (keydown)="onKeydown($event, cat.id)"
                 class="category-pill"
                 [class.category-pill-active]="activeCategory() === cat.id"
-                [class.category-pill-inactive]="activeCategory() !== cat.id"
-                [style.--cat-color]="cat.color">
-                <!-- Color dot for inactive state -->
-                @if (activeCategory() !== cat.id) {
-                  <span class="color-dot" [style.color]="cat.color"></span>
-                }
-                <!-- Active state uses the pill's own color as indicator dot -->
+                [class.category-pill-inactive]="activeCategory() !== cat.id">
                 {{ cat.title }}
                 <span
                   class="count-badge"
                   [class.count-badge-active]="activeCategory() === cat.id"
-                  [class.count-badge-inactive]="activeCategory() !== cat.id"
-                  [style.background]="activeCategory() === cat.id ? cat.color + '22' : ''"
-                  [style.color]="activeCategory() === cat.id ? cat.color : ''">
+                  [class.count-badge-inactive]="activeCategory() !== cat.id">
                   {{ categoryTotals()[cat.id] }}
                 </span>
 
@@ -273,36 +229,8 @@ export class CategoryPillsComponent {
 
   readonly canScrollLeft = signal(false);
   readonly canScrollRight = signal(false);
-  readonly indicatorLeft = signal(0);
-  readonly indicatorWidth = signal(0);
 
   readonly pillButtons = viewChildren<HTMLButtonElement>('pillButton');
-
-  readonly activeColor = computed(() => {
-    const cat = this.categories().find(c => c.id === this.activeCategory());
-    return cat?.color ?? 'var(--color-accent)';
-  });
-
-  constructor() {
-    afterRenderEffect(() => {
-      const active = this.activeCategory();
-      const cats = this.categories();
-      const buttons = this.pillButtons();
-      const idx = cats.findIndex(c => c.id === active);
-      if (idx < 0 || !buttons[idx]) return;
-
-      const btn = buttons[idx] as HTMLElement;
-      const track = btn.closest('.pills-track') as HTMLElement;
-      if (!track) return;
-
-      const trackRect = track.getBoundingClientRect();
-      const btnRect = btn.getBoundingClientRect();
-      const scrollLeft = track.scrollLeft;
-
-      this.indicatorLeft.set(btnRect.left - trackRect.left + scrollLeft);
-      this.indicatorWidth.set(btnRect.width);
-    });
-  }
 
   onScroll(): void {
     const track = document.querySelector('.pills-track') as HTMLElement;
