@@ -13,6 +13,9 @@ export class AuthService {
   readonly loading = this._loading.asReadonly();
   readonly isAuthenticated = computed(() => this._user() !== null);
 
+  /** Admins are identified by user_metadata.is_admin === true */
+  readonly isAdmin = computed(() => this._user()?.user_metadata?.['is_admin'] === true);
+
   readonly stack = computed(() => {
     const meta = this._user()?.user_metadata;
     return Array.isArray(meta?.['stack']) ? meta['stack'] as string[] : [];

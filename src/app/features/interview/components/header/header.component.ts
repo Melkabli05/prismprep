@@ -1,5 +1,6 @@
 import { Component, inject, signal, output, effect, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { form, FormField } from '@angular/forms/signals';
+import { RouterLink } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
 import { SearchShortcutDirective } from '../../../../shared/directives/search-shortcut.directive';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -9,7 +10,7 @@ import { UserPreferencesComponent } from '../../../../shared/components/user-pre
 @Component({
   selector: 'app-header',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LucideAngularModule, FormField, SearchShortcutDirective, AuthModalComponent, UserPreferencesComponent],
+  imports: [LucideAngularModule, FormField, SearchShortcutDirective, AuthModalComponent, UserPreferencesComponent, RouterLink],
   styles: `
     :host { display: block; position: sticky; top: 0; z-index: 50; }
     header {
@@ -156,6 +157,12 @@ import { UserPreferencesComponent } from '../../../../shared/components/user-pre
                     <lucide-icon name="settings" class="w-4 h-4" />
                     Préférences
                   </button>
+                  @if (auth.isAdmin()) {
+                    <a class="dropdown-item" routerLink="/admin" role="menuitem" (click)="showDropdown.set(false)">
+                      <lucide-icon name="shield" class="w-4 h-4" />
+                      Administration
+                    </a>
+                  }
                   <div class="dropdown-divider"></div>
                   <button class="dropdown-item danger" role="menuitem" (click)="signOut()">
                     <lucide-icon name="log-out" class="w-4 h-4" />
