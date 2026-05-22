@@ -1,4 +1,4 @@
-import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { LucideAngularModule } from 'lucide-angular';
 import { environment } from '../../../environments/environment';
@@ -11,6 +11,7 @@ interface Row {
   code: string | null; language: string | null; sort_order: number;
   deep_dive: string | null;
 }
+interface SectionGroup { id: string; title: string; questions: Row[]; }
 
 @Component({
   selector: 'app-admin-questions',
@@ -18,74 +19,105 @@ interface Row {
   imports: [LucideAngularModule],
   template: `
     <div class="layout">
-      <!-- Category sidebar -->
-      <aside class="cats">
-        <h3 class="cats-title">Catégories</h3>
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <lucide-icon name="folder-tree" class="sidebar-header-icon" />
+          <span>Catégories</span>
+        </div>
         @for (cat of cats(); track cat.id) {
           <button class="cat-btn" [class.active]="activeCat() === cat.id" (click)="selectCat(cat.id)">
             <span class="cat-name">{{ cat.title }}</span>
-            <span class="cat-count" [class.active]="activeCat() === cat.id">{{ count(cat.id) }}</span>
+            <span class="cat-badge" [class.active]="activeCat() === cat.id">{{ count(cat.id) }}</span>
           </button>
         }
       </aside>
 
-      <!-- Questions -->
-      <div class="questions">
+      <!-- Main -->
+      <div class="main">
         @if (activeCat() === '') {
-          <div class="empty">
-            <p>Sélectionnez une catégorie pour éditer ses questions.</p>
+          <div class="empty-state">
+            <div class="empty-icon">
+              <lucide-icon name="arrow-left" class="h-6 w-6" />
+            </div>
+            <h2 class="empty-title">Choisissez une catégorie</h2>
+            <p class="empty-desc">Sélectionnez une catégorie dans le panneau latéral pour éditer ses questions.</p>
           </div>
         } @else {
-          <div class="q-header-bar">
-            <span class="q-count">{{ questions().length }} questions</span>
+          <!-- Section header -->
+          <div class="page-header">
+            <div class="page-header-icon">
+              <lucide-icon name="file-text" class="h-5 w-5" />
+            </div>
+            <div>
+              <h2 class="page-header-title">{{ activeCatTitle() }}</h2>
+              <p class="page-header-sub">{{ questions().length }} questions &middot; {{ sections().length }} sections</p>
+            </div>
           </div>
 
-          @for (q of questions(); track q.id) {
-            <div class="q-card" [class.open]="editingId() === q.id">
-              <button class="q-toggle" (click)="toggleEdit(q.id)" [attr.aria-expanded]="editingId() === q.id">
-                <span class="q-id">{{ q.id }}</span>
-                <span class="q-text">{{ q.question }}</span>
-                <lucide-icon [name]="editingId() === q.id ? 'chevron-up' : 'chevron-down'" class="q-chevron" />
-              </button>
+          <!-- Sections -->
+          @for (sec of sections(); track sec.id) {
+            <div class="section">
+              <h3 class="section-title">{{ sec.title }}</h3>
+              <div class="section-cards">
+                @for (q of sec.questions; track q.id) {
+                  <div class="q-card" [class.open]="editingId() === q.id">
+                    <button class="q-bar" (click)="toggleEdit(q.id)" [attr.aria-expanded]="editingId() === q.id">
+                      <div class="q-bar-left">
+                        <span class="q-id">{{ q.id }}</span>
+                        <span class="q-question">{{ q.question }}</span>
+                      </div>
+                      <div class="q-bar-right">
+                        <span class="q-answer-preview">{{ truncate(q.answer, 80) }}</span>
+                        <lucide-icon [name]="editingId() === q.id ? 'chevron-up' : 'chevron-down'" class="q-chevron" />
+                      </div>
+                    </button>
 
-              @if (editingId() === q.id) {
-                <div class="q-editor">
-                  <label class="field">
-                    <span class="field-label">Question</span>
-                    <input #qTitle [value]="editQ()" (input)="editQ.set(qTitle.value)" class="field-input" />
-                  </label>
+                    @if (editingId() === q.id) {
+                      <div class="q-editor">
+                        <div class="editor-grid">
+                          <label class="field">
+                            <span class="field-label">Question</span>
+                            <input #qTitle [value]="editQ()" (input)="editQ.set(qTitle.value)" class="input" />
+                          </label>
 
-                  <label class="field">
-                    <span class="field-label">Réponse</span>
-                    <textarea #qAns [value]="editA()" (input)="editA.set(qAns.value)" class="field-input field-ta"></textarea>
-                  </label>
+                          <label class="field span-2">
+                            <span class="field-label">Réponse</span>
+                            <textarea #qAns [value]="editA()" (input)="editA.set(qAns.value)" class="input textarea"></textarea>
+                          </label>
 
-                  <div class="field-row">
-                    <label class="field flex-1">
-                      <span class="field-label">Code (optionnel)</span>
-                      <textarea #qCode [value]="editC()" (input)="editC.set(qCode.value)" class="field-input field-ta field-mono"></textarea>
-                    </label>
-                    <label class="field" style="width: 140px">
-                      <span class="field-label">Langage</span>
-                      <input #qLang [value]="editL()" (input)="editL.set(qLang.value)" placeholder="java, sql…" class="field-input" />
-                    </label>
+                          <label class="field">
+                            <span class="field-label">Code (optionnel)</span>
+                            <textarea #qCode [value]="editC()" (input)="editC.set(qCode.value)" class="input textarea mono"></textarea>
+                          </label>
+
+                          <label class="field field-sm">
+                            <span class="field-label">Langage</span>
+                            <input #qLang [value]="editL()" (input)="editL.set(qLang.value)" placeholder="java, sql…" class="input" />
+                          </label>
+
+                          <label class="field span-2">
+                            <span class="field-label">Deep Dive (optionnel)</span>
+                            <textarea #qDd [value]="editD()" (input)="editD.set(qDd.value)" class="input textarea mono" style="min-height: 180px"></textarea>
+                          </label>
+                        </div>
+
+                        <div class="editor-actions">
+                          @if (savedId() === q.id) {
+                            <span class="save-ok"><lucide-icon name="check-circle" class="h-4 w-4" /> Sauvegardé</span>
+                          }
+                          @if (saveError()) {
+                            <span class="save-err">{{ saveError() }}</span>
+                          }
+                          <span class="spacer"></span>
+                          <button class="btn-cancel" (click)="toggleEdit('')">Annuler</button>
+                          <button class="btn-save" (click)="save(q)">Sauvegarder</button>
+                        </div>
+                      </div>
+                    }
                   </div>
-
-                  <label class="field">
-                    <span class="field-label">Deep Dive (optionnel)</span>
-                    <textarea #qDd [value]="editD()" (input)="editD.set(qDd.value)" class="field-input field-ta field-mono" style="min-height: 160px"></textarea>
-                  </label>
-
-                  <div class="editor-bar">
-                    <div class="editor-feedback">
-                      @if (savedId() === q.id) { <span class="save-ok"><lucide-icon name="check-circle" class="h-4 w-4" /> Sauvegardé</span> }
-                      @if (saveError()) { <span class="save-err">{{ saveError() }}</span> }
-                    </div>
-                    <button class="btn-ghost" (click)="toggleEdit('')">Annuler</button>
-                    <button class="btn-save" (click)="save(q)">Sauvegarder</button>
-                  </div>
-                </div>
-              }
+                }
+              </div>
             </div>
           }
         }
@@ -97,21 +129,24 @@ interface Row {
     }
   `,
   styles: `
-    .layout { display: flex; gap: 1.5rem; align-items: flex-start; }
-    .flex-1 { flex: 1; }
-    .field-row { display: flex; gap: 0.75rem; }
+    :host { display: block; height: 100%; }
 
-    /* ── Category sidebar ──────────────────────────── */
-    .cats {
-      width: 220px; flex-shrink: 0;
+    /* ── Layout ────────────────────────────────────── */
+    .layout { display: flex; gap: 2rem; height: 100%; align-items: flex-start; }
+
+    /* ── Sidebar ───────────────────────────────────── */
+    .sidebar {
+      width: 220px; flex-shrink: 0; position: sticky; top: 5rem;
       display: flex; flex-direction: column; gap: 0.25rem;
-      position: sticky; top: 5rem;
     }
-    .cats-title {
+    .sidebar-header {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0 0.5rem 0.75rem;
       font-size: 0.6875rem; font-weight: 600; text-transform: uppercase;
       letter-spacing: 0.08em; color: var(--color-text-muted);
-      margin: 0 0 0.25rem 0.5rem;
     }
+    .sidebar-header-icon { width: 0.875rem; height: 0.875rem; }
+
     .cat-btn {
       display: flex; align-items: center; justify-content: space-between;
       padding: 0.5rem 0.75rem; border: none; border-radius: var(--radius-full);
@@ -125,84 +160,120 @@ interface Row {
       border: 1px solid var(--color-border); box-shadow: var(--shadow-sm);
     }
     .cat-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .cat-count {
+    .cat-badge {
       min-width: 20px; height: 18px; padding: 0 5px; border-radius: var(--radius-full);
       font-size: 0.6875rem; font-weight: 600; display: flex; align-items: center; justify-content: center;
-      background: var(--color-surface-hover); color: var(--color-text-muted);
-      margin-left: 0.375rem;
+      background: var(--color-surface-hover); color: var(--color-text-muted); margin-left: 0.375rem;
     }
-    .cat-count.active { background: var(--color-accent-soft); color: var(--color-accent); }
+    .cat-badge.active { background: var(--color-accent-soft); color: var(--color-accent); }
 
-    /* ── Questions list ────────────────────────────── */
-    .questions { flex: 1; min-width: 0; }
-    .empty { padding: 3rem 2rem; text-align: center; }
-    .empty p { color: var(--color-text-muted); font-size: 0.875rem; margin: 0; }
-    .q-header-bar { margin-bottom: 0.5rem; }
-    .q-count { font-size: 0.75rem; color: var(--color-text-muted); }
+    /* ── Main area ─────────────────────────────────── */
+    .main { flex: 1; min-width: 0; padding-bottom: 4rem; }
+
+    /* ── Empty state ───────────────────────────────── */
+    .empty-state {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 6rem 2rem; text-align: center; gap: 1rem;
+    }
+    .empty-icon {
+      width: 56px; height: 56px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--color-surface-hover); color: var(--color-text-muted);
+    }
+    .empty-title { font-family: var(--font-display); font-size: 1.125rem; font-weight: 600; margin: 0; color: var(--color-text-primary); }
+    .empty-desc { font-size: 0.875rem; color: var(--color-text-muted); margin: 0; max-width: 320px; }
+
+    /* ── Page header (matches section-header pattern) ── */
+    .page-header { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 2rem; }
+    .page-header-icon {
+      width: 44px; height: 44px; border-radius: var(--radius-lg);
+      background: var(--color-accent-soft); border: 1px solid var(--color-border-subtle);
+      display: flex; align-items: center; justify-content: center; color: var(--color-accent); flex-shrink: 0;
+    }
+    .page-header-title {
+      font-family: var(--font-display); font-size: 1.25rem; font-weight: 600;
+      letter-spacing: -0.01em; color: var(--color-text-primary); margin: 0 0 0.125rem;
+    }
+    .page-header-sub { font-size: 0.8125rem; color: var(--color-text-muted); margin: 0; }
+
+    /* ── Sections ──────────────────────────────────── */
+    .section { margin-bottom: 2.5rem; }
+    .section-title {
+      font-family: var(--font-display); font-size: 1rem; font-weight: 600;
+      color: var(--color-text-secondary); margin: 0 0 0.75rem;
+      padding-bottom: 0.5rem; border-bottom: 1px solid var(--color-border-subtle);
+    }
+    .section-cards { display: flex; flex-direction: column; gap: 0.5rem; }
 
     /* ── Question card ─────────────────────────────── */
     .q-card {
       background: var(--color-surface); border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg); margin-bottom: 0.5rem; overflow: hidden;
-      transition: border-color 200ms ease;
+      border-radius: var(--radius-lg); overflow: hidden;
+      box-shadow: var(--shadow-card);
+      transition: border-color 200ms ease, box-shadow 200ms ease;
     }
-    .q-card.open { border-color: var(--color-accent); }
-    .q-toggle {
-      display: flex; align-items: center; gap: 0.75rem;
-      width: 100%; padding: 0.75rem 1rem; border: none;
+    .q-card:hover { border-color: var(--color-border-strong); box-shadow: var(--shadow-card-hover); }
+    .q-card.open { border-color: var(--color-accent); box-shadow: 0 0 0 1px var(--color-accent-soft), var(--shadow-card); }
+
+    .q-bar {
+      display: flex; align-items: center; gap: 1rem;
+      width: 100%; padding: 0.875rem 1.25rem; border: none;
       background: transparent; color: inherit; text-align: left;
       font-family: inherit; cursor: pointer;
       transition: background 150ms ease;
     }
-    .q-toggle:hover { background: var(--color-surface-raised); }
+    .q-bar:hover { background: var(--color-surface-raised); }
+    .q-bar-left { display: flex; align-items: center; gap: 0.75rem; min-width: 0; flex: 2; }
     .q-id {
       font-size: 0.6875rem; font-weight: 600; color: var(--color-accent);
-      font-family: var(--font-mono); min-width: 2.5rem;
+      font-family: var(--font-mono); flex-shrink: 0;
     }
-    .q-text { flex: 1; font-size: 0.875rem; font-weight: 500; }
+    .q-question { font-size: 0.875rem; font-weight: 500; color: var(--color-text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .q-bar-right { display: flex; align-items: center; gap: 0.75rem; flex: 1; justify-content: flex-end; min-width: 0; }
+    .q-answer-preview { font-size: 0.75rem; color: var(--color-text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .q-chevron { width: 1rem; height: 1rem; flex-shrink: 0; color: var(--color-text-muted); }
 
     /* ── Editor ─────────────────────────────────────── */
     .q-editor {
-      display: flex; flex-direction: column; gap: 0.875rem;
-      padding: 0 1rem 1.25rem;
+      padding: 0 1.25rem 1.25rem;
       border-top: 1px solid var(--color-border-subtle);
       background: var(--color-surface-raised);
     }
+    .editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    .span-2 { grid-column: span 2; }
+
     .field { display: flex; flex-direction: column; gap: 0.375rem; }
+    .field-sm { max-width: 160px; }
     .field-label {
       font-size: 0.6875rem; font-weight: 600; text-transform: uppercase;
       letter-spacing: 0.05em; color: var(--color-text-muted);
     }
-    .field-input {
+    .input {
       width: 100%; padding: 0.625rem 0.875rem;
       background: var(--color-surface); border: 1px solid var(--color-border);
       border-radius: var(--radius-lg); color: var(--color-text-primary);
       font-size: 0.875rem; font-family: inherit; line-height: 1.6;
       transition: border-color 200ms ease, box-shadow 200ms ease;
     }
-    .field-input:focus { outline: none; border-color: var(--color-accent); box-shadow: 0 0 0 3px var(--color-accent-soft); }
-    .field-input::placeholder { color: var(--color-text-placeholder); }
-    .field-ta { resize: vertical; min-height: 100px; }
-    .field-mono { font-family: var(--font-mono); font-size: 0.8125rem; }
+    .input:focus { outline: none; border-color: var(--color-accent); box-shadow: 0 0 0 3px var(--color-accent-soft); }
+    .input::placeholder { color: var(--color-text-placeholder); }
+    .textarea { resize: vertical; min-height: 100px; }
+    .mono { font-family: var(--font-mono); font-size: 0.8125rem; }
 
-    /* ── Editor action bar ──────────────────────────── */
-    .editor-bar {
-      display: flex; align-items: center; gap: 0.75rem;
-      padding-top: 0.5rem; border-top: 1px solid var(--color-border-subtle);
-    }
-    .editor-feedback { flex: 1; display: flex; align-items: center; gap: 0.75rem; }
+    /* ── Editor actions ─────────────────────────────── */
+    .editor-actions { display: flex; align-items: center; gap: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--color-border-subtle); }
+    .spacer { flex: 1; }
     .save-ok { display: flex; align-items: center; gap: 0.375rem; font-size: 0.8125rem; font-weight: 600; color: var(--color-success); }
     .save-err { font-size: 0.8125rem; color: var(--color-error); }
 
-    .btn-ghost {
+    .btn-cancel {
       height: 34px; padding: 0 1rem; border: 1px solid var(--color-border);
       border-radius: var(--radius-full); background: transparent;
       color: var(--color-text-secondary); font-size: 0.8125rem; font-weight: 500;
       font-family: inherit; cursor: pointer;
       transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
     }
-    .btn-ghost:hover { background: var(--color-surface-hover); border-color: var(--color-border-strong); color: var(--color-text-primary); }
+    .btn-cancel:hover { background: var(--color-surface-hover); border-color: var(--color-border-strong); color: var(--color-text-primary); }
 
     .btn-save {
       height: 34px; padding: 0 1rem; border: none; border-radius: var(--radius-full);
@@ -239,13 +310,47 @@ export class AdminQuestionsPage {
   private sb: SupabaseClient;
   private all: Row[] = [];
 
+  // Section metadata from the static data
+  private sectionMap: Record<string, string> = {};
+
+  readonly sections = computed<SectionGroup[]>(() => {
+    const qs = this.questions();
+    const groups: SectionGroup[] = [];
+    const seen = new Set<string>();
+    for (const q of qs) {
+      const sid = q.section_id;
+      if (!seen.has(sid)) {
+        seen.add(sid);
+        groups.push({ id: sid, title: this.sectionMap[sid] ?? sid, questions: [] });
+      }
+      const group = groups.find(g => g.id === sid)!;
+      group.questions.push(q);
+    }
+    return groups;
+  });
+
+  readonly activeCatTitle = computed(() => {
+    return this.cats().find(c => c.id === this.activeCat())?.title ?? '';
+  });
+
   constructor() {
     this.sb = createClient(environment.supabaseUrl, environment.supabaseAnonKey);
+
+    // Build section title map from static data
+    for (const cat of interviewCategories) {
+      for (const sec of cat.sections) {
+        this.sectionMap[sec.id] = sec.title;
+      }
+    }
+
     this.sb.from('questions').select('*').order('sort_order').then(({ data }) => {
       this.all = data ?? [];
     });
   }
 
+  truncate(text: string, max: number): string {
+    return text.length > max ? text.slice(0, max) + '…' : text;
+  }
   total() { return this.all.length; }
   count(catId: string): number { return this.all.filter(q => q.category_id === catId).length; }
 
