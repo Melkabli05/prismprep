@@ -7,76 +7,40 @@ import { LucideAngularModule } from 'lucide-angular';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LucideAngularModule],
   template: `
-    <div class="dashboard">
-      <div class="section-header">
-        <div class="icon-wrap">
+    <div class="max-w-3xl">
+      <!-- Section header -->
+      <div class="flex items-start gap-4 mb-8">
+        <div class="w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0 border border-border-subtle" style="background: var(--color-accent-soft); color: var(--color-accent)">
           <lucide-icon name="layout-dashboard" class="h-5 w-5" />
         </div>
         <div>
-          <h2 class="section-title">Tableau de bord</h2>
-          <p class="section-sub">Aperçu de votre contenu</p>
+          <h2 class="font-display text-xl font-semibold tracking-tight m-0 mb-0.5" style="color: var(--color-text-primary)">Tableau de bord</h2>
+          <p class="text-sm m-0" style="color: var(--color-text-muted)">Aperçu de votre contenu</p>
         </div>
       </div>
 
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon amber">
-            <lucide-icon name="file-text" class="h-5 w-5" />
+      <!-- Stats grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        @for (stat of stats; track stat.label) {
+          <div class="rounded-xl border p-5 flex items-start gap-4 surface border-border">
+            <div class="w-10 h-10 rounded-md flex items-center justify-center flex-shrink-0" [style.background]="stat.bg" [style.color]="stat.color">
+              <lucide-icon [name]="stat.icon" class="h-5 w-5" />
+            </div>
+            <div>
+              <span class="block text-xl font-bold leading-tight" style="color: var(--color-text-primary)">{{ stat.value }}</span>
+              <span class="text-xs" style="color: var(--color-text-muted)">{{ stat.label }}</span>
+            </div>
           </div>
-          <div>
-            <span class="stat-value">295</span>
-            <span class="stat-label">Questions</span>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon accent">
-            <lucide-icon name="folder-tree" class="h-5 w-5" />
-          </div>
-          <div>
-            <span class="stat-value">21</span>
-            <span class="stat-label">Catégories</span>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon success">
-            <lucide-icon name="shield-check" class="h-5 w-5" />
-          </div>
-          <div>
-            <span class="stat-value">{{ auth.user()?.email ?? '—' }}</span>
-            <span class="stat-label">Connecté en tant qu'administrateur</span>
-          </div>
-        </div>
+        }
       </div>
     </div>
-  `,
-  styles: `
-    .dashboard { max-width: 48rem; }
-    .section-header { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 2rem; }
-    .icon-wrap {
-      width: 44px; height: 44px; border-radius: var(--radius-lg);
-      background: var(--color-accent-soft); border: 1px solid var(--color-border-subtle);
-      display: flex; align-items: center; justify-content: center; color: var(--color-accent); flex-shrink: 0;
-    }
-    .section-title { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; margin: 0 0 0.125rem; letter-spacing: -0.01em; }
-    .section-sub { margin: 0; font-size: 0.8125rem; color: var(--color-text-muted); }
-
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
-    .stat-card {
-      background: var(--color-surface); border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg); padding: 1.25rem;
-      display: flex; align-items: flex-start; gap: 1rem;
-    }
-    .stat-icon {
-      width: 40px; height: 40px; border-radius: var(--radius-md);
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    }
-    .stat-icon.amber { background: var(--color-amber-soft); color: var(--color-amber); }
-    .stat-icon.accent { background: var(--color-accent-soft); color: var(--color-accent); }
-    .stat-icon.success { background: var(--color-success-soft); color: var(--color-success); }
-    .stat-value { display: block; font-size: 1.25rem; font-weight: 700; color: var(--color-text-primary); line-height: 1.2; }
-    .stat-label { font-size: 0.75rem; color: var(--color-text-muted); }
   `,
 })
 export class AdminDashboardPage {
   readonly auth = inject(AuthService);
+
+  readonly stats = [
+    { icon: 'file-text', value: '295', label: 'Questions', bg: 'var(--color-amber-soft)', color: 'var(--color-amber)' },
+    { icon: 'folder-tree', value: '21', label: 'Catégories', bg: 'var(--color-accent-soft)', color: 'var(--color-accent)' },
+  ];
 }

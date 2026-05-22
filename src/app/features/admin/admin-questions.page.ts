@@ -17,91 +17,123 @@ interface Row {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LucideAngularModule],
   template: `
-    <div class="page">
-      <div class="section-header">
-        <div class="icon-wrap">
+    <div class="max-w-5xl">
+      <!-- Section header -->
+      <div class="flex items-start gap-4 mb-6">
+        <div class="w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0 border border-border-subtle" style="background: var(--color-accent-soft); color: var(--color-accent)">
           <lucide-icon name="file-text" class="h-5 w-5" />
         </div>
         <div>
-          <h2 class="section-title">Éditeur de questions</h2>
-          <p class="section-sub">{{ total() }} questions · {{ cats().length }} catégories</p>
+          <h2 class="font-display text-xl font-semibold tracking-tight m-0 mb-0.5" style="color: var(--color-text-primary)">Éditeur de questions</h2>
+          <p class="text-sm m-0" style="color: var(--color-text-muted)">{{ total() }} questions · {{ cats().length }} catégories</p>
         </div>
       </div>
 
-      <div class="layout">
-        <!-- Sidebar — category pills -->
-        <aside class="sidebar">
+      <div class="flex gap-6 items-start">
+        <!-- Category sidebar — pill buttons matching category-pills pattern -->
+        <aside class="hidden md:flex flex-col gap-1 w-[220px] flex-shrink-0 sticky" style="top: 5rem">
           @for (cat of cats(); track cat.id) {
-            <button class="cat-btn" [class.active]="activeCat() === cat.id"
-              (click)="selectCat(cat.id)">
-              <span class="cat-title">{{ cat.title }}</span>
-              <span class="cat-count">{{ count(cat.id) }}</span>
+            <button (click)="selectCat(cat.id)"
+              class="flex items-center justify-between px-3 py-2 border-none rounded-full text-sm font-medium cursor-pointer transition-all duration-180 cat-pill"
+              [class.active]="activeCat() === cat.id"
+              style="font-family: inherit; background: transparent; color: var(--color-text-muted)">
+              <span class="truncate">{{ cat.title }}</span>
+              <span class="ml-1.5 min-w-[20px] h-[18px] px-[5px] rounded-full text-[11px] font-semibold flex items-center justify-center cat-count"
+                [class.active]="activeCat() === cat.id">{{ count(cat.id) }}</span>
             </button>
           }
         </aside>
 
+        <!-- Mobile category dropdown -->
+        <div class="md:hidden w-full mb-4">
+          <select #sel (change)="selectCat(sel.value)" class="w-full px-3 py-2 rounded-lg border text-sm surface border-border" style="color: var(--color-text-primary)">
+            <option value="">— Choisir une catégorie —</option>
+            @for (cat of cats(); track cat.id) {
+              <option [value]="cat.id" [selected]="activeCat() === cat.id">{{ cat.title }} ({{ count(cat.id) }})</option>
+            }
+          </select>
+        </div>
+
         <!-- Question list -->
-        <div class="list">
+        <div class="flex-1 min-w-0 flex flex-col gap-2">
           @if (activeCat() === '') {
-            <div class="empty-state">
-              <div class="empty-icon">
+            <div class="hidden md:flex flex-col items-center justify-center py-24 gap-4 text-center">
+              <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background: var(--color-surface-hover); color: var(--color-text-muted)">
                 <lucide-icon name="arrow-left" class="h-5 w-5" />
               </div>
-              <p>Sélectionnez une catégorie pour afficher ses questions.</p>
+              <p class="text-sm m-0" style="color: var(--color-text-muted)">Sélectionnez une catégorie pour afficher ses questions.</p>
             </div>
           } @else {
             @for (q of questions(); track q.id) {
-              <div class="q-card" [class.open]="editingId() === q.id">
-                <!-- Card header (always visible) -->
-                <button class="q-header" (click)="toggleEdit(q.id)"
+              <div class="rounded-xl border overflow-hidden transition-all duration-200 surface border-border"
+                [class.open]="editingId() === q.id">
+                <!-- Card header -->
+                <button (click)="toggleEdit(q.id)"
+                  class="flex items-center gap-3 w-full px-4 py-3.5 border-none text-left cursor-pointer transition-all duration-150"
+                  style="background: transparent; color: inherit; font-family: inherit"
                   [attr.aria-expanded]="editingId() === q.id">
-                  <span class="q-id">{{ q.id }}</span>
-                  <span class="q-text">{{ q.question }}</span>
-                  <lucide-icon [name]="editingId() === q.id ? 'chevron-up' : 'chevron-down'" class="h-4 w-4 q-chevron" />
+                  <span class="text-[11px] font-semibold font-mono min-w-[3rem]" style="color: var(--color-accent)">{{ q.id }}</span>
+                  <span class="flex-1 text-sm font-medium" style="color: var(--color-text-primary)">{{ q.question }}</span>
+                  <lucide-icon [name]="editingId() === q.id ? 'chevron-up' : 'chevron-down'" class="h-4 w-4 flex-shrink-0" style="color: var(--color-text-muted)" />
                 </button>
 
-                <!-- Editor (expanded) -->
+                <!-- Editor body -->
                 @if (editingId() === q.id) {
-                  <div class="q-body">
-                    <label class="field-label">
-                      <span class="field-name">Question</span>
-                      <input #qTitle [value]="editQ()" (input)="editQ.set(qTitle.value)" class="field-input" />
+                  <div class="flex flex-col gap-4 px-4 pb-5 pt-0 border-t border-border-subtle"
+                    style="background: var(--color-surface-raised)">
+                    <label class="flex flex-col gap-1.5">
+                      <span class="text-[11px] font-semibold uppercase tracking-wider" style="color: var(--color-text-muted)">Question</span>
+                      <input #qTitle [value]="editQ()" (input)="editQ.set(qTitle.value)"
+                        class="w-full px-3.5 py-2.5 rounded-xl border text-sm transition-all duration-200 field-input" style="font-family: inherit" />
                     </label>
 
-                    <label class="field-label">
-                      <span class="field-name">Réponse</span>
-                      <textarea #qAns [value]="editA()" (input)="editA.set(qAns.value)" class="field-input field-textarea"></textarea>
+                    <label class="flex flex-col gap-1.5">
+                      <span class="text-[11px] font-semibold uppercase tracking-wider" style="color: var(--color-text-muted)">Réponse</span>
+                      <textarea #qAns [value]="editA()" (input)="editA.set(qAns.value)"
+                        class="w-full px-3.5 py-2.5 rounded-xl border text-sm resize-y min-h-[100px] transition-all duration-200 field-input" style="font-family: inherit"></textarea>
                     </label>
 
-                    <div class="field-row">
-                      <label class="field-label flex-1">
-                        <span class="field-name">Code (optionnel)</span>
-                        <textarea #qCode [value]="editC()" (input)="editC.set(qCode.value)" class="field-input field-textarea field-mono"></textarea>
+                    <div class="flex gap-3">
+                      <label class="flex flex-col gap-1.5 flex-1">
+                        <span class="text-[11px] font-semibold uppercase tracking-wider" style="color: var(--color-text-muted)">Code (optionnel)</span>
+                        <textarea #qCode [value]="editC()" (input)="editC.set(qCode.value)"
+                          class="w-full px-3.5 py-2.5 rounded-xl border text-sm resize-y min-h-[100px] font-mono transition-all duration-200 field-input"></textarea>
                       </label>
-                      <label class="field-label" style="width: 140px">
-                        <span class="field-name">Langage</span>
-                        <input #qLang [value]="editL()" (input)="editL.set(qLang.value)" class="field-input" placeholder="java, sql…" />
+                      <label class="flex flex-col gap-1.5 w-[140px]">
+                        <span class="text-[11px] font-semibold uppercase tracking-wider" style="color: var(--color-text-muted)">Langage</span>
+                        <input #qLang [value]="editL()" (input)="editL.set(qLang.value)"
+                          placeholder="java, sql…"
+                          class="w-full px-3.5 py-2.5 rounded-xl border text-sm transition-all duration-200 field-input" style="font-family: inherit" />
                       </label>
                     </div>
 
-                    <label class="field-label">
-                      <span class="field-name">Deep Dive (optionnel)</span>
-                      <textarea #qDd [value]="editD()" (input)="editD.set(qDd.value)" class="field-input field-textarea field-mono" style="min-height: 160px"></textarea>
+                    <label class="flex flex-col gap-1.5">
+                      <span class="text-[11px] font-semibold uppercase tracking-wider" style="color: var(--color-text-muted)">Deep Dive (optionnel)</span>
+                      <textarea #qDd [value]="editD()" (input)="editD.set(qDd.value)"
+                        class="w-full px-3.5 py-2.5 rounded-xl border text-sm resize-y min-h-[160px] font-mono transition-all duration-200 field-input"></textarea>
                     </label>
 
                     <!-- Action bar -->
-                    <div class="q-actions">
+                    <div class="flex items-center gap-3 pt-2 border-t border-border-subtle">
                       @if (savedId() === q.id) {
-                        <span class="save-ok" role="status">
+                        <span class="flex items-center gap-1.5 text-sm font-semibold" style="color: var(--color-success)" role="status">
                           <lucide-icon name="check-circle" class="h-4 w-4" /> Sauvegardé
                         </span>
                       }
                       @if (saveError()) {
-                        <span class="save-err">{{ saveError() }}</span>
+                        <span class="text-sm" style="color: var(--color-error)">{{ saveError() }}</span>
                       }
-                      <span class="spacer"></span>
-                      <button class="btn-ghost" (click)="toggleEdit('')">Annuler</button>
-                      <button class="btn-primary" (click)="save(q)">Sauvegarder</button>
+                      <span class="flex-1"></span>
+                      <button (click)="toggleEdit('')"
+                        class="h-[34px] px-4 rounded-full border text-sm font-medium cursor-pointer transition-all duration-150 btn-ghost"
+                        style="font-family: inherit; background: transparent; color: var(--color-text-secondary); border-color: var(--color-border)">
+                        Annuler
+                      </button>
+                      <button (click)="save(q)"
+                        class="h-[34px] px-4 rounded-full border-none text-sm font-semibold cursor-pointer transition-all duration-150 btn-save"
+                        style="font-family: inherit; background: var(--color-accent); color: var(--color-accent-text)">
+                        Sauvegarder
+                      </button>
                     </div>
                   </div>
                 }
@@ -111,153 +143,37 @@ interface Row {
         </div>
       </div>
 
+      <!-- Loading overlay -->
       @if (loading()) {
-        <div class="loading-shield">Sauvegarde en cours…</div>
+        <div class="fixed inset-0 z-[100] flex items-center justify-center font-semibold text-base text-white"
+          style="background: rgba(0,0,0,0.35); backdrop-filter: blur(4px)">
+          Sauvegarde en cours…
+        </div>
       }
     </div>
   `,
   styles: `
-    .page { max-width: 64rem; }
+    /* Category pills — interactive states using custom properties */
+    .cat-pill:hover { background: var(--color-surface-hover); color: var(--color-text-secondary); }
+    .cat-pill.active { background: var(--color-surface); color: var(--color-text-primary); border: 1px solid var(--color-border); box-shadow: var(--shadow-sm); }
+    .cat-pill.active:hover { background: var(--color-surface-hover); }
 
-    /* Section header */
-    .section-header { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem; }
-    .icon-wrap {
-      width: 44px; height: 44px; border-radius: var(--radius-lg);
-      background: var(--color-accent-soft); border: 1px solid var(--color-border-subtle);
-      display: flex; align-items: center; justify-content: center; color: var(--color-accent); flex-shrink: 0;
-    }
-    .section-title { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; margin: 0 0 0.125rem; letter-spacing: -0.01em; }
-    .section-sub { margin: 0; font-size: 0.8125rem; color: var(--color-text-muted); }
-
-    .layout { display: flex; gap: 1.5rem; align-items: flex-start; }
-
-    /* Sidebar */
-    .sidebar {
-      width: 220px; flex-shrink: 0; display: flex; flex-direction: column; gap: 0.25rem;
-      position: sticky; top: 5rem;
-    }
-    .cat-btn {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0.5rem 0.75rem; border: none; border-radius: var(--radius-full);
-      background: transparent; color: var(--color-text-muted); cursor: pointer;
-      font-size: 0.8125rem; font-weight: 500; font-family: inherit;
-      transition: background 180ms ease, color 180ms ease, box-shadow 180ms ease;
-    }
-    .cat-btn:hover { background: var(--color-surface-hover); color: var(--color-text-secondary); }
-    .cat-btn.active {
-      background: var(--color-surface); color: var(--color-text-primary);
-      border: 1px solid var(--color-border); box-shadow: var(--shadow-sm);
-    }
-    .cat-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .cat-count {
-      min-width: 20px; height: 18px; padding: 0 5px; border-radius: var(--radius-full);
-      font-size: 0.6875rem; font-weight: 600; display: flex; align-items: center; justify-content: center;
-      background: var(--color-surface-hover); color: var(--color-text-muted);
-      margin-left: 0.375rem;
-    }
-    .cat-btn.active .cat-count { background: var(--color-accent-soft); color: var(--color-accent); }
-
-    /* Question list */
-    .list { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.5rem; }
-
-    /* Empty state */
-    .empty-state {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 4rem 2rem; gap: 1rem; text-align: center;
-    }
-    .empty-icon {
-      width: 48px; height: 48px; border-radius: 9999px;
-      background: var(--color-surface-hover); display: flex; align-items: center; justify-content: center;
-      color: var(--color-text-muted);
-    }
-    .empty-state p { color: var(--color-text-muted); font-size: 0.875rem; margin: 0; }
+    /* Count badges inside pills */
+    .cat-count { background: var(--color-surface-hover); color: var(--color-text-muted); }
+    .cat-count.active { background: var(--color-accent-soft); color: var(--color-accent); }
 
     /* Question card */
-    .q-card {
-      background: var(--color-surface); border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg); overflow: hidden;
-      transition: border-color 200ms ease, box-shadow 200ms ease;
-    }
-    .q-card.open { border-color: var(--color-accent); box-shadow: 0 0 0 1px var(--color-accent-soft); }
-    .q-header {
-      display: flex; align-items: center; gap: 0.75rem;
-      width: 100%; padding: 0.875rem 1rem; border: none;
-      background: transparent; color: inherit; text-align: left;
-      font-family: inherit; cursor: pointer;
-      transition: background 150ms ease;
-    }
-    .q-header:hover { background: var(--color-surface-raised); }
-    .q-id {
-      font-size: 0.6875rem; font-weight: 600; color: var(--color-accent);
-      font-family: var(--font-mono); min-width: 3rem;
-    }
-    .q-text { flex: 1; font-size: 0.875rem; font-weight: 500; color: var(--color-text-primary); }
-    .q-chevron { color: var(--color-text-muted); flex-shrink: 0; }
+    .open { border-color: var(--color-accent); box-shadow: 0 0 0 1px var(--color-accent-soft); }
 
-    /* Editor body */
-    .q-body {
-      padding: 0 1rem 1.25rem; display: flex; flex-direction: column; gap: 1rem;
-      border-top: 1px solid var(--color-border-subtle);
-      background: var(--color-surface-raised);
-    }
-
-    /* Form fields — match auth-input pattern */
-    .field-label { display: flex; flex-direction: column; gap: 0.375rem; }
-    .field-name { font-size: 0.6875rem; font-weight: 600; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-    .field-input {
-      width: 100%; padding: 0.625rem 0.875rem;
-      background: var(--color-surface); border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg); color: var(--color-text-primary);
-      font-size: 0.875rem; font-family: inherit; line-height: 1.6;
-      transition: border-color 200ms ease, box-shadow 200ms ease;
-    }
-    .field-input:focus {
-      outline: none; border-color: var(--color-accent);
-      box-shadow: 0 0 0 3px var(--color-accent-soft);
-    }
+    /* Form inputs */
+    .field-input { background: var(--color-surface); border-color: var(--color-border); color: var(--color-text-primary); }
+    .field-input:focus { outline: none; border-color: var(--color-accent); box-shadow: 0 0 0 3px var(--color-accent-soft); }
     .field-input::placeholder { color: var(--color-text-placeholder); }
-    .field-textarea { resize: vertical; min-height: 100px; }
-    .field-mono { font-family: var(--font-mono); font-size: 0.8125rem; }
-    .field-row { display: flex; gap: 0.75rem; }
-    .flex-1 { flex: 1; }
 
-    /* Action bar */
-    .q-actions {
-      display: flex; align-items: center; gap: 0.75rem;
-      padding-top: 0.5rem;
-      border-top: 1px solid var(--color-border-subtle);
-    }
-    .spacer { flex: 1; }
-
-    /* Buttons — match reveal-btn and toolbar patterns */
-    .btn-primary {
-      height: 34px; padding: 0 1rem; border: none; border-radius: var(--radius-full);
-      background: var(--color-accent); color: var(--color-accent-text);
-      font-size: 0.8125rem; font-weight: 600; font-family: inherit; cursor: pointer;
-      transition: background 150ms ease, transform 120ms ease;
-    }
-    .btn-primary:hover { background: var(--color-accent-hover); transform: translateY(-1px); }
-    .btn-primary:active { transform: translateY(0); }
-    .btn-ghost {
-      height: 34px; padding: 0 1rem; border: 1px solid var(--color-border); border-radius: var(--radius-full);
-      background: transparent; color: var(--color-text-secondary);
-      font-size: 0.8125rem; font-weight: 500; font-family: inherit; cursor: pointer;
-      transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
-    }
+    /* Buttons */
     .btn-ghost:hover { background: var(--color-surface-hover); border-color: var(--color-border-strong); color: var(--color-text-primary); }
-
-    .save-ok {
-      display: flex; align-items: center; gap: 0.375rem;
-      font-size: 0.8125rem; font-weight: 600; color: var(--color-success);
-    }
-    .save-err { font-size: 0.8125rem; color: var(--color-error); }
-
-    .loading-shield {
-      position: fixed; inset: 0; z-index: 100;
-      display: flex; align-items: center; justify-content: center;
-      background: rgba(0,0,0,0.35); backdrop-filter: blur(4px);
-      color: white; font-weight: 600; font-size: 1rem;
-    }
+    .btn-save:hover { background: var(--color-accent-hover); transform: translateY(-1px); }
+    .btn-save:active { transform: translateY(0); }
   `,
 })
 export class AdminQuestionsPage {

@@ -8,95 +8,62 @@ import { AuthService } from '../../core/services/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, RouterLinkActive, RouterOutlet, LucideAngularModule],
   template: `
-    <nav class="admin-nav">
-      <div class="nav-inner">
-        <div class="nav-left">
-          <a routerLink="/" class="back-link">
-            <lucide-icon name="arrow-left" class="h-4 w-4" />
-            <span>Retour à Prism</span>
-          </a>
-          <span class="nav-divider" aria-hidden="true"></span>
-          <span class="nav-title">Administration</span>
-        </div>
-        <span class="nav-email">{{ auth.user()?.email }}</span>
+    <nav class="sticky top-0 z-50 border-b flex items-center justify-between h-14 sm:h-16 px-4 sm:px-6"
+      style="background: color-mix(in srgb, var(--color-bg) 85%, transparent); backdrop-filter: blur(12px); border-color: var(--color-border)">
+      <div class="flex items-center gap-3">
+        <a routerLink="/" class="flex items-center gap-1.5 no-underline text-sm font-medium hover-accent transition-colors duration-150"
+          style="color: var(--color-text-secondary)">
+          <lucide-icon name="arrow-left" class="h-4 w-4" />
+          <span class="hidden sm:inline">Retour à Prism</span>
+        </a>
+        <span class="w-px h-[22px]" style="background: var(--color-border)"></span>
+        <span class="font-display text-lg font-bold tracking-tight" style="color: var(--color-text-primary)">Administration</span>
       </div>
+      <span class="text-xs text-muted">{{ auth.user()?.email }}</span>
     </nav>
 
-    <div class="admin-body">
-      <aside class="sidebar">
-        <nav class="sidebar-nav">
-          <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="sidebar-link">
-            <lucide-icon name="layout-dashboard" class="h-4 w-4" />
-            Tableau de bord
+    <div class="flex" style="min-height: calc(100dvh - 3.5rem)">
+      <!-- Desktop sidebar -->
+      <aside class="hidden sm:flex flex-col gap-1 w-[220px] flex-shrink-0 p-4 border-r surface border-border">
+        @for (item of navItems; track item.path) {
+          <a [routerLink]="item.path"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="item.exact ? { exact: true } : {}"
+            class="flex items-center gap-2.5 px-3 py-2 no-underline text-sm font-medium rounded-md transition-all duration-150 sidebar-link">
+            <lucide-icon [name]="item.icon" class="h-4 w-4" />
+            {{ item.label }}
           </a>
-          <a routerLink="/admin/questions" routerLinkActive="active" class="sidebar-link">
-            <lucide-icon name="file-text" class="h-4 w-4" />
-            Questions
-          </a>
-        </nav>
+        }
       </aside>
 
-      <main class="main-content">
+      <!-- Mobile tab bar -->
+      <div class="sm:hidden flex gap-2 px-4 py-3 border-b w-full surface border-border">
+        @for (item of navItems; track item.path) {
+          <a [routerLink]="item.path"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="item.exact ? { exact: true } : {}"
+            class="flex items-center gap-1.5 px-3 py-1.5 no-underline text-xs font-medium rounded-full transition-all duration-150 sidebar-link">
+            <lucide-icon [name]="item.icon" class="h-3.5 w-3.5" />
+            {{ item.label }}
+          </a>
+        }
+      </div>
+
+      <main class="flex-1 overflow-y-auto p-4 sm:p-6">
         <router-outlet />
       </main>
     </div>
   `,
   styles: `
-    :host { display: block; min-height: 100dvh; background: var(--color-bg); color: var(--color-text-primary); }
-
-    /* Nav — matches header height and blur pattern */
-    .admin-nav {
-      position: sticky; top: 0; z-index: 50;
-      background: color-mix(in srgb, var(--color-bg) 85%, transparent);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--color-border);
-    }
-    .nav-inner {
-      display: flex; align-items: center; justify-content: space-between;
-      height: 3.5rem; padding: 0 1rem;
-    }
-    @media (min-width: 640px) {
-      .nav-inner { height: 4rem; padding: 0 1.5rem; }
-    }
-    .nav-left { display: flex; align-items: center; gap: 0.75rem; }
-    .back-link {
-      display: flex; align-items: center; gap: 0.375rem;
-      color: var(--color-text-secondary); text-decoration: none;
-      font-size: 0.8125rem; font-weight: 500;
-      transition: color 150ms ease;
-    }
-    .back-link:hover { color: var(--color-accent); }
-    .nav-divider { width: 1px; height: 22px; background: var(--color-border); }
-    .nav-title { font-family: var(--font-display); font-weight: 700; font-size: 1.125rem; letter-spacing: -0.015em; }
-    .nav-email { font-size: 0.75rem; color: var(--color-text-muted); }
-
-    .admin-body { display: flex; min-height: calc(100dvh - 3.5rem); }
-    @media (min-width: 640px) {
-      .admin-body { min-height: calc(100dvh - 4rem); }
-    }
-
-    /* Sidebar — matches surface pattern */
-    .sidebar {
-      width: 220px; flex-shrink: 0;
-      background: var(--color-surface); border-right: 1px solid var(--color-border);
-      padding: 1rem 0.75rem;
-    }
-    .sidebar-nav { display: flex; flex-direction: column; gap: 0.25rem; }
-    .sidebar-link {
-      display: flex; align-items: center; gap: 0.625rem;
-      padding: 0.5rem 0.75rem; border-radius: var(--radius-md);
-      color: var(--color-text-secondary); text-decoration: none;
-      font-size: 0.8125rem; font-weight: 500;
-      transition: background 150ms ease, color 150ms ease;
-    }
+    .sidebar-link { color: var(--color-text-secondary); }
     .sidebar-link:hover { background: var(--color-surface-hover); color: var(--color-text-primary); }
     .sidebar-link.active { background: var(--color-accent-soft); color: var(--color-accent); }
-
-    /* Content area */
-    .main-content { flex: 1; overflow-y: auto; padding: 1.5rem; }
   `,
 })
 export class AdminShellPage {
   readonly auth = inject(AuthService);
+  readonly navItems = [
+    { path: '/admin', icon: 'layout-dashboard', label: 'Tableau de bord', exact: true },
+    { path: '/admin/questions', icon: 'file-text', label: 'Questions', exact: false },
+  ];
 }
