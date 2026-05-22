@@ -18,7 +18,7 @@ export const microservicesCategory: InterviewCategory = {
         
           deepDive: `# Microservices
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ?
 
 Les microservices sont une approche architecturale qui décompose une application en services indépendants, chacun représentant une fonctionnalité métier spécifique. Chaque service peut être développé, déployé et mis à l'échelle indépendamment.
 
@@ -216,7 +216,7 @@ Source : [Sam Newman - Building Microservices](https://samnewman.io/books/buildi
         
           deepDive: `# Communication entre Services
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ?
 
 Les services microservices doivent communiquer entre eux. Deux patterns principaux: synchrone (requête/réponse) et asynchrone (messages).
 
@@ -316,7 +316,7 @@ Source : [Microsoft - Microservices Communication](https://docs.microsoft.com/en
         
           deepDive: `# API Gateway
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ?
 
 L'API Gateway est un point d'entrée unique pour toutes les requêtes clientes. Il masque l'architecture microservices interne et fournit une interface unifiée.
 
@@ -433,7 +433,7 @@ Source : [NGINX - API Gateway](https://www.nginx.com/blog/building-microservices
           deepDive: `
 # Service Discovery
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 Service discovery allows services to find each other dynamically without hardcoded network locations. In containerized environments where IPs change frequently, services need to register themselves and discover others.
 
@@ -557,7 +557,7 @@ spec:
 - Implement circuit breakers for service calls
 - Monitor service mesh telemetry
 
-## Pieges courants
+## Pièges courants
 
 - Not implementing proper health checks
 - Hardcoding service URLs instead of using discovery
@@ -585,7 +585,7 @@ https://www.consul.io/docs/discovery/overview | https://kubernetes.io/docs/conce
           deepDive: `
 # Circuit Breaker
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 The Circuit Breaker pattern prevents cascading failures by stopping requests to a failing service. When a service repeatedly fails, the circuit "opens" and fast-fails subsequent requests without making the actual call. After a timeout, it allows a test request to check if the service recovered.
 
@@ -722,7 +722,7 @@ spec:
 - Implement proper health checks
 - Consider using libraries instead of custom implementations
 
-## Pieges courants
+## Pièges courants
 
 - Not having a fallback causing complete failure
 - Setting thresholds too tight (false positives)
@@ -743,7 +743,7 @@ https://resilience4j.net/ | https://martinfowler.com/bliki/CircuitBreaker.html |
           deepDive: `
 # Resilience
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 Resilience in microservices means the ability to recover from failures and continue operating. Key patterns include retries with backoff, bulkheads (isolation), timeouts, and degradation. The goal is to prevent failures in one service from cascading to others.
 
@@ -862,7 +862,7 @@ spec:
 - Test resilience scenarios (chaos testing)
 - Monitor and alert on degradation
 
-## Pieges courants
+## Pièges courants
 
 - No timeouts causing requests to hang forever
 - Retries without backoff overwhelming the service
@@ -883,7 +883,7 @@ https://resilience4j.net/ | https://martinfowler.com/articles/non-determinism.ht
           deepDive: `
 # Coherence des donnees
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 Data consistency in microservices is challenging because each service owns its data and cannot use traditional ACID transactions across services. Instead, eventual consistency is used, where the system eventually converges to a consistent state through events or compensating actions.
 
@@ -1032,7 +1032,7 @@ table.include.list: public.orders
 - Implement compensation logic for rollbacks
 - Make events contain all necessary data (no lookups)
 
-## Pieges courants
+## Pièges courants
 
 - Assuming strong consistency across services
 - Using distributed transactions (2PC) - not scalable
@@ -1053,7 +1053,7 @@ https://microservices.io/patterns/data/event-sourcing.html | https://martinfowle
           deepDive: `
 # CQRS
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 CQRS (Command Query Responsibility Segregation) is a pattern that separates read and write operations into different models. Commands modify state (writes), queries read state (reads). This allows independent scaling and optimization of read vs write paths.
 
@@ -1164,7 +1164,7 @@ app.get('/api/queries/orders/:id', async (req, res) => {
 - Design read models specifically for query patterns
 - Consider using a message broker (Kafka, RabbitMQ) for event propagation
 
-## Pieges courants
+## Pièges courants
 
 - Using same model for read and write defeats CQRS purpose
 - Ignoring eventual consistency between read/write models
@@ -1185,7 +1185,7 @@ https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs | https://mar
           deepDive: `
 # Saga pattern en detail
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 The Saga pattern manages distributed transactions across multiple services without two-phase commit. Each service performs its local transaction and publishes an event that triggers the next service's transaction. If a step fails, compensating transactions undo previous steps.
 
@@ -1319,7 +1319,7 @@ spec:
 - Log all saga steps for debugging and auditing
 - Make each saga step small and focused
 
-## Pieges courants
+## Pièges courants
 
 - Not making compensating transactions commutative
 - Forgetting that compensation can also fail
@@ -1340,7 +1340,7 @@ https://microservices.io/patterns/data/saga.html | https://learn.microsoft.com/e
           deepDive: `
 # Strangler Fig pattern
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 The Strangler Fig pattern incrementally migrates a monolithic system to microservices by gradually routing functionality to new services while keeping the old system running. Over time, the new system "strangles" the old one until it can be decommissioned.
 
@@ -1446,7 +1446,7 @@ return callService('monolith', req);
 - Document which endpoints are migrated
 - Plan for rollbacks during migration
 
-## Pieges courants
+## Pièges courants
 
 - Migrating too many features at once
 - Not accounting for shared databases between monolith and services
@@ -1467,7 +1467,7 @@ https://martinfowler.com/bliki/StranglerFigApplication.html | https://docs.aws.a
           deepDive: `
 # Database per service
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 The Database per Service pattern gives each microservice its own private database. Other services cannot access it directly - they must go through the service API. This enforces service boundaries and enables independent deployment and scaling.
 
@@ -1581,7 +1581,7 @@ class CustomerEventHandler {
 - Consider read replicas for query-heavy services
 - Use connection pooling appropriately
 
-## Pieges courants
+## Pièges courants
 
 - Services sharing the same database (loses independence)
 - Creating circular dependencies between services

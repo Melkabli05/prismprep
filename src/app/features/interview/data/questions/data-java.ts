@@ -985,7 +985,7 @@ public non-sealed class TextMessage extends Message { /* ... */ }
 6. **Ne pas rendre une classe finale trop tot** — il est plus facile de passer de non-final a final que l'inverse (retrocompatibilite)
 7. **Preferer sealed a final** quand vous voulez controler mais pas interdire completement
 
-## Pieges courants
+## Pièges courants
 
 1. **Classe finale avec champs mutables** — l'objet n'est pas immutable meme si la classe est finale
 2. **Final sur une interface** — une interface ne peut pas etre declaree \`final\` (cela n'a pas de sens)
@@ -1149,7 +1149,7 @@ try (reader) {
 6. **Ne pas catcher trop largement** — soyez specifique avec les exceptions
 7. **Attention aux resources null** — une ressource nulle dans try-with-resources ne ferme rien (pas de NPE)
 
-## Pieges courants
+## Pièges courants
 
 1. **\`close()\` qui jette une \`Exception\`** — pensez a la signature, utilisez plutot \`Closeable\` qui jette \`IOException\`
 2. **\`finalize()\` ou \`final\`** — ne pas confondre avec \`finally\` : \`try-with-resources\` remplace \`finally\`
@@ -1304,7 +1304,7 @@ jvisualvm
 6. **Tester avec les flags \`-XX:+PrintGCDetails\`** pour comprendre le comportement
 7. **Ne pas appeler \`System.gc()\`** — c'est une suggestion, pas une garantie
 
-## Pieges courants
+## Pièges courants
 
 1. **Heap trop petit** — OutOfMemoryError frequentes, Full GC constants
 2. **Objets qui fuient vers Old Gen** — fichiers, streams, caches non vides
@@ -1528,7 +1528,7 @@ jinfo -flags <pid>
 5. **Ajouter \`-XX:+HeapDumpOnOutOfMemoryError\`** en production
 6. **Surveiller les logs GC** pour detecter les tendances
 
-## Pieges courants
+## Pièges courants
 
 1. **Catcher \`OutOfMemoryError\`** et continuer — la JVM est dans un etat instable
 2. **Recursion sans cas de base** — erreur la plus frequente
@@ -1775,7 +1775,7 @@ jstat -gcutil <pid> 5s
 6. **Profiler regulierement** avec \`jvisualvm\` ou \`async-profiler\`
 7. **Ajouter \`-XX:+HeapDumpOnOutOfMemoryError\`** en production
 
-## Pieges courants
+## Pièges courants
 
 1. **Collections statiques** — le cas le plus frequent et le plus simple a corriger
 2. **Callbacks** — frameworks comme Spring, Hibernate ou Android (Activity) en sont coutumiers
@@ -1974,7 +1974,7 @@ public void processPayment(Payment payment) throws PaymentException {
 6. **Ne pas utiliser les exceptions pour le controle de flux** — c'est lent
 7. **Documenter les exceptions lancees** avec \`@throws\` dans la Javadoc
 
-## Pieges courants
+## Pièges courants
 
 1. **\`finally\` avec \`return\`** — ecrase l'exception et retourne la valeur du finally
 2. **Catcher \`Exception\` trop largement** — masque les bugs silencieusement
@@ -2153,7 +2153,7 @@ public class BankAccount {
 5. **Utiliser des exceptions specifiques** — chaque type d'erreur a sa propre exception
 6. **Ne pas abuser des checked** — si l'appelant ne peut pas remedier, utilisez unchecked
 
-## Pieges courants
+## Pièges courants
 
 1. **Confondre \`throw\` et \`throws\`** — l'un est une action, l'autre une declaration
 2. **Declarer trop d'exceptions dans \`throws\`** — rend l'API fragile (toute modification casse les appelants)
@@ -2283,7 +2283,7 @@ public class TechnicalException extends RuntimeException {
 6. **@Transactional et checked exceptions** — attention, Spring ne rollback pas sur checked exception par defaut
 7. **Ne pas abuser des checked** — une API avec 5 checked exceptions dans \`throws\` est penible a utiliser
 
-## Pieges courants
+## Pièges courants
 
 1. **Creer une checked pour une erreur de programmation** — NPE ou IllegalArgumentException devraient etre unchecked
 2. **Catcher \`Exception\` trop largement** — masque les unchecked inattendues
@@ -2458,7 +2458,7 @@ ArrayList<User> searchResults = new ArrayList<>();  // Resultats de recherche
 6. **Initialiser avec \`Arrays.asList()\`** pour les petites collections fixes
 7. **Streams et ArrayList** — la combinaison ideale pour les traitements de donnees
 
-## Pieges courants
+## Pièges courants
 
 1. **\`Arrays.asList()\` retourne une liste de taille fixe** — \`add()\`/\`remove()\` leve \`UnsupportedOperationException\`
 2. **\`list.toArray(new T[0])\` vs \`list.toArray(new T[list.size()])\`** — la premiere est plus rapide depuis Java 6 (reflection vs allocation)
@@ -2676,7 +2676,7 @@ String[][] decision = {
 5. **Profiler si necessaire** — les benchmarks varient selon la JVM et le CPU
 6. **Utiliser l'interface \`List\`** dans les signatures — changez d'implementation sans casser le code
 
-## Pieges courants
+## Pièges courants
 
 1. **\`get(i)\` en boucle sur LinkedList** — performance O(n²) catastrophique
 2. **Croire que LinkedList est "toujours meilleure" pour les insertions** — l'insertion au milieu necessite d'abord la recherche O(n)
@@ -2858,7 +2858,7 @@ String result = sb.toString();
 6. **\`String.format()\` pour le formatage** — plus propre que les concatenations multiples
 7. **Ne pas optimiser prematurement** — pour 2-3 concatenations, \`+\` suffit
 
-## Pieges courants
+## Pièges courants
 
 1. **Concaténation en boucle** — cree des milliers d'objets intermediaires
 2. **\`toString()\` dans une boucle avec StringBuilder** — annule l'avantage du buffer
@@ -3058,7 +3058,7 @@ map.merge("key", 1, Integer::sum);  // Incrementation thread-safe (relative)
 6. **\`ConcurrentHashMap\` en multi-thread** — jamais \`HashMap\` partage
 7. **Initialiser avec la capacite** — \`new HashMap<>(expectedSize / 0.75f + 1)\` evite le rehashing
 
-## Pieges courants
+## Pièges courants
 
 1. **Cle mutable** — si la reference change, la cle est perdue dans la map
 2. **Mauvais hashCode()** — tous les objets dans le meme bucket = performance O(n)
@@ -3244,7 +3244,7 @@ String[][] comparison = {
 5. **Attention aux traitements couteux dans \`computeIfAbsent\`** — le verrou est maintenu
 6. **\`forEach()\` avec parallelisme** — les lambdas doivent etre sans etat et thread-safe
 
-## Pieges courants
+## Pièges courants
 
 1. **\`null\` interdit** — ConcurrentHashMap ne supporte ni cle ni valeur null
 2. **Fausse atomique** — \`get()\` + \`put()\` sans methode atomique = race condition
@@ -3427,7 +3427,7 @@ Comparator<Person> complex = (p1, p2) -> {
 6. **\`Comparator.nullsFirst()\` et \`nullsLast()\`** pour gerer proprement les valeurs nulles
 7. **\`Comparator.reverseOrder()\`** pour inverser l'ordre naturel
 
-## Pieges courants
+## Pièges courants
 
 1. **\`return this.prix - p.prix\`** — peut deborder ! Utilisez \`Double.compare()\` ou \`Integer.compare()\`
 2. **Violation de la transitivite** — un Comparator qui n'est pas transitif plante le tri
@@ -3672,7 +3672,7 @@ public record Temperature(double celsius) {
 6. **Records comme cles de Map** — equals/hashCode generes, parfait pour HashMap
 7. **Records locaux** — declares dans une methode pour des resultats intermediaires
 
-## Pieges courants
+## Pièges courants
 
 1. **Pas d'heritage** — ne convient pas pour des hierarchies de classes
 2. **Serialization** — le mecanisme par defaut peut etre different des classes classiques
@@ -3864,7 +3864,7 @@ names.stream()
 5. **Ne pas capturer de variables mutables** — source de bugs en multi-thread
 6. **Composer avec \`andThen()\` et \`compose()\`** — plutot que d'ecrire des lambdas imbriquees
 
-## Pieges courants
+## Pièges courants
 
 1. **Lambda et checked exceptions** — les interfaces fonctionnelles standard ne declarent pas de checked exceptions
 2. **Capturer une variable qui change** — erreur de compilation (effectively final)
@@ -4070,7 +4070,7 @@ map.merge("Alice", 1, Integer::sum);
 5. **Attention aux effets de bord** — dans forEach et peek, pas de mutation d'etat externe
 6. **Paralleliser avec parcimonie** — mesurez avant d'utiliser parallelStream()
 
-## Pieges courants
+## Pièges courants
 
 1. **Stream consomme deux fois** — \`stream.has already been operated upon or closed\`
 2. **Oublier l'operation terminale** — le pipeline ne s'execute jamais
@@ -4268,7 +4268,7 @@ public void process(Optional<String> input) {  // Non — mauvaise pratique
 6. **\`OptionalInt\`, \`OptionalLong\`, \`OptionalDouble\`** pour les primitives
 7. **Collecter les Optionals** avec \`flatMap(Optional::stream)\` (Java 9+)
 
-## Pieges courants
+## Pièges courants
 
 1. **\`get()\` sans \`isPresent()\`** — NoSuchElementException
 2. **Optional comme champ** — non serializable, mauvaise performance
@@ -4458,7 +4458,7 @@ List<String> contents = files.stream()
 4. **Composer plutot qu'imbriquer** — \`andThen()\` et \`compose()\` pour la lisibilite
 5. **Ne pas ajouter de methode abstraite supplementaire** — l'interface cesserait d'etre fonctionnelle
 
-## Pieges courants
+## Pièges courants
 
 1. **Ajouter une deuxieme methode abstraite sans @FunctionalInterface** — casse le code client silencieusement
 2. **Checked exceptions** — les interfaces standard n'en declarent pas
@@ -4646,7 +4646,7 @@ public String describeShape(Shape shape) {
 5. **\`non-sealed\` avec parcimonie** — utiliser seulement quand l'heritage libre est necessaire
 6. **Utiliser sealed pour les state machines** — etats finis avec donnees par etat
 
-## Pieges courants
+## Pièges courants
 
 1. **Oublier \`permits\`** — erreur de compilation en Java 17+ (interdit par defaut)
 2. **Sous-classes dans un module different** — impossible, doivent etre dans le meme module
@@ -4841,7 +4841,7 @@ String[][] comparison = {
 5. **Minimiser les sections synchronisees** — bloque le moins de code possible
 6. **ReentrantLock ou StampedLock** pour des besoins avances (tryLock, read/write locks)
 
-## Pieges courants
+## Pièges courants
 
 1. **volatile ne rend pas \`count++\` atomique** — toujours un risque de perte d'increment
 2. **Deadlock** — avec synchronized, toujours verrouiller dans le meme ordre
@@ -5046,7 +5046,7 @@ String[][] comparison = {
 6. **Logguer les exceptions** — ne pas laisser les CompletableFuture silencieusement echouer
 7. **Separer les pools** — un pool pour les I/O, un pour le CPU
 
-## Pieges courants
+## Pièges courants
 
 1. **Oublier \`shutdown()\`** — le processus JVM ne se termine pas
 2. **Bloquer le pool commun** — \`get()\` dans un callback du pool commun = deadlock
@@ -5276,7 +5276,7 @@ UserService proxy = (UserService) Proxy.newProxyInstance(
 5. **Gerer les exceptions** — \`InvocationTargetException\` encapsule l'exception originale
 6. **\`isAccessible()\`** — verifier avant de modifier (securite)
 
-## Pieges courants
+## Pièges courants
 
 1. **Performance** — la reflexion est 10-100× plus lente que l'appel direct
 2. **Pas de verification compile-time** — une faute de frappe dans le nom de methode ne sera detectee qu'a l'execution
@@ -5473,7 +5473,7 @@ String[][] varianceComparison = {
 4. **\`<T>\` si T est reference a plusieurs endroits** — wildcard si utilise une seule fois
 5. **Eviter les wildcards dans les types de retour** — complique l'API
 
-## Pieges courants
+## Pièges courants
 
 1. **Wildcard dans le mauvais sens** — utiliser \`? extends\` quand on veut ecrire (impossible !)
 2. **\`? super\` ne permet pas de lire autre chose qu'Object** — perte d'information de type
@@ -5743,7 +5743,7 @@ public enum ParserType {
 6. **\`valueOf(String)\` pour la deserialisation** — attention aux IllegalArgumentException
 7. **\`values()\` retourne une copie** — peut etre mise en cache si appele frequemment
 
-## Pieges courants
+## Pièges courants
 
 1. **Enum trop gros** — si l'enum a > 20 constantes ou des methodes de 50 lignes, envisagez une classe polymorphe
 2. **Ordre de declaration** — \`values()\` et \`ordinal()\` dependent de l'ordre, ne pas ajouter de constantes au milieu

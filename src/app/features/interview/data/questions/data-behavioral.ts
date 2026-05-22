@@ -84,7 +84,7 @@ Les recruteurs sont formes a la methode STAR et l'utilisent pour :
 - Entrainez-vous a voix haute (max 2 minutes par histoire)
 - Variez les contextes (startup, grand groupe, ESN)
 
-## Pieges courants
+## Pièges courants
 
 - Raconter sans structure (histoire confuse)
 - Parler au nom de l'equipe sans clarifier votre role
@@ -164,7 +164,7 @@ Le projet a ete livre avec 2 semaines de retard mais avec zero impact client. De
 - Terminez sur les actions correctives mises en place
 - Montrez que l'echec vous a rendu plus fort
 
-## Pieges courants
+## Pièges courants
 
 - Inventer un echec (les recruteurs detectent les histoires fabriquees)
 - Blamer les autres ou les circonstances
@@ -241,7 +241,7 @@ Le recruteur cherche a evaluer :
 - Impliquez un tiers seulement en dernier recours
 - Apprenez de chaque conflit pour eviter les suivants
 
-## Pieges courants
+## Pièges courants
 
 - Eviter le conflit (il ne disparait pas, il s'aggrave)
 - Aller directement chez le manager sans avoir essaye de resoudre
@@ -317,7 +317,7 @@ Le recruteur cherche a evaluer :
 - Restez factuel et evitez le melo
 - Distinguez le style personnel du comportement inapproprié
 
-## Pieges courants
+## Pièges courants
 
 - Critiquer ou blamer le manager publiquement
 - Etre passif et subir sans rien dire
@@ -390,7 +390,7 @@ Le recruteur cherche a evaluer :
 - Valorisez la contribution de l'equipe
 - Mentionnez les lecons apprises
 
-## Pieges courants
+## Pièges courants
 
 - Minimiser le role de l'equipe (tout le credit pour vous)
 - Gonfler ses contributions ou prendre le credit du travail d'autrui
@@ -460,7 +460,7 @@ Le recruteur cherche a evaluer :
 - Faites des points d'etape reguliers
 - Protégez le sommeil et la sante (la productivité a long terme en depend)
 
-## Pieges courants
+## Pièges courants
 
 - Dire oui a tout sans evaluer la faisabilite
 - Travailler sans priorites claires (urgent vs important)
@@ -537,7 +537,7 @@ Le recruteur cherche a evaluer :
 - Verifiez la comprehension sans paraître condescendant
 - Concluez par l'impact metier
 
-## Pieges courants
+## Pièges courants
 
 - Utiliser du jargon technique (impression de superiorite)
 - Etre sur la defensive quand on vous remet en question
@@ -612,7 +612,7 @@ Le recruteur cherche a evaluer :
 - Utilisez des exemples concrets de transition reussie
 - Montrez que vous apprenez vite de nouvelles competences
 
-## Pieges courants
+## Pièges courants
 
 - Resister par peur du changement ou de l'inconnu
 - Négliger la formation continue (rester sur ses acquis)
@@ -687,7 +687,7 @@ Le recruteur cherche a evaluer :
 - Partager vos propres erreurs pour normaliser l'apprentissage
 - Investir du temps de maniere structuree (pas seulement au fil de l'eau)
 
-## Pieges courants
+## Pièges courants
 
 - Faire le travail a la place du junior (solution facile mais pas formatrice)
 - Etre impatient ou condescendant (le junior n'ose plus poser de questions)
@@ -759,7 +759,7 @@ Le recruteur cherche a evaluer :
 - Impliquez les parties prenantes dans le processus de clarification
 - Utilisez des prototypes visuels pour valider plus vite
 
-## Pieges courants
+## Pièges courants
 
 - Assumer la comprehension au lieu de demander
 - Attendre la perfection avant de commencer
@@ -837,7 +837,7 @@ Score = (R * I * C) / E
 - Documentez les decisions et leur justification
 - Apprenez a dire non de maniere constructive
 
-## Pieges courants
+## Pièges courants
 
 - Prioriser selon le bruit (celui qui crie le plus fort)
 - Ignorer les dependances entre taches
@@ -912,7 +912,7 @@ Le recruteur cherche a evaluer :
 - Pour recevoir : ecoutez sans vous justifier, remerciez, agissez
 - Proposez des solutions, pas seulement des problemes
 
-## Pieges courants
+## Pièges courants
 
 - Attendre les revues annuelles pour donner du feedback
 - Etre trop vague : « Il faut ameliorer la qualite du code »

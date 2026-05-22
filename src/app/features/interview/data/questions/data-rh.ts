@@ -17,7 +17,7 @@ export const rhCategory: InterviewCategory = {
         
           deepDive: `# Gerer le Stress en Entretien
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 Le stress en entretien est une reponse physiologique et psychologique normale face a une situation d evaluation perçue comme menacante. Meme les profils les plus aguerris ressentent une montee d adrenaline avant un entretien important. La question ne porte pas sur la presence ou l absence de stress, mais sur votre capacite a le reconnaitre et a le canaliser.
 
@@ -66,7 +66,7 @@ Adoptez une approche en trois temps : reconnaissance, mecanismes, et preuve conc
 - Utilisez le vocabulaire de l intelligence emotionnelle
 - Terminez sur une note positive : ce que le stress vous a appris
 
-## Pieges courants
+## Pièges courants
 
 - Nier le stress : « Je ne stresse jamais » manque de credibilite
 - Minimiser l impact : « Ce n etait rien » ne montre pas la gravite de la situation
@@ -97,7 +97,7 @@ Source : [Apec – Gerer le stress en entretien](https://www.apec.fr/candidat/en
         
           deepDive: `# Justifiez vos competences avec des exemples concrets
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 Cette question, souvent implicite mais omnipresente, demande de transformer des affirmations generales (« Je suis compet en React ») en preuves tangibles et verifiables. Le recruteur ne veut pas entendre ce que vous dites de vous-meme – il veut voir ce que vous avez reellement accompli. C est le principe fondamental de l entretien par competences : demontrer plutot que declarer.
 
@@ -151,7 +151,7 @@ Les CV sont truffes de mots-cles et de competences declarees. Le recruteur doit 
 - Gardez une reserve d histoires non racontees pour les questions de suivi
 - Adaptez la complexite technique au profil de votre interlocuteur
 
-## Pieges courants
+## Pièges courants
 
 - Repondre par des generalites : « J ai travaille sur des projets complexes »
 - Utiliser « nous » au lieu de « je » : le recruteur ne sait pas ce que vous avez fait
@@ -173,7 +173,7 @@ Source : [Cadremploi – Entretien par competences](https://www.cadremploi.fr/gu
         
           deepDive: `# Presentez-vous efficacement
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 La question « Presentez-vous » est souvent la première de l entretien. Elle fixe le ton, donne le cadre et permet au recruteur de se faire une premiere impression. Ce n est pas un exercice de recitation de CV – c est l occasion de captiver votre interlocuteur et de lui donner envie d en savoir plus.
 
@@ -231,7 +231,7 @@ Un recruteur experimenté se forge une opinion dans les 30 premieres secondes. V
 - Gardez une version courte (1 minute) et une version longue (2-3 minutes)
 - Personnalisez chaque presentation selon l entreprise et le poste
 
-## Pieges courants
+## Pièges courants
 
 - Reciter son CV chronologiquement : c est ennuyeux et deja connu
 - Depasser 3 minutes : le recruteur decroche
@@ -253,7 +253,7 @@ Source : [Welcome to the Jungle – Se presenter en entretien](https://www.welco
         
           deepDive: `# Se renseigner sur l'entreprise
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 La recherche sur l'entreprise avant l'entretien n'est pas une option – c'est une obligation. Les recruteurs considerent l'absence de preparation comme un manque de respect et d'interet. Connaitre l'entreprise vous permet de personnaliser vos reponses et de poser des questions pertinentes.
 
@@ -310,7 +310,7 @@ Le recruteur evalue :
 - Preparez 2-3 questions specifiques issues de vos recherches
 - Utilisez vos decouvertes pour personnaliser vos reponses
 
-## Pieges courants
+## Pièges courants
 
 - Arriver sans aucune connaissance de l'entreprise
 - Confondre l'entreprise avec un concurrent
@@ -332,7 +332,7 @@ Source : [Apec – Rechercher des infos sur l'entreprise](https://www.apec.fr/ca
         
           deepDive: `# Preparer ses questions a l'avance
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 Poser des questions en fin d'entretien est aussi important que d'y repondre. Les questions que vous posez revelent votre niveau de preparation, votre interet pour le poste et votre capacite de reflexion. Ne pas avoir de questions est perçu comme un desinteret.
 
@@ -382,7 +382,7 @@ Les questions du candidat permettent au recruteur d'evaluer :
 - Evitez les questions dont la reponse est facilement trouvable
 - Terminez par une question ouverte sur la suite
 
-## Pieges courants
+## Pièges courants
 
 - Ne pas avoir de questions du tout
 - Poser des questions sur le salaire et les avantages trop tot
@@ -410,7 +410,7 @@ Source : [The Muse – Best Questions to Ask in an Interview](https://www.themus
         
           deepDive: `# Votre comportement et votre sourire en entretien
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 La communication non-verbale represente 55% de l'impact d'un message selon les travaux d'Albert Mehrabian. Avant meme que vous prononciez un mot, votre posture, votre regard, votre sourire et votre poignee de main ont deja envoye un message au recruteur. Les premieres secondes de l'entretien sont decisives et conditionnent la suite de l'echange.
 
@@ -462,7 +462,7 @@ Vous ne pouvez pas controler votre langage corporel par la seule volonte. La cle
 - Utilisez des gestes ouverts pour ponctuer vos propos
 - Habillez-vous en adequation avec la culture de l'entreprise
 
-## Pieges courants
+## Pièges courants
 
 - Poignee de main molle ou trop forte (donne une mauvaise premiere impression)
 - Regard fuyant ou fixation excessive (mal aise)
@@ -484,7 +484,7 @@ Source : [Apec – Langage corporel en entretien](https://www.apec.fr/candidat/e
         
           deepDive: `# Gerer les questions surprises
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 Les questions surprises sont des questions imprevues, parfois incongrues, qui sortent du cadre des questions preparees. Elles peuvent etre techniques, comportementales ou meme creatives. Leur but n'est pas de vous pieger mais de tester votre capacite d'adaptation et votre agilite intellectuelle.
 
@@ -540,7 +540,7 @@ Le recruteur cherche a evaluer :
 - Reconnaissez vos limites sans vous arreter
 - Gardez des histoires STAR de reserve
 
-## Pieges courants
+## Pièges courants
 
 - Repondre immediatement sans reflechir (reponse impulsive)
 - Paniquer et bloquer completement
@@ -561,7 +561,7 @@ Source : [Cadremploi – Questions pieges en entretien](https://www.cadremploi.f
         
           deepDive: `# Temps de reponse en entretien
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 La facon dont vous utilisez le temps de reponse est un indicateur cle pour le recruteur. Prendre le temps de reflechir avant de repondre n'est pas un signe de faiblesse mais de maturite intellectuelle. Les recruteurs preferent une reponse reflechie et structuree a une reponse immediate mais superficielle.
 
@@ -608,7 +608,7 @@ Le recruteur analyse votre gestion du temps de reponse pour evaluer :
 - Respirez profondement pour rester calme
 - Adaptez votre rythme a celui du recruteur
 
-## Pieges courants
+## Pièges courants
 
 - Repondre trop vite (reponse non reflechie)
 - Remplir le silence avec des « euh », « du coup », « en fait »
@@ -629,7 +629,7 @@ Source : [Welcome to the Jungle – Les silences en entretien](https://www.welco
         
           deepDive: `# Creer une relation avec le recruteur
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 L'entretien n'est pas un interrogatoire unilateral mais un echange humain. Creer une relation de qualite (rapport) avec le recruteur est essentiel pour qu'il se souvienne de vous positivement. Les decisions d'embauche sont rarement purement rationnelles – l'affect et la connexion personnelle jouent un role majeur.
 
@@ -674,7 +674,7 @@ Un recruteur recoit des dizaines de candidats par semaine. Ceux avec qui il a eu
 - Partagez des anecdotes personnelles pertinentes et professionnelles
 - Terminez l'entretien avec un remerciement chaleureux
 
-## Pieges courants
+## Pièges courants
 
 - Etre trop formel et distant (donne une impression de froideur)
 - Etre trop familier (manque de respect professionnel)
@@ -696,7 +696,7 @@ Source : [LinkedIn – Creer du lien en entretien](https://www.linkedin.com/puls
         
           deepDive: `# Presenter bien votre personnalite
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 Les recruteurs ne cherchent pas seulement des competences techniques – ils cherchent des personnes avec qui ils auront envie de travailler. Votre personnalite est un facteur cle de decision. La question n'est pas « qui etes-vous vraiment » mais « quelle version professionnelle de vous-meme apportez-vous a l'entreprise ».
 
@@ -747,7 +747,7 @@ Le recruteur veut savoir si votre personnalite s'integrera bien dans l'equipe et
 - Montrez de la conscience de vous-meme (forces ET faiblesses)
 - Utilisez des retours de pairs ou managers pour appuyer vos dires
 
-## Pieges courants
+## Pièges courants
 
 - Etre generique : « Je suis sympa, travailleur, et motivé »
 - Donner des traits sans preuve : « Je suis creatif » sans exemple
@@ -769,7 +769,7 @@ Source : [Glassdoor – Montrer sa personnalite en entretien](https://www.glassd
         
           deepDive: `# Expliquer clairement ses idees
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 La clarte de communication est une competence transverse essentielle, quel que soit le poste. Savoir expliquer des concepts complexes de maniere simple et structuree montre votre maitrise du sujet ET votre intelligence relationnelle. Un bon technicien qui communique mal est moins efficace qu'un technicien moyen qui communique bien.
 
@@ -824,7 +824,7 @@ Le recruteur observe votre facon de communiquer pour evaluer :
 - Concluez par un message cle memorable
 - Entrainez-vous a expliquer un concept technique a un non-initie
 
-## Pieges courants
+## Pièges courants
 
 - Utiliser du jargon technique non explique
 - Partir dans des digressions complexes
@@ -896,7 +896,7 @@ Le recruteur analyse votre niveau de confiance pour :
 - Reconnaissez vos limites avec grace, pas avec gene
 - Sourris – un sourire detend votre interlocuteur ET vous-meme
 
-## Pieges courants
+## Pièges courants
 
 - Confondre confiance et arrogance (vendre sans ecouter)
 - Parler trop vite (signe de nervosite)
@@ -918,7 +918,7 @@ Source : [Forbes France – Confiance en soi en entretien](https://www.forbes.fr
         
           deepDive: `# Parler d'un echec ou d'une erreur
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 La question sur l'echec est l'une des plus redoutées mais aussi l'une des plus revelatrices. Le recruteur ne cherche pas a vous pieger mais a evaluer votre maturite professionnelle, votre capacite d'introspection et votre resilience.
 
@@ -975,7 +975,7 @@ Le recruteur cherche a evaluer :
 - Choisissez un echec avec un impact modere (pas une catastrophe)
 - Terminez sur les actions correctives mises en place
 
-## Pieges courants
+## Pièges courants
 
 - Inventer un echec (les recruteurs detectent les histoires fabriquees)
 - Blamer les autres ou les circonstances
@@ -997,7 +997,7 @@ Source : [Cadremploi – Parler d'un echec en entretien](https://www.cadremploi.
         
           deepDive: `# Posture en visioconference
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 Les entretiens en visioconference sont devenus la norme pour les premiers tours. Votre cadre et votre comportement en visio envoient des signaux aussi forts que le langage corporel en presentiel. Une mauvaise configuration technique peut saborder un entretien autrement reussi.
 
@@ -1054,7 +1054,7 @@ Le recruteur evalue a travers votre posture visio :
 - Prenez des notes sur papier (pas sur un autre ecran)
 - Souriez naturellement en debut et fin d'entretien
 
-## Pieges courants
+## Pièges courants
 
 - Regarder l'ecran au lieu de la camera (pas de contact visuel)
 - Fond distrayant (lit defait, vaisselle, personnes qui passent)
@@ -1082,7 +1082,7 @@ Source : [Welcome to the Jungle – Entretien en visio conseils](https://www.wel
         
           deepDive: `# Presentez-vous (questions recurrentes)
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 La question « Presentez-vous » revient dans presque tous les entretiens. Meme si elle peut sembler simple, c'est souvent la plus importante car elle donne le ton et permet au recruteur de se faire une premiere impression decisive.
 
@@ -1134,7 +1134,7 @@ Je souhaite aujourd'hui mettre cette experience au service d'une entreprise inno
 - Terminez par une ouverture (transition vers la suite)
 - Utilisez des mots de liaison pour fluidifier le discours
 
-## Pieges courants
+## Pièges courants
 
 - Dire « C'est dans mon CV » (impression de faineantise)
 - Reciter sa vie depuis la naissance (trop long)
@@ -1205,7 +1205,7 @@ Le principe fondamental de l'entretien par competences : le meilleur predicteur 
 - Concluez par l'impact metier (pas juste technique)
 - Montrez ce que vous avez appris de l'experience
 
-## Pieges courants
+## Pièges courants
 
 - Etre vague et general : « J'ai travaille sur des projets complexes »
 - Utiliser « nous » au lieu de « je » (on ne voit pas votre contribution)
@@ -1227,7 +1227,7 @@ Source : [APEC – Methode STAR et entretien par competences](https://www.apec.f
         
           deepDive: `# Pourquoi ce role ?
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 Cette question est probablement la plus predite mais aussi celle ou la plupart des candidats echouent par manque de personnalisation. Le recruteur veut verifier que votre motivation est specifique et authentique, pas une candidature envoyee a 50 entreprises.
 
@@ -1272,7 +1272,7 @@ Le recruteur cherche a detecter :
 - Connectez votre parcours a leurs besoins
 - Demontrez de l'enthousiasme authentique
 
-## Pieges courants
+## Pièges courants
 
 - Reponse generique : « Parce que c'est une bonne opportunite »
 - Parler uniquement de ce que vous voulez (salaire, avantages)
@@ -1294,7 +1294,7 @@ Source : [Welcome to the Jungle – Pourquoi ce poste ?](https://www.welcometoth
         
           deepDive: `# Ou vous voyez-vous dans 5 ans ?
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 Cette question classique evalue votre ambition, votre capacite de projection et votre alignement avec l'entreprise. Elle ne demande pas de predire l'avenir avec precision mais de montrer que vous avez reflechi a votre evolution professionnelle.
 
@@ -1344,7 +1344,7 @@ Je suis conscient que les priorites evoluent, donc je reste ouvert aux opportuni
 - Parlez d'impact et de contribution, pas seulement de titre
 - Montrez que vous voulez rester (fidelite)
 
-## Pieges courants
+## Pièges courants
 
 - « Je ne sais pas » (manque de vision)
 - « Votre poste » (manque d'ambition ou aggression subtile)
@@ -1366,7 +1366,7 @@ Source : [Cadremploi – Dans 5 ans, vous vous voyez ou ?](https://www.cadremplo
         
           deepDive: `# Projet marquant ?
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 Cette question vous donne l'opportunite de briller en racontant votre plus belle reussite professionnelle. Le recruteur veut comprendre ce qui vous rend fier et comment vous abordez les defis. C'est votre moment de « show case » – ne le gachez pas avec un exemple banal.
 
@@ -1421,7 +1421,7 @@ Au-delà des chiffres, expliquez POURQUOI ce projet vous a marqué. « Ce projet
 - Terminez par les lecons apprises
 - Adaptez la complexite technique a votre auditoire
 
-## Pieges courants
+## Pièges courants
 
 - Choisir un projet trop banal (refaire le CSS du site)
 - Ne pas quantifier l'impact
@@ -1443,7 +1443,7 @@ Source : [Glassdoor – Parler de ses realisations](https://www.glassdoor.fr/con
         
           deepDive: `# Qualites et defauts
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 Cette question classique teste votre conscience de soi, votre honnetete et votre capacite a vous ameliorer. Le piege n'est pas d'avoir des defauts mais de ne pas en avoir conscience ou de ne pas travailler a les corriger.
 
@@ -1495,7 +1495,7 @@ Je suis egalement reconnu pour ma communication pedagogique. Mes collegues junio
 - Soyez honnete sans etre cruel envers vous-meme
 - Demontrez de la progression dans l'amelioration de vos defauts
 
-## Pieges courants
+## Pièges courants
 
 - Donner un « faux defaut » : « Je suis trop perfectionniste » (cliché)
 - Donner un defaut trop grave : « Je n'arrive pas a respecter les deadlines »
@@ -1517,7 +1517,7 @@ Source : [HelloWork – Qualites et defauts en entretien](https://www.hellowork.
         
           deepDive: `# Pourquoi vous et pas les autres ?
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 Cette question est un test de votre capacite a vous differencier. Le recruteur vous met en concurrence directe avec d'autres candidats hypothetiques. Votre objectif : demontrer ce qui vous rend UNIQUE et pourquoi cette unicite est PRECIEUSE pour l'entreprise.
 
@@ -1568,7 +1568,7 @@ Je pense que cette double competence est rare et qu'elle sera particulierement u
 - Restez humble dans le ton (confiant mais pas arrogant)
 - Connectez votre valeur ajoutee a leurs enjeux
 
-## Pieges courants
+## Pièges courants
 
 - Etre arrogant : « Parce que je suis le meilleur »
 - Etre generique : « Je suis travailleur et motive »
@@ -1590,7 +1590,7 @@ Source : [Forbes France – Pourquoi vous et pas un autre](https://www.forbes.fr
         
           deepDive: `# Passer a une autre langue en entretien
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 De plus en plus d'entretiens incluent une partie dans une langue etrangere, principalement l'anglais. Le recruteur veut verifier votre capacite a travailler dans un environnement international, pas votre niveau academique parfait.
 
@@ -1639,7 +1639,7 @@ Le recruteur evalue :
 - Regardez des videos techniques dans la langue cible avant
 - Demandez de l'aide si vous ne comprenez pas une question
 
-## Pieges courants
+## Pièges courants
 
 - Paniquer quand on cherche un mot
 - S'excuser constamment pour son niveau
@@ -1661,7 +1661,7 @@ Source : [Wall Street English – Reussir un entretien en anglais](https://www.w
         
           deepDive: `# Negocier son salaire
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 La negociation salariale est une etape normale et attendue du processus de recrutement. Les recruteurs s'attendent a une negociation et respectent les candidats qui connaissent leur valeur. Une bonne negociation est gagnant-gagnant : vous obtenez une juste remuneration, l'entreprise recrute un candidat motive.
 
@@ -1711,7 +1711,7 @@ Le recruteur s'attend a negocier car :
 - Obtenez l'offre ecrite avant d'accepter
 - Sachez quel est votre minimum acceptable (BATNA)
 
-## Pieges courants
+## Pièges courants
 
 - Donner un chiffre trop tot et sans reflexion
 - Se sous-estimer par peur de perdre l'offre
@@ -1733,7 +1733,7 @@ Source : [Capital – Negocier son salaire](https://www.capital.fr/votre-carrier
         
           deepDive: `# Pourquoi quitter votre poste actuel ?
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 Cette question est un veritable test psychologique. Le recruteur cherche a comprendre vos motivations et a detecter d'eventuels drapeaux rouges. Votre reponse doit etre positive, tournee vers l'avenir, et jamais negative envers votre employeur actuel.
 
@@ -1789,7 +1789,7 @@ Le recruteur cherche a identifier :
 - Anticipez la question si vous avez change souvent d'emploi
 - Preparez une reponse briefe (30 secondes suffisent)
 
-## Pieges courants
+## Pièges courants
 
 - Critiquer son manager ou son equipe
 - Parler negativement de l'entreprise
@@ -1811,7 +1811,7 @@ Source : [LinkedIn – Pourquoi quittez-vous votre poste](https://www.linkedin.c
         
           deepDive: `# Disponibilite et teletravail
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 Les modalites de travail (presentiel, hybride, full remote) sont devenues un sujet central des entretiens. Le recruteur veut clarifier vos contraintes et verifier leur compatibilité avec la politique de l'entreprise. Votre reponse doit montrer de la flexibilite sans sacrifier vos besoins essentiels.
 
@@ -1857,7 +1857,7 @@ J'aimerais juste clarifier un point : y a-t-il des jours obligatoires au bureau 
 - Parlez de votre productivite en remote (exemples)
 - Preparez des arguments sur votre organisation
 
-## Pieges courants
+## Pièges courants
 
 - Etre trop rigide : « Je ne viendrai que 1 jour par semaine »
 - Mentir sur ses contraintes (ca vous rattrapera)
@@ -1885,7 +1885,7 @@ Source : [HelloWork – Teletravail et entretien](https://www.hellowork.com/fr-f
         
           deepDive: `# Vous proposez des formations ?
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 Cette question, que vous pouvez poser au recruteur, est un indicateur de votre engagement dans votre developpement professionnel et de votre vision a long terme. Les entreprises qui investissent dans la formation retiennent mieux leurs talents.
 
@@ -1930,7 +1930,7 @@ Poser cette question montre au recruteur que vous :
 - Reliez les formations aux besoins de l'entreprise (gagnant-gagnant)
 - Proposez aussi de contribuer (formations internes)
 
-## Pieges courants
+## Pièges courants
 
 - Donner l'impression que vous ne voulez que des formations sans apporter
 - Demander des formations sans rapport avec le poste
@@ -1952,7 +1952,7 @@ Source : [Le Parisien – Se former en entreprise](https://www.leparisien.fr/eco
         
           deepDive: `# Stage de 6 ou 8 mois ?
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 Cette question, specifique aux profils en debut de carriere ou en reconversion, porte sur la duree souhaitee du stage. Elle evalue votre engagement, votre flexibilite et votre capacite a planifier.
 
@@ -1995,7 +1995,7 @@ Le recruteur cherche a comprendre :
 - Montrez de l'enthousiasme quelle que soit la duree
 - Reliez la duree a votre projet professionnel
 
-## Pieges courants
+## Pièges courants
 
 - Etre inflexible : « 6 mois, pas un jour de plus »
 - Ne pas avoir d'avis : « Je ne sais pas, comme vous voulez »
@@ -2013,7 +2013,7 @@ Source : [JobIRL – Conseils pour trouver un stage](https://www.jobirl.com/cons
         
           deepDive: `# Quelle est l'etape suivante ?
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 Cette question, que vous posez en fin d'entretien, est essentielle. Elle montre votre professionnalisme, votre interet pour le poste et votre capacite a planifier. Ne jamais quitter un entretien sans connaitre les prochaines etapes.
 
@@ -2056,7 +2056,7 @@ Poser cette question demontre que vous :
 - Adaptez votre question au type d'entretien (RH vs technique)
 - Suivez le calendrier annoncé
 
-## Pieges courants
+## Pièges courants
 
 - Ne pas poser la question (manque d'interet apparent)
 - Poser la question trop tot (pendant l'entretien)
@@ -2078,7 +2078,7 @@ Source : [Welcome to the Jungle – Questions a poser en fin d'entretien](https:
         
           deepDive: `# Votre impression de cet entretien ?
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 Cette question de fin d'entretien est un test de votre perception et de votre authenticite. Le recruteur veut savoir comment vous avez vecu l'echange et si vous etes toujours interesse. C'est aussi une opportunite de renforcer votre candidature.
 
@@ -2123,7 +2123,7 @@ Si je devais donner un retour constructif, je dirais que j'aurais aime avoir plu
 - Restez professionnel meme si l'entretien ne s'est pas bien passé
 - Terminez sur une note positive et ouverte
 
-## Pieges courants
+## Pièges courants
 
 - Etre trop negatif : « Je m'attendais a mieux »
 - Etre trop flateur : « C'etait parfait, le meilleur entretien de ma vie »
@@ -2145,7 +2145,7 @@ Source : [Cadremploi – Questions de fin d'entretien](https://www.cadremploi.fr
         
           deepDive: `# Relance apres l'entretien
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ? ?
 
 La relance apres entretien est une etape souvent negligee mais qui peut faire la difference entre deux candidats de niveau comparable. Un email de remerciement bien ecrit montre votre professionnalisme, votre interet et votre courtoisie.
 
@@ -2207,7 +2207,7 @@ Bien cordialement,
 - Verifiez l'orthographe et la grammaire
 - Utilisez un objet clair et identifiable
 
-## Pieges courants
+## Pièges courants
 
 - Relancer trop tot (le lendemain de l'entretien)
 - Relancer trop souvent (harcèlement)

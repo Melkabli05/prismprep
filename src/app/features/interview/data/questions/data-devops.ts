@@ -19,7 +19,7 @@ export const devopsCategory: InterviewCategory = {
         
           deepDive: `# Docker
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ?
 
 Docker est une plateforme de conteneurisation qui permet d'emballer une application et ses dépendances dans un conteneur isolé. Les conteneurs sont légers, rapides à démarrer et cohérents entre les environnements.
 
@@ -73,7 +73,7 @@ docker run -v mydata:/container/path myapp
 4. Ajouter .dockerignore pour exclure des fichiers
 5. Ne pas stocker de secrets dans les images
 
-## Pieges courants
+## Pièges courants
 
 1. Conteneurs qui s'arrêtent immédiatement (pas de processus foreground)
 2. Permissions de fichiers
@@ -88,7 +88,7 @@ Source : [Docker Docs](https://docs.docker.com/get-started/)`},
         
           deepDive: `# Docker vs VM
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ?
 
 Comparaison entre la conteneurisation (Docker) et les machines virtuelles (VM) pour déployer des applications.
 
@@ -162,7 +162,7 @@ Source : [Docker vs VMs](https://www.docker.com/blog/docker-vs-virtual-machines/
         
           deepDive: `# Docker Compose
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ?
 
 Docker Compose est un outil pour définir et exécuter des applications multi-conteneurs. Il utilise un fichier YAML pour configurer les services, réseaux et volumes.
 
@@ -259,7 +259,7 @@ Source : [Docker Compose Docs](https://docs.docker.com/compose/)`},
         
           deepDive: `# Kubernetes
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ?
 
 Kubernetes (K8s) est un orchestrateur de conteneurs open source. Il automatise le déploiement, la mise à l'échelle et la gestion des applications conteneurisées.
 
@@ -388,7 +388,7 @@ Source : [Kubernetes Docs](https://kubernetes.io/docs/)`},
         
           deepDive: `# CI/CD
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ?
 
 CI/CD signifie Intégration Continue / Déploiement Continu. C'est une pratique qui automatise l'intégration du code, les tests et le déploiement.
 
@@ -473,7 +473,7 @@ Source : [Atlassian CI/CD](https://www.atlassian.com/continuous-delivery/princip
         
           deepDive: `# Deployment Strategies
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 Deployment strategies define how software is released to production environments. The main strategies are:
 
@@ -542,7 +542,7 @@ spec:
 - Automate health checks
 - Implement traffic mirroring for testing
 
-## Pieges courants
+## Pièges courants
 
 - Forgetting to test rollback procedure
 - Not monitoring during deployment
@@ -560,7 +560,7 @@ https://kubernetes.io/docs/concepts/workloads/controllers/deployment/ | https://
         
           deepDive: `# GitOps
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 GitOps is a deployment approach where the desired state of infrastructure and applications is stored in a Git repository. Changes are made via pull requests, and automated tools sync the cluster to match the desired state.
 
@@ -626,7 +626,7 @@ spec:
 - Enable drift detection
 - Require signed commits
 
-## Pieges courants
+## Pièges courants
 
 - Storing secrets in Git (use Sealed Secrets, Vault)
 - Not enabling auto-sync can cause drift
@@ -652,7 +652,7 @@ https://argoproj.github.io/argo-cd/ | https://fluxcd.io/ | https://www.gitops.te
         
           deepDive: `# Infrastructure as Code (IaC)
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 IaC is the practice of managing infrastructure using configuration files rather than manual processes. It enables version control, reproducibility, and automation of infrastructure provisioning.
 
@@ -715,7 +715,7 @@ const vpc = new aws.ec2.Vpc("main", {
 - Implement policy as code (OPA, Sentinel)
 - Always run plan before apply
 
-## Pieges courants
+## Pièges courants
 
 - Committing secrets to state files
 - Not using remote state with locking
@@ -733,7 +733,7 @@ https://www.terraform.io/docs | https://www.pulumi.com/docs/ | https://docs.ansi
         
           deepDive: `# Monitoring & Logging
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 Monitoring and logging are essential for observing system health, troubleshooting issues, and optimizing performance. The three pillars of observability: metrics, logs, and traces.
 
@@ -815,7 +815,7 @@ output {
 - Correlate logs with traces
 - Create runbooks for alerts
 
-## Pieges courants
+## Pièges courants
 
 - Too many dashboards without focus
 - Alert fatigue from noisy alerts
@@ -833,7 +833,7 @@ https://prometheus.io/docs/introduction/overview/ | https://grafana.com/docs/ | 
         
           deepDive: `# Distributed Tracing
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 Distributed tracing tracks requests across multiple services, helping identify latency issues and bugs in microservices architectures. Each request gets a unique trace ID that propagates through all services.
 
@@ -913,7 +913,7 @@ tracestate: Congo=t61rcWkgMzE
 - Use OpenTelemetry for vendor-neutral instrumentation
 - Include business-relevant tags in spans
 
-## Pieges courants
+## Pièges courants
 
 - Not propagating trace context to async workers
 - Missing spans for middleware layers

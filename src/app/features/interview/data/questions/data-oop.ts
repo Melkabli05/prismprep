@@ -201,7 +201,7 @@ Les 4 piliers sont renforces par les principes SOLID :
 - Heritage max 2-3 niveaux de profondeur
 - Toujours utiliser @Override pour detecter les erreurs de signature
 
-## Pieges courants
+## Pièges courants
 
 - Heritage la ou la composition suffirait
 - Violation de LSP : sous-classe qui casse le contrat de la super-classe
@@ -362,7 +362,7 @@ class Employee {
 - Ne pas creer de getters/setters systematiques — seulement si necessaire
 - Utiliser des methodes metier au lieu de simples setters quand il y a une logique
 
-## Pieges courants
+## Pièges courants
 
 - Exposer tous les attributs comme publics (pas d'encapsulation)
 - Creer des getters qui retournent des references a des objets mutables (violation)
@@ -578,7 +578,7 @@ class Canard implements Volant, Nageur {
 - Utiliser \`protected\` pour les membres accessibles aux sous-classes
 - Programmer par interface, pas par implementation
 
-## Pieges courants
+## Pièges courants
 
 - Heritage profond (plus de 3 niveaux) — code difficile a maintenir
 - Violation de LSP : une sous-classe qui ne se comporte pas comme sa super-classe
@@ -800,7 +800,7 @@ class Carre implements Forme { /* ... */ }
 - Les methodes overridees doivent avoir un comportement coherent avec le contrat
 - Utiliser \`@Override\`/\`override\` systematiquement
 
-## Pieges courants
+## Pièges courants
 
 - Utiliser \`instanceof\` au lieu du polymorphisme
 - Violer LSP avec des comportements surprenants
@@ -948,7 +948,7 @@ class Dog extends Animal implements Drawable {
 - Preferer la composition a l'heritage quand la hierarchie devient profonde
 - En TypeScript, \`implements\` indique clairement le contrat
 
-## Pieges courants
+## Pièges courants
 
 - Confusion "est-un" (heritage) vs "a-un" (composition)
 - Heriter de plusieurs classes abstraites en TypeScript (impossible)
@@ -1161,7 +1161,7 @@ p.print((Object) "hi"); // Object ! (resolution a la compilation)
 - La redefinition doit etre coherente : ne pas changer le comportement attendu
 - Ne pas redefinir une methode pour lever une exception inattendue
 
-## Pieges courants
+## Pièges courants
 
 - Oublier \`@Override\` et creer accidentellement une nouvelle methode
 - Confondre surcharge et redefinition dans les discussions techniques
@@ -1295,7 +1295,7 @@ Composition:      A <●-------> B     (fleche avec losange plein)
 - Utilisez l'aggregation pour les relations "contains but can exist alone"
 - Les referencias faibles (weak references) sont un signe d'aggregation
 
-## Pieges courants
+## Pièges courants
 
 - Confondre aggregation et composition (l'un des pieges favoris en entretien)
 - Utiliser l'heritage quand une composition suffit
@@ -1485,7 +1485,7 @@ class GameObject {
 - Evitez l'heritage multiple — utiliser les interfaces
 - Favorisez "composition over inheritance" (Design Patterns, Gang of Four)
 
-## Pieges courants
+## Pièges courants
 
 - Heritage pour reutiliser du code au lieu de composition
 - Hierarchies profondes et rigides
@@ -1688,7 +1688,7 @@ interface D extends B, C {
 - Limitez l'heritage de classe a une seule classe parente
 - Utilisez des classes abstraites pour le code partage, interfaces pour les contrats
 
-## Pieges courants
+## Pièges courants
 
 - Vouloir faire heriter une classe de deux classes concretes
 - Confusion: "Je veux que ma classe ait ces deux comportements" = interfaces, pas heritage multiple
@@ -2113,7 +2113,7 @@ for (int i = 0; i < 1000000; i++) {
 }
 \`\`\`
 
-## Pieges lies a la liaison dynamique
+## Pièges lies a la liaison dynamique
 
 ### 1. Appel de methode overrideable dans le constructeur
 

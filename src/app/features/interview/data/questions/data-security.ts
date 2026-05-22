@@ -17,7 +17,7 @@ export const securityCategory: InterviewCategory = {
         
           deepDive: `# Authentification vs Autorisation
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ?
 
 L'authentification et l'autorisation sont deux concepts fondamentaux en securite informatique, souvent confondus mais bien distincts.
 
@@ -48,7 +48,7 @@ Token siege containing claims utilises pour l'authentification.
 4. Utiliser des tokens avec expiration courte
 5. Stocker les mots de passe avec des algorithmes robustes (bcrypt, Argon2)
 
-## Pieges courants
+## Pièges courants
 
 1. Confondre les deux concepts dans la documentation
 2. Ne pas verifier les permissions cote serveur (se fier uniquement au client)
@@ -63,7 +63,7 @@ Source : [OWASP Authentication](https://owasp.org/www-project-web-security-testi
         
           deepDive: `# OWASP Top 10
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ?
 
 L'OWASP Top 10 est un document de sensibilisation qui classe les 10 risques de securite les plus critiques pour les applications web. Il est mis a jour periodiquement par l'Open Web Application Security Project.
 
@@ -117,7 +117,7 @@ Source : [OWASP Top 10](https://owasp.org/Top10/)`},
         
           deepDive: `# Injection SQL
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ?
 
 L injection SQL est une technique d attaque consistant a inserer du code SQL malveillant dans une requete destined a etre executee par la base de donnees. Elle permet de contourner l authentification, lire des donnees sensibles, ou detruire la base.
 
@@ -167,7 +167,7 @@ Source : [OWASP SQL Injection](https://owasp.org/www-community/attacks/SQL_Injec
         
           deepDive: `# XSS (Cross-Site Scripting)
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ?
 
 XSS est une vulnerabilite permettant d injecter du code JavaScript malveillant dans des pages web views par dautres utilisateurs. Elle permet de voler des cookies, des sessions, ou de rediriger vers des sites malveillants.
 
@@ -207,7 +207,7 @@ Utiliser des fonctions d echappement :
 4. Ne jamais faire confiance aux entrees utilisateur
 5. Utiliser des frameworks avec echappement automatique
 
-## Pieges courants
+## Pièges courants
 
 1. Utiliser innerHTML avec des donnees utilisateur
 2. Faire confiance aux donnees provenant du client
@@ -221,7 +221,7 @@ Source : [OWASP XSS](https://owasp.org/www-community/attacks/xss/)`},
         
           deepDive: `# CSRF (Cross-Site Request Forgery)
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ?
 
 CSRF est une attaque forcant un utilisateur authentifie a executer des actions non desirees sur une application web. L'attaque exploite la confiance du site dans le navigateur de la victime.
 
@@ -272,7 +272,7 @@ Source : [OWASP CSRF](https://owasp.org/www-community/attacks/csrf/)`},
         
           deepDive: `# CORS
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 CORS (Cross-Origin Resource Sharing) is a browser security mechanism that controls whether web pages from one origin (domain, protocol, and port) can request resources from a different origin. Without CORS, browsers block such cross-origin requests by default due to the Same-Origin Policy (SOP).
 
@@ -324,7 +324,7 @@ app.use((req, res, next) => {
 - **Validate Origin Server-Side**: Check Origin against a whitelist.
 - **Do not Rely on CORS for Security**: Non-browser clients can bypass CORS entirely.
 
-## Pieges courants
+## Pièges courants
 
 - **Wildcard with Credentials**: Access-Control-Allow-Origin: * with Allow-Credentials: true is invalid.
 - **Trusting Origin Header Without Validation**: Always validate against a whitelist.
@@ -343,7 +343,7 @@ Sources:
         
           deepDive: `# Securing REST APIs
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 Securing a REST API involves implementing multiple layers of protection: authentication (who are you?), authorization (what can you do?), transport security (can anyone see your data?), input validation (is the data safe?), and rate limiting (can you be overwhelmed?).
 
@@ -410,7 +410,7 @@ export function authorize(...allowedRoles: string[]) {
 { "error": "Invalid credentials" }
 \`\`\`
 
-## Pieges courants
+## Pièges courants
 
 - **Not Validating Input**: Leads to SQL injection, XSS, command injection.
 - **Returning Too Much Information in Errors**: Helps attackers.
@@ -437,7 +437,7 @@ Sources:
         
           deepDive: `# JWT in Detail
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 JWT (JSON Web Token) is an open standard (RFC 7519) for transmitting claims between parties as JSON objects. JWTs are compact, URL-safe, and can be signed using a secret (HMAC) or public/private key pair (RSA/ECDSA). A JWT consists of three parts: Header, Payload, and Signature.
 
@@ -514,7 +514,7 @@ export class AuthService {
 - **Validate All Claims**: Always check iss, aud, exp.
 - **Use Refresh Token Rotation**: Detect token theft.
 
-## Pieges courants
+## Pièges courants
 
 - **Storing JWTs in localStorage**: Vulnerable to XSS. Use httpOnly cookies.
 
@@ -542,7 +542,7 @@ Sources:
         
           deepDive: `# OAuth2
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 OAuth 2.0 is an authorization framework (RFC 6749) that enables applications to obtain limited access to user accounts on third-party services. It delegates user authentication to the service that hosts the user account.
 
@@ -612,7 +612,7 @@ export class OAuth2Service {
 - **Scope Minimization**: Request only the scopes you actually need.
 - **Implement Token Rotation**: Rotate refresh tokens to detect theft.
 
-## Pieges courants
+## Pièges courants
 
 - **Using Implicit Flow**: Returns tokens in URL - expose in browser history. Use Authorization Code + PKCE.
 - **Storing Tokens in localStorage**: Vulnerable to XSS.
@@ -633,7 +633,7 @@ Sources:
         
           deepDive: `# Password Hashing
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 Password hashing is the process of converting plaintext passwords into fixed-length cryptographic hashes using one-way functions. Unlike encryption, hashing cannot be reversed - there is no way to obtain the original password from its hash. This provides a critical security layer: even if an attacker gains access to the database, they cannot read the actual passwords.
 
@@ -689,7 +689,7 @@ async function verifyPasswordArgon2(password: string, hash: string): Promise<boo
 - **Enforce Password Strength**: Reject passwords that are too short or common.
 - **Consider Passkeys**: For new systems, consider supporting FIDO2/WebAuthn passkeys.
 
-## Pieges courants
+## Pièges courants
 
 - **Using Fast Hash Algorithms**: MD5, SHA-1, SHA-256 are too fast for password hashing. Use bcrypt or argon2.
 
@@ -718,7 +718,7 @@ Sources:
         
           deepDive: `# HTTPS / TLS
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 HTTPS (Hypertext Transfer Protocol Secure) is HTTP encrypted with TLS (Transport Layer Security). TLS provides three critical security properties: confidentiality (no one can read the data in transit), integrity (no one can modify the data in transit), and authentication (the client can verify the server identity).
 
@@ -761,7 +761,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
 - **Regular Certificate Renewal**: Set up automated renewal with Let's Encrypt.
 - **OCSP Stapling**: Reduce client connection time.
 
-## Pieges courants
+## Pièges courants
 
 - **Accepting Self-Signed Certificates in Production**: Provides encryption but NOT authentication.
 - **Weak Cipher Suites**: RC4, 3DES, TLS 1.0/1.1 have known vulnerabilities.

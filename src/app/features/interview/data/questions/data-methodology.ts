@@ -60,7 +60,7 @@ Le recruteur cherche a evaluer :
 - Ne pas ajouter de nouveaux items en cours de sprint (scope creep)
 - La retrospective doit conduire a des actions concretes et mesurees
 
-## Pieges courants
+## Pièges courants
 
 - Transformer Scrum en cascade (tout planifier au debut)
 - Sprint backlog non prepare entre les sprints
@@ -126,7 +126,7 @@ Le principe fondamental de Kanban : limiter le nombre de taches en cours a chaqu
 - Revoyez regulierement le processus en equipe
 - Utilisez des metriques pour guider les decisions
 
-## Pieges courants
+## Pièges courants
 
 - Melanger les deux sans comprendre les principes fondamentaux
 - Choisir Scrum quand le travail est imprevisible (support)
@@ -202,7 +202,7 @@ Une bonne user story doit etre :
 - Utilisez le format « Given-When-Then » pour les criteres
 - Revoyez les stories collectivement avant le sprint planning
 
-## Pieges courants
+## Pièges courants
 
 - Ecrire des stories techniques : « Changer la table user pour ajouter un champ »
 - Stories trop vagues sans criteres mesurables
@@ -274,7 +274,7 @@ Une story peut satisfaire tous ses criteres d'acceptation mais ne pas etre « do
 - Re voyez la DoD regulierement en retrospective
 - La DoD s'applique a TOUTES les stories (pas negociable par item)
 
-## Pieges courants
+## Pièges courants
 
 - DoD trop legere (risque qualite eleve)
 - DoD trop lourde (decourage l'equipe)
@@ -364,7 +364,7 @@ Ajouter de la validation, gerer les cas limites (panier vide, reduction > 100%).
 - Refactorez les tests comme le code de production
 - Couverture > 80% sur le code critique metier
 
-## Pieges courants
+## Pièges courants
 
 - Ecrire les tests apres le code (ce n'est plus du TDD)
 - Tests trop couples a l'implementation (cassent au moindre changement)
@@ -427,7 +427,7 @@ Le recruteur cherche a evaluer :
 - Expliquez le POURQUOI d'une suggestion, pas seulement le QUOI
 - Celebrez les bonnes pratiques quand vous en voyez
 
-## Pieges courants
+## Pièges courants
 
 - Revues de 2 heures sur des PRs geantes (inefficace et epuisant)
 - Etre trop directif : « Tu dois faire comme ceci »
@@ -493,7 +493,7 @@ Le recruteur cherche a evaluer :
 - Utilisez des IDE partages (VS Code Live Share, Tuple) pour le remote
 - Debriefez apres la session : qu'est-ce qui a bien fonctionne ?
 
-## Pieges courants
+## Pièges courants
 
 - Le driver fait tout sans interagir (pseudo-pairing)
 - Sessions trop longues (fatigue cognitive, 4h max)
@@ -566,7 +566,7 @@ Le principe : la solution la plus simple est souvent la meilleure. Evitez la sur
 - Validez qu'une abstraction paye son cout de maintenance
 - Refactorez avec des tests pour valider que vous ne cassez rien
 
-## Pieges courants
+## Pièges courants
 
 - DRY pris trop loin (over-abstraction, code illisible)
 - KISS utilise comme excuse pour ne pas refactorer
@@ -646,7 +646,7 @@ J'ai communique clairement les choix a toutes les parties prenantes avec les jus
 - Revoyez les priorites regulierement (au moins chaque sprint)
 - Distinguez l'urgent de l'important
 
-## Pieges courants
+## Pièges courants
 
 - Prioriser selon le bruit (celui qui crie le plus fort)
 - Ignorer la capacite de l'equipe
@@ -709,7 +709,7 @@ Un code avec dette technique peut fonctionner, mais chaque modification devient 
 - Dette volontaire = OK si documentee et planifiee
 - Dette involontaire = danger, a reduire en priorite
 
-## Pieges courants
+## Pièges courants
 
 - Ignorer la dette technique (elle ne disparait pas)
 - Ne pas la quantifier (en temps, en bugs, en frustration)
@@ -779,7 +779,7 @@ Le recruteur cherche a evaluer :
 - Utilisez le principe DRY aussi pour la documentation
 - Favorisez la documentation interactive (exemple : Swagger UI)
 
-## Pieges courants
+## Pièges courants
 
 - Documenter pour le plaisir de documenter (aucune valeur ajoutee)
 - Documentation en desaccord avec le code (trompeuse)

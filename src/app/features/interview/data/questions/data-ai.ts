@@ -491,7 +491,7 @@ void shouldRejectNullCustomerType() {
 5. **Combiner avec des outils de couverture** : JaCoCo, Istanbul pour identifier les zones non testees.
 6. **Faire du TDD assiste par IA** : ecrire le test d'abord, puis demander a l'IA d'implementer le code qui le fait passer.
 
-## Pieges courants
+## Pièges courants
 
 1. **Tests superficiels** : l'IA genere des tests qui assertent sur le comportement sans verifier la logique reelle.
 2. **Tests fragiles** : des tests trop lies a l'implementation (mocking excessif) qui cassent au moindre refactoring.
@@ -581,7 +581,7 @@ private void saveOrder(Order order, BigDecimal total) { /* ... */ }
 6. **Utiliser des outils de qualite** : SonarQube, CodeClimate pour identifier les zones a refactorer.
 7. **Commencer par les zones les plus critiques** : le code le plus modifie est le meilleur candidat au refactoring.
 
-## Pieges courants
+## Pièges courants
 
 1. **Refactorer sans tests** : impossible de verifier que le comportement n'a pas change.
 2. **Perte de logique metier** : l'IA peut supprimer du code qui semble inutile mais qui gere un edge case.
@@ -669,7 +669,7 @@ async function createUser(user: CreateUserDTO): Promise<User> {
 6. **Inclure des exemples concrets** : chaque fonction/endpoint doit avoir un exemple d'utilisation.
 7. **Standardiser le format** : JSDoc pour TypeScript, JavaDoc pour Java, docstrings pour Python.
 
-## Pieges courants
+## Pièges courants
 
 1. **Publier sans relecture** : une documentation incorrecte induit en erreur plus qu'elle n'aide.
 2. **Documentation generique** : « Cette classe gere les utilisateurs » n'apporte aucune information utile.
@@ -757,7 +757,7 @@ Outils comme **CodeRabbit**, **GitHub Copilot for PRs** :
 5. **Mesurer l'impact** : suivre le nombre de bugs trouves par l'IA vs par les humains.
 6. **Ne pas bloquer la PR sur les commentaires IA** : les suggestions IA ne doivent pas empecher le merge.
 
-## Pieges courants
+## Pièges courants
 
 1. **Faux positifs** : l'IA suggere des changements inutiles (bruit). Configurer des regles precises.
 2. **Dependance excessive** : ne plus faire de review humaine correcte parce que « l'IA a deja verifie ».
@@ -835,7 +835,7 @@ Sans mesure objective, l'adoption de l'IA repose sur des impressions subjectives
 5. **Ajuster les attendus** : l'IA n'est pas un magic wand. 20-40% de gain de productivite est realiste.
 6. **Comparer des taches similaires** : tache A (sans IA) vs tache B (avec IA) de complexite equivalente.
 
-## Pieges courants
+## Pièges courants
 
 1. **Mesurer uniquement la vitesse** : coder plus vite + bugs plus nombreux = dette technique accrue.
 2. **Ignorer le temps de validation** : le temps passe a verifier le code IA doit etre compte.
@@ -1098,7 +1098,7 @@ La veille IA n'est pas une option : c'est une competence professionnelle a part 
 5. **Ne pas suivre toutes les modes** : la plupart des nouveaux modeles/outils ne survivront pas. Se concentrer sur les leaders.
 6. **Creer une culture d'apprentissage** : sessions « Lunch & Learn » IA dans l'equipe.
 
-## Pieges courants
+## Pièges courants
 
 1. **Information overload** : suivre 50 sources → saturation. Choisir 3-5 sources de qualite.
 2. **Hype vs realite** : un titre accrocheur ne fait pas une technologie mature.

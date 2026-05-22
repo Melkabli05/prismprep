@@ -146,7 +146,7 @@ export class LoggerService {
 3. Thread-safe avec double-checked locking ou holder pattern
 4. Eviter les singletons mutables
 
-## Pieges courants
+## Pièges courants
 1. Singletons mutables : l'etat global change de maniere imprevisible
 2. Singletons dans les tests unitaires : impossible a isoler
 3. Singletons et threads : mauvaise gestion de la concurrence
@@ -303,7 +303,7 @@ public class PaymentConfig {
 2. Creator abstrait avec hook method
 3. Utiliser avec l'injection de dependances
 
-## Pieges courants
+## Pièges courants
 1. Trop de factories : complexite inutile
 2. Factory statique : difficile a etendre et tester
 3. Logique metier dans la factory
@@ -489,7 +489,7 @@ HttpRequest request = HttpRequest.newBuilder()
 3. Builder comme classe interne statique
 4. Rendre l'objet construit immutable
 
-## Pieges courants
+## Pièges courants
 1. Builder mutable apres construction (l'objet peut etre modifie)
 2. Pas de validation dans build()
 3. Builder non reutilisable (etat residuel entre builds)
@@ -658,7 +658,7 @@ Spring utilise les adapters partout :
 2. Interface target simple et stable
 3. Adapter mince : ne pas ajouter de logique metier
 
-## Pieges courants
+## Pièges courants
 1. Adapter trop complexe (qui fait autre chose que l'adaptation)
 2. Adaptation de multiples interfaces dans un seul adapter
 3. Performance : un adapter mal concu peut ajouter de la latence
@@ -840,7 +840,7 @@ handler = new AuthDecorator(handler);
 3. Un decorateur = une responsabilite
 4. Ordre des decorateurs important
 
-## Pieges courants
+## Pièges courants
 1. Decorateur qui modifie le comportement du composant
 2. Trop de decorateurs (performance et complexite)
 3. Identite de l'objet perdue (equals/hashCode)
@@ -1075,7 +1075,7 @@ public class UserService {
 2. Auditer les acces via protection proxy
 3. Thread-safe pour les proxies en environnement concurrent
 
-## Pieges courants
+## Pièges courants
 1. Proxy qui modifie le comportement attendu
 2. Fuite de reference vers l'objet reel
 3. Performance : trop de proxies chaines
@@ -1317,7 +1317,7 @@ class ShippingCalculator {
 3. Strategies interchangeables sans effet de bord
 4. Parallelisme : une strategie ne doit pas partager d'etat
 
-## Pieges courants
+## Pièges courants
 1. Trop de strategies (classe explosion)
 2. Strategies avec etat (side effects inattendus)
 3. Interface trop complexe (trop de methodes dans Strategy)
@@ -1547,7 +1547,7 @@ eventBus.next({ type: "PAYMENT_RECEIVED", data: { amount: 100 } });
 3. Observer sans etat si possible
 4. Gestion des erreurs dans la notification
 
-## Pieges courants
+## Pièges courants
 1. **Fuite memoire** : observateur jamais detache = reference persistante
 2. **Sur-notification** : trop d'evenements = performance degradee
 3. **Ordre de notification** : ne pas supposer un ordre specifique
@@ -1831,7 +1831,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 5. **Pagination** pour les listes potentiellement grandes
 6. **Tests avec implementation InMemory**
 
-## Pieges courants
+## Pièges courants
 1. **Leaking domain logic** : des regles metier dans le repository
 2. **Anemic repository** : simple CRUD sans valeur ajoutee
 3. **N+1 queries** : chargement paresseux mal gere

@@ -17,7 +17,7 @@ export const springCategory: InterviewCategory = {
         
           deepDive: `# Avantages de Spring Boot
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ?
 
 Spring Boot est un framework construit sur top de Spring qui simplifie radicalement la création d'applications Spring en production. Il elimine la configuration XML longue et offre une convention sobre configuration.
 
@@ -82,7 +82,7 @@ Source : [Spring Boot Documentation](https://docs.spring.io/spring-boot/docs/cur
         
           deepDive: `# Spring vs Spring Boot
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ?
 
 Spring est un framework léger et modular pour la plateforme Java. Spring Boot est une extension de Spring qui simplifie la configuration et le démarrage.
 
@@ -141,7 +141,7 @@ Source : [Spring Boot vs Spring](https://spring.io/projects/spring-boot)`},
         
           deepDive: `# IoC et injection de dépendances
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ?
 
 **Inversion of Control (IoC)** est un principe de conception ou le contrôle du flux d'execution est transféré à un framework ou conteneur. Au lieu que votre code contrôle l'appel des libraries, le framework appelle votre code.
 
@@ -232,7 +232,7 @@ Source : [Spring Framework Documentation - IoC Container](https://docs.spring.io
         
           deepDive: `# C'est quoi un bean Spring
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ?
 
 Un **bean** est un objet créé, assemblé et géré par le conteneur Spring IoC. Les beans sont le cœur d'une application Spring.
 
@@ -313,7 +313,7 @@ Source : [Spring Framework Documentation - Beans](https://docs.spring.io/spring-
         
           deepDive: `# @Autowired / @Component / @Service / @Repository
 
-## Quest-ce que cest ?
+## Qu'est-ce que c'est ?
 
 Spring utilise des annotations pour registrar les beans dans le conteneur IoC. Voici leurs rôles respectifs :
 
@@ -409,7 +409,7 @@ Source : [Spring Framework Documentation - Stereotype Annotations](https://docs.
         
           deepDive: `# Scopes des Beans Spring
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 Un scope definit le cycle de vie et la visibilite d'un bean dans le conteneur Spring. Par defaut, Spring cree un seul bean partagable (singleton) pour toute l'application, mais chaque bean peut avoir un scope different selon les besoins.
 
@@ -477,7 +477,7 @@ public abstract class CommandManager {
 - **Etre conscient du cout des prototypes**: chaque injection prototype dans un singleton cree une nouvelle instance
 - **Eviter les dependances circulaires avec les prototypes**
 
-## Pieges courants
+## Pièges courants
 
 - **Confondre singleton Spring avec singleton pattern**: le singleton Spring est par conteneur, pas global
 - **Oublier que les prototypes ne sont pas detruits automatiquement**: vous devez nettoyer les ressources vous-meme
@@ -505,7 +505,7 @@ public void usePrototype() {
         
           deepDive: `# Auto-configuration Spring Boot
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 L'auto-configuration est le mecanisme central de Spring Boot qui permet de configurer automatiquement l'application en fonction des dependencies presentes dans le classpath. Elle elimine le besoin d'ecrire des configurations manuelles exhaustives.
 
@@ -578,7 +578,7 @@ public class DataSourceAutoConfiguration {
 - **Comprendre les conditions @Conditional**: essentielles pour deboguer
 - **Utiliser @ConditionalOnMissingBean** quand vous voulez permettre le survol de l'auto-configuration
 
-## Pieges courants
+## Pièges courants
 
 - **Confondre auto-configuration avec magie**: derriere il y a du code Java standard
 - **Ne pas surcharger accidentellement**: une propriete definie par l'utilisateur peut etre ignoree si l'ordre de configuration est incorrect
@@ -603,7 +603,7 @@ public class DataSourceAutoConfiguration {
         
           deepDive: `# @RestController vs @Controller
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 - @Controller: Spring MVC classique, retourne une vue (JSP, Thymeleaf). Necessite @ResponseBody pour retourner des donnees JSON.
 - @RestController: Combine @Controller + @ResponseBody. Retourne directement des donnees JSON/XML sans vue.
@@ -641,7 +641,7 @@ public class UserController {
 - Utiliser @Controller + ModelAndView pour les applications avec rendu cote serveur (SSR).
 - Configurer correctly ObjectMapper pour la sérialisation JSON.
 
-## Pieges courants
+## Pièges courants
 
 - Oublier @ResponseBody avec @Controller = retour de nom de vue au lieu de JSON.
 - Ne pas configurer les Content-Type headers correctement.
@@ -657,7 +657,7 @@ Source : [Spring Docs](https://docs.spring.io/spring-framework/reference/web/web
         
           deepDive: `# @PathVariable vs @RequestParam vs @RequestBody
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 - @PathVariable: Extrait une variable de lURL (URI template).
 - @RequestParam: Extrait un parametre de query string ou form data.
@@ -689,7 +689,7 @@ public User createUser(@RequestBody UserCreateRequest request) {
 - Valider @RequestBody avec @Valid et des annotations JSR-380.
 - Specifier les noms explicites pour eviter les erreurs de mapping.
 
-## Pieges courants
+## Pièges courants
 
 - Confondre @RequestParam (query string) avec @PathVariable (URI path).
 - Ne pas valider @RequestBody =Donnees invalides en base.
@@ -705,7 +705,7 @@ Source : [Spring Docs](https://docs.spring.io/spring-framework/reference/web/web
         
           deepDive: `# Validation des donnees (@Valid)
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 Spring Validation permet de valider les donnees entrantes avec des annotations JSR-380 (Bean Validation). Les erreurs sont collectees et retournees au client.
 
@@ -751,7 +751,7 @@ public class UserRequest {
 - Creer un @ControllerAdvice pour centraliser la gestion des erreurs.
 - Grouper les validations avec des sequences de groupes.
 
-## Pieges courants
+## Pièges courants
 
 - Oublier @Valid devant @RequestBody = Aucune validation.
 - Ne pas gerer BindingResult = Erreurs silencieuses.
@@ -774,7 +774,7 @@ Source : [Spring Docs](https://docs.spring.io/spring-framework/reference/core/va
         
           deepDive: `# Configurer une Base de Donnees dans Spring Boot
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 Spring Boot automatise la configuration d'une base de donnees via son module auto-configuration. Il suffit d'ajouter la dependance JDBC ou JPA appropriee et Spring Boot configurera automatiquement un DataSource, un EntityManagerFactory, et les beans necessaires.
 
@@ -871,7 +871,7 @@ public class DataSourceConfig {
 - **Desactiver Open-In-View en production**: evite les LazyInitializationException inattendues
 - **DDL-auto en dev, validate/migrate en prod**: utiliser Flyway ou Liquibase pour les migrations
 
-## Pieges courants
+## Pièges courants
 
 - **Oublier le driver dans le classpath**: l'auto-configuration echoue silencieusement
 - **HikariCP timeout par defaut trop long**: le timeout de connexion est de 30s, a ajuster
@@ -890,7 +890,7 @@ public class DataSourceConfig {
         
           deepDive: `# Spring Data JPA
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 Spring Data JPA est un module du projet Spring Data qui simplifie le developpement de la couche d'acces aux donnees. Il permet de creer des repositories JPA sans effort en eliminant le besoin d'ecrire les implementations des operations CRUD et des requetes personnalisees.
 
@@ -956,7 +956,7 @@ int updatePricesByCategory(@Param("factor") double factor, @Param("cat") String 
 - **Utiliser les projections et DTOs** pour ne pas charger des entites entieres: \`interface UserNameOnly { String getUsername(); }\`
 - **Eviter les operations en masse dans les transactions** sans configuration appropriee
 
-## Pieges courants
+## Pièges courants
 
 - **Confondre @Transactional en lecture et ecriture**: une lecture seule utilise moins de ressources: \`@Transactional(readOnly = true)\`
 - **N+1 probleme**: les requetes derivees peuvent declencher des requetes supplementaires pour les relations paresseuses (LAZY). Utiliser \`JOIN FETCH\` dans les requetes @Query.
@@ -973,7 +973,7 @@ int updatePricesByCategory(@Param("factor") double factor, @Param("cat") String 
         
           deepDive: `# Profiling dans Spring Boot
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 Le profiling dans Spring Boot permet de conditionner la configuration et les beans a l'environnement d'execution (dev, test, prod). C'est un mecanisme puissant pour adapter le comportement de l'application sans modifier le code.
 
@@ -1059,7 +1059,7 @@ public NewUiService newUiService() {
 - **Profile par defaut**: definir un profile \`default\` qui s'applique si aucun autre n'est actif
 - **Combiner profiles**: \`spring.profiles.active=dev,local\`
 
-## Pieges courants
+## Pièges courants
 
 - **Oublier d'activer le profile en production**: toute la config dev s'applique
 - **Confondre @ActiveProfiles (test) avec spring.profiles.active**: ce n'est pas la meme chose
@@ -1084,7 +1084,7 @@ public NewUiService newUiService() {
         
           deepDive: `# @Transactional en Spring
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 L'annotation @Transactional en Spring permet de declarer qu'une methode (ou une classe) doit etre executee dans le cadre d'une transaction. Spring gere automatiquement le demarrage, la validation (commit) ou l'annulation (rollback) de la transaction.
 
@@ -1154,7 +1154,7 @@ public List<User> findAllUsers() {
 - **Utiliser readOnly = true pour les lectures**: permet des optimisations
 - **Declarer les exceptions qui declenchent le rollback**: rollbackFor = {IOException.class}
 
-## Pieges courants
+## Pièges courants
 
 - **Appels internes (self-invocation)**: un appel de methode interne ne passe pas par le proxy, donc pas de transaction
 
@@ -1187,7 +1187,7 @@ Solution: utiliser un self bean ou injecter le service lui-meme.
         
           deepDive: `# AOP dans Spring
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 AOP (Aspect-Oriented Programming) est un paradigme de programmation qui permet de separer les preoccupations transversales (cross-cutting concerns) du code metier principal. Spring AOP permet d'implmenter des aspects qui declenchent des comportements avant, apres, ou autour des methodes cible.
 
@@ -1282,7 +1282,7 @@ public void logError(JoinPoint joinPoint, Exception ex) {
 - **Utiliser des pointcuts specifiques** plutot que des jokers generaux
 - **Privilegier Spring AOP sur AspectJ** pour les cas simples
 
-## Pieges courants
+## Pièges courants
 
 - **Self-invocation**: les appels internes d'une meme classe ne passent pas par le proxy AOP
 - **Ordre d'execution des aspects**: plusieurs aspects sur le meme join point peuvent entrer en conflit
@@ -1301,7 +1301,7 @@ public void logError(JoinPoint joinPoint, Exception ex) {
         
           deepDive: `# Spring Security
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 Spring Security est le framework de reference pour l'authentification et l'autorisation dans les applications Spring. Il fournit un systeme complet de securisation des endpoints, incluant l'authentification (qui etes-vous?), l'autorisation (avez-vous le droit?), et la protection contre les attaques (CSRF, XSS, etc.).
 
@@ -1428,7 +1428,7 @@ public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthFilter jwtFilte
 - **Configurer le logout correctement**: invalider la session et les tokens
 - **Utiliser @PreAuthorize pour la securisation methodes**: plus fin que lesregles URL
 
-## Pieges courants
+## Pièges courants
 
 - **Confondre authentication et authorization**: deux concepts differents
 - **Oublier le PasswordEncoder bean**: les mots de passe ne seront pas encodes
@@ -1447,7 +1447,7 @@ public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthFilter jwtFilte
         
           deepDive: `# Exceptions globales dans Spring MVC
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 Spring MVC offre un mecanisme d'gestion des exceptions via @ExceptionHandler et @ControllerAdvice qui permet de centraliser le traitement des erreurs et de retourner des responses JSON ou HTML standardisees.
 
@@ -1526,7 +1526,7 @@ public ResponseEntity<Map<String, Object>> handleValidationErrors(
 - **Logger les exceptions inattendues** pour faciliter le debug
 - **Retourner des informations كافية mais pas trop** pour eviter de reveler des details internes
 
-## Pieges courants
+## Pièges courants
 
 - **Mauvais ordre des handlers**: le handler le plus general doit etre en dernier
 - **Oublier les exceptions du conteneur** (404, 405): elles ne passent pas par @ExceptionHandler
@@ -1543,7 +1543,7 @@ public ResponseEntity<Map<String, Object>> handleValidationErrors(
         
           deepDive: `# Spring Boot Actuator
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 Actuator fournit des endpoints de monitoring et management pour Spring Boot. Il expose des informations sur la sante, les metriques, les beans, etc.
 
@@ -1587,7 +1587,7 @@ Endpoints disponibles:
 - Utiliser Prometheus + Grafana pour la visualisation.
 - Configurer health checks pour Kubernetes/Load Balancers.
 
-## Pieges courants
+## Pièges courants
 
 - Exposer /env et /beans en production = Risque de securite.
 - Ne pas configurer de health check custom = Sante non fiable.
@@ -1603,7 +1603,7 @@ Source : [Spring Docs](https://docs.spring.io/spring-boot/reference/actuator.htm
         
           deepDive: `# Spring Boot Testing
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 Spring Boot offre un framework complet pour tester les applications avec @SpringBootTest, @WebMvcTest, @DataJpaTest, etc. Chaque annotation cible une couche specifique.
 
@@ -1677,7 +1677,7 @@ class UserRepositoryTest {
 - Utiliser @TestConfiguration pour les beans de test.
 - Preferer les tests dintegration pour verifier les configurations.
 
-## Pieges courants
+## Pièges courants
 
 - Oublier @Transactional sur les tests JPA = Donnees persistees.
 - Tests trop couples a limplementation = Fragilite.
@@ -1693,7 +1693,7 @@ Source : [Spring Docs](https://docs.spring.io/spring-boot/reference/testing.html
         
           deepDive: `# N+1 en JPA et solutions
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 Le probleme N+1 survient quand JPA execute 1 requete pour charger les parents, puis N requetes pour charger les enfants de chaque parent.
 
@@ -1759,7 +1759,7 @@ spring:
 - Configurer le batch fetching pour les relations lazy.
 - Monitorer le nombre de requetes en developpement.
 
-## Pieges courants
+## Pièges courants
 
 - Oublier @Transactional pour charger les relations lazy.
 - N+1 cache dans les queries dynamiques.

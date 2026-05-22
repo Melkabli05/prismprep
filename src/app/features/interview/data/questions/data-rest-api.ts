@@ -55,7 +55,7 @@ Chaque ressource peut avoir plusieurs representations (JSON, XML, HTML).
 
 5. **Pagination** pour les grandes collections: ?page=1&limit=20
 
-## Pieges courants
+## Pièges courants
 
 - Melanger les verbes HTTP (utiliser GET pour des operations de modification)
 - Retourner toujours 200 OK meme en cas d'erreur
@@ -119,7 +119,7 @@ Reponse: 204 No Content
 4. **PATCH** modifie uniquement les champs fournis
 5. **DELETE** doit retourner 204 apres suppression reussie
 
-## Pieges courants
+## Pièges courants
 
 - Utiliser GET pour des suppressions (violation de la semantique)
 - Retourner 200 OK pour DELETE alors que la ressource est supprimee
@@ -180,7 +180,7 @@ Les codes de statut HTTP sont des codes numeriques retournes par un serveur pour
 4. **Utiliser 201** apres POST qui cree une ressource
 5. **Utiliser 204** pour DELETE reussi sans corps
 
-## Pieges courants
+## Pièges courants
 
 - Retourner 404 pour une ressource existante mais sans acces (utiliser 403)
 - Mettre 200 pour toutes les reussites (confondre avec 201, 204)
@@ -237,7 +237,7 @@ Retry: 204 No Content  <- toujours pas derreur (idempotent)
 4. **Documenter les codes derreur** pour chaquemethode
 5. **Considerer l'utilisation d'ETag** pour gerer les conflits de concurrence
 
-## Pieges courants
+## Pièges courants
 
 - Croire que DELETE doit retourner 404 apres suppression (devrait retourner 204)
 - Implementer PATCH comme non idempotent alors que le client s'y attend
@@ -302,7 +302,7 @@ Inconvenient: melange URL et configuration
 4. **Limiter le nombre de versions actives** - 2 maximum en general
 5. **Utiliser des dates pour les versions** (ISO 8601) pour plus de clartes
 
-## Pieges courants
+## Pièges courants
 
 - Versionner des details minimes (breaker pas toujours necessaire)
 - Forcer tous les clients a migrer immediatement
@@ -321,7 +321,7 @@ Source : [RESTful API Tutorial - Versioning](https://restfulapi.net/versioning/)
         
           deepDive: `# Pagination dans une API REST
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 La pagination divise un grand ensemble de donnees en plusieurs pages, facilitant le chargement progressif et reduisant la charge serveur. Deux approches principales: offset-based et cursor-based.
 
@@ -381,7 +381,7 @@ res.set({
 - Utiliser les en-tetes HTTP (Link) pour discoverabilite
 - Cache les resultats de maniere appropriee
 
-## Pieges courants
+## Pièges courants
 
 - Utiliser OFFSET sur grandes tables (performance degrade)
 - Ne pas verrouiller les lignes (inconsistent results)
@@ -405,7 +405,7 @@ Source : [Restfulapi.net](https://restfulapi.net/pagination/)`},
         
           deepDive: `# HATEOAS dans les APIs REST
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 HATEOAS (Hypermedia as the Engine of Application State) est un principe REST qui utilise des liens hypermedias pour permettre aux clients de naviguer dynamiquement dans lAPI. Le serveur inclut des liens dans ses responses indiquant les actions possibles.
 
@@ -461,7 +461,7 @@ function addLinks(resource, baseUrl) {
 - Utiliser le format HAL pour la standardisation
 - Fournir des informations de versionnage dans les liens
 
-## Pieges courants
+## Pièges courants
 
 - Ne pas surcharger les responses avec trop de liens
 - Liens incorrects ou non a jour
@@ -477,7 +477,7 @@ Source : [Restfulapi.net - HATEOAS](https://restfulapi.net/hateoas/)`},
         
           deepDive: `Rate Limiting dans une API REST
 
-Quest-ce que cest
+Qu'est-ce que c'est
 
 Le rate limiting controle le nombre de requetes quun client peut faire dans un laps de temps donne. Il protege les APIs contre les abus, les attaques DoS, et assure une distribution equitable des ressources.
 
@@ -513,7 +513,7 @@ Bonnes pratiques
 - Implementer le exponential backoff cote client (delai double entre tentatives)
 - Prevoir des endpoints publics avec limites plus permissives
 
-Pieges courants
+Pièges courants
 
 - Ne pas implementer de rate limiting du tout (vulnerabilite DoS)
 - Limites trop restrictives sans notification prealable
@@ -531,7 +531,7 @@ Source : Restfulapi.net - Rate Limiting`},
         
           deepDive: `CORS pour les APIs REST
 
-Quest-ce que cest
+Qu'est-ce que c'est
 
 CORS (Cross-Origin Resource Sharing) est un mecanisme de securite HTTP qui controle lacces aux ressources dune API depuis des domaines differents du domaine qui a servi la page web. Il permet aux navigateurs dadapter les requetes cross-origin.
 
@@ -594,7 +594,7 @@ Bonnes pratiques
 - Logger les requetes CORS bloquees pour le monitoring de securite
 - Ajouter dautres en-tetes de securite (CSP, X-Frame-Options) en complement
 
-Pieges courants
+Pièges courants
 
 - Utiliser Access-Control-Allow-Origin: * ce qui permet a nimporte quel site d acceder a lAPI
 - Oublier de gerer les requetes preflight (OPTIONS) - le navigateur ne fera pas la requete reelle
@@ -613,7 +613,7 @@ Source : MDN CORS`},
         
           deepDive: `# REST Best Practices
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 Les REST Best Practices sont un ensemble de conventions et recommandations pour concevoir des APIs RESTful robustes, evolutives et facile a maintenir. Elles couvrent la structure des URLs, lutilisation des methodes HTTP, la gestion des erreurs, la pagination, le versioning et la documentation.
 
@@ -674,7 +674,7 @@ interface ErrorResponse {
 - Utiliser HTTPS uniquement
 - Logger toutes les requetes pour le monitoring
 
-## Pieges courants
+## Pièges courants
 
 - Melanger les verbes et les noms dans les URLs
 - Ignorer les codes de statut HTTP (retourner toujours 200)
@@ -691,7 +691,7 @@ Source : [Restfulapi.net](https://restfulapi.net)`},
         
           deepDive: `# OAuth2 pour les APIs REST
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 OAuth2 est un protocole dautorisation qui permet aux applications tierces daccder aux ressources dun utilisateur sans exposer ses credentials. Il est le standard pour lauthentification et lautorisation des APIs REST modernes.
 
@@ -743,7 +743,7 @@ function verifyToken(token) {
 - Valider tous les tokens a chaque requete
 - Logger toutes les tentatives dauthentification
 
-## Pieges courants
+## Pièges courants
 
 - Stocker les mots de passe en clair (utiliser bcrypt)
 - Exposer les tokens dans lURL (utiliser les en-tetes)
@@ -759,7 +759,7 @@ Source : [MDN OAuth 2.0](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authe
         
           deepDive: `# REST vs GraphQL
 
-## Quest-ce que cest
+## Qu'est-ce que c'est
 
 REST et GraphQL sont deux approches differentes pour concevoir des APIs web. REST utilise une architecture resource-based avec des endpoints fixes, tandis que GraphQL offre un langage de requete flexible permettant aux clients de demander exactement les donnees necessaires.
 
@@ -833,7 +833,7 @@ type Query {
 - Securiser avec depth limiting
 - Utiliser les mutations pour ecrire
 
-## Pieges courants
+## Pièges courants
 
 - GraphQL nest pas toujours plus rapide
 - Over-fetching en REST

@@ -1192,7 +1192,7 @@ RETURN f
 - Les donnees avec relations complexes = graph (Neo4j)
 - Gardez PostgreSQL comme premier choix, NoSQL quand il y a une raison claire
 
-## Pieges courants
+## Pièges courants
 
 - Choisir NoSQL par mode sans besoin reel = complexite sans benefice
 - Perdre l'acidite des transactions et découvrir des incoherences plus tard
