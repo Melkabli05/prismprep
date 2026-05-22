@@ -17,271 +17,432 @@ export const databaseCategory: InterviewCategory = {
         
           deepDive: `# SQL vs NoSQL
 
-## Quest-ce que cest ?
+## Concept detail
 
-Les bases de donnees se divisent en deux grandes categories selon leur modele de donnees et leur approche du stockage.
+SQL et NoSQL representent deux paradigmes differents de gestion de donnees. Le choix entre les deux depend du cas d'usage, du modele de donnees, des besoins de scalabilite et de coherence.
 
-## SQL (Relationnel)
+**SQL (relationnel)** : tables avec schema fixe, contraintes d'integrite, transactions ACID, langage standardise (SQL). Mature, eprouve, ecosysteme riche.
 
-**Modele:** Tables avec lignes et colonnes, relations entre tables
+**NoSQL (Not Only SQL)** : familles de bases optimisees pour des cas specifiques : documents (MongoDB), cle-valeur (Redis), colonnes larges (Cassandra), graphes (Neo4j). Schema flexible, scalabilite horizontale.
 
-**Exemples:** PostgreSQL, MySQL, Oracle, SQL Server
-
-**Caracteristiques:**
-- Schema rigide et defini a lavance
-- Transactions ACID
-- Jointures complexes possibles
-- Langage standardise (SQL)
-- Maturite et stabilite
-
-## NoSQL (Non-relationnel)
-
-Categories:
-- **Document** (MongoDB, CouchDB) - JSON documents
-- **Cle-Valeur** (Redis, DynamoDB) - paires cle/valeur simples
-- **Colonne** (Cassandra, HBase) - familles de colonnes
-- **Graphe** (Neo4j) - noeuds et relations
-
-**Caracteristiques:**
-- Schema flexible ou absent
-- Horizontale scalable
-- Haute performance en lecture/ecriture
-- APIs varies selon le type
-
-## Comparaison
+## Comparaison detaillee
 
 | Critere | SQL | NoSQL |
 |---------|-----|-------|
-| Schema | Rigide | Flexible |
-| Transactions | ACID | Eventuel (selon DB) |
-| Jointures | Oui | Limitees ou impossibles |
-| Scaling | Vertical (principalement) | Horizontal |
-| Complexity | Moyenne | Faible a tres haute |
-| Use case | Donnees structurees, relations complexes | Documents, events, cache, graphes |
+| **Schema** | Fixe, declare a l'avance | Flexible, peut evoluer |
+| **Transactions** | ACID (forte coherence) | BASE (coherence eventuale) |
+| **Jointures** | Oui (JOIN, sous-requetes) | Non (denormalisation) |
+| **Scalabilite** | Verticale (principalement) | Horizontale (nativement) |
+| **Requetes** | Complexes, optimisables | Simples, rapides |
+| **Integrite** | Referentielle (FK, contraintes) | Applicative |
+| **Adoption** | Universelle | Variable |
+| **Cas ideal** | Donnees structurees, transactions | Volumes massifs, flexibilite |
 
-## Quand utiliser SQL ?
+## Exemples de modeles
 
-- Donnees structurees avec schema stable
-- Transactions financieres (ACID obligatoire)
-- Jointures frequentes entre tables
-- Volume de donnees modere
-- Requetes complexes et previsibles
+### SQL : Modelisation normalisee
 
-## Quand utiliser NoSQL ?
+\`\`\`sql
+CREATE TABLE clients (
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    date_inscription TIMESTAMP DEFAULT NOW()
+);
 
-- Donnees semi-structurees ou non structurees
-- Besoins de schema flexible
-- Tres gros volumes de donnees
-- Performance critique en lecture/ecriture
-- Donnees temporelles, logs, IoT
+CREATE TABLE commandes (
+    id SERIAL PRIMARY KEY,
+    client_id INT REFERENCES clients(id),
+    total DECIMAL(10,2) NOT NULL,
+    date_commande TIMESTAMP DEFAULT NOW()
+);
 
-## Exemples concrets
+-- Requete complexe
+SELECT c.nom, COUNT(co.id) as nb_commandes,
+       SUM(co.total) as total_depenses
+FROM clients c
+LEFT JOIN commandes co ON c.id = co.client_id
+WHERE co.date_commande >= '2024-01-01'
+GROUP BY c.id, c.nom
+HAVING COUNT(co.id) > 5
+ORDER BY total_depenses DESC;
+\`\`\`
 
--- SQL: E-commerce
-SELECT o.id, c.nom, SUM(p.prix * li.quantite) as total
-FROM commandes o
-JOIN clients c ON o.client_id = c.id
-JOIN ligne_commandes li ON o.id = li.commande_id
-JOIN produits p ON li.produit_id = p.id
-GROUP BY o.id, c.nom;
+### NoSQL Document : Modele denormalise
 
-// MongoDB: Logs applicatifs
-{ "_id": "abc123", "timestamp": ISODate(), "level": "ERROR", "message": "Connection failed", "service": "auth" }
+\`\`\`javascript
+// MongoDB - un seul document contient tout
+db.clients.insertOne({
+    nom: "Dupont",
+    email: "dupont@email.com",
+    commandes: [
+        { date: ISODate("2024-01-15"), total: 150.00, produits: ["chaise", "table"] },
+        { date: ISODate("2024-03-20"), total: 89.99, produits: ["lampe"] }
+    ]
+});
+
+// Requete
+db.clients.find({ "commandes.total": { $gt: 100 } })
+\`\`\`
+
+## Cas d'usage
+
+| Cas | Recommandation | Pourquoi |
+|-----|---------------|----------|
+| Banque, finance | SQL | ACID obligatoire, transactions |
+| Catalogue produits | NoSQL Document | Schema flexible, produits varies |
+| Cache, sessions | NoSQL Key-Value | Performance, expiration |
+| Reseau social | NoSQL Graph | Relations complexes |
+| Logs, IoT | NoSQL Column | Ecritures massives, time-series |
+| ERP, CRM | SQL | Relations complexes, reporting |
 
 ## Polyglot Persistence
 
-Approche moderne: utiliser la bonne base de donnees pour chaque cas d'usage.
-- PostgreSQL: donnees relationnelles, transactions
-- Redis: cache, sessions, files
-- MongoDB: catalogue produits, donnees flexibles
-- Elasticsearch: recherche full-text
+L'approche moderne consiste a utiliser plusieurs types de bases dans une meme application, chacune pour son cas ideal :
 
-Source : [MongoDB - SQL to NoSQL](https://www.mongodb.com/compare/mongodb-vs-sql-databases)`},
+\`\`\`
+[Application]
+     |
+     ├── PostgreSQL → Donnees relationnelles, transactions
+     ├── Redis      → Cache, sessions, rate limiting
+     ├── MongoDB    → Catalogue produits, documents
+     └── Elasticsearch → Recherche full-text
+\`\`\`
+
+## Bonnes pratiques
+
+1. Commencez toujours par SQL (PostgreSQL) et n'ajoutez du NoSQL que si necessaire
+2. Ne sacrifiez pas les transactions ACID sans comprendre les consequences
+3. La denormalisation en NoSQL a un cout : complexite des mises a jour
+4. Le schema-less ne signifie pas sans schema : documentez vos structures
+5. PostgreSQL supporte le JSONB (meilleur des deux mondes)
+6. Le scaling horizontal de SQL existe (Citus, Vitess) si vous preferez rester en relationnel
+
+## Pièges courants
+
+1. Choisir NoSQL "parce que c'est la mode" sans besoin reel
+2. Perdre les transactions ACID et decouvrir des incoherences en production
+3. Migrer de PostgreSQL vers MongoDB et regretter les JOIN
+4. Ignorer la gestion des index dans MongoDB (collection scan)
+5. Cle de partition mal choisie dans Cassandra = hotspot
+6. Croire que le schema flexible dispense de la validation applicative
+
+Source : [PostgreSQL vs MongoDB](https://www.postgresql.org/docs/current/datatype-json.html)`},
         {
           id: 'db-2',
           question: 'Normalisation',
           answer: "Processus d'organisation des données pour réduire la **redondance** et éviter les **anomalies de mise à jour**.\n\nFormes normales principales : **1NF** (valeurs atomiques), **2NF** (élimination des dépendances partielles), **3NF** (élimination des dépendances transitives). On vise généralement la **3NF**.\n\nTrop normaliser nuit aux performances (trop de `JOIN`s), d'où la **dénormalisation volontaire** en lecture, surtout dans les data warehouses. *Outil de conception logique à adapter aux besoins réels*.",
         
-          deepDive: `# Normalisation
+          deepDive: `# Normalisation des bases de donnees
 
-## Quest-ce que cest ?
+## Concept detail
 
-La normalisation est le processus d'organisation des donnees dans une base de donnees relationnelle. Elle vise a eliminer la redondance et les anomalies d'insertion, de mise a jour et de suppression.
+La normalisation est un processus de conception de bases de donnees relationnelles qui organise les donnees pour reduire la **redondance** et eviter les **anomalies** (insertion, mise a jour, suppression). Elle procede par etapes, les "formes normales" (NF).
 
-## Formes normales (NF)
+## Les formes normales
 
-**1NF - Premiere forme normale**
-- Chaque cellule contient une valeur atomique
-- Pas de colonnes repetees
-- Une seule valeur par intersection ligne/colonne
+### 1NF (Premiere forme normale)
+**Regle** : chaque cellule contient une valeur atomique, pas de groupes repetes.
 
 \`\`\`sql
--- Non normalise (violation 1NF)
-CREATE TABLE etudiants (
+-- NON normalise (violation 1NF)
+CREATE TABLE etudiant (
     id INT PRIMARY KEY,
     nom VARCHAR(100),
-    cours VARCHAR(255)  -- Plusieurs cours separes par virgule
+    cours VARCHAR(255)  -- "Maths,Phyisque,Informatique"
 );
 
 -- Normalise (1NF)
-CREATE TABLE etudiants (
+CREATE TABLE etudiant (
     id INT PRIMARY KEY,
     nom VARCHAR(100)
 );
 
-CREATE TABLE cours_etudiants (
-    etudiant_id INT,
+CREATE TABLE inscription (
+    etudiant_id INT REFERENCES etudiant(id),
     cours VARCHAR(100),
     PRIMARY KEY (etudiant_id, cours)
 );
 \`\`\`
 
-**2NF - Deuxieme forme normale**
-- 1NF + Pas de dependance partielle (tout attribut non-PK depend de la totality de la cle primaire)
+### 2NF (Deuxieme forme normale)
+**Regle** : 1NF + chaque attribut non-cle depend de la **totalite** de la cle primaire (pas de dependance partielle).
 
 \`\`\`sql
 -- Violation 2NF (dependance partielle)
-CREATE TABLE commandes (
+CREATE TABLE commande_produit (
+    commande_id INT,
     produit_id INT,
-    client_id INT,
-    nom_produit VARCHAR(100),  -- Depend uniquement de produit_id
-    PRIMARY KEY (produit_id, client_id)
+    qte INT,
+    nom_produit VARCHAR(100),  -- Depend seulement de produit_id, pas de commande_id
+    PRIMARY KEY (commande_id, produit_id)
 );
 
 -- Normalise (2NF)
-CREATE TABLE produits (
+CREATE TABLE produit (
     id INT PRIMARY KEY,
     nom VARCHAR(100)
 );
 
-CREATE TABLE commandes (
+CREATE TABLE ligne_commande (
+    commande_id INT,
     produit_id INT,
-    client_id INT,
-    PRIMARY KEY (produit_id, client_id)
+    qte INT,
+    PRIMARY KEY (commande_id, produit_id)
 );
 \`\`\`
 
-**3NF - Troisieme forme normale**
-- 2NF + Pas de dependance transitive (un attribut non-PK ne depend pas d'un autre attribut non-PK)
+### 3NF (Troisieme forme normale)
+**Regle** : 2NF + pas de dependance transitive (un attribut non-cle ne depend pas d'un autre attribut non-cle).
 
 \`\`\`sql
 -- Violation 3NF (dependance transitive)
--- ville depend de client_id indirectement via code_postal
-CREATE TABLE clients (
+CREATE TABLE employe (
     id INT PRIMARY KEY,
     nom VARCHAR(100),
-    code_postal VARCHAR(10),
-    ville VARCHAR(100)  -- Depend de code_postal, pas de id directement
+    departement_id INT,
+    nom_departement VARCHAR(100),  -- Depend de departement_id, pas de id
+    chef_departement VARCHAR(100)  -- Depend aussi de departement_id
 );
 
 -- Normalise (3NF)
-CREATE TABLE codes_postaux (
-    code_postal VARCHAR(10) PRIMARY KEY,
-    ville VARCHAR(100)
-);
-
-CREATE TABLE clients (
+CREATE TABLE departement (
     id INT PRIMARY KEY,
     nom VARCHAR(100),
-    code_postal VARCHAR(10),
-    FOREIGN KEY (code_postal) REFERENCES codes_postaux(code_postal)
+    chef VARCHAR(100)
+);
+
+CREATE TABLE employe (
+    id INT PRIMARY KEY,
+    nom VARCHAR(100),
+    departement_id INT REFERENCES departement(id)
 );
 \`\`\`
 
-## Avantages de la normalisation
+## Schema / Flux : Processus de normalisation
 
-- Elimination de la redondance
-- Prevention des anomalies de donnees
-- Meilleure integrite referentielle
-- Maintenance simplifiee
+\`\`\`
+[Donnees non normalisees]
+    │
+    ├── 1NF : Valeurs atomiques, pas de groupes repetes
+    │
+    ├── 2NF : 1NF + pas de dependance partielle (cle composite)
+    │
+    ├── 3NF : 2NF + pas de dependance transitive (cible generale)
+    │
+    ├── BCNF : 3NF + toute dependence est une supercle
+    │
+    ├── 4NF : BCNF + pas de dependance multi-valuee
+    │
+    └── 5NF : 4NF + pas de dependance de jointure
+\`\`\`
 
-## Inconvenients (denormalisation sometimes better)
+En pratique, on s'arrete a la **3NF** (suffisante pour la plupart des cas).
 
-- Requetes plus complexes (jointures multiples)
-- Performance decline pour les lectures frequentes
-- Plus de tables a gerer
+## Avantages et inconvenients
 
-## Quand denormaliser ?
+| Avantages | Inconvenients |
+|-----------|---------------|
+| Pas de redondance | Plus de tables = plus de JOIN |
+| Coherence des donnees | Requetes plus complexes |
+| Mises a jour faciles (un seul endroit) | Performance en lecture degradee |
+| Economie d'espace | Modelisation plus longue |
 
-- Lecture intensive avec performance critique
-- Agregats frequents (compteur de vues)
-- Cache read-heavy
+## Denormalisation : quand et pourquoi ?
 
-Source : [Database Normalization - Oracle Documentation](https://docs.oracle.com/cd/B10500_01/server.920/a96525/cd_c26d3.htm)`},
+La denormalisation (retour volontaire a une forme moins normalisee) est utilisee pour :
+
+- **Performance en lecture** : moins de JOIN, requetes plus rapides
+- **Data warehouse** : schemas en etoile/denormalises pour l'analytique
+- **Cache** : stocker des donnees pre-calculees
+- **NoSQL** : la denormalisation est la norme dans les bases document
+
+\`\`\`sql
+-- Vue denormalisee (materielisee) pour les rapports
+CREATE MATERIALIZED VIEW rapport_ventes AS
+SELECT c.nom, c.email, p.nom produit, lc.qte, lc.prix, co.date
+FROM clients c
+JOIN commandes co ON c.id = co.client_id
+JOIN ligne_commandes lc ON co.id = lc.commande_id
+JOIN produits p ON lc.produit_id = p.id;
+\`\`\`
+
+## Bonnes pratiques
+
+1. Visez la 3NF par defaut pour les donnees transactionnelles (OLTP)
+2. Denormalisez uniquement pour des raisons de performance prouvees
+3. Documentez le niveau de normalisation choisi et les raisons
+4. Utilisez des vues pour simplifier les requetes sans denormaliser
+5. Les indexes reduisent le cout des JOIN (ne denormalisez pas trop tot)
+
+## Pièges courants
+
+1. Sur-normalisation : 15 tables pour un simple CRUD = performance degradee
+2. Sous-normalisation : tout dans une seule table = anomalies de mise a jour
+3. Cle primaire composite mal choisie = dependances partielles
+4. Ignorer les dependances fonctionnelles = conception fragile
+5. Denormalisation prematuree = maintenance complexe sans gain de perf
+6. Confondre normalisation et performance optimale
+
+Source : [PostgreSQL Documentation - Database Design](https://www.postgresql.org/docs/current/ddl-schemas.html)`},
         {
           id: 'db-3',
           question: 'Index',
           answer: "Structure de données (souvent **B-tree**) permettant de trouver rapidement les lignes sans scanner toute la table. On indexe les colonnes utilisées dans `WHERE`, `JOIN` et `ORDER BY`.\n\nInconvénients : ralentit les `INSERT`/`UPDATE`/`DELETE` (maintenance de l'index) et consomme de l'espace disque. __Être stratégique : indexer les colonnes de recherche, pas toutes__.\n\nExistent aussi les **index composites** (multi-colonnes) et **uniques** (garantie d'unicité).",
         
-          deepDive: `# Index
+          deepDive: `# Index dans les bases de donnees
 
-## Quest-ce que cest ?
+## Concept detail
 
-Un index est une structure de donnees qui ameliore la vitesse de recherche dans une table. Il fonctionne comme l'index d'un livre: au lieu de parcourir toutes les pages, on trouve rapidement l'information.
+Un index est une structure de donnees (generalement un B-tree) qui accelere la recherche de lignes dans une table. Comme l'index d'un livre, il permet de trouver rapidement une information sans parcourir toutes les pages (full table scan). En contrepartie, les indexes consument de l'espace disque et ralentissent les ecritures (INSERT/UPDATE/DELETE).
 
-## Types d'index
+## Types d'index dans PostgreSQL
 
-**B-Tree (par defaut dans la plupart des SGBD)**
-- Equilibre pour les recherches par egalite et range
-- Utilise pour: operateurs de comparaison
+### B-tree (arbre equilibre)
+Par defaut, pour les operateurs de comparaison (=, <, <=, >, >=, BETWEEN, IN, IS NULL).
 
-**Hash Index**
-- Recherche en O(1) pour les egalites exactes
-- Ne supporte pas les ranges
-- Utilise pour: operateurs d'egalite
+\`\`\`
+                    [50]
+                   /    
+               [25]      [75]
+              /         /   
+           [10]  [30]  [60]  [90]
+\`\`\`
 
-**GiST (Generalized Search Tree)**
-- Donnees geospatiales
-- Utilise pour: points, polygones, recherches de proximity
+- Recherche : O(log n)
+- Insertion/Suppression : O(log n) (re-equilibrage)
+- Supporte le tri ascendant/descendant
 
-**GIN (Generalized Inverted Index)**
-- Valeurs multiples par entree
-- Utilise pour: donnees JSON, full-text search, arrays
+### Hash
+Pour les egalites exactes uniquement (=). Pas de support pour les comparaisons de plage.
 
-## Creation d'index
+- Recherche : O(1) en moyenne
+- Pas de tri, pas de plage
 
--- Index simple
-CREATE INDEX idx_clients_nom ON clients(nom);
+### GiST (Generalized Search Tree)
+Pour les donnees geospatiales et les recherches de similarite.
 
--- Index composite (sur plusieurs colonnes)
-CREATE INDEX idx_commandes_client_date ON commandes(client_id, date DESC);
+- Points, polygones, distances
+- Recherche plein-texte (tsvector)
+
+### GIN (Generalized Inverted Index)
+Pour les donnees avec plusieurs valeurs par ligne.
+
+- JSONB (\`@>\`, \`?\`, \`?|\`, \`?&\`)
+- Tableaux (\`@>\`, \`&&\`)
+- Recherche plein-texte (lexemes)
+
+### BRIN (Block Range Index)
+Pour les donnees naturellement ordonnees (time-series). Tres compact.
+
+- 100-500x plus petit qu'un B-tree
+- Performance si les donnees sont correlees physiquement
+
+## Syntaxe et exemples
+
+\`\`\`sql
+-- Index simple (B-tree)
+CREATE INDEX idx_users_email ON users(email);
 
 -- Index unique
-CREATE UNIQUE INDEX idx_utilisateurs_email ON utilisateurs(email);
+CREATE UNIQUE INDEX idx_users_username ON users(username);
 
--- Index partiel (sur sous-ensemble de lignes)
-CREATE INDEX idx_commandes_en_cours ON commandes(date)
-WHERE statut = 'en_cours';
+-- Index composite (plusieurs colonnes)
+CREATE INDEX idx_orders_user_date ON orders(user_id, created_at DESC);
+
+-- Index partiel (sur un sous-ensemble)
+CREATE INDEX idx_orders_active ON orders(created_at)
+WHERE status = 'active';
 
 -- Index avec expression
-CREATE INDEX idx_commandes_annee ON commandes(EXTRACT(YEAR FROM date));
+CREATE INDEX idx_users_lower_email ON users(LOWER(email));
 
-## Arbre B dans PostgreSQL
+-- Index couvrant (INCLUDE)
+CREATE INDEX idx_users_name ON users(name) INCLUDE (email, age);
 
-Structure equilibree en forme d'arbre:
-- Recherche O(log n)
-- Insertion et suppression equilibrees
-- Cache-friendly (localite des donnees)
+-- Index sur JSONB (GIN)
+CREATE INDEX idx_products_attributes ON products USING GIN (attributes jsonb_path_ops);
+
+-- Index BRIN pour time-series
+CREATE INDEX idx_logs_created ON logs USING BRIN (created_at) WITH (pages_per_range = 32);
+\`\`\`
+
+## Schema / Flux : Recherche avec et sans index
+
+### Sans index (full table scan)
+
+\`\`\`
+[Table: 1 million lignes]
+    │
+    ├── Ligne 1 : email = "test@test.com" ? -> NON
+    ├── Ligne 2 : email = "test@test.com" ? -> NON
+    ├── ...
+    └── Ligne 500000 : email = "test@test.com" ? -> OUI !
+    (Parcours sequentiel ~ 500ms)
+\`\`\`
+
+### Avec index B-tree
+
+\`\`\`
+[Index B-tree]                 [Table]
+    │                              │
+    ├── [a...e] → [a...b] → "test@test.com"
+    │                              │
+    └── 3 accès index → pointer → 1 accès table
+    (Temps total ~ 0.1ms)
+\`\`\`
+
+## Quand indexer ?
+
+**Indexez les colonnes utilisees dans :**
+- \`WHERE\` (filtres frequents)
+- \`JOIN\` (cles etrangeres)
+- \`ORDER BY\` (pour eviter le tri)
+- \`UNIQUE\` (contrainte d'unicite)
+- Requetes avec un faible nombre de resultats (< 10% des lignes)
+
+**N'indexez PAS :**
+- Petites tables (< 1000 lignes)
+- Colonnes rarement interrogees
+- Colonnes a faible cardinalite (boolean, genre)
+- Colonnes frequentement modifiees
+
+## Analyse des performances
+
+\`\`\`sql
+-- Identifier les index inutilises
+SELECT schemaname, tablename, indexname, idx_scan
+FROM pg_stat_user_indexes
+WHERE idx_scan = 0;
+
+-- Taille des indexes
+SELECT indexname, pg_size_pretty(pg_relation_size(indexrelid))
+FROM pg_stat_user_indexes
+ORDER BY pg_relation_size(indexrelid) DESC;
+
+-- Analyse du plan de requete
+EXPLAIN ANALYZE
+SELECT * FROM users WHERE email = 'test@test.com';
+\`\`\`
 
 ## Bonnes pratiques
 
-- Indexer les colonnes utilisees dans WHERE, JOIN, ORDER BY
-- Indexer les cles etrangeres
-- Utiliser des index composites pour les requetes frequentes sur plusieurs colonnes
-- Indexer apres insertion massive de donnees (plus rapide)
-- Surveiller l'utilisation avec pg_stat_user_indexes
+1. Utilisez EXPLAIN ANALYZE pour verifier que vos indexes sont utilises
+2. Indexez les cles etrangeres (cles des JOIN)
+3. Creez des index composites pour les requetes multi-colonnes
+4. Utilisez des index partiels pour les sous-ensembles de donnees
+5. Supprimez les indexes inutilises (cout d'ecriture)
+6. Indexez apres les chargements massifs (reconstruire les indexes a la fin)
+7. Surveillez la fragmentation avec \`pg_stat_user_indexes\`
 
-## Pieges courants
+## Pièges courants
 
-- Trop d'index (ralentit les ecritures)
-- Index sur colonnes a faible cardinalite (boolean, genre)
-- Index sur petites tables (cout superieur au benefice)
-- Index non utilises (requetes mal ecrites)
-
--- Analyser les index inutilises
-SELECT indexrelname, idx_scan, idx_tup_read
-FROM pg_stat_user_indexes
-WHERE idx_scan = 0 AND schemaname = 'public';
+1. Trop d'index = ralentissement des INSERT/UPDATE/DELETE
+2. Index sur colonne a faible cardinalite = inutile (le SGBD prefere le full scan)
+3. Index non utilise = espace perdu + cout d'ecriture
+4. Index partiel non utilise par le planificateur (statistiques obsoletes)
+5. Composite index avec mauvais ordre des colonnes (colonne la plus selective en premier)
+6. Oublier les statistiques (\`ANALYZE\`) apres des modifications massives
 
 Source : [PostgreSQL Indexes Documentation](https://www.postgresql.org/docs/current/indexes-intro.html)`},
         {
@@ -289,179 +450,317 @@ Source : [PostgreSQL Indexes Documentation](https://www.postgresql.org/docs/curr
           question: 'Transaction ACID',
           answer: "Quatre propriétés garanties par une transaction relationnelle : **Atomicité** (tout ou rien, rollback complet si échec), **Cohérence** (passage d'un état valide à un autre, contraintes respectées), **Isolation** (transactions concurrentes invisibles entre elles, avec niveaux : `Read Uncommitted` → `Serializable` selon le compromis cohérence/perf), **Durabilité** (données persistées après commit même en cas de crash, via le `WAL`).\n\nEnsemble, elles garantissent la **fiabilité des systèmes critiques**.",
         
-          deepDive: `# Transaction ACID
+          deepDive: `# Transactions ACID
 
-## Quest-ce que cest ?
+## Concept detail
 
-Les transactions ACID garantissent que les operations sur une base de donnees sont fiables et securisees. ACID est un acronyme pour quatre proprietes:
+Les transactions ACID sont le fondement de la fiabilite des bases de donnees relationnelles. Une transaction est une unite de travail qui garantit quatre proprietes : Atomicite, Coherence, Isolation et Durabilite. Ces proprietes assurent que les operations sur les donnees sont fiables meme en cas de panne ou d'acces concurrent.
 
-**Atomicite (A)**
-Toutes les operations de la transaction sont traitees comme une seule unite. Soit elles reussissent toutes, soit elles echouent toutes.
+## Les 4 proprietes ACID
 
-**Coherence (C)**
-La transaction passe la base de donnees d'un etat valide a un autre etat valide. Les contraintes d'integrite sont respectees.
+### Atomicite (A) : "Tout ou rien"
 
-**Isolation (I)**
-Les transactions concurrentes s'executent comme si elles etaient sequentielles. Le niveau d'isolation determine les phenomenes possibles.
+Toutes les operations de la transaction sont executees comme une seule unite. Si une operation echoue, toutes les operations deja effectuees sont annulees (ROLLBACK). Il n'y a pas de resultat partiel.
 
-**Durabilite (D)**
-Une fois commitee, les donnees persistent meme en cas de crash systeme.
+\`\`\`sql
+BEGIN;
 
-## Exemple de transaction
+-- Ajouter un client
+INSERT INTO clients (nom, email) VALUES ('Dupont', 'dupont@mail.com');
 
-BEGIN TRANSACTION;
+-- Creer une commande
+INSERT INTO commandes (client_id, total) VALUES (currval('clients_id_seq'), 150.00);
 
--- Debiter le compte expediteur
-UPDATE comptes SET solde = solde - 1000
-WHERE id = 1 AND solde >= 1000;
+-- Mettre a jour le stock
+UPDATE produits SET stock = stock - 1 WHERE id = 123;
 
--- Crediter le compte destinataire
-UPDATE comptes SET solde = solde + 1000
-WHERE id = 2;
-
--- Si toutes les operations reussissent
+-- Si tout est OK : COMMIT
 COMMIT;
 
--- Si une operation echoue
--- ROLLBACK;
+-- Si erreur : ROLLBACK (tout est annule)
+\`\`\`
 
-## Niveaux d'isolation
+### Coherence (C) : "Etats valides"
 
-| Niveau | Dirty Read | Non-Repeatable Read | Phantom Read |
-|--------|------------|---------------------|--------------|
-| Read Uncommitted | Possible | Possible | Possible |
-| Read Committed | Non | Possible | Possible |
-| Repeatable Read | Non | Non | Possible |
-| Serializable | Non | Non | Non |
+La transaction transforme la base d'un etat valide a un autre etat valide. Toutes les contraintes (FK, UNIQUE, CHECK) sont respectees au debut et a la fin.
 
-## Problemes de concurrence
+\`\`\`sql
+-- Les contraintes garantissent la coherence
+ALTER TABLE commandes ADD CONSTRAINT fk_client
+    FOREIGN KEY (client_id) REFERENCES clients(id);
+ALTER TABLE produits ADD CONSTRAINT stock_positif
+    CHECK (stock >= 0);
+\`\`\`
 
-**Lost Update**
-Transaction A et B lisent et modifient la meme donnee. La derniere ecriture gagne.
+### Isolation (I) : "Transactions concurrentes isolees"
 
-**Dirty Read**
-Lecture de donnees non commitées par une autre transaction.
+Les transactions concurrentes s'executent comme si elles etaient sequentielles. Le niveau d'isolation determine quels phenomenes sont autorises.
 
-**Non-Repeatable Read**
-Lecture deux fois de la meme donnee dans une transaction retourne des valeurs differentes.
+### Durabilite (D) : "Persistant apres COMMIT"
 
-**Phantom Read**
-Nouvelles lignes correspondent au predicat de recherche entre deux lectures.
+Une fois COMMIT, les modifications sont persistees et survivent aux pannes (crash, coupure electrique). PostgreSQL utilise le Write-Ahead Log (WAL) pour garantir cette propriete.
+
+## Niveaux d'isolation SQL
+
+\`\`\`sql
+-- Definir le niveau d'isolation
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+\`\`\`
+
+| Niveau | Dirty Read | Non-Repeatable Read | Phantom Read | Seriazabilite |
+|--------|-----------|---------------------|--------------|---------------|
+| READ UNCOMMITTED | Possible | Possible | Possible | Non |
+| READ COMMITTED | Impossible | Possible | Possible | Non |
+| REPEATABLE READ | Impossible | Impossible | Possible | Partielle |
+| SERIALIZABLE | Impossible | Impossible | Impossible | Oui |
+
+**READ COMMITTED** est le defaut dans PostgreSQL (et la plupart des SGBD). Bon compromis coherence/performance.
+
+## Phenomenes de concurrence
+
+### Dirty Read (lecture sale)
+\`\`\`sql
+-- Transaction A                    -- Transaction B
+UPDATE comptes SET solde = 0;
+                                  SELECT solde FROM comptes;  -- Lit 0 !
+ROLLBACK;                          -- A annule, B a lu une valeur jamais confirmee
+\`\`\`
+
+### Non-Repeatable Read (lecture non-repetable)
+\`\`\`sql
+-- Transaction A                    -- Transaction B
+SELECT solde FROM comptes;  -- 100
+                                  UPDATE comptes SET solde = 200;
+                                  COMMIT;
+SELECT solde FROM comptes;  -- 200 (different de la premiere lecture)
+\`\`\`
+
+### Phantom Read
+\`\`\`sql
+-- Transaction A                    -- Transaction B
+SELECT SUM(montant) FROM commandes WHERE client_id = 1;  -- 500
+                                  INSERT INTO commandes (client_id, montant) VALUES (1, 100);
+                                  COMMIT;
+SELECT SUM(montant) FROM commandes WHERE client_id = 1;  -- 600 (nouvelle ligne apparue)
+\`\`\`
+
+## Cas d'usage typiques
+
+\`\`\`sql
+-- Virement bancaire (ACID obligatoire)
+BEGIN;
+UPDATE comptes SET solde = solde - 1000 WHERE id = 1 AND solde >= 1000;
+IF NOT FOUND THEN ROLLBACK; END IF;
+
+UPDATE comptes SET solde = solde + 1000 WHERE id = 2;
+COMMIT;
+
+-- Reservation de stock (contrainte CHECK)
+BEGIN;
+UPDATE stocks SET quantite = quantite - 1
+WHERE produit_id = 123 AND quantite > 0;
+COMMIT;
+\`\`\`
 
 ## Bonnes pratiques
 
-- Garder les transactions les plus courtes possible
-- Acceder aux lignes dans le meme ordre dans toutes les transactions (eviter les deadlocks)
-- Utiliser le niveau d'isolation approprie (Serializable a un cout eleve)
-- Eviter les transactions interactives (plusieurs allers-retours)
+1. Gardez les transactions les plus courtes possibles (pas de saisie utilisateur dans une transaction)
+2. Accedez aux tables dans le meme ordre pour eviter les deadlocks
+3. Utilisez le niveau d'isolation par defaut (READ COMMITTED) sauf besoin specifique
+4. En cas d'erreur, faites toujours ROLLBACK (ne continuez pas apres une erreur)
+5. Utilisez \`SELECT ... FOR UPDATE\` avec parcimonie (verrouillage)
+6. Configurez des timeouts : \`lock_timeout\`, \`statement_timeout\`
 
-Source : [ACID Properties - Oracle Documentation](https://docs.oracle.com/cd/A87660_02/articles/oconcept/H/overview_of_transact.htm)`},
+## Pièges courants
+
+1. Transaction trop longue = verrous maintenus longtemps = contention
+2. Deadlock ignore = transactions qui s'annulent mutuellement
+3. Niveau d'isolation trop strict (SERIALIZABLE) = performances degradees
+4. Pas de gestion d'erreur = transaction laissee ouverte
+5. Ignorer les phenomenes de concurrence = bugs aleatoires
+6. Confondre ROLLBACK et COMMIT partiel (le ROLLBACK annule tout)
+
+Source : [PostgreSQL - Transactions](https://www.postgresql.org/docs/current/tutorial-transactions.html)`},
         {
           id: 'db-5',
           question: 'ORM ?',
           answer: "**Object-Relational Mapping** : couche d'abstraction entre le monde objet et le monde relationnel. Convertit les tables SQL en objets du langage (`Hibernate` en Java avec `@Entity`, `Prisma` en Node.js).\n\n**Avantages** : productivité, moins de boilerplate, abstraction du SGBD.\n\n**Limites** : SQL sous-optimal pour les requêtes complexes, **problème N+1** (dizaines de requêtes au lieu d'une). __Excellent pour 80% des cas, mais savoir passer en SQL natif quand c'est nécessaire__.",
         
-          deepDive: `# ORM
+          deepDive: `# ORM (Object-Relational Mapping)
 
-## Quest-ce que cest ?
+## Concept detail
 
-Un ORM (Object-Relational Mapping) fait le pont entre le monde oriente objet et les bases de donnees relationnelles. Il convertit les objets code en tables BD et vice versa.
+Un ORM est une couche d'abstraction qui convertit les objets d'un langage de programmation en donnees relationnelles et vice versa. Il permet au developpeur de manipuler la base de donnees avec le langage de l'application (Java, TypeScript, Python) sans ecrire de SQL directement.
 
-## Exemples d'ORM
+## Schema / Flux
 
-| Langage | ORM populaire |
-|---------|---------------|
-| Java | Hibernate, JPA |
-| Python | SQLAlchemy, Django ORM |
-| JavaScript | TypeORM, Sequelize, Prisma |
-| C# | Entity Framework |
-| PHP | Eloquent, Doctrine |
+\`\`\`
+[Application]                    [ORM]                       [Base de donnees]
+     |                              |                              |
+     | userRepository.findById(1)   |                              |
+     |----------------------------->|                              |
+     |                              |  SELECT * FROM users         |
+     |                              |  WHERE id = ?               |
+     |                              |----------------------------->|
+     |                              |                              |
+     |                              |  ResultSet -> User object    |
+     |  User { id:1, name:... }    |<-----------------------------|
+     |<-----------------------------|                              |
+\`\`\`
 
-## Comparaison: JDBC vs ORM
+## Exemples par langage
 
-// JDBC (sans ORM)
-Connection conn = DriverManager.getConnection(url, user, pass);
-PreparedStatement stmt = conn.prepareStatement(
-    "SELECT * FROM users WHERE email = ?"
-);
-stmt.setString(1, email);
-ResultSet rs = stmt.executeQuery();
-User user = null;
-if (rs.next()) {
-    user = new User();
-    user.setId(rs.getLong("id"));
-    user.setName(rs.getString("name"));
-    user.setEmail(rs.getString("email"));
-}
+| Langage | ORM | Caracteristiques |
+|---------|-----|-----------------|
+| Java | Hibernate / JPA | Mature, standardise, puissant |
+| Java | jOOQ | Type-safe, SQL-first |
+| TypeScript | Prisma | Moderne, type-safe, autocompletion |
+| TypeScript | TypeORM | Proche de JPA, decorators |
+| Python | SQLAlchemy | Flexible, deux modes (ORM/Core) |
+| Python | Django ORM | Integre a Django, batteries included |
+| C# | Entity Framework | LINQ, Code First, migrations |
 
-// Avec JPA/Hibernate (ORM)
+## Syntaxe et exemples
+
+### JPA / Hibernate (Java)
+
+\`\`\`java
 @Entity
 @Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Column(name = "name")
-    private String name;
-    
-    @Column(unique = true)
+
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(name = "full_name")
+    private String fullName;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Order> orders;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
 }
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
-}
+    List<User> findByRoleName(String roleName);
 
-// Utilisation
-Optional<User> user = userRepository.findByEmail(email);
+    @Query("SELECT u FROM User u JOIN FETCH u.orders WHERE u.id = :id")
+    Optional<User> findByIdWithOrders(@Param("id") Long id);
+}
 \`\`\`
 
-## Avantages de l'ORM
+### Prisma (TypeScript/Node.js)
 
--.Productivite: moins de code SQL a ecrire
-- Portabilite: changer de SGBD sans modifier le code
-- Securite: protection contre les injections SQL
-- Maintenabilite: code plus lisible et oriente objet
-- Outils: migrations, versioning du schema
+\`\`\`prisma
+// schema.prisma
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  role      Role     @default(USER)
+  orders    Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
-## Inconvenients
+model Order {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  total     Decimal  @db.Decimal(10, 2)
+  createdAt DateTime @default(now())
+}
+\`\`\`
 
-- Performance: le SQL genere peut etre sous-optimal
-- Complexity: courbe d'apprentissage, configuration
-- Requetes complexes: SQL manuel parfois necessaire
-- N+1 problem: multiple requetes pour charger les relations
+\`\`\`typescript
+// Utilisation
+const user = await prisma.user.findUnique({
+    where: { email: "user@example.com" },
+    include: { orders: true }
+});
+\`\`\`
 
 ## Le probleme N+1
 
-\`\`\`sql
--- Une requête pour les utilisateurs
-SELECT * FROM users;  -- 1 requête
+Le probleme N+1 survient quand l'ORM execute 1 requete pour les parents puis N requetes pour les enfants :
 
--- Plus une requête pour les commandes de chaque utilisateur
-SELECT * FROM orders WHERE user_id = 1;
-SELECT * FROM orders WHERE user_id = 2;
--- ... N requêtes supplémentaires!
+\`\`\`sql
+-- 1 requete : recuperer les utilisateurs
+SELECT * FROM users;  -- 1
+
+-- N requetes : recuperer les commandes de CHAQUE utilisateur
+SELECT * FROM orders WHERE user_id = 1;  -- requete par utilisateur
+SELECT * FROM orders WHERE user_id = 2;  -- +1
+-- ... N requetes supplementaires
 \`\`\`
 
-Solutions:
-\`\`\`java
-// JPA - Eager loading
-@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-private List<Order> orders;
+**Solutions :**
 
-// Ou query spécifique
+\`\`\`java
+// JPA : JOIN FETCH
 @Query("SELECT u FROM User u LEFT JOIN FETCH u.orders")
 List<User> findAllWithOrders();
+
+// EntityGraph
+@EntityGraph(attributePaths = {"orders"})
+List<User> findAll();
+
+// Hibernate : @BatchSize
+@OneToMany
+@BatchSize(size = 10)
+private List<Order> orders;
 \`\`\`
+
+\`\`\`typescript
+// Prisma : include
+const users = await prisma.user.findMany({
+    include: { orders: true }  // Une seule requete avec JOIN
+});
+\`\`\`
+
+## Avantages et inconvenients
+
+| Avantages | Inconvenients |
+|-----------|---------------|
+| Productivite elevee | SQL genere parfois sous-optimal |
+| Abstraction du SGBD | Courbe d'apprentissage |
+| Protection injection SQL | Probleme N+1 |
+| Migrations automatisees | Debugging complexe |
+| Moins de code boileplate | Performance variable |
+
+## Quand utiliser du SQL natif ?
+
+- Requetes complexes avec plusieurs JOIN etagere
+- Operations batch (mises a jour massives)
+- Requetes de reporting ou analytiques
+- Optimisation de performance (EXPLAIN ANALYZE)
+- Fonctions specifiques au SGBD (window functions, CTE recursives)
 
 ## Bonnes pratiques
 
-- Comprendre le SQL genere (ne pas l'ignorer)
-- Utiliser les requetes natives quand necessaire
-- Faire du tuning des requetes (explain plan)
-- Preferer les transactions courtes
-- Mapper les entités avec precision (pas de anemic domain model)
+1. Comprenez le SQL genere par l'ORM (activez le logging des requetes)
+2. Utilisez des requetes natives quand les performances sont critiques
+3. Faites du lazy loading avec JOIN FETCH pour eviter N+1
+4. Structurez les entites autour des aggregates (DDD)
+5. Utilisez des migrations pour versionner le schema
+6. Testez les performances avec EXPLAIN ANALYZE
+7. Evitez les cascade trop larges (CascadeType.ALL sur toutes les relations)
+
+## Pièges courants
+
+1. Probleme N+1 non detecte (requetes silencieuses)
+2. Lazy loading hors session (LazyInitializationException)
+3. Cascade trop agressive = suppression en masse inattendue
+4. Fetch eager sur toutes les relations = requetes geantes
+5. Entites anemic domain model (getters/setters sans logique)
+6. Transactions trop longues a cause du lazy loading
 
 Source : [Hibernate ORM Documentation](https://hibernate.org/orm/documentation/)`},
         {
@@ -471,230 +770,326 @@ Source : [Hibernate ORM Documentation](https://hibernate.org/orm/documentation/)
           code: '# HikariCP config\nspring.datasource.hikari.maximum-pool-size=10\nspring.datasource.hikari.connection-timeout=30000\nspring.datasource.hikari.idle-timeout=600000',
           language: 'properties',
         
-          deepDive: `# Database Partitioning
+          deepDive: `# Connection Pooling
 
-## Qu'est-ce que c'est
+## Concept detail
 
-Le partitioning (ou partitionnement) divise une table en plusieurs segments plus petits (partitions) selon un critere defini. Chaque partition est stockee physiquement separement mais interrogable comme une seule table.
+Le connection pooling consiste a maintenir un ensemble de connexions a la base de donnees **reutilisables**, plutot que d'en etablir une nouvelle a chaque requete. Etablir une connexion est couteux (TCP handshake, authentification, allocation de ressources). Le pool gere un cache de connexions ouvertes et les distribue aux threads applicatifs.
 
-Types:
-- **Horizontal (sharding)**: Les lignes sont distribuees sur plusieurs partitions
-- **Vertical**: Les colonnes sont distribuees sur plusieurs partitions
+## Schema / Flux
+
+\`\`\`
+[Application Threads]               [Connection Pool]                 [Base de donnees]
+     |                                     |                               |
+     | request1: getConnection()            |                               |
+     |------------------------------------->|                               |
+     |                                     |   connexion_1 (deja ouverte)  |
+     |  Connection (connexion_1)           |------------------------------->
+     |<-------------------------------------|                               |
+     |                                     |                               |
+     | request2: getConnection()            |                               |
+     |------------------------------------->|                               |
+     |                                     |   connexion_2 (deja ouverte)  |
+     |  Connection (connexion_2)           |------------------------------->
+     |<-------------------------------------|                               |
+     |                                     |                               |
+     | request3: getConnection()            |                               |
+     |------------------------------------->|                               |
+     |                                     |   [ATTENTE] pool epuise       |
+     |                                     |   (connectionTimeout)         |
+     |                                     |                               |
+     | request1: closeConnection()          |                               |
+     |------------------------------------->|                               |
+     |                                     |   connexion_1 -> disponible   |
+     |  Connection (connexion_1)           |------------------------------->
+     |<-------------------------------------|                               |
+\`\`\`
 
 ## Syntaxe et exemples
 
-### PostgreSQL Range Partitioning
+### HikariCP (Spring Boot - defaut)
 
-\`\`\`sql
--- Creation d'une table partitionnee par date
-CREATE TABLE orders (
-  id SERIAL,
-  order_date DATE NOT NULL,
-  customer_id INT,
-  total DECIMAL(10,2)
-) PARTITION BY RANGE (order_date);
-
--- Creer des partitions par annee
-CREATE TABLE orders_2024 PARTITION OF orders
-  FOR VALUES FROM ('2024-01-01') TO ('2024-12-31');
-
-CREATE TABLE orders_2025 PARTITION OF orders
-  FOR VALUES FROM ('2025-01-01') TO ('2025-12-31');
-
--- Insertion automatique dans la partition correcte
-INSERT INTO orders (order_date, customer_id, total)
-  VALUES ('2024-03-15', 123, 99.99);
+\`\`\`properties
+# application.properties
+spring.datasource.hikari.maximum-pool-size=10
+spring.datasource.hikari.minimum-idle=5
+spring.datasource.hikari.connection-timeout=30000
+spring.datasource.hikari.idle-timeout=600000
+spring.datasource.hikari.max-lifetime=1800000
+spring.datasource.hikari.connection-test-query=SELECT 1
+spring.datasource.hikari.pool-name=MonPoolHikari
+spring.datasource.hikari.auto-commit=false
 \`\`\`
 
-### PostgreSQL List Partitioning
-
-\`\`\`sql
--- Partition par region
-CREATE TABLE customers (
-  id SERIAL,
-  name TEXT,
-  region VARCHAR(2)
-) PARTITION BY LIST (region);
-
-CREATE TABLE customers_eu PARTITION OF customers
-  FOR VALUES IN ('FR', 'DE', 'ES', 'IT');
-
-CREATE TABLE customers_us PARTITION OF customers
-  FOR VALUES IN ('NY', 'CA', 'TX');
+\`\`\`java
+// Configuration programmatique
+@Configuration
+public class DatabaseConfig {
+    @Bean
+    public HikariDataSource dataSource() {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl("jdbc:postgresql://localhost:5432/mydb");
+        config.setUsername(System.getenv("DB_USER"));
+        config.setPassword(System.getenv("DB_PASS"));
+        config.setMaximumPoolSize(10);
+        config.setMinimumIdle(5);
+        config.setConnectionTimeout(30000);  // 30s
+        config.setIdleTimeout(600000);       // 10 min
+        config.setMaxLifetime(1800000);      // 30 min
+        config.setLeakDetectionThreshold(60000);  // 60s
+        config.setPoolName("AppPool");
+        config.setAutoCommit(false);
+        return new HikariDataSource(config);
+    }
+}
 \`\`\`
 
-### Hash Partitioning
+### Node.js (pg-pool)
 
-\`\`\`sql
--- Partition par hash de l'ID
-CREATE TABLE events (
-  id BIGINT,
-  event_type TEXT,
-  created_at TIMESTAMP
-) PARTITION BY HASH (id);
+\`\`\`javascript
+const { Pool } = require("pg");
 
-CREATE TABLE events_p0 PARTITION OF events
-  FOR VALUES WITH (MODULUS 4, REMAINDER 0);
-CREATE TABLE events_p1 PARTITION OF events
-  FOR VALUES WITH (MODULUS 4, REMAINDER 1);
--- etc.
+const pool = new Pool({
+    host: "localhost",
+    port: 5432,
+    database: "mydb",
+    user: "app_user",
+    password: process.env.DB_PASS,
+    max: 20,                // Taille max du pool
+    idleTimeoutMillis: 30000,  // 30s idle avant fermeture
+    connectionTimeoutMillis: 5000,  // 5s timeout connexion
+    maxUses: 7500,          // Rotation des connexions
+});
+
+// Utilisation
+app.get("/users", async (req, res) => {
+    const client = await pool.connect();
+    try {
+        const result = await client.query("SELECT * FROM users");
+        res.json(result.rows);
+    } finally {
+        client.release();  // Retourne la connexion au pool
+    }
+});
 \`\`\`
+
+### Configuration recommandee HikariCP (PostgreSQL)
+
+\`\`\`yaml
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 10           # Regle empirique : nb max de connexions
+      minimum-idle: 5                 # Connexions inactives minimales
+      connection-timeout: 30000       # Temps d'attente max pour une connexion
+      idle-timeout: 600000            # 10 min : fermeture des connexions inutilisees
+      max-lifetime: 1800000           # 30 min : duree de vie max d'une connexion
+      leak-detection-threshold: 60000 # Detecte les fuites de connexion
+      validation-timeout: 5000
+      register-mbeans: true           # Exposition JMX pour monitoring
+\`\`\`
+
+## Quelle taille de pool ?
+
+La regle empirique : **Taille du pool = 2 * (nombre de cœurs CPU) + 1**
+
+Pour une application avec 8 cœurs : \`2 * 8 + 1 = 17\` connexions max.
+
+Pourquoi pas 200 connexions ?
+- Chaque connexion consomme de la memoire (quelques Mo)
+- Trop de connexions = contention sur la BDD
+- PostgreSQL a un \`max_connections\` limite (souvent 100-500)
+
+**Mesurez plutot que calculez** : la taille optimale se trouve en chargeant l'application et en mesurant.
+
+## Comparaison des implementations
+
+| Pool | Langage | Performance | Fonctionnalites |
+|------|---------|-------------|-----------------|
+| HikariCP | Java | Excellent | Fast, fiable, defaut Spring Boot |
+| Tomcat JDBC | Java | Bon | Standard Tomcat |
+| DBCP2 | Java | Moyen | Apache Commons |
+| pg-pool | Node.js | Bon | Specifique PostgreSQL |
+| SQLAlchemy pool | Python | Bon | Flexible |
+
+## Cas d'usage typiques
+
+- Toute application web avec acces BDD en production
+- APIs REST avec plusieurs threads simultanes
+- Applications batch qui alternent phases de calcul et d'acces BDD
+- Microservices avec connexions BDD
 
 ## Bonnes pratiques
 
-- Choisissez une cle de partition qui correspond aux requetes frequentes
-- Evitez les partitions trop petites (overhead) ou trop grandes (peu de benefice)
-- Planifiez la strategie des BEFORE inserts pour rediriger automatiquement
-- Surveillez la taille des partitions et rééquilibrez si necessaire
-- Utilisez des index par partition pour optimiser les requetes
+1. Testez la taille du pool sous charge reelle (pas de formule magique)
+2. Configurez le leak detection pour detecter les connexions non fermees
+3. Validez les connexions avant utilisation (\`connectionTestQuery\`)
+4. Montez le pool apres le demarrage de l'application (pas de requetes pendant l'initialisation)
+5. Surveillez les metriques du pool (actif, idle, en attente)
+6. Fermez toujours les connexions dans un bloc finally / try-with-resources
 
-## Pieges courants
+## Pièges courants
 
-- Partitionner sur une colonne a faible cardinalite (peu de valeurs distinctes)
-- Ignorer les partitions qui GROW plus vite que d'autres (hot partitions)
-- Requetes qui scannent toutes les partitions (partition pruning inefficient)
-- Ne pas mettre a jour les stats apres modification des partitions
-- Oublier que les contraintes de cle etrangere ne traversent pas les partitions
+1. Pool trop grand = surcharge de la BDD (chaque connexion = processus)
+2. Fuite de connexion = pool epuise = application bloquee
+3. Pas de timeout = threads bloques indefiniment
+4. Connexions perimees non validees (firewall qui coupe les connexions inactives)
+5. \`auto-commit=true\` = chaque requete est une transaction isolee
+6. Meme pool partage entre operations courtes (API) et longues (batch)
 
-## Pour aller plus loin
-
-\`\`\`sql
--- Voir les partitions d'une table
-SELECT 
-  child.relname AS partition_name,
-  pg_size_pretty(pg_relation_size(child.oid)) AS size
-FROM pg_inherits
-JOIN pg_class parent ON inhparent = parent.oid
-JOIN pg_class child ON inhrelid = child.oid
-WHERE parent.relname = 'orders';
-
--- Query pour trouver le nombre de lignes par partition
-SELECT 
-  partitions.relname,
-  COUNT(*) as row_count
-FROM orders
-GROUP BY 1;
-\`\`\`
-
-Source: https://www.postgresql.org/docs/current/ddl-partitioning.html`},
+Source : [HikariCP Documentation](https://github.com/brettwooldridge/HikariCP)`},
         {
           id: 'db-7',
           question: 'Clés primaires et étrangères',
           answer: "**Clé primaire** : identifiant **unique** de chaque ligne (`id` auto-incrémenté ou `UUID`). Garantit l'unicité et l'accès rapide via l'index primaire.\n\n**Clé étrangère** : référence la clé primaire d'une autre table, créant une **relation** et garantissant l'**intégrité référentielle** (impossible d'insérer une commande avec un `user_id` inexistant).\n\n`ON DELETE CASCADE` (suppression en cascade), `SET NULL` (mise à null), `RESTRICT` (blocage). __Les clés étrangères sont le garde-fou de la cohérence des données relationnelles.__",
         
-          deepDive: `# CLES PRIMAIRES ET ETRANGERES
+          deepDive: `# Cles primaires et etrangeres
 
-## Qu'est-ce que c'est
+## Concept detail
 
-**Cle primaire (Primary Key)**: Colonne ou ensemble de colonnes qui identifie uniquement chaque ligne d'une table. Elle garantit l'unicite et ne peut pas contenir de valeurs NULL.
+Les cles primaires et etrangeres sont les elements fondamentaux du modele relationnel. La cle primaire identifie de maniere unique chaque ligne d'une table. La cle etrangere cree une relation entre deux tables en referencant la cle primaire d'une autre table, garantissant l'integrite referentielle des donnees.
 
-**Cle etrangere (Foreign Key)**: Colonne qui pointe vers la cle primaire d'une autre table, établissant une relation entre les deux tables.
+## Cles primaires (Primary Key)
 
-## Syntaxe et exemples
+Une cle primaire est une colonne (ou combinaison de colonnes) qui :
+- Identifie **uniquement** chaque ligne
+- Ne peut pas etre NULL (NOT NULL implicite)
+- Est automatiquement indexee
 
 \`\`\`sql
--- Creation de table avec cle primaire
+-- Cle primaire simple (SERIAL auto-increment)
 CREATE TABLE users (
-  id SERIAL PRIMARY KEY,
-  email VARCHAR(255) UNIQUE NOT NULL,
-  created_at TIMESTAMP DEFAULT NOW()
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    name VARCHAR(100) NOT NULL
 );
 
--- Cle primaire composee
-CREATE TABLE orders (
-  user_id INT NOT NULL,
-  order_number INT NOT NULL,
-  total DECIMAL(10,2),
-  PRIMARY KEY (user_id, order_number)
+-- Cle primaire UUID (recommandee pour les systemes distribues)
+CREATE TABLE users (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email VARCHAR(255) UNIQUE NOT NULL
 );
 
--- Ajout de cle etrangere
-CREATE TABLE orders (
-  id SERIAL PRIMARY KEY,
-  user_id INT REFERENCES users(id),
-  -- ou avec contrainte nomsee
-  user_id INT,
-  CONSTRAINT fk_user
-    FOREIGN KEY (user_id) REFERENCES users(id)
-      ON DELETE CASCADE
-      ON UPDATE SET NULL
+-- Cle primaire composite (plusieurs colonnes)
+CREATE TABLE abonnements (
+    user_id INT NOT NULL,
+    newsletter_id INT NOT NULL,
+    date_debut DATE NOT NULL,
+    PRIMARY KEY (user_id, newsletter_id)
 );
-
--- Constraints referentielles
-CREATE TABLE comments (
-  id SERIAL PRIMARY KEY,
-  post_id INT REFERENCES posts(id) ON DELETE CASCADE,
-  user_id INT REFERENCES users(id) ON DELETE SET NULL,
-  body TEXT,
-  CONSTRAINT fk_post FOREIGN KEY (post_id) REFERENCES posts(id)
-);
-
--- Index automatique sur FK
-CREATE INDEX idx_orders_user ON orders(user_id);
 \`\`\`
 
-### Operations courantes
+## Cles etrangeres (Foreign Key)
+
+Une cle etrangere :
+- Reference la cle primaire d'une autre table
+- Garantit l'integrite referentielle (pas de reference a une ligne inexistante)
+- Peut etre NULL (optionnel)
+- Devrait etre indexee pour les performances
 
 \`\`\`sql
--- Voir les cles d'une table
-SELECT 
-  tc.constraint_name,
-  kcu.column_name,
-  ccu.table_name AS foreign_table_name,
-  ccu.column_name AS foreign_column_name
-FROM information_schema.table_constraints AS tc
-JOIN information_schema.key_column_usage AS kcu
-  ON tc.constraint_name = kcu.constraint_name
-JOIN information_schema.constraint_column_usage AS ccu
-  ON ccu.constraint_name = tc.constraint_name
-WHERE tc.table_name = 'orders';
+-- Syntaxe de base
+CREATE TABLE orders (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id),           -- FK simple (inline)
+    total DECIMAL(10, 2) NOT NULL,
+    status VARCHAR(20) DEFAULT 'pending'
+);
 
--- Desactiver temporairement une FK (pour chargement massif)
-ALTER TABLE orders DISABLE TRIGGER ALL;
--- operations...
-ALTER TABLE orders ENABLE TRIGGER ALL;
+-- Syntaxe complete avec nom de contrainte
+CREATE TABLE orders (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    total DECIMAL(10, 2),
+    CONSTRAINT fk_orders_users
+        FOREIGN KEY (user_id) REFERENCES users(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+-- Ajout sur table existante
+ALTER TABLE orders
+    ADD CONSTRAINT fk_orders_users
+    FOREIGN KEY (user_id) REFERENCES users(id)
+    ON DELETE RESTRICT;
 \`\`\`
+
+## Actions sur DELETE/UPDATE
+
+| Action | Description | Comportement |
+|--------|-------------|--------------|
+| **CASCADE** | Supprime/met a jour en cascade | Supprime les enfants si le parent est supprime |
+| **SET NULL** | Met NULL dans la FK | Conserve les enregistrements orphelins |
+| **SET DEFAULT** | Valeur par defaut | Remplace par la valeur par defaut |
+| **RESTRICT** | Bloque la suppression | Empeche la suppression du parent |
+| **NO ACTION** | Differ la verification | Similaire a RESTRICT mais verifie a la fin de la transaction |
+
+\`\`\`sql
+-- Exemple concret : blog avec commentaires
+CREATE TABLE posts (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    body TEXT
+);
+
+CREATE TABLE comments (
+    id SERIAL PRIMARY KEY,
+    post_id INT NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+    -- Si le post est supprime, ses commentaires aussi
+    author VARCHAR(100) NOT NULL,
+    body TEXT NOT NULL
+);
+
+CREATE TABLE likes (
+    id SERIAL PRIMARY KEY,
+    post_id INT REFERENCES posts(id) ON DELETE CASCADE,
+    user_id INT REFERENCES users(id) ON DELETE SET NULL,
+    -- Si l'utilisateur est supprime, ses likes restent mais user_id = NULL
+);
+\`\`\`
+
+## Index sur les cles etrangeres
+
+Les SGBD ne creent PAS automatiquement d'index sur les FK. Il faut le faire manuellement :
+
+\`\`\`sql
+-- Toujours indexer les FK utilisees dans les JOIN
+CREATE INDEX idx_orders_user_id ON orders(user_id);
+CREATE INDEX idx_comments_post_id ON comments(post_id);
+CREATE INDEX idx_likes_post_id ON likes(post_id);
+\`\`\`
+
+**Sans index** : chaque jointure sur la FK declenche un full table scan.
+
+## Choisir entre SERIAL et UUID
+
+| Critere | SERIAL (auto-increment) | UUID |
+|---------|------------------------|------|
+| Taille | 4 octets (INT) / 8 octets (BIGINT) | 16 octets |
+| Performance | Meilleure (index plus petit) | Moins bonne |
+| Visibilite | Predictible (1, 2, 3...) | Aleatoire |
+| Securite | Exposition du volume de donnees | Pas d'information |
+| Distribution | Conflit possible | Unique globalement |
 
 ## Bonnes pratiques
 
-- Utilisez des IDs auto-incrementees (SERIAL, BIGSERIAL) ou UUIDs
-- Une FK doit toujours referencer une cle primaire, pas une colonne non-unique
-- Definissez des actions ON DELETE / ON UPDATE (CASCADE, SET NULL, RESTRICT)
-- Indexez systematiquement les colonnes FK pour eviter les ralentissements
-- Evitez les FK circulaires (A pointe vers B, B pointe vers A)
-- Utilisez des noms de contraintes explicites (fk_table1_table2)
+1. Toujours definir une PK sur chaque table (meme les tables de jointure)
+2. Indexez systematiquement les colonnes FK
+3. Utilisez des noms de contrainte explicites : \`fk_<table>_<cible>\`
+4. Choisissez CASCADE, SET NULL ou RESTRICT en fonction du besoin metier
+5. Pour les systemes distribues, preferez UUID a SERIAL
+6. Les FK doivent toujours referencer une PK ou une UNIQUE
 
-## Pieges courants
+## Pièges courants
 
-- Oublier les index sur les FK = ralentissement des jointures
-- CASCADE qui supprime accidentellement des donnees essentielles
-- Confusion entre RESTRICT et NO ACTION (RESTRICT echoue immediatement, NO ACTION differe)
-- Utiliser des valeurs NULL comme substitut d'absence de relation
-- Violation de contrainte lors de mise a jour de la FK (orphelins non autorises)
-- Supprimer un parent sans avoir verifie les enfants (violation de FK)
+1. Oublier l'index sur la FK = ralentissement des JOIN
+2. CASCADE trop agressif = suppression de donnees non desirees
+3. RESTRICT bloque la mise a jour du parent (meme temporairement)
+4. Utiliser des valeurs NULL comme substitut de FK manquante
+5. FK circulaires (A pointe vers B, B pointe vers A) = insertion impossible
+6. Confondre RESTRICT et NO ACTION (RESTRICT echoue immediatement, NO ACTION a la fin de la transaction)
 
-## Pour aller plus loin
-
-\`\`\`sql
--- Ajouter FK sur table existante
-ALTER TABLE orders
-  ADD CONSTRAINT fk_user
-  FOREIGN KEY (user_id) REFERENCES users(id);
-
--- Renforcer une FK existante (supprimer puis recreer)
-ALTER TABLE orders DROP CONSTRAINT fk_user;
-ALTER TABLE orders ADD CONSTRAINT fk_user
-  FOREIGN KEY (user_id) REFERENCES users(id);
-
--- Verifier l'integrite referentielle
-SELECT 
-  o.user_id
-FROM orders o
-LEFT JOIN users u ON o.user_id = u.id
-WHERE u.id IS NULL;
-\`\`\`
-
-Source: https://www.postgresql.org/docs/current/ddl-constraints.html`},
+Source : [PostgreSQL - Constraints](https://www.postgresql.org/docs/current/ddl-constraints.html)`},
         {
           id: 'db-8',
           question: 'NoSQL : types et cas d\'usage',

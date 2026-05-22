@@ -15,79 +15,140 @@ export const gitCategory: InterviewCategory = {
           question: "C'est quoi Git ?",
           answer: "**Git** est un **système de contrôle de version distribué**, créé par Linus Torvalds en 2005. Chaque développeur possède une copie complète de l'historique du dépôt localement — pas besoin d'être connecté au serveur pour travailler.\n\nIl gère les versions du code, permet de revenir en arrière et facilite la collaboration via les branches et les fusions. C'est le **standard de l'industrie** pour travailler en équipe sur un même code.",
         
-          deepDive: `# C'est quoi Git
+          deepDive: `# C'est quoi Git ?
 
-## Quest-ce que cest ?
+## Principe fondamental
 
-Git est un systeme de gestion de versions decentralise cree par Linus Torvalds en 2005. Il permet de:
-- Suivre les modifications du code source
-- Collaborer a plusieurs sur le meme projet
-- Revenir a des versions anterieures
-- Gérer des branches paralleles
+Git est un **système de contrôle de version distribué** (DVCS) créé par **Linus Torvalds** en 2005 pour le développement du noyau Linux. Contrairement aux systèmes centralisés (SVN, CVS), chaque développeur possède une **copie complète** de l'historique du dépôt localement. Pas besoin d'être connecté au serveur pour travailler, commiter, ou consulter l'historique.
 
-## Concepts cles
+Git gère les versions du code, permet de revenir en arrière, et facilite la collaboration via les branches et les fusions. C'est le **standard de l'industrie** pour le développement logiciel en équipe.
 
-**Repository (depot)**
-Un projet complet avec tout son historique. Chaque developpeur a une copie locale complete.
+## Architecture en trois arbres
 
-**Commit**
-Un snapshot des modifications a un instant donne. Chaque commit a un identifiant unique (SHA-1).
+Git organise votre travail en trois zones distinctes :
 
-**Branche (branch)**
-Une ligne de developpement parallele. La branche par defaut est generalement main ou master.
+\`\`\`
++---------------+      +---------------+      +---------------+
+|  Working Tree | ---> |  Index (Stage)| ---> |   Local Repo  |
+|  (fichiers)   | add  |  (préparés)   | commit| (historique)  |
++---------------+      +---------------+      +---------------+
+                                                       |
+                                                       | push/pull
+                                                       v
+                                               +---------------+
+                                               | Remote Repo   |
+                                               | (GitHub, etc.)|
+                                               +---------------+
+\`\`\`
 
-**Merge**
-Combiner les modifications de deux branches.
+## Commandes fondamentales
 
-**Clone**
-Copier un depot distant en local.
-
-## Commandes de base
-
--- Initialiser un depot
+\`\`\`bash
+# Initialiser un dépôt
 git init
 
--- Cloner un depot
-git clone https://github.com/user/repo.git
+# Cloner un dépôt distant
+git clone https://github.com/user/projet.git
 
--- Voir le statut
+# Voir l'état du working tree
 git status
 
--- Ajouter des fichiers
+# Ajouter des fichiers à l'index (staging)
 git add fichier.txt
-git add .
+git add .              # tous les fichiers modifiés
+git add -p             # ajout interactif (hunk par hunk)
 
--- Commit
-git commit -m "Message descriptif"
+# Commiter
+git commit -m "feat: ajouter validation email"
 
--- Voir l'historique
-git log
+# Voir l'historique
+git log --oneline --graph --all
 
-## Architecture decentralisee
+# Envoyer au distant
+git push origin main
 
-Local:
-- Working Directory (fichiers actuels)
-- Staging Area (index)
-- Local Repository
+# Récupérer les modifications distantes
+git pull origin main
+\`\`\`
 
-Distant:
-- Remote Repository
+## Pourquoi Git est distribué ?
+
+| Aspect | Centralisé (SVN) | Distribué (Git) |
+|--------|------------------|-----------------|
+| Historique local | Non | Oui |
+| Travail hors ligne | Impossible | Total |
+| Backup | Un seul point de défaillance | Chaque clone est un backup |
+| Vitesse des opérations | Dépend du réseau | Locale (instantanée) |
+| Expérimentation | Risquée | Branches locales isolées |
+
+Chaque clone Git est un **backup complet** du projet. Si le serveur central tombe, n'importe quel développeur peut le restaurer.
+
+## SHA-1 et intégrité
+
+Tout dans Git est identifié par un **hash SHA-1** (40 caractères hexadécimaux) :
+
+\`\`\`bash
+# Exemple de hash
+git log --oneline -1
+# a1b2c3d4 Ajouter validation email
+\`\`\`
+
+Ce hash est calculé à partir du **contenu** du fichier et de son **emplacement** dans l'historique. Modifier un commit passé change tous les hashes suivants — garantie d'intégrité.
 
 ## Bonnes pratiques
 
-- Commit souvent avec des messages clairs
-- Une seule fonctionnalité par commit
-- Pull avant de push
-- Utiliser des branches pour les nouvelles fonctionnalités
+- **Commits atomiques** : une modification logique par commit
+- **Messages clairs** : décrire le QUOI et le POURQUOI
+- **Branches** : utiliser des branches pour chaque fonctionnalité
+- **Pull avant push** : synchroniser avant d'envoyer
+- **Ignorer** : configurer \`.gitignore\` dès le début
+- **Ne pas commit** les secrets, fichiers générés, dépendances
 
-## Pieges courants
+## Pièges courants
 
-- Commit sans message ou message vague
-- Oublier de stage les fichiers avant commit
-- Push sur main/main (utiliser des branches)
-- Confondre git reset et git revert
+- Commiter sur \`main\` directement (toujours utiliser des branches)
+- Messages de commit vagues ("fix", "update", "WIP")
+- Oublier de \`git add\` avant \`git commit\` (commit vide)
+- Confondre \`git reset\` (réécrit l'historique) et \`git revert\` (sûr)
+- \`git push --force\` sans prévenir l'équipe (utiliser \`--force-with-lease\`)
 
-Source : [Git Documentation](https://git-scm.com/documentation)`},
+## Pour aller plus loin
+
+\`\`\`bash
+# Voir la configuration Git
+git config --list
+
+# Aide intégrée
+git help <commande>
+git <commande> --help
+
+# Vérifier l'intégrité du dépôt
+git fsck
+\`\`\`
+
+Source : [Documentation officielle Git](https://git-scm.com/doc) et [Pro Git Book](https://git-scm.com/book/fr/v2)
+
+## Git et le travail en équipe
+
+Git brille particulièrement en environnement collaboratif :
+
+- **Pull Requests / Merge Requests** : proposer des modifications, review, discussion
+- **Code review** : chaque modification est revue avant d'être intégrée
+- **CI/CD** : tests automatisés déclenchés à chaque push
+- **Releases** : taguer les versions, générer des changelogs
+- **Gestion de bugs** : branche de fix, PR, merge, déploiement
+
+Le workflow Git typique en équipe :
+\`\`\`bash
+git checkout -b feature/mon-ticket
+# ... développer ...
+git add -p && git commit -m "feat: description"
+git push -u origin feature/mon-ticket
+# Créer une Pull Request → review → merge
+\`\`\`
+
+Source additionnelle : [Pro Git Book (FR)](https://git-scm.com/book/fr/v2)
+`},
         {
           id: 'git-2',
           question: "C'est quoi un bon commit ?",
@@ -97,84 +158,136 @@ Source : [Git Documentation](https://git-scm.com/documentation)`},
         
           deepDive: `# Un bon commit
 
-## Quest-ce que cest ?
+## Principe fondamental
 
-Un bon commit est une unitelogique de modification qui:
-- Representer une seule atomic change
-- Etre comprehensible par tout le monde
-- Permettre de revenir en arriere precisement
+Un bon commit est une **unité logique de modification** qui doit pouvoir être comprise, appliquée ou annulée indépendamment des autres commits. Chaque commit raconte une partie de l'histoire du projet.
 
-## Structure d'un bon message de commit
+Un commit de qualité répond à trois questions :
+- **QUOI** a été modifié ? (le titre)
+- **POURQUOI** cette modification ? (le corps)
+- **QUI** a modifié ? (auteur, date — automatique)
 
-Format recommande:
+## Conventional Commits — la norme
 
-[Type] Description courte (50 caracteres max)
+Le format **Conventional Commits** est devenu le standard de l'industrie :
 
-Corps du message optionnel expliquant le "pourquoi"
-sur plusieurs lignes si necessaire.
+\`\`\`
+<type>[portée optionnelle]: <description>
 
-Types courants:
-- feat: nouvelle fonctionnalite
-- fix: correction de bug
-- docs: documentation
-- style: formatage, pas de changement de code
-- refactor: restructuration du code
-- test: ajout de tests
-- chore: maintenance
+[corps optionnel]
 
-## Exemples
+[pied optionnel]
+\`\`\`
 
-**Bon commit:**
-feat: ajouter validation email dans le formulaire
+### Types principaux
 
-- Ajout de regex de validation
-- Message d'erreur utilisateur friendly
-- Integration avec les tests existants
+| Type | Usage | Exemple |
+|------|-------|---------|
+| \`feat\` | Nouvelle fonctionnalité | \`feat: ajouter connexion OAuth2\` |
+| \`fix\` | Correction de bug | \`fix: erreur 500 sur login invalide\` |
+| \`docs\` | Documentation | \`docs: mise à jour README\` |
+| \`refactor\` | Restructuration | \`refactor: extraire service de validation\` |
+| \`test\` | Tests | \`test: ajouter tests unitaires auth\` |
+| \`chore\` | Maintenance | \`chore: mettre à jour dépendances\` |
+| \`style\` | Formatage | \`style: reformater avec Prettier\` |
+| \`perf\` | Performance | \`perf: optimiser requête SQL N+1\` |
 
-**Mauvais commits:**
-- "fixes"
-- "updates"
-- "WIP"
-- "asdfgh"
-- "changes"
+### Exemples concrets
 
-## Commandes utiles
+\`\`\`bash
+# Bon commit — titre clair + corps explicatif
+git commit -m "$(cat <<'EOF'
+feat: ajouter validation email dans le formulaire d'inscription
 
--- Voir les commits recents
+- Ajout d'une regex RFC 5322 pour la validation
+- Message d'erreur personnalisé en français
+- Tests unitaires pour les cas valides/invalides
+- Intégration avec le service d'envoi d'emails
+
+Closes #123
+EOF
+)"
+
+# Mauvais commits (à proscrire)
+git commit -m "fix"           # trop vague
+git commit -m "updates"       # ne dit rien
+git commit -m "WIP"           # work in progress permanent
+git commit -m "asdf"          # inutile
+git commit -m "changes"       # quoi ? pourquoi ?
+\`\`\`
+
+## Atomic commits — la règle d'or
+
+Un commit **atomique** respecte ces critères :
+
+1. **Une seule responsabilité** : une feature, un fix, un refactoring — pas tout à la fois
+2. **Testable** : le projet compile et les tests passent après ce commit
+3. **Réversible** : on peut annuler ce commit sans conséquences sur les autres fonctionnalités
+
+\`\`\`bash
+# MAUVAIS : tout dans un seul commit
+git commit -m "feat: ajouter dashboard + fix bug login + mise à jour README"
+
+# BON : trois commits séparés
+git commit -m "feat: ajouter dashboard avec KPI utilisateurs"
+git commit -m "fix: correction erreur 401 sur route /api/login"
+git commit -m "docs: mettre à jour README avec instructions déploiement"
+\`\`\`
+
+## Commandes utiles pour travailler les commits
+
+\`\`\`bash
+# Voir les derniers commits (compact)
 git log --oneline -10
 
--- Modifier le dernier commit (pas encore push)
-git commit --amend
+# Modifier le dernier commit (message ou contenu)
+git add fichier-oublie.js
+git commit --amend --no-edit
 
--- Visualiser les changements d'un commit
-git show HEAD
+# Modifier seulement le message du dernier commit
+git commit --amend -m "feat: nouveau message plus clair"
 
--- Annuler les modifications d'un fichier
-git checkout -- fichier.txt
-
-## Atomic commits
-
-Un commit est atomique s'il:
-- Represente une seule idee
-- Peut etre applique ou reverti independamment
-- Ne contient pas de modifications non liees
+# Split un commit en plusieurs (rebase interactif)
+git rebase -i HEAD~3
+# Changer "pick" en "edit" pour le commit à scinder
+git reset HEAD~1        # défaire le commit, garder les modifs
+git add -p              # ajouter progressivement
+git commit -m "partie 1"
+git commit -m "partie 2"
+git rebase --continue
+\`\`\`
 
 ## Bonnes pratiques
 
-- Commencer par une description courte de 50 caracteres
-- Utiliser l'imperatif present ("add" pas "added")
-- Separer le sujet du corps par une ligne vide
-- Limiter la ligne de sujet a 50 caracteres
-- Capitaliser la premiere lettre
+- **Titre ≤ 50 caractères**, corps optionnel à 72 caractères max par ligne
+- **Impératif présent** : "Ajouter" pas "Ajouté" ni "Ajoute"
+- **Majuscule** au début du titre
+- **Pas de point** à la fin du titre
+- **Un commit = un changement logique** (SRP)
+- **Relire son diff** avant de commiter (\`git diff --cached\`)
 
-## Pieges courants
+## Pièges courants
 
-- Messages trop longs ou sans structure
-- Combiner plusieurs changements non lies
-- Commit sans rapport avec le ticket associee
-- Oublier de tester avant de commit
+- Commits énormes et impossibles à reviewer
+- Messages trop longs dans le titre, pas de corps quand nécessaire
+- Oublier d'inclure les fichiers liés (ex: oublier le fichier de test)
+- Commiter sans vérifier que ça compile
+- \`--amend\` sur un commit déjà pushé (réécriture d'historique)
 
-Source : [Conventional Commits](https://www.conventionalcommits.org/)`},
+## Pour aller plus loin
+
+\`\`\`bash
+# Voir les statistiques par auteur
+git shortlog -sne
+
+# Générer un changelog automatique
+git log --oneline --grep="^feat\\|^fix" --since="v1.0.0"
+
+# Vérifier les commits non pushés
+git log origin/main..HEAD --oneline
+\`\`\`
+
+Source : [Conventional Commits](https://www.conventionalcommits.org/fr/v1.0.0/) et [Git SCM — Commit Guidelines](https://git-scm.com/book/fr/v2/Les-branches-avec-Git-Branches-et-flots-de-travail)`},
         {
           id: 'git-3',
           question: 'Dépôt distant',
@@ -182,75 +295,178 @@ Source : [Conventional Commits](https://www.conventionalcommits.org/)`},
           code: 'git remote add origin https://github.com/user/repo.git\ngit push origin main',
           language: 'bash',
         
-          deepDive: `# Depot distant
+          deepDive: `# Depot distant (Remote)
 
-## Quest-ce que cest ?
+## Principe
 
-Un depot distant (remote) est une version de votre projet hebergee sur un serveur (GitHub, GitLab, Bitbucket, etc.). Les remotes permettent la collaboration entre developpeurs.
+Un depot distant (remote) est une version de votre projet hebergee sur un serveur (GitHub, GitLab, Bitbucket, etc.). Les remotes permettent la collaboration entre developpeurs en servant de reference commune pour synchroniser le travail.
 
 ## Commandes de base
 
--- Lister les remotes
+\`\`\`bash
+# Lister les remotes configures
 git remote -v
+# origin  https://github.com/user/repo.git (fetch)
+# origin  https://github.com/user/repo.git (push)
 
--- Ajouter un remote
+# Ajouter un remote
 git remote add origin https://github.com/user/repo.git
 
--- Recuperer les modifications
-git fetch origin
+# Modifier l'URL d'un remote
+git remote set-url origin https://github.com/user/nouveau-repo.git
 
--- Télécharger et fusionner
-git pull origin main
+# Renommer un remote
+git remote rename origin upstream
 
--- Envoyer vos commits
-git push origin main
-
--- Voir les branches distantes
-git branch -r
+# Supprimer un remote
+git remote remove origin
+\`\`\`
 
 ## Travailler avec les remotes
 
--- Cloner un depot
+### Clone — Copie complete
+
+\`\`\`bash
+# Clone un depot distant, configure origin automatiquement
 git clone https://github.com/user/repo.git
 
-Le remote "origin" est automatiquement configure.
+# Clone dans un dossier specifique
+git clone https://github.com/user/repo.git mon-projet
 
--- Modifier l'URL d'un remote
-git remote set-url origin https://github.com/user/new-repo.git
+# Clone avec une branche specifique
+git clone --branch develop https://github.com/user/repo.git
+\`\`\`
 
--- Renommer un remote
-git remote rename origin upstream
+### Push — Envoyer les commits
 
-## Branches et remotes
+\`\`\`bash
+# Pousser une branche vers le remote
+git push origin main
 
--- Creer une branche et pusher
-git checkout -b nouvelle-fonctionnalite
-git push -u origin nouvelle-fonctionnalite
+# Pousser et definir le upstream (suivi)
+git push -u origin feature-auth
+# Prochain push : juste "git push"
 
--u definit le upstream pour pull/push simplifies.
+# Pousser toutes les branches
+git push --all origin
 
--- Suivre une branche distante
-git checkout --track origin/feature-branch
+# Pousser les tags
+git push --tags
 
-## Fetch vs Pull
+# Pousser avec force (ATTENTION)
+git push --force-with-lease origin main
+# --force-with-lease est plus sur que --force
+\`\`\`
 
-**git fetch:**
-- Telecharge les donnees distantes
-- Ne modifie pas votre working directory
-- Vous devez faire un merge manuellement
+### Fetch — Telecharger sans fusionner
 
-**git pull:**
-- Fetch + Merge automatique
-- Plus rapide mais peut creer des conflits
+\`\`\`bash
+# Recuperer les modifications distantes
+git fetch origin
+
+# Recuperer une branche specifique
+git fetch origin main
+
+# Recuperer et nettoyer les references supprimees
+git fetch --prune origin
+
+# Apres fetch, les branches distantes sont disponibles
+git log origin/main
+git diff main origin/main
+git merge origin/main
+\`\`\`
+
+### Pull — Fetch + Merge
+
+\`\`\`bash
+# Pull standard (fetch + merge)
+git pull origin main
+
+# Pull avec rebase (historique lineaire)
+git pull --rebase origin main
+
+# Equivalent a :
+git fetch origin main
+git rebase origin/main
+\`\`\`
+
+## Branches distantes
+
+\`\`\`bash
+# Voir les branches distantes
+git branch -r
+# origin/main
+# origin/develop
+# origin/feature-auth
+
+# Voir toutes les branches (locales + distantes)
+git branch -a
+
+# Creer une branche locale qui suit une branche distante
+git checkout --track origin/feature-auth
+
+# Ou avec un nom different
+git checkout -b ma-feature origin/feature-auth
+
+# Supprimer une branche distante
+git push origin --delete feature-auth
+\`\`\`
+
+## Fetch vs Pull — Comparaison detaillee
+
+| Aspect | git fetch | git pull |
+|--------|-----------|----------|
+| Operation | Telecharge seulement | Fetch + Merge |
+| Working directory | Non modifie | Modifie (merge) |
+| Securite | Plus sur (vous decidez quand merger) | Risque de conflits inattendus |
+| Controle | Total | Moindre |
+| Cas d'usage | Verifier avant d'integrer | Mise a jour rapide |
+
+### Workflow recommande
+
+\`\`\`bash
+# 1. Verifier ce qui a change
+git fetch origin
+git log --oneline main..origin/main
+
+# 2. Voir les differences
+git diff main origin/main --stat
+
+# 3. Integrer si tout va bien
+git merge origin/main
+
+# Equivalent rapide (si confiance)
+git pull --rebase origin main
+\`\`\`
+
+## Gerer plusieurs remotes
+
+\`\`\`bash
+# Workflow open source typique
+git remote add origin https://github.com/mon-compte/repo.git
+git remote add upstream https://github.com/original/repo.git
+
+# Recuperer les mises a jour du projet original
+git fetch upstream
+git merge upstream/main
+
+# Pusher sur mon fork
+git push origin main
+\`\`\`
 
 ## Bonnes pratiques
 
+- Verifier le remote avant de pusher (\`git remote -v\`)
 - Pull avant de commencer a travailler
-- Push regulierement pour sauvegarder
-- Utiliser des branches pour organiser le travail
-- Verifier le remote avant de pusher
+- Communiquer avant de forcer un push
+- Utiliser \`--force-with-lease\` (pas \`--force\`)
+- Nettoyer les branches distantes supprimees (\`fetch --prune\`)
 
-Source : [Git Remote Documentation](https://git-scm.com/book/en/v2/Git-Basics-Working-with-Remotes)`},
+## Sources
+
+- [Git Remote Documentation](https://git-scm.com/docs/git-remote)
+- [Pro Git — Working with Remotes](https://git-scm.com/book/en/v2/Git-Basics-Working-with-Remotes)
+`},
         {
           id: 'git-4',
           question: 'git clone vs git fork',
@@ -258,62 +474,134 @@ Source : [Git Remote Documentation](https://git-scm.com/book/en/v2/Git-Basics-Wo
         
           deepDive: `# git clone vs git fork
 
-## Quest-ce que cest ?
+## Principe fondamental
 
-Deux facons d'obtenir une copie d'un projet, avec des usages differents.
+\`git clone\` et \`git fork\` sont deux façons d'obtenir une copie d'un projet, mais pour des usages très différents :
 
-## git clone
+- **\`git clone\`** : commande Git qui crée une **copie locale** d'un dépôt distant, avec un lien vers l'original (remote "origin"). Vous pouvez push directement si vous avez les droits d'écriture.
+- **\`git fork\`** : action GitHub/GitLab/Bitbucket qui crée une **copie indépendante** du dépôt sur votre compte cloud. Pas de lien de push vers l'original — vous contribuez via **Pull Request**.
 
-clone cree une copie locale d'un depot distant. Vous avez maintenant tout l'historique du projet.
+## git clone en détail
 
--- Cloner un depot public ou auquel vous avez acces
-git clone https://github.com/user/repo.git
+\`\`\`bash
+# Cloner un dépôt public
+git clone https://github.com/user/projet.git
 
-Quand cloner:
-- Vous etes collaborateur du projet
-- Vous voulez travailler sur le projet directement
-- Vous avez deja les droits d'ecriture
+# Le remote "origin" est automatiquement configuré
+cd projet
+git remote -v
+# origin  https://github.com/user/projet.git (fetch)
+# origin  https://github.com/user/projet.git (push)
 
-## git fork
+# Cloner dans un dossier spécifique
+git clone https://github.com/user/projet.git mon-dossier
 
-Fork cree une copie du depot sous votre propre compte GitHub/GitLab. C'est une operation web.
+# Cloner une branche spécifique
+git clone --branch develop https://github.com/user/projet.git
 
-Quand forker:
-- Vous voulez contribuer a un projet open source
-- Vous n'avez pas les droits d'ecriture sur le depot original
-- Vous voulez proposer des modifications via Pull Request
+# Clone superficiel (pas tout l'historique) — utile pour CI
+git clone --depth 1 https://github.com/user/projet.git
+\`\`\`
 
-## Workflow typique pour contribuer a un OSS
+Quand utiliser \`clone\` :
+- Vous êtes **contributeur** ou **collaborateur** du projet
+- Vous avez les droits d'écriture sur le dépôt
+- Vous travaillez en équipe sur un projet privé
 
-1. Forker le projet sur GitHub
-2. Cloner votre fork en local
-3. Creer une branche pour votre feature
-4. Faire vos modifications
-5. Pusher sur votre fork
-6. Creer une Pull Request vers le depot original
+## git fork en détail
 
-## Commands associees
+\`\`\`bash
+# Le fork se fait SUR LE SITE WEB (GitHub, GitLab, Bitbucket)
+# 1. Cliquer "Fork" sur la page du dépôt
+# 2. Choisir votre compte comme destination
+# 3. Le fork est créé sous votre nom d'utilisateur
+#
+# Puis en local :
+git clone https://github.com/VOTRE-COMPTE/projet.git
 
--- Ajouter le depot original comme upstream
-git remote add upstream https://github.com/original/repo.git
+# Ajouter le dépôt original comme "upstream"
+git remote add upstream https://github.com/ORIGINAL/projet.git
 
--- Recuperer les mises a jour du depot original
+# Voir les remotes
+git remote -v
+# origin    https://github.com/votre-compte/projet.git (push)
+# upstream  https://github.com/original/projet.git (fetch)
+\`\`\`
+
+## Workflow complet de contribution open source
+
+\`\`\`bash
+# 1. Forker le projet original sur GitHub
+
+# 2. Cloner votre fork
+git clone https://github.com/votre-compte/projet.git
+cd projet
+
+# 3. Ajouter l'upstream (dépôt original)
+git remote add upstream https://github.com/original/projet.git
+
+# 4. Créer une branche pour votre feature
+git checkout -b feature/ma-contribution
+
+# 5. Faire vos modifications...
+
+# 6. Synchroniser avec l'upstream régulièrement
+git fetch upstream
+git rebase upstream/main
+
+# 7. Pusher sur votre fork
+git push origin feature/ma-contribution
+
+# 8. Créer une Pull Request sur GitHub
+\`\`\`
+
+## Comparaison détaillée
+
+| Aspect | git clone | git fork |
+|--------|-----------|----------|
+| Type d'opération | Commande Git locale | Action web (GitHub/GitLab) |
+| Copie locale | Oui | Non (nécessite clone ensuite) |
+| Lien vers l'original | Remote "origin" en lecture/écriture | Pas de push direct vers l'original |
+| Droits nécessaires | Accès en lecture | Aucun (même sur dépôt privé si invité) |
+| Contribution | Push direct | Pull Request uniquement |
+| Isolation | Lié à l'original | Complètement indépendant |
+| Usage typique | Travail en équipe | Open source, contributions externes |
+
+## Synchroniser son fork avec l'original
+
+\`\`\`bash
+# Récupérer les dernières modifications de l'original
 git fetch upstream
 
--- Merger les mises a jour
+# Se mettre sur main et fusionner
+git checkout main
 git merge upstream/main
 
-## Comparaison
+# Ou mieux : rebaser pour un historique linéaire
+git checkout main
+git rebase upstream/main
 
-| Aspect | clone | fork |
-|--------|-------|------|
-| Type | Local | Web/Cloud |
-| Droits | Acces necessaire | Pas besoin |
-| Historique | Complet | Complet |
-| Contribution | Directe | Via PR |
-| Usage | Propres projets, collaborations etroites | Open source |
+# Pusher sur votre fork
+git push origin main
+\`\`\`
 
-Source : [GitHub - Fork a Repo](https://docs.github.com/en/get-started/quickstart/fork-a-repo)`},
+## Bonnes pratiques
+
+- Toujours **forker** depuis l'organisation, pas depuis un fork (perte du lien)
+- Configurer **upstream** immédiatement après le clone du fork
+- Faire des **rebase** (pas des merge) pour garder un historique propre
+- Ne pas travailler sur \`main\` du fork — utiliser des **branches de feature**
+- Synchroniser régulièrement pour éviter les conflits massifs
+
+## Pièges courants
+
+- Travailler directement sur \`main\` du fork (complique la synchro)
+- Pusher sur l'original au lieu du fork (vérifier \`git remote -v\`)
+- Faire une PR depuis \`main\` du fork (préférer une branche dédiée)
+- Oublier de synchroniser avant de créer la PR (conflits évitables)
+- Pusher des secrets ou fichiers sensibles (le fork est public)
+
+Source : [GitHub — Fork a Repo](https://docs.github.com/en/get-started/quickstart/fork-a-repo) et [Git SCM — Remote](https://git-scm.com/docs/git-remote)`},
         {
           id: 'git-5',
           question: 'git pull vs git fetch',
@@ -321,75 +609,149 @@ Source : [GitHub - Fork a Repo](https://docs.github.com/en/get-started/quickstar
         
           deepDive: `# git pull vs git fetch
 
-## Quest-ce que cest ?
+## Principe fondamental
 
-Deux commandes pour synchroniser votre depot local avec le depot distant, avec des comportements differents.
+\`git fetch\` et \`git pull\` sont deux commandes pour synchroniser votre dépôt local avec le dépôt distant. Leur différence est cruciale :
 
-## git fetch
+- **\`git fetch\`** : télécharge les données du distant **sans les fusionner**. Votre working tree reste intact.
+- **\`git pull\`** : fait un \`fetch\` puis un **\`merge\` automatique** dans votre branche actuelle.
 
-Recupere les donnees du depot distant mais ne les fusionne PAS avec votre branche locale.
+Le choix entre les deux dépend de votre besoin de **contrôle** : \`fetch\` vous laisse inspecter avant de fusionner, \`pull\` fait tout d'un coup.
 
--- Recuperer toutes les branches distantes
+## git fetch — télécharger sans fusionner
+
+\`\`\`bash
+# Récupérer toutes les branches distantes
 git fetch origin
 
--- Recuperer une branche specifique
+# Récupérer une branche spécifique
 git fetch origin main
 
-Apres un fetch, vous pouvez voir les modifications distantes:
-git log origin/main
+# Récupérer et supprimer les refs distantes supprimées
+git fetch --prune origin
 
-Vous pouvez ensuite faire un merge manuellement:
-git merge origin/main
+# Voir ce qui a été récupéré
+git log origin/main --oneline -5
 
-## git pull
+# Comparer votre branche avec la distante
+git diff main origin/main
 
-Combine fetch et merge en une seule commande.
+# Voir les commits distants non encore fusionnés
+git log HEAD..origin/main --oneline
+\`\`\`
 
--- Pull avec merge automatique
+**Avantages de fetch :**
+- **Sûr** : ne touche pas à votre working tree
+- **Contrôle** : vous décidez quand et comment fusionner
+- **Inspection** : vous pouvez voir les différences avant de merger
+- **Pas de conflit surprise** : les conflits sont gérés manuellement
+
+## git pull — télécharger et fusionner
+
+\`\`\`bash
+# Pull standard (fetch + merge)
 git pull origin main
 
--- Pull avec rebase (preferable pour des branches partagees)
+# Pull avec rebase (fetch + rebase) — préféré pour historique linéaire
 git pull --rebase origin main
 
-## Difference pratique
+# Configurer pull.rebase par défaut
+git config --global pull.rebase true
 
-git fetch:
-- Sur. Votre branche locale reste intacte
-- Vous permet de controler quand merger
-- Ideal pour verifier avant de fusionner
+# Pull d'une branche qui n'a pas d'upstream configuré
+git pull origin feature-branch
+\`\`\`
 
-git pull:
-- immediate merge
-- Plus rapide pour des mises a jour simples
-- Risque de commits de merge si developpement parallele
+**Inconvénients de pull :**
+- **Conflits inattendus** : le merge peut créer des conflits que vous n'avez pas anticipés
+- **Commit de merge automatique** : crée un commit de fusion qui pollue l'historique
+- **Moins de contrôle** : vous ne voyez pas ce qui arrive avant que ce soit fusionné
 
-## Workflow recommande
+## Workflow recommandé : fetch puis merge manuel
 
-1. git fetch origin (voir ce qui a change)
-2. git log origin/main (revoir les commits)
-3. git diff main origin/main (voir les differences)
-4. git merge origin/main (si tout est bon)
+\`\`\`bash
+# Étape 1 : récupérer les modifications distantes
+git fetch origin
 
-## Gerer les conflits
+# Étape 2 : inspecter ce qui a changé
+git log main..origin/main --oneline --graph
+git diff main origin/main --stat
 
-Si git pull cree un conflit:
-git status  -- Voir les fichiers en conflit
--- Editer les fichiers pour resoudre
-git add fichier.txt
-git commit -m "Resolve merge conflict"
+# Étape 3 : décider comment fusionner
+# Si tout va bien, merge simple
+git merge origin/main
 
-Ou avec rebase:
+# Si vous voulez un historique linéaire
+git rebase origin/main
+
+# Si vous avez des modifs locales non commitées
+git stash
+git merge origin/main
+git stash pop
+\`\`\`
+
+## Comparaison détaillée
+
+| Aspect | git fetch | git pull |
+|--------|-----------|----------|
+| Télécharge les données | Oui | Oui |
+| Modifie le working tree | Non | Oui (merge) |
+| Crée un commit de merge | Non | Oui (sauf fast-forward) |
+| Risque de conflit | Aucun | Possible |
+| Contrôle sur la fusion | Manuel total | Automatique |
+| Idéal pour | Inspection, branches partagées | Mise à jour rapide |
+
+## Gérer les conflits après un pull
+
+\`\`\`bash
+# Si git pull génère des conflits
+git status
+# both modified: src/app.ts
+
+# Résoudre manuellement dans le fichier, puis
+git add src/app.ts
+git commit -m "Merge branch main of origin"
+
+# Alternative : abandonner le merge
+git merge --abort
+
+# Avec rebase : résoudre puis continuer
 git pull --rebase origin main
-git rebase --continue  -- apres resolution
+# ... résoudre les conflits ...
+git add src/app.ts
+git rebase --continue
+\`\`\`
+
+## Cas particuliers
+
+\`\`\`bash
+# Pull sur une branche sans upstream
+git branch --set-upstream-to=origin/main main
+
+# Forcer un pull qui écrase les modifs locales (dangereux)
+git fetch origin
+git reset --hard origin/main
+
+# Pull uniquement les tags
+git fetch --tags
+\`\`\`
 
 ## Bonnes pratiques
 
-- Preferer git fetch + git merge pour le controle
-- Utiliser git pull --rebase pour garder un historique lineaire
-- Faire attention aux branches partagees (eviter les rebase)
-- Commit ou stash avant de pull si vous avez des modifications locales
+- Préférer \`git fetch\` + \`git merge\` pour les branches partagées
+- Utiliser \`git pull --rebase\` pour garder un historique linéaire
+- **Stasher ou commiter** avant de pull si vous avez des modifications locales
+- Vérifier avec \`git status\` avant tout pull
+- Configurer \`pull.rebase true\` en global pour éviter les merge commits
 
-Source : [Git Pull Documentation](https://git-scm.com/docs/git-pull)`},
+## Pièges courants
+
+- \`git pull\` avec des modifications locales non commitées (conflit ou écrasement)
+- Commit de merge involontaire qui pollue l'historique
+- Oublier qu'un \`git pull\` peut échouer à cause de conflits
+- Utiliser \`git pull\` sur une branche avec un historique très divergent
+
+Source : [Git Pull Documentation](https://git-scm.com/docs/git-pull) et [Git Fetch Documentation](https://git-scm.com/docs/git-fetch)`},
         {
           id: 'git-17',
           question: '.gitignore',
@@ -399,117 +761,182 @@ Source : [Git Pull Documentation](https://git-scm.com/docs/git-pull)`},
         
           deepDive: `# .gitignore
 
-## Qu'est-ce que c'est
+## Principe fondamental
 
-Le fichier \`.gitignore\` indique à Git quels fichiers et répertoires ignorer lors du suivi des modifications. C'est essentiel pour éviter de commiter des fichiers générés, des dépendances, des secrets, ou des artefacts de build.
+Le fichier \`.gitignore\` indique à Git quels fichiers et répertoires **ignorer** lors du suivi des modifications. C'est essentiel pour éviter de commiter :
 
-## Syntaxe et exemples
+- Des fichiers **générés** (compilation, build, dépendances)
+- Des **secrets** et informations sensibles (\`.env\`, clés API)
+- Des fichiers **spécifiques à l'environnement** (IDE, OS)
+- Des **caches** et fichiers temporaires
 
-\`\`\`
-# Commentaires
-# Fichiers generes par le systeme
-.DS_Store
-Thumbs.db
+**Règle d'or** : committer le \`.gitignore\` dès le premier commit. Ne jamais committer de fichiers sensibles ou générés.
 
-# Logs et fichiers temporaires
-*.log
-*.tmp
-*.swp
+## Syntaxe du .gitignore
 
-# Repertoires
+\`\`\`gitignore
+# Commentaires (commencent par #)
+
+# Ignorer un fichier spécifique
+secrets.json
+
+# Ignorer un répertoire (et tout son contenu)
 node_modules/
 build/
 dist/
 target/
 
-# Fichiers specifiques
-secret.json
-.env.local
-credentials.txt
-
-# Patterns generaux
-*.class
-*.pyc
-*.o
-
-# Negation (forcer le suivi d'un fichier ignore)
-!important.js
-
-# Repertoire mais pas ses sous-repertoires
-/logs/
-
-# Garder un repertoire vide
-logs/.gitkeep
-
-# Ignorer tout sauf un type de fichier
-!*/*.txt
-
-# Caractere generique unique
-file?.txt    # matche file1.txt, file2.txt mais pas file10.txt
-file[0-9].txt
-
-# Racine uniquement (pas dans les sous-repertoires)
-/*.log
-\`\`\`
-
-### .gitignore global
-
-\`\`\`bash
-# Creer un .gitignore global (s'applique a tous les depots)
-git config --global core.excludesfile ~/.gitignore_global
-
-# Contenu type du .gitignore global
-.DS_Store
-*.swp
+# Pattern générique (tous les fichiers .log)
 *.log
+
+# Ignorer à la racine uniquement (pas dans les sous-dossiers)
+/*.env
+
+# Négation (suivre malgré le pattern)
+*.log
+!important.log        # important.log sera suivi
+
+# Caractères génériques
+*.tmp                 # finit par .tmp
+doc/*.txt             # fichier .txt dans doc/
+file?.txt             # file1.txt, fileA.txt (mais pas file10.txt)
+file[0-9].txt         # file1.txt...file9.txt
+**/build/             # tout dossier build/ à n'importe quelle profondeur
 \`\`\`
 
-### Modèles pré-faits
+## Exemples par langage
 
-\`\`\`bash
-# Generer un .gitignore selon le langage/framework
-# Via GitHub: https://github.com/github/gitignore
-
-# Exemple pour Node.js
+\`\`\`gitignore
+# Node.js / JavaScript
 node_modules/
-npm-debug.log
+npm-debug.log*
 .env
 dist/
 build/
+.cache/
+
+# Java
+target/
+*.class
+*.jar
+*.war
+.settings/
+.project
+.classpath
+.idea/
+*.iml
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# Angular / TypeScript
+node_modules/
+dist/
+*.js.map
+*.d.ts
+.angular/
+
+# Go
+vendor/
+
+# Rust
+target/
+Cargo.lock
+
+# Docker
+.dockerignore  # (mais .dockerignore pour Docker)
+\`\`\`
+
+## .gitignore global
+
+\`\`\`bash
+# Créer un .gitignore global (s'applique à tous les dépôts)
+git config --global core.excludesfile ~/.gitignore_global
+
+# Contenu typique du .gitignore global (fichiers IDE/OS)
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+\`\`\`
+
+## Outils de débogage
+
+\`\`\`bash
+# Vérifier pourquoi un fichier est ignoré
+git check-ignore -v monfichier.txt
+# .gitignore:2:*.log   monfichier.txt   ← ligne 2 du .gitignore
+
+# Lister tous les fichiers ignorés
+git status --ignored
+
+# Voir les patterns de .gitignore qui s'appliquent
+git check-ignore -v *
+
+# Forcer l'ajout d'un fichier ignoré
+git add -f monfichier.log
+\`\`\`
+
+## Après avoir commité par erreur un fichier ignoré
+
+\`\`\`bash
+# Si un fichier est déjà suivi par Git, .gitignore ne l'affecte pas
+# Solution : retirer du suivi (sans supprimer localement)
+git rm --cached fichier.env
+echo "fichier.env" >> .gitignore
+git add .gitignore
+git commit -m "chore: arrêter le suivi de fichier.env"
+
+# Si vous avez commité un secret
+# 1. git rm --cached
+# 2. Ajouter au .gitignore
+# 3. Commiter
+# 4. Changer le secret (le commit existe toujours dans l'historique !)
+# 5. Contacter l'admin GitHub pour purger l'historique si nécessaire
 \`\`\`
 
 ## Bonnes pratiques
 
-- Placez le \`.gitignore\` à la racine du depot et committez-le
-- Utilisez \`.gitignore_global\` pour les fichiers machine-spécifiques (\`.DS_Store\`)
-- Commencez avec un modèle pre-fait (GitHub gitignore templates)
-- Utilisez \`git check-ignore -v\` pour deboguer pourquoi un fichier est ignoré
-- N'ignorez jamais les fichiers de configuration du projet (\`.gitignore\` lui-même)
-- Vérifiez avec \`git status --ignored\` pour voir les fichiers ignorés
+- **Committer le \`.gitignore\`** dès le premier commit du projet
+- Utiliser un **template** par langage (GitHub propose des templates : https://github.com/github/gitignore)
+- Séparer les **patterns globaux** (IDE, OS) dans un \`.gitignore_global\`
+- **Tester** avec \`git check-ignore -v\` si un fichier n'est pas ignoré comme prévu
+- Ignorer les fichiers de **configuration personnelle** (\`.env.local\`, \`config.dev.json\`)
+- **Documenter** les patterns non évidents avec des commentaires
 
-## Pieges courants
+## Pièges courants
 
-- Oublier qu'un fichier est déjà suivi par Git (le .gitignore ne l'affecte pas)
-- Solution: \`git rm --cached <file>\` puis commit
-- Commit accidentel de secrets (\`.env\`, \`credentials.json\`) malgré le .gitignore
-- Patterns trop larges qui ignorent des fichiers nécessaires (\`*.log\` dans un dossier \`logs/\`)
-- Mauvais chemin relatif (utiliser \`/\` pour la racine, pas pour les sous-dossiers)
+- **Un fichier déjà suivi n'est pas affecté par \`.gitignore\`** : utiliser \`git rm --cached\`
+- Pattern trop large qui ignore des fichiers nécessaires (\`*.log\` dans \`logs/\` utile)
+- Commit accidentel de **secrets** malgré le \`.gitignore\` (vérifier avec \`git diff --cached\`)
+- Oublier que \`.gitignore\` lui-même doit être commité
+- Utiliser \`/\` en début de pattern pour la racine, pas pour les chemins relatifs
 
 ## Pour aller plus loin
 
 \`\`\`bash
-# Verifier si un fichier est ignore et pourquoi
-git check-ignore -v monfichier.txt
-# monfichier.txt:2:*.log    .gitignore:2
+# Forcer l'ajout d'un fichier ignoré
+git add -f config.prod.json
 
-# Lister les fichiers ignores
-git status --ignored
+# Voir les fichiers ignorés non suivis
+git ls-files --others --ignored --exclude-standard
 
-# Forcer l'ajout d'un fichier ignore
-git add -f secrete.json
+# Ignorer temporairement des fichiers locaux sans modifier le .gitignore
+git update-index --skip-worktree config.local.json
+
+# Templates de .gitignore
+curl -L https://raw.githubusercontent.com/github/gitignore/main/Node.gitignore
 \`\`\`
 
-Source: https://git-scm.com/docs/gitignore`},
+Source : [Git Ignore Documentation](https://git-scm.com/docs/gitignore)`},
       ],
     },
     {
@@ -525,656 +952,238 @@ Source: https://git-scm.com/docs/gitignore`},
         
           deepDive: `# Qu'est-ce qu'une branche Git
 
-## Qu'est-ce que c'est
+## Principe fondamental
 
-Une branche Git est un pointeur mobile vers un commit dans l'historique. Elle permet de travailler sur des fonctionnalités, corrections ou expériences de manière isolée sans affecter le code principal.
+Une branche Git est un **pointeur mobile** vers un commit dans l'historique. Elle permet de travailler sur des fonctionnalités, corrections ou expériences de manière **isolée** sans affecter le code principal.
 
-Par defaut, Git crée la branche \`main\` (ou \`master\`) lors de l'initialisation d'un depot.
+Contrairement à d'autres VCS où copier une branche signifie dupliquer tous les fichiers, Git crée simplement un **pointeur de 41 octets** (40 pour le SHA-1 + 1 pour le newline). Les branches sont donc extrêmement légères et rapides à créer.
 
-Le pointeur HEAD indique la branche active et le commit où vous vous trouvez.
+\`\`\`
+HEAD → main → abc123 (Commit C3)
+                |
+           def456 (Commit C2)
+                |
+           ghi789 (Commit C1)
+\`\`\`
 
-## Syntaxe et exemples
+## Le pointeur HEAD
+
+HEAD est un pointeur spécial qui indique où vous vous trouvez actuellement :
 
 \`\`\`bash
-# Lister les branches (locale)
+# HEAD pointe vers la branche active
+git log --oneline -1
+# abc123 (HEAD -> main) Commit C3
+
+# En detached HEAD : HEAD pointe directement sur un commit
+git checkout abc123
+# Vous êtes en 'detached HEAD' state
+\`\`\`
+
+## Commandes de gestion des branches
+
+\`\`\`bash
+# Lister les branches locales
 git branch
 
-# Lister toutes les branches (locale + remote)
+# Lister toutes les branches (locales + distantes)
 git branch -a
-
-# Creer une branche (ne bascule pas)
-git branch feature-auth
-
-# Bascule sur une branche
-git checkout feature-auth
-git switch feature-auth  # syntaxe plus recente
-
-# Creer et basculer en une commande
-git checkout -b feature-auth
-git switch -c feature-auth
-
-# Renommer la branche courante
-git branch -m nouveau-nom
-
-# Supprimer une branche (fusionnee)
-git branch -d feature-auth
-
-# Forcer la suppression (non fusionnee)
-git branch -D feature-auth
 
 # Voir la branche actuelle
 git branch --show-current
-git rev-parse --abbrev-ref HEAD
+
+# Créer une branche (sans basculer)
+git branch feature-auth
+
+# Créer et basculer (recommandé)
+git switch -c feature-auth
+
+# Ancienne syntaxe (encore fonctionnelle)
+git checkout -b feature-auth
+
+# Basculer sur une branche existante
+git switch feature-auth
+git checkout feature-auth  # syntaxe plus ancienne
+
+# Renommer la branche courante
+git branch -m feature-auth feature-login
+
+# Supprimer une branche fusionnée
+git branch -d feature-auth
+
+# Forcer la suppression (non fusionnée)
+git branch -D feature-auth
 \`\`\`
 
-### Branchesdetachees
+## Branches distantes (remote tracking)
 
 \`\`\`bash
-# Se placer sur un commit/tag sans creer de branche
-git checkout abc123
-git checkout v1.0.0
+# Voir les branches distantes
+git branch -r
+# origin/main
+# origin/develop
+# origin/feature-auth
 
-# Avertissement: les commits ne seront lies a aucune branche
-# Solution: creer une branche depuis ce point
+# Créer une branche locale qui suit une distante
+git switch -c feature-auth origin/feature-auth
+
+# Syntaxe équivalente
+git checkout --track origin/feature-auth
+
+# Pusher une branche avec upstream
+git push -u origin feature-auth
+
+# Voir la relation de tracking
+git branch -vv
+
+# Supprimer une branche distante
+git push origin --delete feature-auth
+\`\`\`
+
+## Détached HEAD — comprendre et récupérer
+
+\`\`\`bash
+# Se placer sur un commit spécifique (pas une branche)
+git checkout abc123
+# Warning: detached HEAD state
+
+# Faire des commits en detached HEAD
+git commit -m "experiment"
+# Les commits ne sont rattachés à aucune branche !
+
+# Solution : créer une branche pour les récupérer
 git switch -c recovery-branch
+
+# Ou revenir à la branche sans perdre les commits
+git branch recovery-branch  # depuis le detached HEAD
+git switch main
+\`\`\`
+
+## Naming conventions
+
+\`\`\`
+feature/ma-fonctionnalite    # nouvelles fonctionnalités
+bugfix/correction-ticket     # corrections de bugs
+hotfix/urgent-production     # correctifs urgents (depuis main)
+release/v1.2.0              # préparation de release
+chore/mise-a-jour-deps      # maintenance
 \`\`\`
 
 ## Bonnes pratiques
 
-- Gardez les branches courtes et focalisees sur une tâche
-- Utilisez des noms descriptifs: \`feature/auth-login\`, \`hotfix/payment-bug\`
-- Mergez frequently pour eviter les conflits massifs
-- Supprimez les branches après merge (local et remote)
--Utilisez \`git fetch --prune\` pour nettoyer les branches remote supprimees
-- Préférez \`git switch\` à \`git checkout\` pour éviter les confusions
+- **Branches courtes** : quelques jours max, merge fréquent
+- **Focus** : une branche = une fonctionnalité
+- **Noms descriptifs** : \`feature/auth-oauth2\` plutôt que \`branche1\`
+- **Supprimer après merge** : fait le ménage (\`git branch -d\`)
+- **Protéger main** : pas de push direct, PR + review obligatoire
+- **\`git switch\`** plutôt que \`git checkout\` pour éviter les confusions
 
-## Pieges courants
+## Pièges courants
 
-- Travailler sur une longue branche sans merger = conflits difficiles
-- Confondre \`git branch -d\` (supprime locale) avec suppression remote
+- Travailler longtemps sur une branche sans merger (conflits massifs)
+- Confondre \`git branch -d\` (suppression locale) avec suppression distante
 - Oublier sur quelle branche on se trouve avant de commiter
-- Supprimer une branche non fusionnee et perdre du travail
-- Utiliser \`git checkout\` pour créer une branche (confusion avec fichiers)
+- Supprimer une branche non fusionnée et perdre du travail
+- Pusher une branche avec des secrets ou des credentials
 
 ## Pour aller plus loin
 
 \`\`\`bash
-# Tracer une branche jusqu'à sa branche parente
-git log --graph --oneline --decorate
+# Voir l'historique graphique des branches
+git log --graph --oneline --all --decorate
 
-# Comparer branche actuelle avec main
-git diff main..HEAD
+# Comparer deux branches
+git diff main..feature-auth
+git log main..feature-auth --oneline
 
-# Tracker une branche remote
-git checkout --track origin/feature-branch
+# Voir les commits non fusionnés dans main
+git log origin/main..HEAD --oneline
 
-git branch -u origin/feature-branch  # si déjà locale
+# Rebaser une branche sur main
+git switch feature-auth
+git rebase main
 \`\`\`
 
-Source: https://git-scm.com/docs/git-branch`},
+Source : [Git Branch Documentation](https://git-scm.com/docs/git-branch) et [Pro Git — Branches](https://git-scm.com/book/fr/v2/Les-branches-avec-Git-Les-branches-en-bref)`},
         {
           id: 'git-7',
           question: 'Fusionner des branches / conflits',
           answer: "`git merge` combine deux branches. Des **conflits** surviennent quand les mêmes lignes sont modifiées dans les deux branches — Git insère des marqueurs (`<<<<<<<`, `=======`, `>>>>>>>`) et demande une résolution manuelle.\n\nOuvrez le fichier, choisissez la bonne version (ou combinez-les), puis commitez. __Clé : fusionner régulièrement pour éviter que les conflits ne s'accumulent.__",
         
-          deepDive: `# Fusionner des branches et conflits
+          deepDive: `# Fusionner des branches et résoudre les conflits
 
-## Qu'est-ce que c'est
+## Principe fondamental
 
-\`git merge\` integrate l'historique d'une branche dans la branche active. Si Git ne peut pas résoudre automatiquement les differences, un conflit apparait.
+\`git merge\` intègre l'historique d'une branche dans la branche active. Git combine automatiquement les modifications, mais quand les **mêmes lignes** ont été modifiées différemment dans les deux branches, un **conflit** apparaît et nécessite une résolution manuelle.
 
-Types de merge:
-- **Fast-forward**: Pas de divergence, simple avance du pointeur
-- **Three-way merge**: Divergence, creation d'un commit de fusion
+Types de merge :
 
-## Syntaxe et exemples
+- **Fast-forward** : pas de divergence, simple avance du pointeur (historique linéaire)
+- **Three-way merge** : divergence, création d'un commit de fusion avec deux parents
+
+\`\`\`
+Fast-forward (pas de divergence) :
+main:    A---B---C
+                    \\
+feature:             D---E
+Apres merge: A---B---C---D---E (pointeur avance)
+
+Three-way merge (divergence) :
+main:    A---B---C---------M
+                    \\       /
+feature:             D---E
+Apres merge: A---B---C---M (commit de fusion)
+                          / \\
+                         D   E
+\`\`\`
+
+## Syntaxe des merges
 
 \`\`\`bash
 # Merge simple (fast-forward si possible)
 git checkout main
 git merge feature-auth
 
-# Merge avec rebase (aplanir l'historique)
+# Forcer un commit de fusion (garder trace de la branche)
 git merge --no-ff feature-auth
 
-# Merge en squasant les commits (un seul commit de merge)
+# Squash : fusionner en un seul commit (perd l'historique de la branche)
 git merge --squash feature-auth
 
-# Aborter un merge en cours
+# Abandonner un merge en cours
 git merge --abort
 
-# Merge avec strategie
+# Merge avec stratégie spécifique
 git merge -s recursive -X theirs feature-branch
 
-# Visualiser le merge avant de le faire
+# Simuler un merge sans l'appliquer
 git merge --no-commit --no-ff feature-auth
 git diff --cached
 \`\`\`
 
-### Stratégies de merge
+## Stratégies de merge
+
+| Stratégie | Usage |
+|-----------|-------|
+| \`recursive\` (défaut) | Gère les merges avec deux parents, idéal pour la plupart des cas |
+| \`resolve\` | Plus simple, pour historiques linéaires |
+| \`octopus\` | Pour merger plus de 2 branches simultanément |
+| \`ours\` | Garde la version de la branche courante, ignore l'autre |
+| \`subtree\` | Pour merger un projet dans un sous-répertoire |
 
 \`\`\`bash
-# recursive (defaut) — gère bien les diamond merges
-git merge -s recursive
-
-# resolve — simple, pour historiques linéaires
-git merge -s resolve
-
-# octopus — pour merger plusieurs branches (>2)
+# Stratégies avancées
+git merge -s recursive -X patience feature-branch
 git merge -s octopus branch1 branch2 branch3
-
-# ours — garder notre version, ignorer les theirs
-git merge -s ours theirs-branch
+git merge -s ours feature-branch  # garder NOTRE version
 \`\`\`
 
-### Resoudre un conflit
+## Résolution de conflits
+
+Quand un conflit survient, Git insère des **marqueurs de conflit** dans les fichiers :
 
 \`\`\`bash
 # Voir les fichiers en conflit
-git status
-
-# Ouvrir le fichier et chercher <<<<<<<
-<<<<<<< HEAD
-code actuel
-=======
-code de la branche
->>>>>>> feature-branch
-
-# Garder la version choisie, supprimer les marqueurs
-# puis
-git add <file>
-git commit
-\`\`\`
-
-## Bonnes pratiques
-
-- Mergez frequemment pour eviter les conflits massifs
-- Utilisez \`--no-ff\` pour garder l'historique des features visibles
-- Testez après chaque merge avant de pusher
-- Commettez le message de merge auto-generé ou personnalisez-le
-- Préférez \`--squash\` pour les branches avec beaucoup de micro-commits
-
-## Pieges courants
-
-- Merger une branche contenant des tests cassés
-- Oublier de faire \`git add\` après résolution de conflit
-- Push sans verifier le merge — conflit en remote
-- Merge de branches avec des histories tres divergentes (beaucoup de conflits)
-- Utiliser \`ours\` stratégie sans comprendre les consequences (perte de code)
-
-## Pour aller plus loin
-
-\`\`\`bash
-# Verifier si une branche contient des commits non mergés
-git log --left-right HEAD...feature-branch
-
-# Merge avec message personnalise
-git merge -m "feat: integrate auth feature from #123"
-
-# Marquer comme merge (sans conflit apparent mais verification)
-git merge --verify-signatures
-\`\`\`
-
-Source: https://git-scm.com/docs/git-merge`},
-        {
-          id: 'git-8',
-          question: 'git rebase ?',
-          answer: "`git rebase` **réécrit l'historique** d'une branche en appliquant ses commits au-dessus d'une autre branche. Résultat : un historique **linéaire et propre**, sans commit de fusion inutile.\n\nMais `rebase` modifie les hashes des commits — __ne l'utilisez jamais sur une branche déjà pushée et partagée__. __Règle d'or : `rebase` uniquement sur des branches locales non partagées.__",
-          code: 'git checkout feature-login\ngit rebase main',
-          language: 'bash',
-        
-          deepDive: `# git rebase
-
-## Qu'est-ce que c'est
-
-\`git rebase\` réapplique les commits d'une branche sur une autre base, créant un historique linéaire plutôt que de créer un commit de merge. C'est une opération qui réécrit l'historique.
-
-Principe: "transplanter" une série de commits d'un point A à un point B.
-
-## Syntaxe et exemples
-
-\`\`\`bash
-# Rebaser sur main ( integration lineaire)
-git checkout feature-auth
-git rebase main
-
-# Rebaser interactif (voir autre deep dive)
-git rebase -i HEAD~3
-
-# Rebaser sur un tag specifique
-git rebase v1.0.0
-
-# Continuer apres un conflit de rebase
-git rebase --continue
-
-# Annuler le rebase
-git rebase --abort
-
-# Rebaser avec strategy
-git rebase -s recursive -X theirs main
-\`\`\`
-
-### Comprendre le processus
-
-\`\`\`
-Avant rebase:
-main:    A--B--C
-              \\nfeature:        D--E
-
-Apres rebase:
-main:    A--B--C
-               \\nfeature:             D'--E' (reappliques sur C)
-\`\`\`
-
-### Rebase vs Merge
-
-\`\`\`bash
-# Merge: cree un commit de fusion, historien non-lineaire
-git checkout main
-git merge feature-auth
-# Resultat: A--B--C--M (merge commit)
-
-# Rebase: reapplique les commits, historique lineaire
-git checkout feature-auth
-git rebase main
-# Resultat: A--B--C--D'--E'
-\`\`\`
-
-## Bonnes pratiques
-
-- NE JAMAIS faire de rebase sur des branches partagees (push vers remote public)
-- Utilisez le rebase pour garder un historique lineaire en local
-- Preferer le rebase avant de merger une feature dans develop/main
-- Resolvez les conflits rapidement (git add + git rebase --continue)
-- Utilisez \`git pull --rebase\` pour sincroniser au lieu de merge
-
-## Pieges courants
-
-- Faire un rebase sur une branche deja poussee = réécriture de l'historique public
-- Perte de commits si le rebase echoue et pas de backup (utiliser reflog)
-- Conflits en cascade si la branche a beaucoup de commits
-- Confondre \`git rebase -i\` (interactive) avec \`git rebase\` (standard)
-- Pusher apres rebase sans avertir l'equipe (utiliser --force-with-lease)
-
-## Pour aller plus loin
-
-\`\`\`bash
-# Rebaser les commits non pousses uniquement
-git rebase -i @{u}
-
-# Rebaser en gardant les merges
-git rebase --rebase-merges
-
-# Pull avec rebase (au lieu de merge)
-git pull --rebase origin main
-
-# Stack de branches (rebase en cascade)
-git rebase main feature-base
-git rebase feature-base feature-detail
-\`\`\`
-
-Source: https://git-scm.com/docs/git-rebase`},
-        {
-          id: 'git-9',
-          question: 'merge vs rebase',
-          answer: "`git merge` crée un commit de fusion avec deux parents — l'historique est **fidèle** mais peut devenir complexe. `git rebase` réécrit l'historique pour un flux **linéaire** plus lisible.\n\nEn pratique, `rebase` est souvent utilisé sur les branches de feature avant `merge` dans `main`. Mais `rebase` est *dangereux* sur les branches partagées car il modifie les hashes. **Merge** = historique fidèle, **Rebase** = historique linéaire — le choix dépend de la politique d'équipe.",
-        
-          deepDive: `# Merge vs Rebase
-
-## Qu'est-ce que c'est
-
-Merge et rebase sont deux stratégies pour intégrer les modifications d'une branche dans une autre. Chaque approche a ses avantages et convient à des situations différentes.
-
-## Comparaison directe
-
-| Aspect | Merge | Rebase |
-|--------|-------|--------|
-| Historique | Non-lineaire (merge commits) | Lineaire |
-| Modification de l'historique | Non | Oui |
-| Risque sur branches partagees | Aucun | Eleve |
-| Complexite de resolution | Diluee dans un commit | Multiples conflits |
-| Traçabilité des branches | Claire (merge commit) | Moins evidente |
-
-## Merge (non-lineaire)
-
-\`\`\`bash
-# Situation avant merge:
-main:    A--B--C
-              \\nfeature:        D--E
-
-# Apres merge (fast-forward):
-main:    A--B--C--D--E
-
-# Apres merge (three-way):
-main:    A--B--C---------M
-              \\n             /nfeature:        D--E----
-\`\`\`
-
-\`\`\`bash
-git checkout main
-git merge feature-auth
-\`\`\`
-
-**Avantages:**
-- Conserve l'historique complet des branches
-- Operation securisee (ne réécrit pas l'historique public)
-- Montre clairement quand une branche a été integrée
-
-**Inconvenients:**
-- Historique peut devenir difficile a suivre
-- Commit de merge peut etre pollue
-- "Diamond problem" (commits dupliqués dans l'historique)
-
-## Rebase (lineaire)
-
-\`\`\`bash
-# Situation avant rebase:
-main:    A--B--C
-              \\nfeature:        D--E
-
-# Apres rebase:
-main:    A--B--C--D'--E'
-\`\`\`
-
-\`\`\`bash
-git checkout feature-auth
-git rebase main
-\`\`\`
-
-**Avantages:**
-- Historique lineaire et facile a suivre
-- Pas de merge commits inutiles
-- Clean pour code review
-
-**Inconvenients:**
-- REECRIT L'HISTORIQUE (ne jamais faire sur branche partagee)
-- Conflits multiples a resoudre (un par commit)
-- Perd la trace du moment ou la feature a été créée
-
-## Quand utiliser quoi
-
-\`\`\`bash
-# Utiliser MERGE quand:
-# - Branche de collaboration (partagee avec l'equipe)
-# - Integration de branches long-lived (release, hotfix)
-# - Pas besoin d'historique lineaire
-
-git checkout main
-git merge release/v1.0
-
-# Utiliser REBASE quand:
-# - Branche locale privee (pas poussee)
-# - Integration de feature sur main/develop
-# - Garder historique lineaire en local
-
-git checkout feature-auth
-git rebase main
-
-# Utiliser PULL --REBASE quand:
-# - Synchroniser avec remote sans creer merge commit
-
-git pull --rebase origin main
-\`\`\`
-
-## Bonnes pratiques
-
-- Jamais de rebase sur une branche publique/partagee
-- Préférez \`--no-ff\` si vous voulez garder trace du merge
-- Utilisez \`git pull --rebase\` pour garder un historique lineaire
-- Définissez des règles d'équipe: merge pour releases, rebase pour features
-- Documentez la stratégie dans le CONTRIBUTING.md
-
-## Pieges courants
-
-- Rebase sur une branche déjà pushée (puis push --force necessaire)
-- Merge de grosses branches sans testing prealable
-- Confusion sur quand rebaser après un merge
-- Oublier que le rebase réécrit les commits (nouveaux hash)
-
-## Pour aller plus loin
-
-\`\`\`bash
-# Rebase avec histogam algorithm (meilleur pour refactors)
-git rebase -s recursive -X histogram main
-
-# Merge en squasant les commits avant rebase
-git merge --squash feature-auth
-
-# Voir la difference visuelle
-git log --graph --oneline main..feature
-\`\`\`
-
-Source: https://git-scm.com/docs/git-merge et https://git-scm.com/docs/git-rebase`},
-        {
-          id: 'git-10',
-          question: 'Squash de commits ?',
-          answer: "Le **squash** combine plusieurs commits en un seul pour garder un historique **propre**. Utile quand une feature génère des commits du type « fix typo », « ajout test »...\n\nUtilisez `git rebase -i HEAD~3`, puis remplacez « `pick` » par « `squash` » pour les commits à fusionner. Particulièrement utile pour les **Pull Requests** afin de garder `main` propre. **Squash** = combiner des commits en un seul via rebase interactif.",
-          code: 'git rebase -i HEAD~3\n# Choisir "squash" pour fusionner',
-          language: 'bash',
-        
-          deepDive: `# Git Rebase Interactif (git rebase -i)
-
-## Qu'est-ce que c'est
-
-Le rebase interactif (\`git rebase -i\` ou \`git rebase --interactive\`) permet de réécrire l'historique de commits en offrant un contrôle total sur chaque commit: renommer, fusionner, scinder, réorganiser ou même supprimer des commits.
-
-Il ouvre un éditeur avec la liste des commits à rebaser, chacun preceded d'un mot-clé d'action.
-
-## Syntaxe et exemples
-
-\`\`\`bash
-# Lancer le rebase interactif sur les 3 derniers commits
-git rebase -i HEAD~3
-
-# Sur une branche upstream
-git rebase -i main
-\`\`\`
-
-### Mots-cles d'action
-
-| Mot-clé | Action |
-|---------|--------|
-| \`pick\` | Utiliser le commit tel quel |
-| \`reword\` | Modifier le message de commit |
-| \`edit\` | Suspendre pour modifier le contenu |
-| \`squash\` | Fusionner avec le commit précédent |
-| \`fixup\` | Fusionner et discard le message |
-| \`drop\` | Supprimer le commit |
-| \`reorder\` | Réorganiser (déplacer les lignes) |
-
-### Exemple de fichier interactif
-
-\`\`\`
-pick 9a8d12c Ajouter la fonctionnalité de recherche
-pick 3f2e1ab Corriger les fautes de frappe
-pick 7bc9de3 Améliorer la performance
-
-# Commands:
-# p, pick = use commit
-# r, reword = use commit, but edit the commit message
-# e, edit = use commit, but stop for amending
-# s, squash = use commit, but meld into previous commit
-# f, fixup = like squash, but discard this commit message
-# d, drop = remove commit
-\`\`\`
-
-### Workflow de squash de commits
-
-\`\`\`bash
-# Avant: plusieurs commits sur feature-branch
-git log --oneline
-# abc123 Amelioration 3
-# def456 Amelioration 2
-# ghi789 Amelioration 1
-
-# Lancer rebase interactif pour fusionner en un seul commit
-git rebase -i HEAD~3
-
-# Dans l'editeur, changer:
-#   pick abc123 Amelioration 3
-#   squash def456 Amelioration 2
-#   squash ghi789 Amelioration 1
-
-# Resultat: un seul commit avec message fusionne
-\`\`\`
-
-## Bonnes pratiques
-
-- NE JAMAIS faire de rebase sur des commits deja partages (pushes sur remote public)
-- Utilisez le rebase interactif pour nettoyer l'historique avant un merge request
-- Preferer des commits atomiques (une modification par commit) pour faciliter le code review
-- Utilisez \`fixup\` pour incorporer les corrections sans polluer l'historique
-- Testez apres un rebase interactif — des conflits peuvent apparaitre
-- Utilisez \`--exec\` pour run des tests automatiquement pendant le rebase
-
-## Pieges courants
-
-- Pousser apres rebase avec \`git push --force\` sans avertir l'equipe
-- Supprimer accidentellement des commits avec \`drop\` sans s'en rendre compte
-- Perdre des commits si le rebase echoue et qu'on ne sait pas résoudre les conflits
-- Confondre \`squash\` (garde le message) avec \`fixup\` (ignore le message)
-- Utiliser le rebase interactif sur une branche de production
-
-## Pour aller plus loin
-
-\`\`\`bash
-# Rebaser en gardant les fusions
-git rebase -i --rebase-merges
-
-# Executer des tests pendant le rebase
-git rebase -i --exec "npm test"
-
-# Garder trace des rebases dans reflog
-git reflog show --date=relative
-\`\`\`
-
-Source: https://git-scm.com/docs/git-rebase`},
-        {
-          id: 'git-18',
-          question: 'Git Flow vs Trunk-based',
-          answer: "**Git Flow** : branches longues (`main`, `develop`, `feature/*`, `release/*`, `hotfix/*`) — structuré mais lourd, adapté aux releases planifiées.\n\n**Trunk-based** : tout le monde commit sur `main` (ou très peu de branches courtes) + **feature flags** pour activer/désactiver le code en cours. Favorise l'**intégration continue** et le déploiement fréquent.\n\nLes entreprises modernes privilégient le **Trunk-based** pour sa simplicité et son flux rapide. Git Flow reste utile pour les projets avec des releases versionnées. __Le meilleur workflow est celui que l'équipe maîtrise et suit.__",
-        
-          deepDive: `# Git Flow vs Trunk-Based Development
-
-## Qu'est-ce que c'est
-
-Deux stratégies de branching pour organiser le developpement logiciel:
-
-**Git Flow**: Modelo feature-heavy avec branches long-lived (main, develop, feature/, release/, hotfix/). Ideal pour projets avec cycles de release reguliers.
-
-**Trunk-Based Development (TBD)**: Developpement sur une branche principale (trunk/main) avec des commits petits et frequents. Les features sont masquees derriere des feature flags.
-
-## Git Flow
-
-\`\`\`
-main (production)
-  |-- hotfix/* --> merge back to main
-  |
-develop (integration)
-  |-- release/* --> merge to main
-  |
-  |-- feature/* --> merge to develop
-\`\`\`
-
-\`\`\`bash
-# Creer une feature
-git flow feature start feature-auth
-
-# Terminer une feature
-git flow feature finish feature-auth
-
-# Creer un hotfix
-git flow hotfix start v1.2.1
-git flow hotfix finish v1.2.1
-\`\`\`
-
-## Trunk-Based Development
-
-\`\`\`
-main (trunk) --short--short--short--short--
-         \\         \\         \\
-          feature   feature   (behind flags)
-\`\`\`
-
-\`\`\`bash
-# Workflow standard TBD
-git checkout main
-git pull
-git checkout -b feature/user-auth
-# Short-lived branch, merge en quelques jours max
-
-# Feature flags
-if (featureFlags.isEnabled('new-auth')) {
-  // use new auth
-} else {
-  // use old auth
-}
-\`\`\`
-
-## Comparaison
-
-| Critere | Git Flow | Trunk-Based |
-|---------|----------|-------------|
-| Complexite | Haute | Basse |
-| Taille des branches | Grande | Tres petite |
-| Frequence de merge | Rare (release) | Tres frequente |
-| Debut de la branche | develop | main |
-| Feature flags | Non | Oui |
-| CI/CD | Plus complexe | Plus simple |
-| adapte pour | equipes multi-plateformes | Continuous delivery |
-
-## Bonnes pratiques
-
-**Git Flow:**
-- Utilisez git-flow ou gh flow pour automatiser le workflow
-- Definissez des regles de protection des branches (main, develop)
-- Mergez regulierement develop vers main pour eviter les conflits majeurs
-
-**Trunk-Based:**
-- Des commits tres petits (quelques heures max)
-- Mettez en place des feature flags des le debut
-- Automatisez les tests et le deploiement (CI/CD mature)
-- Limitez la duree de vie des branches a quelques jours maximum
-
-## Pieges courants
-
-- Git Flow: branches de feature qui restent ouvertes trop longtemps
-- Git Flow: integration infrequente qui cause des conflits massifs
-- TBD: feature flags mal geres = code mort qui s'accumule
-- TBD: mauvaise culture de tests = regression en production
-- TBD: resistances des equipes qui prefèrent les "gros" merges
-
-## Pour aller plus loin
-
-\`\`\`bash
-# Voir le graph d'une strategie Git Flow
-git log --graph --oneline --all
-
-# Convertir un depot a TBD
-git checkout -b main  # si c'etait master
-git merge --no-ff feature-old
-\`\`\`
-
-Source: https://git-scm.com/docs/gitworkflow`},
-        {
-          id: 'git-19',
-          question: 'Résoudre les conflits efficacement',
-          answer: "**Prévention** : fusionnez régulièrement depuis `main` dans votre branche, faites des petites PRs, communiquez avec l'équipe sur les fichiers modifiés.\n\n**Résolution** : lisez les marqueurs de conflit (`<<<<<<<`, `=======`, `>>>>>>>`), comprenez les deux versions avant de choisir. Utilisez un outil de merge (`VS Code Merge`, `Beyond Compare`) pour les conflits complexes.\n\nAprès résolution : `git add` + `git commit`. Testez toujours le code fusionné avant de push. __Un conflit bien résolu demande de la communication, pas juste du code.__",
-        
-          deepDive: `# Resoudre les conflits de merge
-
-## Qu'est-ce que c'est
-
-Un conflit de merge survient quand Git ne peut pas resolver automatiquement les differences entre deux branches. Cela se produit quand les memes lignes ont été modifiees differemment sur chaque branche.
-
-## Syntaxe et exemples
-
-\`\`\`bash
-# Lancer un merge qui genere des conflits
-git merge feature-branch
-# CONFLICT (content): Merge conflict in src/app.ts
-
-# Voir l'etat des fichiers
 git status
 # both modified: src/app.ts
 
@@ -1184,87 +1193,933 @@ git diff
 
 ### Structure d'un conflit
 
-\`\`\`
+\`\`\`diff
 <<<<<<< HEAD
 const name = "Alice";
+const age = 30;
 =======
 const name = "Bob";
+const age = 25;
 >>>>>>> feature-branch
 \`\`\`
 
-### Resoudre manuellement
+### Résolution manuelle
 
 \`\`\`bash
-# Ouvrir le fichier et garder la version souhaitee
-# puis supprimer les marqueurs
-
-# Marquer comme resolu
+# 1. Ouvrir le fichier, choisir/combiner les versions
+# 2. Supprimer les marqueurs <<<<<<< ======= >>>>>>>
+# 3. Marquer comme résolu
 git add src/app.ts
 
-# Finaliser le merge
+# 4. Finaliser le merge
 git commit -m "Merge feature-branch, resolve conflict in app.ts"
 \`\`\`
 
-### Utiliser des outils
+### Résolution avec outils
 
 \`\`\`bash
-# Lancer un outil de merge
+# Lancer l'outil de merge configuré
 git mergetool
 
-# Configurer un outil (VS Code, KDiff3, Beyond Compare)
+# Configurer l'outil (VS Code)
 git config --global merge.tool vscode
 git config --global mergetool.vscode.cmd "code --wait $MERGED"
 
-# Resoudre avec "ours" ou "theirs"
-git checkout --ours src/app.ts    # garder version HEAD
-git checkout --theirs src/app.ts  # garder version de la branche
-\`\`\`
-
-### Stratégies avancees
-
-\`\`\`bash
-# Merge strategy pour des fichiers specifiques
-git merge -X ours feature-branch  # preferer notre version
-git merge -X theirs feature-branch
-
-# Recombiner le fichier et essayer de nouveau
-git checkout -m src/app.ts
+# Utiliser "ours" ou "theirs" pour trancher rapidement
+git checkout --ours src/app.ts      # garder version HEAD
+git checkout --theirs src/app.ts    # garder version de l'autre branche
 \`\`\`
 
 ## Bonnes pratiques
 
-- Resolvez les conflits des que possible — ne les laissez pas s'accumuler
-- Comprenez les deux versions avant de choisir
-- Testez apres chaque resolution de conflit
-- Utilisez \`git diff\` pour voir les changements globaux
-- Communiquez avec l'auteur de la branche si ambiguite
-- Commit apres chaque fichier resolu (pas tout a la fin)
+- **Fusionner fréquemment** depuis \`main\` dans votre branche pour éviter les conflits massifs
+- **Tester après chaque merge** avant de pusher
+- **Commits atomiques** : plus faciles à merger et à résoudre
+- **Communiquer** avec l'équipe si vous modifiez des fichiers partagés
+- **Utiliser \`--no-ff\`** pour garder la trace des branches de feature
+- **Préférer \`--squash\`** pour des branches avec beaucoup de micro-commits
 
-## Pieges courants
+## Pièges courants
 
-- Resoudre les conflits en gardant les deux versions (<<<<<< markers)
-- Oublier de faire \`git add\` apres la resolution
-- Faire \`git commit\` sans faire \`git add\` prealable
-- Resoudre de maniere incorrecte et introduire des bugs subtils
-- Merge des branches avec beaucoup de conflits sans coordination
+- Merger une branche avec des tests cassés
+- Oublier de faire \`git add\` après résolution de conflit
+- Résoudre les conflits en gardant accidentellement les marqueurs \`<<<<<<<\`
+- Merge de branches avec des historiques très divergents (conflits en cascade)
+- Utiliser la stratégie \`ours\` sans comprendre qu'on perd le code de l'autre branche
 
 ## Pour aller plus loin
 
 \`\`\`bash
-# Resoudre plusieurs conflits iterative
-git status
-# Resoudre puis
-git add .
-git commit
+# Voir les commits non fusionnés
+git log --left-right HEAD...feature-branch
 
-# Abort un merge en cours
-git merge --abort
-
-# Lister les fichiers en conflit
+# Lister les fichiers en conflit uniquement
 git diff --name-only --diff-filter=U
+
+# Réessayer le merge après modification manuelle
+git checkout -m src/app.ts
+
+# Merge avec message personnalisé
+git merge -m "feat: intégrer authentification OAuth2 (#42)"
 \`\`\`
 
-Source: https://git-scm.com/docs/git-merge`},
+Source : [Git Merge Documentation](https://git-scm.com/docs/git-merge) et [Pro Git — Branching and Merging](https://git-scm.com/book/fr/v2/Les-branches-avec-Git-Branches-et-fusions)`},
+        {
+          id: 'git-8',
+          question: 'git rebase ?',
+          answer: "`git rebase` **réécrit l'historique** d'une branche en appliquant ses commits au-dessus d'une autre branche. Résultat : un historique **linéaire et propre**, sans commit de fusion inutile.\n\nMais `rebase` modifie les hashes des commits — __ne l'utilisez jamais sur une branche déjà pushée et partagée__. __Règle d'or : `rebase` uniquement sur des branches locales non partagées.__",
+          code: 'git checkout feature-login\ngit rebase main',
+          language: 'bash',
+        
+          deepDive: `# git rebase
+
+## Principe fondamental
+
+\`git rebase\` **réapplique les commits** d'une branche sur une autre base, créant un historique **linéaire** plutôt qu'un commit de fusion. L'idée est de "transplanter" une série de commits d'un point A vers un point B.
+
+\`\`\`
+Avant rebase :
+main:      A---B---C
+                    \\
+feature:             D---E
+
+Apres rebase :
+main:      A---B---C---D'---E'
+                    ^
+                    Les commits D et E sont réappliqués sur C
+                    (nouveaux hashes : D' et E')
+\`\`\`
+
+**Règle d'or : ne jamais rebaser une branche déjà pushée et partagée.** Le rebase réécrit l'historique, ce qui désynchronise tous les autres développeurs.
+
+## Syntaxe de base
+
+\`\`\`bash
+# Rebaser votre branche feature sur main
+git switch feature-auth
+git rebase main
+
+# Rebaser interactif sur les 3 derniers commits
+git rebase -i HEAD~3
+
+# Rebaser sur un tag
+git rebase v1.0.0
+
+# Continuer après résolution de conflit
+git rebase --continue
+
+# Sauter un commit problématique pendant le rebase
+git rebase --skip
+
+# Annuler complètement le rebase
+git rebase --abort
+\`\`\`
+
+## Le processus en détail
+
+\`\`\`bash
+# Étape 1 : se placer sur la branche à rebaser
+git switch feature-auth
+
+# Étape 2 : lancer le rebase
+git rebase main
+
+# Étape 3 : si conflit, Git s'arrête sur le commit problématique
+# Résoudre puis :
+git add fichier-resolu.ts
+git rebase --continue
+
+# Répéter pour chaque commit problématique...
+
+# Étape 4 : une fois terminé, pusher (--force-with-lease !)
+git push --force-with-lease origin feature-auth
+\`\`\`
+
+## Rebase interactif (git rebase -i)
+
+Le rebase interactif ouvre un éditeur avec la liste des commits :
+
+\`\`\`bash
+git rebase -i HEAD~5
+\`\`\`
+
+Actions disponibles :
+
+| Mot-clé | Action |
+|---------|--------|
+| \`pick\` | Garder le commit tel quel |
+| \`reword\` | Modifier le message du commit |
+| \`edit\` | Suspendre pour modifier le contenu du commit |
+| \`squash\` | Fusionner avec le commit précédent |
+| \`fixup\` | Fusionner et ignorer le message |
+| \`drop\` | Supprimer le commit |
+| \`exec\` | Exécuter une commande (tests) |
+
+## Rebase vs Merge — cas pratique
+
+\`\`\`bash
+# Avec merge :
+git switch main
+git merge feature-auth
+# Résultat : A--B--C--M
+#                  /  \\
+#                 D    E
+
+# Avec rebase + merge fast-forward :
+git switch feature-auth
+git rebase main
+git switch main
+git merge feature-auth
+# Résultat : A--B--C--D'--E' (linéaire et propre)
+\`\`\`
+
+## Cas avancés
+
+\`\`\`bash
+# Rebase depuis l'upstream (pour synchroniser)
+git rebase origin/main
+
+# Rebase en gardant les commits de merge
+git rebase --rebase-merges main
+
+# Rebase avec stratégie de merge
+git rebase -s recursive -X theirs main
+
+# Rebaser uniquement les commits non pushés
+git rebase -i @{u}
+
+# Rebase en cascade (stack de branches)
+git rebase main feature-base
+git rebase feature-base feature-detail
+
+# Rebase automatique via pull
+git pull --rebase origin main
+\`\`\`
+
+## Bonnes pratiques
+
+- **NE JAMAIS** rebaser une branche publique/partagée
+- Rebaser **avant** de merger une feature dans main (historique linéaire)
+- Utiliser \`git pull --rebase\` pour synchroniser sans merge commit
+- Toujours utiliser \`--force-with-lease\` plutôt que \`--force\` après rebase
+- **Tester** après le rebase — les conflits peuvent introduire des bugs subtils
+- Faire un backup (branche temporaire) avant un rebase complexe
+
+## Pièges courants
+
+- Pusher (\`--force\`) après rebase sans avertir l'équipe
+- Perte de commits si le rebase échoue et qu'on ne sait pas récupérer (utiliser \`reflog\`)
+- Conflits en cascade si la branche a beaucoup de commits et a beaucoup divergé
+- Rebaser une branche qui a déjà été mergée ailleurs (doublons de commits)
+- \`git push --force\` écrase l'historique distant — utiliser \`--force-with-lease\`
+
+## Pour aller plus loin
+
+\`\`\`bash
+# Voir l'état avant/après rebase
+git reflog
+
+# Rebaser sur le parent du merge (utile après un merge)
+git rebase --onto main HEAD~3
+
+# Configurer pull.rebase par défaut
+git config --global pull.rebase true
+
+# Vérifier les commits non pushés
+git log origin/main..HEAD --oneline
+\`\`\`
+
+Source : [Git Rebase Documentation](https://git-scm.com/docs/git-rebase) et [Pro Git — Rebasing](https://git-scm.com/book/fr/v2/Les-branches-avec-Git-Rebaser)`},
+        {
+          id: 'git-9',
+          question: 'merge vs rebase',
+          answer: "`git merge` crée un commit de fusion avec deux parents — l'historique est **fidèle** mais peut devenir complexe. `git rebase` réécrit l'historique pour un flux **linéaire** plus lisible.\n\nEn pratique, `rebase` est souvent utilisé sur les branches de feature avant `merge` dans `main`. Mais `rebase` est *dangereux* sur les branches partagées car il modifie les hashes. **Merge** = historique fidèle, **Rebase** = historique linéaire — le choix dépend de la politique d'équipe.",
+        
+          deepDive: `# Merge vs Rebase
+
+## Principe fondamental
+
+\`git merge\` et \`git rebase\` sont deux stratégies pour intégrer les modifications d'une branche dans une autre. Chacune a ses avantages et ses inconvénients, et le choix dépend de votre workflow d'équipe.
+
+- **Merge** : crée un commit de fusion qui préserve l'historique exact des branches
+- **Rebase** : réapplique les commits sur une nouvelle base, créant un historique linéaire
+
+## Comparaison visuelle
+
+\`\`\`
+Merge (historique non linéaire) :
+main:    A---B---C---------M
+                    \\       /
+feature:             D---E
+
+Rebase (historique linéaire) :
+main:    A---B---C---D'---E'
+\`\`\`
+
+## Comparaison détaillée
+
+| Critère | Merge | Rebase |
+|---------|-------|--------|
+| Historique | Non linéaire (commits de fusion) | Linéaire |
+| Réécriture des commits | Non (nouveaux hashes seulement pour le merge) | Oui (nouveaux hashes pour TOUS les commits) |
+| Sécurité | Parfait pour les branches partagées | Dangereux sur branches partagées |
+| Conflits | Résolus une fois (dans le commit de merge) | Résolus pour chaque commit |
+| Traçabilité | Claire (le merge commit montre l'intégration) | Moins évidente (historique "réécrit") |
+| Complexité visuelle | Élevée (graphe dense) | Faible (ligne droite) |
+| Code review | Plus facile (historique fidèle) | Plus propre (historique épuré) |
+
+## Quand utiliser merge
+
+\`\`\`bash
+# Merge : pour les branches partagées et les releases
+git checkout main
+git merge --no-ff release/v2.0
+
+# Merge : quand la traçabilité est importante
+git merge --no-ff feature-auth
+# Le commit de fusion garde la trace : "feature-auth a été mergée le X"
+
+# Merge : pour les hotfixes (visibilité immédiate)
+git checkout main
+git merge --no-ff hotfix/urgent-patch
+
+# Merge : workflow Git Flow classique
+git checkout develop
+git merge --no-ff feature/new-feature
+\`\`\`
+
+**Avantages du merge :**
+- Historique fidèle et non destructif
+- Sécurisé : ne modifie pas les commits existants
+- Montre clairement quand une branche a été intégrée
+- Idéal pour les branches longues (release, hotfix)
+
+**Inconvénients du merge :**
+- Graphe complexe, difficile à suivre
+- Commits de merge inutiles si fast-forward possible
+- "Diamond problems" dans l'historique visuel
+
+## Quand utiliser rebase
+
+\`\`\`bash
+# Rebase : pour les branches locales non partagées
+git switch feature-auth
+git rebase main
+
+# Rebase : avant d'ouvrir une PR (nettoyer l'historique)
+git rebase -i main
+# Squasher les commits de debug, réordonner, etc.
+
+# Rebase : pull avec historique linéaire
+git pull --rebase origin main
+
+# Rebase : synchroniser une branche locale avec main
+git switch feature-auth
+git rebase main  # plutôt que merge main
+\`\`\`
+
+**Avantages du rebase :**
+- Historique linéaire et propre
+- Pas de commits de fusion inutiles
+- Facilite la navigation dans l'historique
+- Idéal pour les PR et code review
+
+**Inconvénients du rebase :**
+- Réécrit l'historique (nouveaux hashes) — dangereux si partagé
+- Conflits répétés (un par commit) au lieu d'une résolution unique
+- Perte de la trace temporelle de la création de la branche
+
+## Workflow hybride recommandé
+
+De nombreuses équipes utilisent un **workflow hybride** qui combine les deux :
+
+\`\`\`bash
+# 1. Sur votre branche de feature locale :
+git switch feature-auth
+
+# 2. Synchroniser avec main (rebase pour rester à jour)
+git rebase main
+
+# 3. Nettoyer les commits (squash, réordonner)
+git rebase -i main
+
+# 4. Pusher (première fois ou --force-with-lease si déja pushé)
+git push --force-with-lease origin feature-auth
+
+# 5. Créer une PR — le reviewer voit un historique propre
+
+# 6. Intégrer dans main (merge --no-ff pour garder trace)
+git checkout main
+git merge --no-ff feature-auth
+\`\`\`
+
+## Bonnes pratiques
+
+- **Jamais de rebase** sur une branche publique/partagée
+- **Merge** pour les branches de release, hotfix, et branches partagées
+- **Rebase** pour les branches locales avant PR
+- **Documenter** la stratégie dans le fichier CONTRIBUTING.md
+- **Définir des règles d'équipe** : chaque équipe choisit son workflow
+- \`--no-ff\` pour les merges importants (garder la trace des branches)
+
+## Pièges courants
+
+- Rebaser une branche déjà pushée et utilisée par d'autres
+- Merge de grosses branches sans testing préalable
+- \`git push --force\` sans \`--force-with-lease\` (écrase le travail des autres)
+- Confusion : "j'ai rebasé mais mon collègue a ses anciens commits"
+- Oublier que git bisect est plus facile avec un historique linéaire
+
+## Pour aller plus loin
+
+\`\`\`bash
+# Configurer pull.rebase
+git config --global pull.rebase true
+
+# Rebase avec l'algorithme histogram (meilleur pour refactors)
+git rebase -s recursive -X histogram main
+
+# Voir la différence visuelle entre merge et rebase
+git log --graph --oneline --all
+
+# Rebase sur l'upstream
+git rebase origin/main
+\`\`\`
+
+Source : [Git Merge Documentation](https://git-scm.com/docs/git-merge) et [Git Rebase Documentation](https://git-scm.com/docs/git-rebase)`},
+        {
+          id: 'git-10',
+          question: 'Squash de commits ?',
+          answer: "Le **squash** combine plusieurs commits en un seul pour garder un historique **propre**. Utile quand une feature génère des commits du type « fix typo », « ajout test »...\n\nUtilisez `git rebase -i HEAD~3`, puis remplacez « `pick` » par « `squash` » pour les commits à fusionner. Particulièrement utile pour les **Pull Requests** afin de garder `main` propre. **Squash** = combiner des commits en un seul via rebase interactif.",
+          code: 'git rebase -i HEAD~3\n# Choisir "squash" pour fusionner',
+          language: 'bash',
+        
+          deepDive: `# Git Rebase Interactif (squash de commits)
+
+## Principe fondamental
+
+Le **squash** combine plusieurs commits en un seul. Il est utilisé pour **nettoyer l'historique** avant de partager votre travail : fusionner les "fix typo", "WIP", "petite correction" en commits propres et significatifs.
+
+Le squash se fait via \`git rebase -i\` (rebase interactif), qui ouvre un éditeur pour spécifier l'action sur chaque commit.
+
+## Workflow de squash
+
+\`\`\`bash
+# Situation : vous avez 5 commits pour une feature
+git log --oneline
+# abc123 Ajouter validation email
+# def456 Corriger typo
+# ghi789 Ajouter message d'erreur
+# jkl012 Petit ajustement UI
+# mno345 Nettoyage code
+
+# Lancer le rebase interactif
+git rebase -i HEAD~5
+\`\`\`
+
+### Éditeur interactif
+
+\`\`\`
+pick abc123 Ajouter validation email
+pick def456 Corriger typo          -> squash def456 (fusionner)
+pick ghi789 Ajouter message d'erreur -> squash ghi789
+pick jkl012 Petit ajustement UI     -> squash jkl012
+pick mno345 Nettoyage code          -> squash mno345
+
+# Résultat après squash :
+pick abc123 Ajouter validation email
+squash def456 Corriger typo
+squash ghi789 Ajouter message d'erreur
+squash jkl012 Petit ajustement UI
+squash mno345 Nettoyage code
+\`\`\`
+
+Après avoir sauvegardé, Git ouvre un second éditeur pour fusionner les messages :
+
+\`\`\`
+# This is a combination of 5 commits.
+# Entrez le message pour le commit fusionné :
+feat: Ajouter validation email
+
+- Validation RFC 5322
+- Messages d'erreur personnalisés
+- Tests unitaires
+\`\`\`
+
+## Toutes les actions du rebase interactif
+
+\`\`\`bash
+# Lancer le rebase interactif
+git rebase -i HEAD~3
+
+# Sur toute une branche depuis sa divergence
+git rebase -i main
+\`\`\`
+
+| Mot-clé | Raccourci | Action |
+|---------|-----------|--------|
+| \`pick\` | \`p\` | Garder le commit tel quel |
+| \`reword\` | \`r\` | Modifier uniquement le message |
+| \`edit\` | \`e\` | Modifier le contenu du commit (s'arrêter pour amend) |
+| \`squash\` | \`s\` | Fusionner avec le commit précédent, garder les messages |
+| \`fixup\` | \`f\` | Fusionner et ignorer le message |
+| \`drop\` | \`d\` | Supprimer le commit |
+| \`exec\` | \`x\` | Exécuter une commande shell |
+
+## Exemples pratiques
+
+\`\`\`bash
+# Squasher les 3 derniers commits en 1
+git rebase -i HEAD~3
+# Changer pick -> squash pour les 2 derniers
+
+# Utiliser fixup pour ignorer les messages de correction
+git rebase -i HEAD~3
+# pick abc123 Implement feature
+# fixup def456 Fix typo       # message ignoré
+# fixup ghi789 Lint fix       # message ignoré
+
+# Modifier le message d'un commit (reword)
+git rebase -i HEAD~5
+# pick abc123 Ajouter validation
+# reword def456 Mauvais message  # éditeur s'ouvre pour ce commit
+
+# Scinder un commit en plusieurs
+git rebase -i HEAD~3
+# edit abc123 Mon commit
+git reset HEAD~1           # défaire le commit, garder les modifs
+git add -p                 # ajouter progressivement
+git commit -m "Partie 1"
+git commit -m "Partie 2"
+git rebase --continue
+\`\`\`
+
+## Squash avant PR — le cas d'usage typique
+
+\`\`\`bash
+# Avant d'ouvrir une Pull Request :
+git rebase -i main
+
+# Dans l'éditeur :
+# Garder le premier commit en "pick"
+# Mettre tous les autres en "squash" ou "fixup"
+
+# Résultat : un seul commit propre qui représente toute la feature
+git log --oneline main..HEAD
+# abc123 feat: Ajouter authentification OAuth2
+\`\`\`
+
+## Bonnes pratiques
+
+- **Squasher avant de pusher** ou d'ouvrir une PR (historique propre)
+- **Jamais de rebase/squash** sur des commits déjà partagés
+- **Un commit par fonctionnalité** logique (cohérent, testable)
+- Utiliser **\`fixup\`** pour les corrections mineures (moins de saisie)
+- **Tester après le squash** : le code résultant doit compiler et passer les tests
+- Utiliser \`--exec\` pour exécuter des tests automatiquement
+
+## Pièges courants
+
+- Squasher des commits qui étaient déjà pushés (réécriture d'historique)
+- Perdre des commits si le rebase échoue (utiliser \`git rebase --abort\`)
+- Squasher des commits qui devraient rester séparés (perte de granularité)
+- Confondre \`squash\` (garde le message) et \`fixup\` (ignore le message)
+- Oublier que les conflits peuvent survenir pendant le rebase
+
+## Pour aller plus loin
+
+\`\`\`bash
+# Exécuter des tests à chaque étape du rebase
+git rebase -i --exec "npm test" main
+
+# Rebase en gardant les merges
+git rebase -i --rebase-merges
+
+# Rebase automatique sans éditeur
+git rebase -i --autosquash HEAD~5
+
+# Marquer un commit pour autosquash
+git commit --fixup abc123  # crée un "fixup!" commit
+git rebase -i --autosquash HEAD~5
+\`\`\`
+
+Source : [Git Rebase Documentation](https://git-scm.com/docs/git-rebase) et [Git Tools — Rewriting History](https://git-scm.com/book/fr/v2/Les-outils-de-Git-Réécrire-lhistorique)`},
+        {
+          id: 'git-18',
+          question: 'Git Flow vs Trunk-based',
+          answer: "**Git Flow** : branches longues (`main`, `develop`, `feature/*`, `release/*`, `hotfix/*`) — structuré mais lourd, adapté aux releases planifiées.\n\n**Trunk-based** : tout le monde commit sur `main` (ou très peu de branches courtes) + **feature flags** pour activer/désactiver le code en cours. Favorise l'**intégration continue** et le déploiement fréquent.\n\nLes entreprises modernes privilégient le **Trunk-based** pour sa simplicité et son flux rapide. Git Flow reste utile pour les projets avec des releases versionnées. __Le meilleur workflow est celui que l'équipe maîtrise et suit.__",
+        
+          deepDive: `# Git Flow vs Trunk-Based Development
+
+## Principe fondamental
+
+Deux stratégies de branching pour organiser le développement logiciel, avec des philosophies très différentes :
+
+- **Git Flow** : modèle structuré avec branches **long-lived** (main, develop, feature/, release/, hotfix/). Idéal pour les cycles de release planifiés et les produits versionnés.
+- **Trunk-Based Development (TBD)** : développement sur une **branche principale unique** (trunk/main) avec des commits petits et fréquents. Les fonctionnalités incomplètes sont cachées derrière des **feature flags**.
+
+Le choix dépend de votre contexte : rythme de release, taille d'équipe, culture DevOps.
+
+## Git Flow — le modèle classique
+
+\`\`\`
+main ────────M────────────────────M── (production)
+              \\                  /
+develop ──────D────────────────D──── (intégration)
+              | \\              / |
+              |  R──R──R──R──R  |  (release branches)
+              |                  |
+              F──F──F──F         F──F  (feature branches)
+\`\`\`
+
+### Structure des branches
+
+| Branche | Usage | Base | Durée de vie |
+|---------|-------|------|--------------|
+| \`main\` | Code en production | — | Permanente |
+| \`develop\` | Intégration des features | \`main\` | Permanente |
+| \`feature/*\` | Développement d'une fonctionnalité | \`develop\` | Quelques jours/semaines |
+| \`release/*\` | Préparation d'une release | \`develop\` | Quelques jours |
+| \`hotfix/*\` | Correction urgente de production | \`main\` | Quelques heures |
+
+### Commandes Git Flow
+
+\`\`\`bash
+# Initialiser git-flow sur un dépôt
+git flow init
+
+# Créer une feature
+git flow feature start auth-oauth2
+# Crée : feature/auth-oauth2 depuis develop
+
+# Terminer une feature
+git flow feature finish auth-oauth2
+# Merge dans develop, supprime la branche
+
+# Créer une release
+git flow release start v1.2.0
+# Crée : release/v1.2.0 depuis develop
+
+# Terminer une release
+git flow release finish v1.2.0
+# Merge dans main + develop, crée un tag v1.2.0
+
+# Créer un hotfix
+git flow hotfix start v1.2.1
+git flow hotfix finish v1.2.1
+\`\`\`
+
+## Trunk-Based Development — le modèle moderne
+
+\`\`\`
+main ────s──s──s──s──s──s──s──s──s── (trunk)
+           \\    \\
+            f1   f2  (branches courtes, < 2 jours)
+\`\`\`
+
+### Principes du TBD
+
+\`\`\`bash
+# Workflow TBD typique
+git checkout main
+git pull
+git checkout -b feature/user-auth
+
+# Commits petits et fréquents
+git commit -m "Ajouter page de login"
+git commit -m "Ajouter validation email"
+git commit -m "Ajouter tests"
+
+# Merge rapide (max 2 jours) dans main
+git checkout main
+git pull --rebase
+git merge --no-ff feature/user-auth
+git push origin main
+git branch -d feature/user-auth
+
+# Feature flags pour désactiver le code inachevé
+if (featureFlags.isEnabled('new-auth')) {
+  // Nouvelle authentification (encore en développement)
+} else {
+  // Ancienne authentification
+}
+\`\`\`
+
+### Feature flags — le cœur du TBD
+
+\`\`\`typescript
+// Exemple de feature flags
+const features = {
+  'new-auth': process.env.FEATURE_NEW_AUTH === 'true',
+  'v3-api': process.env.FEATURE_V3_API === 'true',
+  'dark-mode': process.env.FEATURE_DARK_MODE === 'true',
+};
+
+// Utilisation dans le code
+if (features['new-auth']) {
+  router.use('/api/auth', authV2Router);
+}
+\`\`\`
+
+## Comparaison détaillée
+
+| Critère | Git Flow | Trunk-Based |
+|---------|----------|-------------|
+| Complexité | Élevée | Faible |
+| Nombre de branches | Beaucoup (long-lived) | Très peu (short-lived) |
+| Durée des branches | Jours à semaines | Heures à 2 jours max |
+| Merge frequency | Rare (release) | Très fréquente (quotidien) |
+| Feature flags | Pas nécessaires | Essentiels |
+| CI/CD | Plus complexe | Simplifié |
+| Rebase | Possible sur feature | Recommandé |
+| Rollback | Complexe (plusieurs merges) | Simple (git revert) |
+| Tests nécessaires | Avant release | En continu |
+| Idéal pour | Releases planifiées, versions desktop | SaaS, web apps, CI/CD mature |
+
+## Quand utiliser chaque workflow
+
+\`\`\`bash
+# Git Flow pour :
+# - Logiciels avec versions (desktop, mobile)
+# - Cycles de release longs (mensuels/trimestriels)
+# - Équipes multi-plateformes
+# - Produits avec certification/testing longs
+
+# Trunk-Based pour :
+# - Applications web (SaaS)
+# - Déploiement continu (CI/CD mature)
+# - Petites équipes (moins de 10 développeurs)
+# - Startups, itérations rapides
+# - Feature flags bien implémentés
+\`\`\`
+
+## Bonnes pratiques
+
+**Git Flow :**
+- Protéger \`main\` et \`develop\` avec des rules (pas de push direct)
+- Utiliser \`git flow\` ou des outils automatisés (sourcery)
+- Nettoyer les branches de feature après merge
+- Garder les releases courtes (pas de \`develop\` qui divergente trop)
+
+**Trunk-Based :**
+- Commits **très petits** (quelques heures de travail max)
+- Feature flags dès le début du développement
+- Tests automatisés obligatoires (régression immédiate)
+- Code review légère (ne pas bloquer le merge)
+- Culture de **réversibilité** (revert > fix forward)
+
+## Pièges courants
+
+- Git Flow : branches de feature trop longues (conflits massifs)
+- Git Flow : intégration infréquente (divergence develop/main)
+- TBD : feature flags mal gérés = code mort qui s'accumule
+- TBD : mauvaise culture de tests = régressions fréquentes
+- TBD : résistance des équipes habituées aux "gros merges"
+- Les deux : pas de politique de merge clairement documentée
+
+## Pour aller plus loin
+
+\`\`\`bash
+# Voir l'historique des branches dans chaque workflow
+git log --graph --oneline --all
+
+# Installer git-flow
+# macOS: brew install git-flow
+# Ubuntu: apt-get install git-flow
+
+# Ressources
+# Git Flow original: https://nvie.com/posts/a-successful-git-branching-model/
+# Trunk-Based: https://trunkbaseddevelopment.com/
+\`\`\`
+
+Source : [Git Flow (nvie)](https://nvie.com/posts/a-successful-git-branching-model/) et [Trunk-Based Development](https://trunkbaseddevelopment.com/)`},
+        {
+          id: 'git-19',
+          question: 'Résoudre les conflits efficacement',
+          answer: "**Prévention** : fusionnez régulièrement depuis `main` dans votre branche, faites des petites PRs, communiquez avec l'équipe sur les fichiers modifiés.\n\n**Résolution** : lisez les marqueurs de conflit (`<<<<<<<`, `=======`, `>>>>>>>`), comprenez les deux versions avant de choisir. Utilisez un outil de merge (`VS Code Merge`, `Beyond Compare`) pour les conflits complexes.\n\nAprès résolution : `git add` + `git commit`. Testez toujours le code fusionné avant de push. __Un conflit bien résolu demande de la communication, pas juste du code.__",
+        
+          deepDive: `# Résoudre les conflits efficacement
+
+## Principe fondamental
+
+Un conflit de merge survient quand Git ne peut pas résoudre automatiquement les différences entre deux branches. Cela arrive quand les **mêmes lignes** d'un fichier ont été modifiées différemment.
+
+**Approche préventive** : la meilleure résolution de conflit est celle qu'on n'a pas à faire. Fusionnez régulièrement depuis \`main\` dans votre branche, faites des PR courtes, communiquez avec l'équipe.
+
+**La résolution** : comprendre les deux versions, choisir la bonne (ou les combiner), supprimer les marqueurs Git.
+
+## Les marqueurs de conflit
+
+Quand un conflit survient, Git insère des marqueurs dans les fichiers concernés :
+
+\`\`\`diff
+<<<<<<< HEAD
+const name = "Alice";
+const age = 30;
+const role = "admin";
+=======
+const name = "Bob";
+const age = 25;
+const role = "user";
+>>>>>>> feature-branch
+\`\`\`
+
+| Marqueur | Signification |
+|----------|---------------|
+| \`<<<<<<< HEAD\` | Début de VOTRE version (branche actuelle) |
+| \`=======\` | Séparation entre les deux versions |
+| \`>>>>>>> feature-branch\` | Fin de LEUR version (branche à merger) |
+
+## Étapes de résolution
+
+\`\`\`bash
+# 1. Identifier les fichiers en conflit
+git status
+# both modified: src/app.ts
+# both modified: src/config.ts
+
+# 2. Ouvrir chaque fichier et résoudre les conflits
+# 3. Supprimer les marqueurs <<<<< ===== >>>>>
+# 4. Marquer comme résolu
+git add src/app.ts
+git add src/config.ts
+
+# 5. Finaliser le merge
+git commit -m "Merge feature-branch, resolve conflict in app.ts"
+\`\`\`
+
+## Résolution avec \`git checkout\` (ours/theirs)
+
+\`\`\`bash
+# Garder notre version (HEAD) pour TOUS les conflits du fichier
+git checkout --ours src/app.ts
+
+# Garder leur version (feature-branch)
+git checkout --theirs src/app.ts
+
+# Puis marquer comme résolu
+git add src/app.ts
+
+# Attention : cette approche jette l'autre version complètement
+# Utiliser seulement si vous êtes sûr de vouloir écraser
+\`\`\`
+
+## Stratégies de résolution
+
+\`\`\`bash
+# Stratégie "ours" — garder notre version en cas de conflit
+git merge -s recursive -X ours feature-branch
+
+# Stratégie "theirs" — garder leur version
+git merge -s recursive -X theirs feature-branch
+
+# Abandonner complètement le merge
+git merge --abort
+
+# Revenir à l'état avant merge
+git reset --hard ORIG_HEAD
+\`\`\`
+
+## Outils de merge visuels
+
+\`\`\`bash
+# Configurer un mergetool
+git config --global merge.tool vscode
+git config --global mergetool.vscode.cmd "code --wait $MERGED"
+
+# Lancer l'outil
+git mergetool
+
+# Après résolution, nettoyer les fichiers .orig
+git clean -f *.orig
+
+# Configurer pour ne pas créer de .orig
+git config --global mergetool.keepBackup false
+
+# Outils populaires
+# - VS Code (intégré)
+# - Beyond Compare (payant, puissant)
+# - KDiff3 (gratuit, open source)
+# - Meld (gratuit, Linux)
+# - Kaleidoscope (macOS)
+\`\`\`
+
+## Résoudre les conflits pendant un rebase
+
+\`\`\`bash
+# Pendant un rebase, les conflits surviennent commit par commit
+git rebase main
+
+# CONFLIT dans src/app.ts
+# Résoudre puis :
+git add src/app.ts
+
+# Continuer le rebase
+git rebase --continue
+
+# Sauter ce commit (si la modification n'est plus nécessaire)
+git rebase --skip
+
+# Annuler tout le rebase
+git rebase --abort
+\`\`\`
+
+## Prévention des conflits
+
+\`\`\`bash
+# 1. Fusionner main dans votre branche RÉGULIÈREMENT
+git switch feature-auth
+git merge main
+# ou
+git rebase main
+
+# 2. PR courtes (moins de 200 lignes)
+# 3. Communiquer sur les fichiers modifiés (standup, ticket)
+# 4. Architecture modulaire (limiter les dépendances entre fichiers)
+# 5. Éviter de reformater tout le fichier (blâme inutile + conflits)
+
+# Voir les conflits potentiels avant de merger
+git merge --no-commit --no-ff feature-branch
+# Si pas de conflit, annuler
+git merge --abort
+\`\`\`
+
+## Bonnes pratiques
+
+- **Comprendre les deux versions** avant de choisir (ne pas juste garder la sienne)
+- **Tester après résolution** : le code compile et les tests passent
+- **Commits atomiques** : moins de modifications par commit = moins de conflits
+- **Communiquer** avec l'auteur de l'autre branche si le conflit est complexe
+- **Résoudre dans l'IDE** plutôt qu'en ligne de commande pour les conflits complexes
+- **Ne pas laisser traîner** les conflits — résoudre immédiatement
+
+## Pièges courants
+
+- Résoudre en gardant **accidentellement** les marqueurs \`<<<<<<<\` dans le code
+- Oublier de faire \`git add\` après la résolution (le conflit persiste)
+- \`git commit\` sans \`git add\` préalable (commit vide ou incomplet)
+- Utiliser \`--ours\` ou \`--theirs\` sans comprendre ce qu'on perd
+- Merge de branches sans tester après résolution (bugs subtils)
+- Conflits qui impliquent des fichiers de dépendances (\`package-lock.json\`, \`yarn.lock\`)
+
+## Pour aller plus loin
+
+\`\`\`bash
+# Lister les fichiers en conflit uniquement
+git diff --name-only --diff-filter=U
+
+# Voir le diff complet des conflits
+git diff HEAD...MERGE_HEAD
+
+# Réessayer un merge avec une autre stratégie
+git merge --abort
+git merge -s recursive -X patience feature-branch
+
+# Voir l'historique des résolutions
+git log --oneline --grep="Merge\\|conflict"
+\`\`\`
+
+Source : [Git Merge Documentation](https://git-scm.com/docs/git-merge) et [Pro Git — Conflicts](https://git-scm.com/book/fr/v2/Les-branches-avec-Git-Branches-et-fusions)`},
       ],
     },
     {
@@ -1280,42 +2135,90 @@ Source: https://git-scm.com/docs/git-merge`},
         
           deepDive: `# Git Stash
 
-## Qu'est-ce que c'est
+## Principe fondamental
 
-\`git stash\` permet de mettre de cote temporairement les modifications non commitées de votre repertoire de travail et de l'index, afin de pouvoir basculer sur une autre branche ou effectuer d'autres operations sans perdre votre travail.
+\`git stash\` permet de **mettre de côté temporairement** les modifications non commitées de votre répertoire de travail, afin de pouvoir basculer sur une autre branche ou effectuer d'autres opérations sans perdre votre travail.
 
-C'est particulierement utile quand vous devez interrupts votre travail en cours pour:
-- Merger une branche urgence
--切换 sur une autre tache
-- Resoudre un bug urgent
+Les stashs sont stockés dans une **pile LIFO** (Last In, First Out). Vous pouvez empiler plusieurs stashs et les récupérer sélectivement.
 
-Les stashs sont stockes dans une pile LIFO (Last In First Out).
+\`\`\`
+Working Tree (modifié)       Pile de stash
+       |                          |
+       |  git stash               v
+       |                    stash@{0}: WIP
+       |                    stash@{1}: Fix urgent
+       |                    stash@{2}: Expérience
+       v
+Working Tree (propre)
+\`\`\`
 
-## Syntaxe et exemples
+## Cas d'usage typiques
 
 \`\`\`bash
-# Mettre de cote les modifications
+# 1. Vous travaillez sur une feature, un bug urgent arrive
+git stash push -m "WIP feature auth"
+git checkout main
+git checkout -b hotfix/urgent
+# ... corriger le bug, commit, PR ...
+git switch feature-auth
+git stash pop
+
+# 2. Vous voulez tester une approche sans commit
+git stash push -m "Expérience avec WebSocket"
+# ... tester autre chose ...
+git stash drop stash@{0}  # abandonner l'expérience
+
+# 3. Pull sans perdre vos modifications locales
+git stash push -m "Modifs en cours"
+git pull --rebase origin main
+git stash pop
+\`\`\`
+
+## Syntaxe complète
+
+\`\`\`bash
+# Stasher avec un message descriptif (recommandé)
+git stash push -m "WIP: validation formulaire"
+
+# Stasher uniquement les fichiers suivis (pas les nouveaux fichiers)
 git stash
 
-# Avec un message descriptif
-git stash push -m "Work in progress on feature X"
-
-# Mettre de cote les fichiers non suivis aussi
+# Stasher aussi les fichiers non suivis
 git stash -u
+git stash --include-untracked
 
-# Lister tous les stashs
+# Stasher aussi les fichiers ignorés (.env, node_modules...)
+git stash -a
+git stash --all
+
+# Stasher uniquement certains fichiers
+git stash push -m "partial stash" -- src/app.ts
+
+# Lister les stashs
 git stash list
-# Resultat: stash@{0}: On feature-branch: WIP
-#           stash@{1}: On main: index on main: 9a8d12c
+# stash@{0}: On feature-auth: WIP validation formulaire
+# stash@{1}: On main: Fix urgent login bug
+# stash@{2}: On feature-auth: Expérience WebSocket
 
+# Voir le contenu d'un stash sans l'appliquer
+git stash show stash@{1}
+git stash show -p stash@{1}  # voir le diff complet
+\`\`\`
+
+## Récupérer un stash
+
+\`\`\`bash
 # Appliquer le dernier stash et le supprimer de la pile
 git stash pop
 
-# Appliquer le dernier stash sans le supprimer
+# Appliquer sans supprimer (utile pour partager entre branches)
 git stash apply
 
-# Appliquer un stash spécifique (ex: stash@{2})
+# Appliquer un stash spécifique
 git stash apply stash@{2}
+
+# Créer une branche depuis un stash
+git stash branch new-feature-branch stash@{0}
 
 # Supprimer un stash sans l'appliquer
 git stash drop stash@{0}
@@ -1324,40 +2227,61 @@ git stash drop stash@{0}
 git stash clear
 \`\`\`
 
-### Utiliser stash comme pile de travail
+## Stash et branches
 
 \`\`\`bash
-# Stasher, créer branche, et aplicar le stash dessus
-git stash
-git checkout -b new-feature
+# Important : le stash est lié à la branche où il a été créé
+# Mais vous pouvez l'appliquer sur n'importe quelle branche
+# (attention aux conflits si le code est trop différent)
+
+# Workflow typique avec changement de branche
+git stash push -m "Travail en cours"
+git checkout main
+# ... faire quelque chose ...
+git checkout feature-auth
 git stash pop
 
-# Stasher et créer une branche en une commande
-git stash branch new-branch stash@{0}
+# Si conflit après stash pop :
+# Résoudre les conflits manuellement
+# git stash drop si le pop a partiellement réussi
 \`\`\`
 
 ## Bonnes pratiques
 
-- Ajoutez toujours un message descriptif avec \`git stash push -m\` pour Faciliter l'identification laterale
-- Utilisez \`git stash pop\` preferable a \`apply + drop\` pour eviter les stashs orphelins
-- Verifiez que le stash a bien été applique avant de le supprimer de la pile
-- Combinez avec \`-u\` pour inclure les fichiers non suivis (\`git stash -u\`)
--定期ement nettoyez les stashs obsoletes avec \`git stash drop\` ou \`git stash clear\`
-- Preferer les commits courts ou les branches temporaires pour du travail important rather than le stash prolonge
+- Toujours ajouter un **message descriptif** avec \`git stash push -m\`
+- Utiliser \`git stash pop\` plutôt que \`apply + drop\` (évite les stashs orphelins)
+- Vérifier que le stash a bien été appliqué avant de le supprimer
+- Utiliser \`-u\` pour les fichiers non suivis (\`git stash -u\`)
+- Nettoyer régulièrement les stashs obsolètes avec \`git stash drop\` ou \`git stash clear\`
+- **Préférer les commits temporaires** à un stash prolongé (plus visibles, pushables)
 
-## Pieges courants
+## Pièges courants
 
-- Oublier de faire \`git stash pop\` apres un \`apply\` — le stash reste en mémoire
-- Stasher des fichiers avec des secrets (credentials) puis partager le depot
-- Utiliser \`git stash\` sur des fichiers non suivis — utiliser \`-u\` explicitement
-- Confondre \`git stash drop\` (supprimer) avec \`git stash clear\` (tout supprimer)
-- Le stash ne Saga pas les sous-modules — utiliser \`git submodule update --init\`
+- Oublier de faire \`git stash pop\` après un \`apply\` — le stash reste dans la pile
+- Stasher des fichiers avec des secrets (credentials) — le stash est en clair
+- Utiliser \`git stash\` sans \`-u\` — les nouveaux fichiers ne sont pas stashés
+- Confondre \`git stash drop\` (supprimer un) et \`git stash clear\` (tout supprimer)
+- Le stash ne capture pas les sous-modules — utiliser \`git submodule update --init\`
 
 ## Pour aller plus loin
 
-La pile de stash est locale au depot — elle n'est pas synchronisee avec le remote.
+\`\`\`bash
+# Voir le diff complet du stash
+git stash show -p stash@{0}
 
-Source: https://git-scm.com/docs/git-stash`},
+# Stash partiel (interactif, hunk par hunk)
+git stash push -p
+
+# Garder l'index (staged files) intact
+git stash push --keep-index
+
+# Configurer un alias pour stasher vite
+git config --global alias.stashit '!git stash push -m'
+\`\`\`
+
+Le stash est **local** à votre dépôt — il n'est pas synchronisé avec le remote. Si vous changez de machine, vos stashs ne vous suivent pas.
+
+Source : [Git Stash Documentation](https://git-scm.com/docs/git-stash) et [Pro Git — Stashing](https://git-scm.com/book/fr/v2/Les-outils-de-Git-Le-stash)`},
         {
           id: 'git-12',
           question: 'Annuler un commit',
@@ -1365,89 +2289,147 @@ Source: https://git-scm.com/docs/git-stash`},
           code: 'git reset --hard HEAD~1  # Supprime tout\ngit revert <hash>          # Annule via nouveau commit',
           language: 'bash',
         
-          deepDive: `# Annuler un Commit (Git Reset, Git Revert)
+          deepDive: `# Annuler un commit (Git Reset, Git Revert)
 
-## Qu'est-ce que c'est
+## Principe fondamental
 
-Git offre plusieurs mécanismes pour annuler des commits selon le niveau d'annulation souhaité:
+Git offre deux mécanismes distincts pour annuler des commits, selon que l'historique est local ou partagé :
 
-- \`git revert\`: Crée un nouveau commit qui annule les modifications d'un commit précédent. S' utilise sur des branches partagées.
-- \`git reset\`: Déplace le pointeur de branche en arrière, modifiant potentiellement l'historique. A utiliser localement.
+- **\`git revert\`** : crée un **nouveau commit** qui annule les modifications d'un commit précédent. Sûr pour les branches partagées car il ne réécrit pas l'historique.
+- **\`git reset\`** : déplace le pointeur de branche en arrière, **supprimant les commits** de l'historique. À utiliser uniquement en local.
 
-## Syntaxe et exemples
+\`\`\`
+Règle d'or :
+- reset  → commits locaux non pushés
+- revert → commits déjà partagés
+\`\`\`
+
+## git revert — annuler sans danger
 
 \`\`\`bash
-# git revert — annule un commit en créant un nouveau commit
-git revert <commit-hash>
-
-# Annuler le dernier commit (sans modifier l'historique)
+# Annuler le dernier commit (HEAD)
 git revert HEAD
+# Crée un nouveau commit : "Revert 'Mon message'"
 
-# Annuler plusieurs commits
+# Annuler un commit spécifique
+git revert abc123
+
+# Annuler une série de commits
 git revert abc123..def456
 
-# git reset — trois modes selon le niveau d'annulation
+# Annuler sans créer de commit (pour inspection)
+git revert --no-commit abc123
+git diff --cached  # voir ce qui sera annulé
+git revert --continue
 
-# SOFT: garde les modifications dans l'index
+# Revert d'un merge commit
+git revert -m 1 abc123  # -m pour choisir le parent
+\`\`\`
+
+**Avantages de revert :**
+- Historique préservé (tous les commits restent visibles)
+- Collaboratif : pas de désynchronisation
+- Peut être annulé (on peut revert un revert)
+- Idéal pour les branches partagées et la production
+
+## git reset — trois niveaux d'annulation
+
+\`\`\`bash
+# --soft : supprime le commit, garde les modifs dans l'index (staged)
 git reset --soft HEAD~1
+# Les modifications restent dans le staging area
+# Utile pour : recommiter avec un message différent
 
-# MIXED (defaut): garde les modifications dans le repertoire de travail
+# --mixed (défaut) : supprime le commit, garde les modifs dans le working tree
 git reset HEAD~1
+# Équivalent à défaire le git add et le git commit
+# Utile pour : modifier le contenu avant de recommiter
 
-# HARD: supprime définitivement les modifications
+# --hard : supprime TOUT (commit + index + working tree)
 git reset --hard HEAD~1
+# Les modifications sont PERDUES (sauf reflog)
+# Dangereux ! À utiliser avec précaution
+\`\`\`
 
-# Reset vers un commit spécifique
+\`\`\`
+État avant reset (HEAD → C3) :
+C1 ← C2 ← C3  (HEAD, main)
+
+Après reset --soft HEAD~1 :
+C1 ← C2 (HEAD, main)
+        └── C3 (modifs dans l'index)
+
+Après reset --mixed HEAD~1 :
+C1 ← C2 (HEAD, main)
+        └── C3 (modifs dans working tree)
+
+Après reset --hard HEAD~1 :
+C1 ← C2 (HEAD, main)
+        (C3 totalement supprimé)
+\`\`\`
+
+## git reset vers un commit spécifique
+
+\`\`\`bash
+# Revenir à un commit précis
 git reset --hard abc123
 
-# Preparer un nouveau commit avec les modifications
-git reset --soft HEAD~1 && git commit -m "Nouveau message"
+# Revenir à l'état du remote (annuler commits locaux)
+git reset --hard origin/main
+
+# Reset d'un merge commit
+git reset --hard ORIG_HEAD  # avant le merge
+
+# Reset partiel (un seul fichier)
+git reset HEAD~1 -- src/app.ts  # remettre le fichier à l'état avant
 \`\`\`
 
-### Comprendre les niveaux
+## Comparaison détaillée
 
-\`\`\`
-Commit C3 (HEAD)
-  |
-Commit C2
-  |
-Commit C1
-
---soft: C3 supprime, index = C2, working dir = C3 (en attente)
---mixed: C3 supprime, index = C2, working dir = C2
---hard: C3 supprime, index = C2, working dir = C2 (PERDU)
-\`\`\`
+| Aspect | git revert | git reset --soft | git reset --mixed | git reset --hard |
+|--------|------------|------------------|-------------------|------------------|
+| Nouveau commit | Oui | Non | Non | Non |
+| Perte de code | Non | Non | Non | Oui |
+| Historique modifié | Non | Oui | Oui | Oui |
+| Sécurité remote | Parfait | Dangereux | Dangereux | Très dangereux |
+| Modifs conservées | Dans le revert commit | Index (staged) | Working tree | Aucune |
+| Cas d'usage | Annuler en production | Reformuler un commit | Défaire un commit local | Jeter des changements |
 
 ## Bonnes pratiques
 
-- Sur une branche partagée: TOUJOURS utiliser \`git revert\` (ne réécrit pas l'historique)
-- En local avant push: \`git reset\` est acceptable avec \`--soft\` ou \`--mixed\`
-- Après un \`reset --hard\`: utiliser \`git reflog\` pour récupérer l'état précédent
-- Toujours vérifier avec \`git status\` et \`git log\` avant de faire un reset dur
-- Préférer \`--mixed\` pour défaire un commit tout en gardant les modifications рабочем каталоге
+- Utiliser **\`git revert\`** pour toute annulation sur des branches partagées
+- Utiliser **\`git reset --mixed\`** (le défaut) pour défaire un commit local
+- **Éviter \`git reset --hard\`** sauf si vous êtes sûr (et même dans ce cas, \`reflog\` peut sauver)
+- **Vérifier** avec \`git status\` et \`git log\` avant tout reset dur
+- Utiliser \`ORIG_HEAD\` pour annuler un reset : \`git reset --hard ORIG_HEAD\`
+- Après un \`reset --hard\`, utiliser \`git reflog\` pour retrouver les commits supprimés
 
-## Pieges courants
+## Pièges courants
 
-- Utiliser \`reset --hard\` après avoir poussé — perdre du travail non commité
-- Confondre \`revert\` (crée un nouveau commit) avec \`reset\` (supprime l'historique)
-- Ne pas comprendre que \`reset\` réécrit l'historique des branches partagées
-- Utiliser \`reset\` sur un commit de fusion (merge commit) sans comprendre les implications
-- Oublier que \`reflog\` est la sécurité ultime pour récupérer un \`reset --hard\`
+- \`reset --hard\` après avoir pushé : vos collègues ne peuvent plus pull
+- Confondre \`revert\` (sûr) avec \`reset\` (destructif)
+- Perdre des modifications non commitées avec \`git reset --hard\`
+- \`reset --hard\` sur un merge commit sans comprendre les implications
+- Oublier \`--soft\` ou \`--mixed\` et utiliser \`--hard\` par défaut
 
 ## Pour aller plus loin
 
 \`\`\`bash
-#Voir l'historique des resets
+# Récupérer après un reset --hard
 git reflog
+git reset --hard HEAD@{n}
 
-# Recuperer un reset --hard
-git reset --hard ORIG_HEAD
+# Annuler le dernier commit sans perdre les modifs (mix de reset et stash)
+git reset --soft HEAD~1
+git stash
+git checkout -b recovery-branch
+git stash pop
 
-# Reset interactif (modifier l'historique)
-git reset --soft HEAD~3 && git commit -m "Fusion de 3 commits"
+# Revert d'un range de commits
+git revert --no-edit HEAD~3..HEAD
 \`\`\`
 
-Source: https://git-scm.com/docs/git-revert et https://git-scm.com/docs/git-reset`},
+Source : [Git Reset Documentation](https://git-scm.com/docs/git-reset) et [Git Revert Documentation](https://git-scm.com/docs/git-revert)`},
         {
           id: 'git-13',
           question: 'Voir les différences entre commits',
@@ -1455,25 +2437,32 @@ Source: https://git-scm.com/docs/git-revert et https://git-scm.com/docs/git-rese
           code: 'git diff HEAD~1',
           language: 'bash',
         
-          deepDive: `# git diff — Voir les différences
+          deepDive: `# git diff — Voir les différences entre commits
 
-## Qu'est-ce que c'est
+## Principe fondamental
 
-\`git diff\` affiche les differences entre diverses sources: repertoire de travail et index, index et commit, deux commits, etc. C'est l'outil essentiel pour comprendre ce qui a été modifié avant de commiter.
+\`git diff\` est l'outil essentiel pour comparer différentes versions de votre code. Il affiche les **lignes ajoutées** (précédées de \`+\`, en vert) et **supprimées** (précédées de \`-\`, en rouge) entre deux états du dépôt.
 
-## Syntaxe et exemples
+Git gère quatre "états" que vous pouvez comparer :
+- **Working directory** : vos fichiers actuels (modifiés mais pas stagés)
+- **Index (staging area)** : les fichiers ajoutés avec \`git add\`
+- **HEAD (dernier commit)** : le dernier commit sur la branche actuelle
+- **Commits** : n'importe quel point dans l'historique
+
+## Syntaxe de base
 
 \`\`\`bash
-# Diff entre working directory et index (non stage)
+# Diff entre working directory et index (modifications non stagées)
 git diff
 
-# Diff entre index et dernier commit (stage)
+# Diff entre index et HEAD (modifications stagées, en attente de commit)
 git diff --cached
+git diff --staged  # alias
 
-# Diff entre working directory et dernier commit
+# Diff entre working directory et HEAD (toutes les modifications)
 git diff HEAD
 
-# Diff entre deux commits
+# Diff entre deux commits spécifiques
 git diff abc123..def456
 
 # Diff d'un fichier spécifique
@@ -1482,74 +2471,143 @@ git diff -- src/app.component.ts
 # Diff entre deux branches
 git diff main..feature-branch
 
-# Statistiques resumees
+# Statistiques résumées (fichiers changés, lignes +/)
 git diff --stat
-
-# Montrer les différences de submodules
-git diff --submodule
 \`\`\`
 
-### Algorithmes de diff
+## Comparaison des différents contextes
 
 \`\`\`bash
-# Myers (defaut)
+# État initial : HEAD (commit) ≠ index ≠ working tree
+
+# Modifications non stagées (working tree ≠ index)
+git diff
+# Utile avant git add pour vérifier ce qu'on va stage
+
+# Modifications stagées (index ≠ HEAD)
+git diff --cached
+# Utile avant git commit pour vérifier ce qu'on va commiter
+
+# Toutes les modifications (working tree ≠ HEAD)
+git diff HEAD
+# Vue d'ensemble de tout ce qui a changé depuis le dernier commit
+
+# Avant/après un commit spécifique
+git diff abc123^..abc123   # ce que abc123 a introduit
+git diff abc123~1..abc123  # équivalent (le parent)
+\`\`\`
+
+## Algorithmes de diff
+
+Git propose plusieurs algorithmes qui changent la façon dont les différences sont calculées :
+
+\`\`\`bash
+# Myers (défaut) — rapide, bon pour la plupart des cas
 git diff --diff-algorithm=myers
 
-# Minimal (cherche le plus petit changeset)
+# Minimal — cherche le plus petit changeset possible (plus lent)
 git diff --diff-algorithm=minimal
 
-# Patience (mejor pour fichiers重构)
+# Patience — meilleur pour les refactors, code réorganisé
 git diff --diff-algorithm=patience
 
-# Histogram (combinaison patience + myers)
+# Histogram — combine patience + myers, recommandé
 git diff --diff-algorithm=histogram
+
+# Configurer par défaut
+git config --global diff.algorithm histogram
 \`\`\`
 
-### Formats de sortie
+| Algorithme | Vitesse | Qualité | Usage typique |
+|------------|--------|---------|---------------|
+| Myers | Rapide | Bonne | Usage général |
+| Minimal | Lent | Excellente | Petits fichiers critiques |
+| Patience | Moyen | Très bonne | Réorganisation de code |
+| Histogram | Moyen | Excellente | Recommandé en général |
+
+## Formats de sortie
 
 \`\`\`bash
-# Format compact sur une ligne par fichier
+# Noms de fichiers uniquement (compact)
 git diff --name-only
 
-# Format word-by-word (utile pour documentation)
-git diff --word-diff=plain
+# Noms et statut (M=modified, A=added, D=deleted)
+git diff --name-status
 
-# Sortie JSON
-git diff --json
+# Compact, une ligne par modification
+git diff --compact-summary
+
+# Word diff (utile pour documentation, texte)
+git diff --word-diff=plain
+git diff --word-diff=color
+
+# Ignorer les espaces
+git diff --ignore-space-change
+git diff --ignore-all-space
+
+# Contexte personnalisé (3 lignes par défaut)
+git diff -U5  # 5 lignes de contexte
+
+# Sortie sans couleur (pour scripts/CI)
+git diff --no-color
+\`\`\`
+
+## Exemples avancés
+
+\`\`\`bash
+# Diff entre cette branche et la distante
+git diff main..origin/main
+
+# Diff entre deux tags (changelog)
+git diff v1.0.0..v2.0.0 --stat
+
+# Diff d'un commit spécifique (son contenu exact)
+git show abc123
+
+# Diff d'un fichier entre deux branches
+git diff main..feature -- src/app.ts
+
+# Lister les fichiers qui ont changé depuis une date
+git diff --name-only HEAD@{7.days.ago}
+
+# Diff avec sous-modules
+git diff --submodule=log
 \`\`\`
 
 ## Bonnes pratiques
 
-- Utilisez \`--cached\` pour reviewer les changements staged avant commit
-- Combinez avec \`--stat\` pour une vue d'ensemble avant de dive dans les details
-- Utilisez \`--diff-algorithm=patience\` pour les refactors importants
-- Configurez un outil visuel: \`git config --global diff.tool vimdiff\`
-- Utilisez \`git diff HEAD~1 HEAD\` pour voir exactement ce qu'un commit a变了
+- **Toujours faire \`git diff --cached\`** avant de commiter (vérifier ce qu'on envoie)
+- **\`git diff --stat\`** pour une vue d'ensemble rapide
+- Configurer un **outil visuel** de diff : \`git config --global diff.tool vimdiff\`
+- Utiliser l'algorithme **histogram** pour les refactors importants
+- **\`git diff --name-only\`** avant \`git add -A\` (éviter d'ajouter des fichiers par erreur)
 
-## Pieges courants
+## Pièges courants
 
-- Oublier \`--cached\` pour voir les changements staged (par defaut montre unstaged)
-- \`git diff\` ne montre pas les fichiers non suivis (utiliser \`git status\`)
-- Sur Windows, les fins de ligne CR/LF peuvent polluer les diffs
+- \`git diff\` sans arguments ne montre que les **modifications non stagées** (pas ce qui est stagé)
+- \`git diff\` ne montre **pas** les fichiers non suivis (utiliser \`git status\`)
+- Les fins de ligne (CRLF/LF) peuvent polluer les diffs sur Windows
 - Confondre \`git diff\` (unstaged) avec \`git diff --cached\` (staged)
+- Oublier que \`git diff\` compare par défaut avec l'index, pas avec HEAD
 
 ## Pour aller plus loin
 
 \`\`\`bash
-# Diff d'un commit spécifique
-git diff abc123^..abc123
+# Voir les différences binaires
+git diff --binary
 
-# Diff entre cette branche et la branche distante
-git diff main..origin/main
+# Diff avec external diff tool
+git difftool
 
-# Montrer les fichiers qui ont change entre deux tags
-git diff v1.0..v2.0
+# Créer un patch depuis un diff
+git diff > mon-patch.patch
+git apply mon-patch.patch  # appliquer le patch
 
-# Diff avec submodules
-git diff --submodule=log
+# Voir qui a modifié chaque ligne
+git blame src/app.ts
 \`\`\`
 
-Source: https://git-scm.com/docs/git-diff`},
+Source : [Git Diff Documentation](https://git-scm.com/docs/git-diff)`},
         {
           id: 'git-14',
           question: "Voir l'historique des commits",
@@ -1559,104 +2617,170 @@ Source: https://git-scm.com/docs/git-diff`},
         
           deepDive: `# git log — Voir l'historique des commits
 
-## Qu'est-ce que c'est
+## Principe fondamental
 
-\`git log\` affiche l'historique des commits d'un depot. Il offre de nombreuses options pour filtrer, formater et visualiser l'évolution du projet.
+\`git log\` affiche l'historique des commits d'un dépôt. C'est votre **outil principal** pour naviguer dans le passé du projet : comprendre qui a fait quoi, quand, et pourquoi.
 
-## Syntaxe et exemples
+Avec ses nombreuses options, \`git log\` peut être aussi simple qu'une liste de commits ou aussi riche qu'un tableau de bord complet avec graphes, statistiques, et filtres.
+
+## Formats d'affichage essentiels
 
 \`\`\`bash
-# Affichage standard
+# Affichage standard (complet)
 git log
 
-# Sur une ligne (compact)
+# Compact — un commit par ligne (recommandé pour l'usage quotidien)
 git log --oneline
 
-# Graphique ASCII
-git log --graph --oneline --all
+# Graphique ASCII + décorations (indispensable)
+git log --oneline --graph --all --decorate
 
-# N derniers commits
+# Les N derniers commits
 git log -n 5
+git log -5  # raccourci équivalent
 
-# Filrer par auteur
-git log --author="Mohammed"
-
-# Filrer par date
-git log --since="2024-01-01" --until="2024-12-31"
-
-# Filrer par message (grep)
-git log --grep="fix:"
-
-# Voir les commits d'un fichier
-git log -- src/app.component.ts
-
-# Afficher les statistiques par commit
+# Avec statistiques (fichiers modifiés, lignes +/-)
 git log --stat
 
-# Montrer les diffs de chaque commit
+# Avec le diff complet de chaque commit
 git log -p
 
-# Format personalisé
-git log --format="[%h] %an: %s"
-
-# Format court avec branches
-git log --oneline --decorate
+# Format personnalisé
+git log --format="%h %an: %s (%cr)"
 \`\`\`
 
-### Formats courants
-
-| Option | Description |
-|--------|-------------|
-| \`%H\` | Hash complet |
-| \`%h\` | Hash court |
-| \`%an\` | Nom de l'auteur |
-| \`%ae\` | Email de l'auteur |
-| \`%s\` | Sujet (message) |
-| \`%b\` | Corps du message |
-| \`%cr\` | Date relative |
-
-## git shortlog
+## Filtres puissants
 
 \`\`\`bash
-# Resumé par auteur (ideal pour changelog)
+# Par auteur
+git log --author="Mohammed"
+git log --author="Marie\\|Pierre"  # expression régulière (ou)
+
+# Par date
+git log --since="2024-01-01"
+git log --until="2024-12-31"
+git log --after="2 weeks ago"
+git log --before="yesterday"
+
+# Par message (grep)
+git log --grep="feat:"
+git log --grep="fix:" --grep="urgent" --all-match  # ET logique
+
+# Par fichier
+git log -- src/app.component.ts
+
+# Par branche
+git log main..feature-branch  # commits dans feature pas dans main
+git log --all  # toutes les branches
+
+# Par tag
+git log v1.0.0..v2.0.0
+
+# Exclure les merge commits
+git log --no-merges
+
+# Par contenu (recherche dans le code, pas dans les messages)
+git log -S "functionName"  # commits qui modifient "functionName"
+git log -G "regex"          # plus flexible que -S
+\`\`\`
+
+## Formats de sortie personnalisés
+
+\`\`\`bash
+# Format libre avec %codes
+git log --format="%h | %an | %s | %ar"
+
+# Format tableau
+git log --format="| %h | %an | %s | %ad |"
+
+# Format pour générer un changelog
+git log --format="* %s (%h)" --grep="^feat\\|^fix"
+\`\`\`
+
+### Codes de format courants
+
+| Code | Description |
+|------|-------------|
+| \`%H\` | Hash complet (SHA-1) |
+| \`%h\` | Hash court (7 premiers caractères) |
+| \`%an\` | Nom de l'auteur |
+| \`%ae\` | Email de l'auteur |
+| \`%ad\` | Date (format --date=) |
+| \`%ar\` | Date relative ("il y a 2 jours") |
+| \`%s\` | Sujet du commit |
+| \`%b\` | Corps du message |
+| \`%d\` | Références (branches, tags) |
+| \`%cr\` | Date relative du commiteur |
+
+## git shortlog — résumé par auteur
+
+\`\`\`bash
+# Compter les commits par auteur (idéal pour le changelog)
 git shortlog
 
-# Par ordre alphabetique
+# Avec nombre de commits et emails
 git shortlog -sne
 
-# Nombre de commits par contributeur
-git shortlog --numbered --all
+# Par ordre alphabétique
+git shortlog -sn
+
+# Pour une période spécifique
+git shortlog --since="2024-01-01" --until="2024-06-30"
+\`\`\`
+
+## Combinaisons pratiques
+
+\`\`\`bash
+# Vue d'ensemble du dépôt (alias recommandé)
+git log --oneline --graph --all --decorate
+
+# Recherche de bug par mots-clés
+git log --all --oneline --grep="NPE\\|NullPointer\\|crash" --since="2024-01"
+
+# Commits d'un développeur cette semaine
+git log --author="Pierre" --since="monday" --format="%h %s"
+
+# Changelog rapide
+git log --format="* %s" v1.0.0..HEAD
+
+# Commits modifiant un fichier (avec ligne de contenu)
+git log -p -- src/app.ts | grep -E "^[+-]" | sort | uniq -c
 \`\`\`
 
 ## Bonnes pratiques
 
-- Utilisez \`--oneline --graph --all\` pour une vue d'ensemble du depot
-- Combinez avec \`--author\` et \`--since\` pour faire des rapports de activity
-- \`git shortlog -sne\` est ideal pour générer des credits ou rapports d'équipe
-- Utilisez \`-p\` (patch) pour code review détaillé
-- Configurez un format personalisé par defaut dans \`.gitconfig\`
+- Créer un **alias** pour votre vue favorite : \`git config --global alias.tree "log --oneline --graph --all --decorate"\`
+- Utiliser \`--oneline --graph --all\` comme vue par défaut du dépôt
+- Combiner \`--author\` et \`--since\` pour des rapports d'activité
+- \`git shortlog -sne\` pour créditer les contributeurs
+- Ajouter \`--no-merges\` pour filtrer le bruit des commits de fusion
+- Utiliser \`-S\` pour les recherches de contenu (très puissant)
 
-## Pieges courants
+## Pièges courants
 
-- \`git log\` ne montre pas les commits des autres branches — utiliser \`--all\`
-- Par defaut, ne montre pas les commits inaccessibles (utiliser \`git reflog\`)
-- Confondre \`--grep\` (recherche dans les messages) avec filtration de fichier
-- \`git log\` sans options peut être très long sur de gros depots — utilisez \`-n\`
+- \`git log\` ne montre que la branche courante (utiliser \`--all\`)
+- Par défaut, ne montre pas les commits orphelins (accessibles via \`reflog\`)
+- \`git log\` sans pagination sur des gros dépôts (utiliser \`-n 20\`)
+- Confondre \`--grep\` (message) avec \`-S\` ou \`-G\` (contenu du code)
+- \`git log\` dans un terminal sans couleurs (utiliser \`--format\`)
 
 ## Pour aller plus loin
 
 \`\`\`bash
-# Voir les commits qui ont change un fichier (line-level)
-git blame src/app.component.ts
+# Voir les commits d'un merge
+git log --first-parent main  # suivre uniquement le parent principal
 
-# Resumé des contributions par periode
-git shortlog --since="3 months ago"
-
-# Log formate pour integration (CI/CD)
+# Formater pour CI
 git log --pretty=format:"%H|%an|%s" --since="2024-01-01"
+
+# Blâme d'un fichier (qui a modifié chaque ligne)
+git blame src/app.ts
+
+# Voir le nombre de commits par mois
+git log --since="1 year ago" --format="%ad" --date=short | cut -d- -f1,2 | sort | uniq -c
 \`\`\`
 
-Source: https://git-scm.com/docs/git-log`},
+Source : [Git Log Documentation](https://git-scm.com/docs/git-log)`},
         {
           id: 'git-15',
           question: 'Les tags ?',
@@ -1666,93 +2790,175 @@ Source: https://git-scm.com/docs/git-log`},
         
           deepDive: `# Git Tags
 
-## Qu'est-ce que c'est
+## Principe fondamental
 
-Un tag Git est une référence statique vers un commit spécifique. Il sert à marquer des points de sortie significatifs dans l'historique: versions, releases, hotfixes. Contrairement aux branches, les tags ne bougent pas.
+Un tag Git est une **référence statique** vers un commit spécifique. Contrairement aux branches (qui bougent avec chaque nouveau commit), les tags sont **immobiles** et servent à marquer des points importants : versions, releases, jalons du projet.
 
-Deux types de tags:
-- **Lightweight**: Simple pointeur vers un commit
-- **Annotated**:Objet Git complet avec message, auteur, date — recommande pour les releases
+Deux types de tags :
 
-## Syntaxe et exemples
+- **Lightweight** : simple pointeur vers un commit (comme une branche qui ne bouge pas)
+- **Annotated** : objet Git complet avec métadonnées (auteur, date, message, signature GPG possible)
+
+\`\`\`
+tags :  v1.0.0    v1.1.0    v1.2.0
+          ↓          ↓          ↓
+commits : A ---> B ---> C ---> D ---> E (main)
+\`\`\`
+
+## Syntaxe des tags
 
 \`\`\`bash
-# Creer un tag lightweight
+# Tag lightweight (simple pointeur)
 git tag v1.0.0
 
-# Creer un tag annotated (recommande)
-git tag -a v1.0.0 -m "Version 1.0.0 - premiere release stable"
+# Tag annotated (recommandé pour les releases)
+git tag -a v1.0.0 -m "Version 1.0.0 — première release stable"
 
-# Taguer un commit spécifique
-git tag -a v0.9 abc123 -m "Version beta"
+# Tag sur un commit passé
+git tag -a v0.9.0 abc123 -m "Version bêta"
+
+# Tag avec signature GPG
+git tag -s v1.0.0 -m "Version 1.0.0 signée"
 
 # Lister les tags
 git tag
+git tag -l "v1.*"  # filtre par motif
 
-# Lister avec description
-git tag -l -n3
-
-# Voir les details d'un tag
+# Voir les détails d'un tag (message, signature, commit lié)
 git show v1.0.0
+
+# Comparer deux tags
+git log v1.0.0..v2.0.0 --oneline
+git diff v1.0.0 v2.0.0 --stat
+\`\`\`
+
+## Pusher les tags
+
+\`\`\`bash
+# Pusher UN tag spécifique
+git push origin v1.0.0
+
+# Pusher TOUS les tags
+git push --tags
+
+# Pusher avec follow-tags (pusher les tags des commits pushés)
+git push --follow-tags origin main
 
 # Supprimer un tag (local)
 git tag -d v1.0.0
 
-# Supprimer un tag (remote)
+# Supprimer un tag (distant)
 git push origin --delete v1.0.0
 
-# Pousser un tag spécifique
-git push origin v1.0.0
+# Récupérer les tags distants
+git fetch --tags
 
-# Pousser tous les tags
-git push --tags
-
-# Mettre a jour un tag (delete + recreate)
-git tag -d v1.0.0 && git tag -a v1.0.0 -m "Updated"
+# Trier les tags par date
+git tag --sort=-creatordate
 \`\`\`
 
-### Tags semver (Semantic Versioning)
+## Semantic Versioning (SemVer)
+
+Le standard pour nommer les tags est le **Semantic Versioning** :
 
 \`\`\`bash
-git tag -a v1.0.0 -m "Major release"
-git tag -a v1.1.0 -m "Minor release"
-git tag -a v1.1.1 -m "Patch release"
+# Format : vMAJEUR.MINEUR.PATCH
+git tag -a v1.0.0 -m "Breaking change : nouvelle API"
+git tag -a v1.1.0 -m "Nouvelle fonctionnalité (rétrocompatible)"
+git tag -a v1.1.1 -m "Correction de bug (rétrocompatible)"
+
+# Pré-release
+git tag -a v2.0.0-alpha.1 -m "Alpha"
+git tag -a v2.0.0-beta.1 -m "Beta"
+git tag -a v2.0.0-rc.1 -m "Release Candidate"
+\`\`\`
+
+| Incrément | Quand | Exemple |
+|-----------|-------|---------|
+| MAJEUR | Changement incompatible | v1.0.0 → v2.0.0 |
+| MINEUR | Nouvelle fonctionnalité compatible | v1.0.0 → v1.1.0 |
+| PATCH | Correction de bug compatible | v1.0.0 → v1.1.1 |
+
+## git describe — trouver le tag le plus proche
+
+\`\`\`bash
+# Trouver le tag le plus proche de HEAD
+git describe --tags
+# v1.0.0-5-gabc123  (5 commits après v1.0.0, hash abc123)
+
+# Tag le plus proche sans le hash
+git describe --tags --abbrev=0
+# v1.0.0
+
+# Mode annoté uniquement
+git describe --abbrev=0
+
+# Utile pour versionner automatiquement un build
+VERSION=$(git describe --tags)
+echo "Building version $VERSION"
+\`\`\`
+
+## Workflow de release avec tags
+
+\`\`\`bash
+# 1. Finaliser le développement sur develop
+# 2. Créer une branche de release
+git checkout -b release/v1.2.0 develop
+
+# 3. Tests, derniers correctifs...
+
+# 4. Fusionner dans main
+git checkout main
+git merge --no-ff release/v1.2.0
+
+# 5. Tagger la release
+git tag -a v1.2.0 -m "Release 1.2.0 : nouveau dashboard"
+
+# 6. Pusher tags et code
+git push origin main --follow-tags
+
+# 7. Fusionner dans develop
+git checkout develop
+git merge --no-ff release/v1.2.0
+
+# 8. Supprimer la branche de release
+git branch -d release/v1.2.0
 \`\`\`
 
 ## Bonnes pratiques
 
-- Utilisez des tags annotated pour toute release destined au public
-- Suivez le format Semantic Versioning (vMAJOR.MINOR.PATCH)
-- Gardez les tags locaux et distants synchronises
-- Utilisez \`git describe\` pour trouver le tag le plus proche: \`git describe --tags\`
-- Integrer les tags dans votre pipeline CI/CD pour automatiser les releases
-- Taguez toujours apres avoir验证 le build et les tests
+- **Toujours utiliser des tags annotés** pour les releases (métadonnées complètes)
+- Suivre le format **Semantic Versioning** (vMAJOR.MINOR.PATCH)
+- Pusher les tags avec \`--follow-tags\` (évite les oublis)
+- **Tagger après validation** du build et des tests
+- Utiliser \`git describe --tags\` dans les scripts CI pour le versioning automatique
+- Synchroniser régulièrement les tags avec \`git fetch --tags\`
 
-## Pieges courants
+## Pièges courants
 
-- Pousser accidentellement un tag de developpement en production
-- Oublier de pusher les tags (\`git push\` ne pousse pas les tags par defaut)
-- Utiliser des tags lightweight pour des releases — perdre le contexte
-- Supprimer un tag remote sans coordination avec l'équipe
-- Ne pas avoir de stratégie de tag claire (quand taguer, quel format)
+- Pusher accidentellement un tag de développement en production
+- Oublier de pusher les tags (\`git push\` ne pousse pas les tags par défaut)
+- Utiliser des tags lightweight pour des releases (perte du contexte)
+- Supprimer un tag distant sans coordination avec l'équipe
+- Déplacer un tag (le supprimer et le recréer) — casse les builds qui l'utilisent
 
 ## Pour aller plus loin
 
 \`\`\`bash
-# Voir le tag actuel
-git describe --tags
+# Voir la différence entre deux releases
+git log v1.0.0..v2.0.0 --oneline --no-merges
 
-# Tags precede de "v"
-git describe --tags --abbrev=0
+# Vérifier les tags locaux non pushés
+git log --oneline --tags --not --remotes
 
-# Verifier l'absence de tags non pushe
-git fetch --tags && git log --oneline --tags --not --remotes
+# Créer un tag depuis un commit de merge
+git tag -a v2.0.0 -m "Release 2.0.0" main
 
-# Workflow release avec tags
-git tag -a v2.0.0 -m "Release 2.0.0" && git push --follow-tags
+# Exporter les changements entre tags pour release notes
+git log v1.0.0..v2.0.0 --format="* %s (%an)" > release-notes.md
 \`\`\`
 
-Source: https://git-scm.com/docs/git-tag`},
+Source : [Git Tag Documentation](https://git-scm.com/docs/git-tag) et [Semantic Versioning](https://semver.org/)`},
         {
           id: 'git-16',
           question: 'git cherry-pick ?',
@@ -1762,86 +2968,165 @@ Source: https://git-scm.com/docs/git-tag`},
         
           deepDive: `# git cherry-pick
 
-## Qu'est-ce que c'est
+## Principe fondamental
 
-\`git cherry-pick\` applique les modifications d'un ou plusieurs commits spécifiques sur votre branche actuelle, en créant de nouveaux commits avec des hashes différents. C'est comme un "copier-coller" de commits.
+\`git cherry-pick\` applique les modifications d'un ou plusieurs commits **spécifiques** sur votre branche actuelle, en créant de **nouveaux commits** avec des hashes différents. C'est l'équivalent d'un "copier-coller" de commits d'une branche à l'autre.
 
-Utile pour:
-- Reporter un fix d'une branche à une autre
-- Récupérer un commit sans fusionner toute une branche
-- Appliquer des hotfixes sur plusieurs branches
+Utile pour :
+- Reporter un fix d'une branche de hotfix vers main **sans fusionner toute la branche**
+- Récupérer un commit fait par erreur sur la mauvaise branche
+- Appliquer sélectivement des modifications sans merge complet
 
-## Syntaxe et exemples
-
-\`\`\`bash
-# Appliquer un commit specifique
-git cherry-pick abc123
-
-# Appliquer plusieurs commits sequentiels
-git cherry-pick abc123..def456
-
-# Appliquer sans garder le message original
-git cherry-pick -x abc123
-
-# Appliquer et lancer un editeur pour modifier le message
-git cherry-pick -e abc123
-
-# Simuler (voir ce qui se passerait sans appliquer)
-git cherry-pick --dry-run abc123
-
-# Signer le commit cherry-pick
-git cherry-pick -s abc123
-
-# Avorter un cherry-pick en cours
-git cherry-pick --abort
-
-# Continuer apres resolution de conflits
-git cherry-pick --continue
+\`\`\`
+Branche source (feature) :  A---B---C---D---E
+                                    |
+Cherry-pick sur main :              v
+                              C' (nouveau commit, nouveau hash)
+main :  X---Y---C'---Z
 \`\`\`
 
-### Exemple concret
+## Syntaxe de base
 
 \`\`\`bash
-# Situation: un fix est sur hotfix/v1.2, doit être reporte sur main
-
-# Sur main
+# Appliquer un commit spécifique
 git cherry-pick abc123
 
-# Si conflit, resolver puis
+# Appliquer plusieurs commits (dans l'ordre)
+git cherry-pick abc123 def456 ghi789
+
+# Appliquer un intervalle de commits (exclut abc123)
+git cherry-pick abc123..def456
+
+# Appliquer un intervalle INCLUSIF
+git cherry-pick abc123^..def456
+
+# Appliquer sans créer de commit (modifications seulement)
+git cherry-pick -n abc123
+git cherry-pick --no-commit abc123
+\`\`\`
+
+## Options utiles
+
+\`\`\`bash
+# Ajouter une référence au commit original dans le message
+git cherry-pick -x abc123
+# Message : "fix: correction bug login"
+#           "(cherry picked from commit abc123)" (ajouté automatiquement)
+
+# Éditer le message du commit cherry-pické
+git cherry-pick -e abc123
+
+# Signer le commit
+git cherry-pick -s abc123
+
+# Dry-run (simulation, pas d'application)
+git cherry-pick --dry-run abc123
+\`\`\`
+
+## Gérer les conflits
+
+\`\`\`bash
+# Si un conflit survient pendant le cherry-pick :
+git status
+# both modified: src/app.ts
+
+# Résoudre manuellement, puis :
+git add src/app.ts
+git cherry-pick --continue
+
+# Alternative : abandonner
+git cherry-pick --abort
+
+# Utiliser "ours" ou "theirs" pour trancher
+git cherry-pick --strategy-option=theirs abc123
+
+# Sauter un commit problématique
+git cherry-pick --skip
+\`\`\`
+
+## Exemple concret : reporter un hotfix
+
+\`\`\`bash
+# Situation : un fix critique est fait sur hotfix/v1.2
+# mais main n'est pas prêt pour un merge complet
+
+# 1. Identifier le commit de fix
+git log hotfix/v1.2 --oneline
+# abc123 Fix: correction faille XSS dans le formulaire
+
+# 2. Se placer sur main
+git switch main
+
+# 3. Cherry-picker le fix
+git cherry-pick -x abc123
+
+# 4. Si conflit, résoudre
 git add .
 git cherry-pick --continue
+
+# 5. Pusher
+git push origin main
+\`\`\`
+
+## Cherry-pick vs Rebase vs Merge
+
+| Opération | Effet | Quand l'utiliser |
+|-----------|-------|------------------|
+| **Cherry-pick** | Copie des commits sélectionnés | Reporter un fix spécifique |
+| **Rebase** | Déplace toute une série de commits | Synchroniser une branche entière |
+| **Merge** | Fusionne deux branches entières | Intégration complète d'une feature |
+
+\`\`\`bash
+# Cherry-pick : un ou plusieurs commits spécifiques
+git cherry-pick abc123
+# Résultat : C' copié sur votre branche (nouveau hash)
+
+# Merge : toute une branche
+git merge feature-branch
+# Résultat : intégration complète avec commit de fusion
+
+# Rebase : toute une série de commits déplacés
+git rebase main
+# Résultat : D'--E' réappliqués sur main
 \`\`\`
 
 ## Bonnes pratiques
 
-- Utilisez \`--no-ff\` pour forcer la création d'un commit (eviter le fast-forward)
-- Ajoutez \`-x\` pour inclure la reference au commit original dans le message
-- Faites un test avec \`--dry-run\` avant de cherry-picker plusieurs commits
-- Isolez les cherry-picks dans des commits atomiques (un fix par commit)
-- Preferer le merge ou le rebase quand les commits sont nombreux et liés
+- **Toujours utiliser \`-x\`** pour garder la trace du commit source
+- **Un cherry-pick par fonctionnalité** : évitez de cherry-picker 15 commits d'un coup
+- **Tester après cherry-pick** : le code dépend peut-être d'autres commits non copiés
+- **Documenter le cherry-pick** dans le message (référence au ticket, à la PR)
+- **Vérifier avec \`--dry-run\`** avant de cherry-picker plusieurs commits
+- **Préférer le merge ou le rebase** quand les commits sont nombreux et liés
 
-## Pieges courants
+## Pièges courants
 
-- Cherry-picker un commit qui dépend d'autres commits non appliques (conflits)
+- Cherry-picker un commit qui dépend d'autres commits non appliqués (conflits en cascade)
 - Dupliquer des commits si le même fix est cherry-pické plusieurs fois
-- Perte du contexte de branches quand on cherry-pick sans \`-x\`
-- Conflits répétés si les branches ont divergé depuis le commit original
-- Oublier que les hashes changent — le \`git log\` original ne correspond plus
+- Perdre le contexte de branches si on oublie \`-x\`
+- Conflits répétés si les branches ont fortement divergé
+- Oublier que les hashes changent — le nouveau commit n'est plus lié à l'original
 
 ## Pour aller plus loin
 
 \`\`\`bash
-# Voir les commits cherry-pickés récemment
-git log --oneline --left-right HEAD...@{upstream}
-
-# Appliquer un range de commits (attention a l'ordre)
+# Cherry-pick d'un range de commits (attention à l'ordre)
 git cherry-pick abc123^..def456
 
-# Ne pas automatique commit (pour modifications manuelles)
+# Appliquer depuis une branche distante
+git cherry-pick origin/hotfix/urgent
+
+# Cherry-pick sans auto-commit (pour modifier le contenu avant commit)
 git cherry-pick -n abc123
+# ... modifier le code ...
+git add .
+git commit -m "fix: correction XSS adaptée à la branche main"
+
+# Voir les derniers cherry-picks
+git log --oneline --grep="cherry picked from"
 \`\`\`
 
-Source: https://git-scm.com/docs/git-cherry-pick`},
+Source : [Git Cherry-Pick Documentation](https://git-scm.com/docs/git-cherry-pick)`},
         {
           id: 'git-20',
           question: 'git bisect',
@@ -1849,18 +3134,28 @@ Source: https://git-scm.com/docs/git-cherry-pick`},
           code: 'git bisect start\ngit bisect bad          # commit actuel = bug\ngit bisect good <hash>  # ancien commit = OK\n# Git checkout le milieu, vous testez...\ngit bisect reset        # terminer',
           language: 'bash',
         
-          deepDive: `# git bisect
+          deepDive: `# git bisect — Recherche binaire de bugs
 
-## Qu'est-ce que c'est
+## Principe fondamental
 
-\`git bisect\` est un outil de recherche binaire pour trouver le commit qui a introduct un bug ou une regression. Il divise recursivement l'historique en deux jusqu'a identifier le commit responsable.
+\`git bisect\` est un outil de **recherche binaire** pour identifier le commit qui a introduit un bug ou une régression. Au lieu de parcourir tout l'historique (O(n)), Git divise l'intervalle en deux à chaque étape, trouvant le commit responsable en **O(log n)** étapes.
 
-Complexite: O(log n) au lieu de O(n) pour trouver le commit problematique.
+Pour 1000 commits : seulement ~10 tests au lieu de 1000 (2^10 = 1024).
 
-## Syntaxe et exemples
+\`\`\`
+Étapes de bisect sur 16 commits (trouvé en 4 tests au lieu de 16) :
+
+[G] [G] [G] [G] [G] [?] [B] [B] [B] [B] [B] [B] [B] [B] [B] [B]
+                 ^ milieu : NOUVEAU TEST
+                 → si good, le bug est après
+                 → si bad, le bug est avant
+                 → 2ème test : intervalle réduit de moitié
+\`\`\`
+
+## Syntaxe de base
 
 \`\`\`bash
-# Demarrer la recherche binaire
+# Démarrer la session
 git bisect start
 
 # Marquer le commit actuel comme "mauvais" (contient le bug)
@@ -1869,80 +3164,153 @@ git bisect bad
 # Marquer un commit ancien comme "bon" (pas de bug)
 git bisect good abc123
 
-# Git bascule automatiquement sur un commit intermediaire
-# Tester puis marquer
+# Git bascule automatiquement sur le commit du milieu
+# Vous testez et marquez :
 
-# Si le commit teste est bon (pas de bug)
+# Si le commit testé est bon (pas de bug)
 git bisect good
 
-# Si le commit teste est mauvais (contient le bug)
+# Si le commit testé est mauvais (contient le bug)
 git bisect bad
 
-# Git continue jusqu'a trouver le commit responsable
-# Resultat: commit abc123 is first bad commit
+# ... répéter jusqu'à trouver le commit responsable ...
 
-# Terminer la recherche
+# Résultat attendu :
+# abc123 is the first bad commit
+
+# Terminer la session (IMPORTANT)
 git bisect reset
+\`\`\`
 
-# Mode automatique (script de test)
+## Exemple complet
+
+\`\`\`bash
+# Situation : 50 commits, le bug existe sur HEAD
+# On sait que le commit abc123 (il y a 40 commits) était correct
+
+# 1. Démarrer
+git bisect start
+
+# 2. Marquer
+git bisect bad        # HEAD = bug
+git bisect good abc123  # abc123 = pas de bug
+
+# 3. Git checkout le commit #25 (milieu entre 0 et 40)
+# On teste :
+npm test
+
+# 4. Le test échoue ? => bisect bad
+# Git checkout le commit #12 (milieu entre 0 et 25)
+npm test
+
+# 5. Le test passe ? => bisect good
+# Git checkout le commit #18
+npm test
+# ... 6 tests au lieu de 40 ...
+
+# 6. Résultat
+# abc789 is the first bad commit
+# commit abc789
+# Author: ...
+# Date: ...
+#     feat: ajouter nouvelle validation
+
+# 7. Terminer
+git bisect reset
+\`\`\`
+
+## Mode automatique (git bisect run)
+
+Le plus puissant : \`git bisect run\` exécute une commande automatiquement à chaque étape :
+
+\`\`\`bash
+# Démarrer
 git bisect start
 git bisect bad HEAD
 git bisect good abc123
+
+# Laisser Git tester automatiquement
 git bisect run npm test
+# ou
+git bisect run make test
+# ou
+git bisect run python -m pytest
+
+# Résultat : trouvé en automatique !
+
+# Script personnalisé
+git bisect run ./test-bug.sh
 \`\`\`
 
-### Exemple complet
+Votre script doit retourner :
+- **0** = commit bon (good)
+- **1 à 124** = commit mauvais (bad)
+- **125** = commit à ignorer (skip)
 
 \`\`\`bash
-# Le bug existe depuis 50 commits
-# On sait que le commit abc123 etait correct
+#!/bin/bash
+# test-bug.sh
+npm run build 2>/dev/null && npm test
+exit $?
+\`\`\`
 
-git bisect start
-git bisect bad                 # HEAD contient le bug
-git bisect good abc123          # commit ancien sans bug
+## Ignorer des commits
 
-# Git teste: commit #25 - on teste et on decide
-git bisect good  # pas de bug
+\`\`\`bash
+# Si un commit ne peut pas être testé (build cassé, pas lié)
+git bisect skip
 
-# Git teste: commit #37 - on teste et on decide
-git bisect bad   # contient le bug
+# Ignorer tous les commits d'une série
+git bisect skip abc123..def456
 
-# Git converge en ~6 tests au lieu de 50
+# Visualiser l'avancement
+git bisect visualize
+
+# Voir le log de la session
+git bisect log
+
+# Rejouer une session depuis le log (utile pour scripts)
+git bisect replay bisect-log.txt
 \`\`\`
 
 ## Bonnes pratiques
 
-- Identifiez un "good" commit récent et un "bad" commit (HEAD)
-- Automatisez le test avec \`git bisect run <script>\`
-- Verifiez que le script de test retourne 0 = bon, 1-125 = mauvais, 125 = skip
-- Utilisez \`git bisect log\` pour documenter la session
-- Aprenez a\`git bisect reset\` pour revenir a l'etat initial
+- **Identifier un "good" commit** le plus proche possible du bug (intervalle réduit)
+- **Automatiser le test** avec \`git bisect run <script>\` — gagne un temps considérable
+- **Script déterministe** : le script doit retourner le même résultat pour le même commit
+- **Commit "good" doit être ANTÉRIEUR** au bug (sinon résultat inversé)
+- **Toujours faire \`git bisect reset\`** à la fin (ne pas rester en mode bisect)
+- **Vérifier le commit trouvé** avec \`git show abc123\` pour confirmer
 
-## Pieges courants
+## Pièges courants
 
-- Oublier de faire \`git bisect reset\` — rester dans un etat bisect
-- Mauvais marquage "good/bad" = resultat incorrect
-- Script de test non deterministe = resultats incohérents
-- Utiliser sur une branche avec des commits non compiles (build requis)
-- Ne pas verifier le commit trouve avec \`git show\`
+- Oublier \`git bisect reset\` : reste en mode bisect, HEAD détaché
+- Inverser good/bad : Git trouve le mauvais commit
+- Script non déterministe : résultats variables, recherche faussée
+- Commit "good" qui contient aussi le bug (élargir la recherche)
+- Commits qui ne compilent pas (utiliser \`git bisect skip\`)
+- Utiliser sur une branche avec des merges complexes (préférer \`--first-parent\`)
 
 ## Pour aller plus loin
 
 \`\`\`bash
-# Voir l'historique de la session bisect
-git bisect log
+# Bisect avec first-parent (pour historique avec merges)
+git bisect start --first-parent
 
-# Recommencer depuis le log
-git bisect replay
+# Utiliser un terme spécifique (pas juste good/bad)
+git bisect start --term-old=fast --term-new=slow
 
-# Trouver quand une ligne a change
-git blame src/app.ts | head -50
+# Exemple : trouver quand les performances ont changé
+git bisect start
+git bisect old abc123  # avant : rapide
+git bisect new HEAD    # maintenant : lent
+git bisect run ./benchmark.sh
 
-# Mode visualization
-git bisect visualize
+# Voir les commits dans l'intervalle de bisect
+git bisect log | head -20
 \`\`\`
 
-Source: https://git-scm.com/docs/git-bisect`},
+Source : [Git Bisect Documentation](https://git-scm.com/docs/git-bisect) et [Pro Git — Debugging](https://git-scm.com/book/fr/v2/Les-outils-de-Git-Déboguer-avec-Git)`},
         {
           id: 'git-21',
           question: 'git reflog',
@@ -1950,112 +3318,204 @@ Source: https://git-scm.com/docs/git-bisect`},
           code: 'git reflog            # voir l\'historique des actions\ngit reset --hard <hash>  # restaurer un état',
           language: 'bash',
         
-          deepDive: `# git reflog
+          deepDive: `# git reflog — Le filet de sécurité ultime
 
-## Qu'est-ce que c'est
+## Principe fondamental
 
-\`git reflog\` (Reference Log) stocke l'historique de toutes les modifications des références (branches, HEAD) sur les 90 derniers jours par defaut. C'est le "fil de securite" ultime pour recuperer un travail perdu.
+Le **reflog** (Reference Log) enregistre **toutes les actions** qui modifient la position de HEAD et des branches : commits, resets, rebases, merges, checkouts, stashes, etc. C'est votre **filet de sécurité** en cas de perte de données.
 
-Chaque operation qui modifie HEAD est enregistree: commits, rebase, reset, merge, checkout, stash, etc.
+**Caractéristiques clés :**
+- Conservé **90 jours** par défaut (configurable)
+- **Local** à votre dépôt (pas synchronisé avec le remote)
+- Contient **toutes les actions**, y compris les "accidents"
+- Permet de **restaurer** n'importe quel état antérieur
 
-## Syntaxe et exemples
+\`\`\`
+Entrées du reflog (chronologique inverse) :
+HEAD@{0}: commit: Ajouter validation email
+HEAD@{1}: reset: moving to HEAD~1
+HEAD@{2}: commit: WIP formulaire contact
+HEAD@{3}: checkout: moving from main to feature-auth
+HEAD@{4}: pull origin main: Fast-forward
+HEAD@{5}: commit: Fix bug login
+\`\`\`
+
+## Syntaxe de base
 
 \`\`\`bash
-# Voir le reflog complet de HEAD
+# Voir le reflog complet (HEAD)
 git reflog
 
-# Reflog d'une branche specifique
+# Voir le reflog d'une branche spécifique
 git reflog show main
 
-# Reflog avec date relative
+# Voir le reflog avec dates relatives
 git reflog --date=relative
 
-# N dernieres entrees
+# Voir le reflog avec dates absolues
+git reflog --date=iso
+
+# N dernières entrées
 git reflog -n 20
+
+# Voir le reflog de TOUTES les références (y compris les branches supprimées)
+git reflog --all
 \`\`\`
 
-### Sortie type
+## Restaurer un état perdu
 
-\`\`\`
-abc123 HEAD@{0}: reset: moving to HEAD~1
-def456 HEAD@{1}: commit: Ajouter feature de recherche
-ghi789 HEAD@{2}: checkout: moving to feature-branch
-\`\`\`
-
-### Recuperer un travail perdu
+### Scénario 1 : reset --hard accidentel
 
 \`\`\`bash
-# Situation: vous avez fait un reset --hard par erreur
+# Vous avez fait un reset --hard HEAD~2 par erreur
+git reset --hard HEAD~2
 
+# Oh non ! Vous avez perdu les 2 derniers commits !
+
+# 1. Voir le reflog
 git reflog
-# abc123 HEAD@{0}: reset: moving to HEAD~1 (vous etes ici)
-# def456 HEAD@{1}: commit: Ajouter feature (VOTRE TRAVAIL)
+# abc123 HEAD@{0}: reset: moving to HEAD~2   ← vous êtes ici
+# def456 HEAD@{1}: commit: Ajouter feature X  ← à récupérer
+# ghi789 HEAD@{2}: commit: Fix bug login
 
-# Recuperer
+# 2. Restaurer
 git reset --hard def456
-# Vous voila回到了 le commit avec votre travail
-
-# Situation: stash perdu
-
-git reflog | grep stash
-# jkl012 HEAD@{5}: stash: WIP
-
-git stash apply jkl012
+# Ou
+git checkout -b recovery-branch def456
 \`\`\`
 
-### Scenarios de Recuperation
+### Scénario 2 : rebase qui a mal tourné
 
 \`\`\`bash
-# Apres un merge incorrect
-git reflog
-git reset --hard HEAD@{n}
+# Un rebase a réécrit l'historique et perdu des commits
+git rebase --abort  # déjà trop tard, les commits sont "perdus"
 
-# Apres un rebase qui a mal tourne
+# 1. Voir le reflog
 git reflog
-git reset --hard ORIG_HEAD
+# ... HEAD@{5}: rebase finished: returning to refs/heads/feature
+# ... HEAD@{6}: checkout: moving from main to feature
 
-# Apres un checkout involontaire (perte de modifications)
+# 2. Revenir avant le rebase
+git reset --hard HEAD@{6}
+\`\`\`
+
+### Scénario 3 : branche supprimée
+
+\`\`\`bash
+# Supprimer une branche avec ses commits non fusionnés
+git branch -D feature-auth
+
+# Rattraper via reflog
+git reflog --all | grep feature-auth
+# abc123 refs/heads/feature-auth@{0}: commit: Finaliser auth
+
+# Recréer la branche
+git branch feature-auth abc123
+\`\`\`
+
+## Syntaxe HEAD@{n} et référence relative
+
+\`\`\`bash
+# HEAD@{n} signifie : "la position de HEAD il y a n actions"
+# Utile pour revenir en arrière
+
 git reflog
-git checkout -b recovery HEAD@{n}
+# abc123 HEAD@{0}: commit: Ajouter feature
+# def456 HEAD@{1}: reset: moving to HEAD~1
+# ghi789 HEAD@{2}: commit: WIP formulaire
+# jkl012 HEAD@{3}: commit: Ajouter validation
 
-# Apres un squash --soft (recuperer les commits separes)
+# Revenir à l'état d'il y a 2 actions
+git reset --hard HEAD@{2}
+
+# Revenir à l'état d'il y a 1 heure
+git reset --hard HEAD@{1.hour.ago}
+
+# Revenir à hier
+git reset --hard HEAD@{1.day.ago}
+\`\`\`
+
+## Scénarios de récupération avancés
+
+\`\`\`bash
+# Après un merge incorrect
+git reflog
+git reset --hard HEAD@{1}  # avant le merge
+
+# Après un checkout involontaire (perte de modifications)
+git reflog
+git checkout -b recovery-branch HEAD@{1}
+
+# Après un stash perdu
+git reflog | grep stash
+# jkl012 HEAD@{5}: stash: WIP feature X
+git stash apply jkl012
+
+# Après un squash --soft (récupérer les commits séparés)
 git reflog
 # voir les commits originaux dans HEAD@{n}
+git reset --soft HEAD@{n}
+
+# Après un reset --hard de ORIG_HEAD
+git reflog show ORIG_HEAD
+\`\`\`
+
+## Configuration du reflog
+
+\`\`\`bash
+# Voir la durée de rétention actuelle
+git config --get gc.reflogExpire
+# défaut : 90 days
+
+# Configurer la durée (en jours)
+git config --global gc.reflogExpire 180
+
+# Configurer pour les commits inaccessibles (plus court)
+git config --global gc.reflogExpireUnreachable 30
+
+# Nettoyer manuellement les entrées expirées
+git reflog expire --expire=now --all
+
+# Désactiver le garbage collection sur le reflog
+git config --global gc.reflogExpire never
+# Attention : peut faire grossir le dépôt
 \`\`\`
 
 ## Bonnes pratiques
 
-- Executez regulierement \`git reflog\` pour comprendre l'historique
-- Comprenez que le reflog est LOCAL et n'est pas synchronise avec le remote
-- Configurez \`gc.reflogExpireUnreachable\` pour garder plus longtemps
-- Le reflog est essentiel apres un \`reset --hard\` ou un \`rebase --abort\`
-- Combinez avec \`git stash list\` pour troubleshouter les stash lost
+- **Premier réflexe après une erreur** : \`git reflog\` (avant \`git fsck\` ou autres)
+- **Comprendre** que le reflog est LOCAL et temporaire (90 jours)
+- **Faire une branche de backup** avant les opérations risquées (rebase, reset --hard)
+- **Combiner avec \`git stash list\`** pour retrouver les stashs perdus
+- **Documenter** dans l'équipe : "reflog est votre ami en cas de catastrophe"
+- **Utiliser \`--all\`** pour voir les branches supprimées
 
-## Pieges courants
+## Pièges courants
 
-- Croire que le reflog est partagé avec l'equipe (il est local)
-- Reflexe de faire \`git push --force\` apres avoir vu le reflog
-- Le reflog expire (par defaut 90 jours) — ne pas s'y fier eternellement
-- Confondre \`git reflog\` avec \`git log\` (reflog montre les moves, pas les commits)
-- Oublier de nettoyer les refs locales orphelines
+- **Le reflog est local** : pas accessible aux autres, pas sauvegardé sur le remote
+- **Expiration** : 90 jours par défaut (ou après \`git gc\`)
+- Confondre \`git reflog\` (actions/positions) avec \`git log\` (historique des commits)
+- Oublier que le reflog ne couvre pas les commits non rattachés (dangling commits)
+- \`git gc\` peut nettoyer le reflog et rendre la récupération impossible
+- Faire un \`git push --force\` après avoir récupéré du reflog (vérifier avant)
 
 ## Pour aller plus loin
 
 \`\`\`bash
-# Configurer la duree de rétention du reflog (en jours)
-git config --global gc.reflogExpire 90
+# Voir le reflog formaté
+git reflog --format="%gd %gs"
 
-# Nettoyer les refs expiré
-git reflog expire --expire=now --all
+# Comparer l'état actuel avec un point du reflog
+git diff HEAD HEAD@{1.day.ago}
 
-# Reflog des branches supprimees (accessible 30 jours)
-git reflog --all
+# Nettoyer le reflog des entrées inutiles
+git reflog expire --expire-unreachable=now --all
 
-# Voir le reflog d'une ref supprimee
+# Voir le reflog d'une référence supprimée
 git reflog show refs/heads/deleted-branch
 \`\`\`
 
-Source: https://git-scm.com/docs/git-reflog`},
+Source : [Git Reflog Documentation](https://git-scm.com/docs/git-reflog)`},
         {
           id: 'git-22',
           question: 'Commit signing (GPG)',
@@ -2063,93 +3523,185 @@ Source: https://git-scm.com/docs/git-reflog`},
         
           deepDive: `# Commit Signing (GPG)
 
-## Qu'est-ce que c'est
+## Principe fondamental
 
-Le commit signing est l'authentification cryptographique de vos commits Git avec une clé GPG. Elle garantit que les commits proviennent bien de vous et nont pas été falsifiés.
+La signature GPG (GNU Privacy Guard) permet de **signer cryptographiquement** vos commits et tags Git. Cela garantit :
 
-Utile pour:
-- Eviter l'usurpation d'identite (quelqu'un pretendant être vous)
-- Augmenter la confiance dans le processus de revue
-- Satisfaire les exigences de compliance (Corporate, Government)
+- **Authenticité** : le commit vient bien de vous (pas d'usurpation d'identité)
+- **Intégrité** : le contenu du commit n'a pas été modifié après signature
+- **Non-répudiation** : vous ne pouvez pas nier avoir fait ce commit
 
-## Syntaxe et exemples
+Sur GitHub/GitLab, les commits signés affichent un badge **"Verified"** ou **"Signed"**. Certaines entreprises exigent la signature pour la conformité et la chaîne de confiance.
+
+## Configuration GPG
 
 \`\`\`bash
-# Generer une cle GPG (si pas déjà fait)
-gpg --full-generate-key
-# Type: RSA and RSA
-# Taille: 4096
-#Expiration: 2y
-# Name/Email: matching votre git config
-
-# Voir les cles GPG
+# 1. Vérifier si vous avez déjà une clé
 gpg --list-secret-keys --keyid-format LONG
 
-# Obtenir la clé publique
-gpg --armor --export <key-id>
-# Copier le resultat (debut par -----BEGIN PGP PUBLIC KEY BLOCK-----)
+# 2. Générer une nouvelle clé
+gpg --full-generate-key
+# Type : RSA and RSA (ou Ed25519 si supporté)
+# Taille : 4096 bits
+# Expiration : 2 ans (recommandé)
+# Email : DOIT correspondre à l'email de votre Git config
 
-# Configurer Git pour signer
-git config --global user.signingkey <key-id>
+# 3. Lister les clés pour obtenir l'ID
+gpg --list-secret-keys --keyid-format LONG
+# sec   rsa4096/ABC123DEF456 2024-01-01 [SC]
+#                              ^-- ID de la clé
+
+# 4. Exporter la clé publique
+gpg --armor --export ABC123DEF456
+# Copier le résultat (de ---BEGIN PGP PUBLIC KEY BLOCK--- à ---END---)
+\`\`\`
+
+## Configuration Git
+
+\`\`\`bash
+# Associer la clé GPG à Git
+git config --global user.signingkey ABC123DEF456
+
+# Activer la signature par défaut pour tous les commits
 git config --global commit.gpgsign true
 
+# Activer la signature pour les tags
+git config --global tag.gpgSign true
+
+# Vérifier la configuration
+git config --global --list | grep gpg
+# user.signingkey=ABC123DEF456
+# commit.gpgsign=true
+# tag.gpgsign=true
+\`\`\`
+
+## Ajouter la clé à GitHub/GitLab
+
+\`\`\`bash
+# 1. Exporter la clé publique
+gpg --armor --export ABC123DEF456
+
+# 2. GitHub : Settings > SSH and GPG keys > New GPG key
+#    Copier la clé publique (---BEGIN PGP PUBLIC KEY BLOCK---)
+#
+# 3. GitLab : Settings > GPG Keys > Add key
+#
+# Important : l'email de la clé GPG doit correspondre à l'email
+# de votre compte GitHub/GitLab ET à votre git config local
+\`\`\`
+
+## Signer des commits
+
+\`\`\`bash
 # Signer un commit
-git commit -S -m "Add feature X"
+git commit -S -m "feat: ajouter authentification OAuth2"
+# -S = signer (majuscule)
+
+# Signer avec une clé spécifique (si plusieurs clés)
+git commit -SABC123DEF456 -m "feat: ajouter auth"
 
 # Signer un tag
 git tag -s v1.0.0 -m "Release 1.0.0"
 
-# Verifier les signatures
+# Vérifier les signatures dans l'historique
 git log --show-signature
 
-# Pousser avec signature (si requis par remote)
-git push --signed
+# Vérifier un commit spécifique
+git verify-commit HEAD
+
+# Vérifier un tag
+git verify-tag v1.0.0
 \`\`\`
 
-### Configuration GitHub/GitLab
+## Configuration avancée
 
 \`\`\`bash
-# GitHub: ajouter la clé GPG dans Settings > SSH and GPG keys
-# Le clé doit correspondre a l'email de votre compte GitHub
+# Cacher la phrase de passe GPG (macOS)
+brew install pinentry-mac
+echo "pinentry-program /usr/bin/pinentry-mac" >> ~/.gnupg/gpg-agent.conf
+gpgconf --kill gpg-agent
 
-# Verifier le statut de signature sur GitHub
-# Chaque commit signed affiche "Verified" badge
+# Cacher la phrase de passe GPG (Linux)
+sudo apt-get install pinentry-tty
+echo "pinentry-program /usr/bin/pinentry-tty" >> ~/.gnupg/gpg-agent.conf
+gpgconf --kill gpg-agent
+
+# Utiliser l'agent GPG avec SSH (forwarding)
+echo "enable-ssh-support" >> ~/.gnupg/gpg-agent.conf
+
+# Configurer Git pour utiliser une clé différente par dépôt
+cd mon-projet
+git config user.signingkey AUTRECLE123
+
+# Exiger la signature pour le push (remote)
+git push --signed origin main
+# Le remote doit supporter signed pushes
+\`\`\`
+
+## Gérer plusieurs clés
+
+\`\`\`bash
+# Créer une clé dédiée au travail (recommandé)
+gpg --full-generate-key
+# Email: prenom.nom@entreprise.com
+
+# Créer une clé personnelle
+gpg --full-generate-key
+# Email: prenom.nom@gmail.com
+
+# Configurer par dépôt
+cd ~/work/projet-entreprise
+git config user.signingkey CLE_PRO
+
+cd ~/perso/projet-personnel
+git config user.signingkey CLE_PERSO
 \`\`\`
 
 ## Bonnes pratiques
 
-- Utilisez une clé GPG dédiée pour le développement (pas personnelle)
-- Definissez une expiration raisonable (1-2 ans) et planifiez le renouvellement
-- Stockez la clé privée en lieu sur (YubiKey, KeepassXC)
-- Configurez \`commit.gpgsign = true\` par defaut dans global
-- Faites tourner les clés tous les 2-3 ans minimum
-- Exportez une clé de revocation au cas où
+- Utiliser une **clé GPG dédiée au travail** (pas la clé personnelle)
+- Configurer une **expiration** (1-2 ans) et planifier le renouvellement
+- **Stocker la clé privée** dans un endroit sûr (YubiKey, KeepassXC, gestionnaire de mots de passe)
+- **Exporter une clé de révocation** au moment de la création de la clé
+- **Tourner les clés** tous les 2-3 ans minimum
+- Activer \`commit.gpgsign true\` en global (ne pas oublier de signer)
+- Configurer le **cache de phrase de passe** (pinentry) pour éviter de la saisir à chaque commit
 
-## Pieges courants
+## Pièges courants
 
-- Email GPG ne correspondant pas a l'email Git (signature non validee)
-- Clé expirée — commits non signes automatiquement
-- Oublier de configuration \`commit.gpgsign = true\` sur une nouvelle machine
-- Stocker la clé privée sur un ordinateur non securise
-- Ne pas faire de backup de la clé privée et de la phrase de passe
+- **Email GPG != email Git** : la signature ne sera pas vérifiée par GitHub/GitLab
+- **Clé expirée** : les commits ne seront plus signés (badge "Unverified")
+- Oublier de configurer \`commit.gpgsign = true\` sur une nouvelle machine
+- Stocker la clé privée sur une machine non sécurisée
+- Perdre la phrase de passe (clé inutilisable)
+- **Ne pas exporter la clé de révocation** : si la clé est compromise, impossible de la révoquer
+- Utiliser une clé trop courte (RSA 2048 minimum, 4096 recommandé)
 
 ## Pour aller plus loin
 
 \`\`\`bash
-# Voir les commits non signs récemment
-git log --no-merges --author="Your Name" --pretty=format:"%h %s" | head -20
+# Signer des pushes (GitHub)
+# Settings > Branches > Require signed commits
 
-# Enforcing signature sur le remote (GitHub)
-# Settings > Branches > Protect main > Require signed commits
+# Voir les commits non signés récemment
+git log --no-merges --author="Votre Nom" --pretty=format:"%h %s"
 
-# Cache la phrase de passe GPG (macOS)
-echo "pinentry-program /usr/bin/pinentry-mac" >> ~/.gnupg/gpg-agent.conf
+# Exporter la clé de révocation
+gpg --gen-revoke ABC123DEF456 > revocation.asc
+# Stocker ce fichier dans un endroit sûr !
 
-# Signer automatiquement les tags
-git config --global tag.forceSignSigned true
+# Importer une clé sur une nouvelle machine
+gpg --import cle-privee.asc
+
+# Révoguer une clé compromise
+gpg --import revocation.asc
+gpg --keyserver keyserver.ubuntu.com --send-keys ABC123DEF456
+
+# Voir l'état des signatures
+git log --show-signature --oneline -10
 \`\`\`
 
-Source: https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work`},
+Source : [Git Tools — Signing Your Work](https://git-scm.com/book/fr/v2/Les-outils-de-Git-Signer-votre-travail) et [GitHub — Managing commit signature verification](https://docs.github.com/en/authentication/managing-commit-signature-verification)`},
       ],
     },
   ],

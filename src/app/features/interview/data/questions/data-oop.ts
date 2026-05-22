@@ -15,27 +15,80 @@ export const oopCategory: InterviewCategory = {
           question: 'Les 4 principes de la POO',
           answer: "Les **4 piliers** : **Encapsulation** (cachéer les données internes, exposer via `getters`/`setters` pour protéger l'intégrité), **Héritage** (réutiliser le code d'une classe parente, éviter la duplication), **Polymorphisme** (une même méthode, des comportements différents selon l'objet — *flexibilité*), **Abstraction** (montrer l'essentiel, cachéer la complexité — *simplicité d'utilisation*).",
         
-          deepDive: `# Les 4 principes de la POO
+          deepDive: `# Les 4 piliers de la POO
 
-## Quest-ce que cest ?
+## Principe
 
-La programmation oriente objet (POO) est un paradigme base sur le concept d'objets qui contiennent des donnees (attributs) et du code (methodes). Les quatre principes fondamentaux sont :
+La Programmation Orientée Objet (POO) repose sur quatre piliers fondamentaux qui definissent comment structurer le code pour qu'il soit maintenable, extensible et reutilisable. Ces principes sont universels, valables quelque soit le langage (Java, C#, Python, TypeScript, etc.).
 
-1. **Encapsulation** - Cacher les details internes dun objet
-2. **Héritage** - Créer de nouvelles classes à partir de classes existantes
-3. **Polymorphisme** - Utiliser une interface commune pour différents types
-4. **Abstraction** - Simplifier la complexité en ocultant les détails non essentiels
+## 1. Encapsulation — Proteger les donnees
 
-## Syntaxe et exemples
+L'encapsulation consiste a cacher les details internes d'un objet et a controler l'acces a ses donnees via une interface publique (getters/setters). Cela protege l'integrite des donnees et permet de modifier l'implementation sans impacter les appelants.
 
-// Java
+### Java
+
+\`\`\`java
+public class CompteBancaire {
+    private double solde;  // Donnee protegee
+
+    public double getSolde() {
+        return solde;
+    }
+
+    public void deposer(double montant) {
+        if (montant > 0) {
+            solde += montant;
+        }
+    }
+
+    public boolean retirer(double montant) {
+        if (montant > 0 && montant <= solde) {
+            solde -= montant;
+            return true;
+        }
+        return false;
+    }
+}
+\`\`\`
+
+### TypeScript
+
+\`\`\`typescript
+class BankAccount {
+    private _balance = 0;
+
+    get balance(): number {
+        return this._balance;
+    }
+
+    deposit(amount: number): void {
+        if (amount > 0) {
+            this._balance += amount;
+        }
+    }
+
+    withdraw(amount: number): boolean {
+        if (amount > 0 && amount <= this._balance) {
+            this._balance -= amount;
+            return true;
+        }
+        return false;
+    }
+}
+\`\`\`
+
+## 2. Heritage — Reutiliser le code
+
+L'heritage permet a une classe (sous-classe) de recuperer les attributs et methodes d'une autre classe (super-classe). La relation doit representer un "est-un" (is-a).
+
+\`\`\`java
 public class Animal {
     protected String nom;
-    
+
     public Animal(String nom) {
         this.nom = nom;
     }
-    
+
     public void manger() {
         System.out.println(nom + " mange");
     }
@@ -45,113 +98,300 @@ public class Chien extends Animal {
     public Chien(String nom) {
         super(nom);
     }
-    
+
     @Override
     public void manger() {
         System.out.println(nom + " mange des croquettes");
     }
+
+    public void aboyer() {
+        System.out.println(nom + " aboie");
+    }
+}
+\`\`\`
+
+## 3. Polymorphisme — Une interface, multiples comportements
+
+Le polymorphisme permet a des objets de types differents de repondre a un meme message de facon appropriee. Deux formes :
+
+**Polymorphisme dynamique (overriding)** : une sous-classe redefinit une methode heritee. Resolution a l'execution.
+
+\`\`\`java
+List<Animal> animaux = Arrays.asList(new Chien("Rex"), new Chat("Felix"));
+for (Animal a : animaux) {
+    a.manger();  // Chaque animal mange a sa facon
+}
+\`\`\`
+
+**Polymorphisme statique (overloading)** : meme nom de methode avec des parametres differents dans la meme classe. Resolution a la compilation.
+
+\`\`\`java
+class Calculatrice {
+    int addition(int a, int b) { return a + b; }
+    double addition(double a, double b) { return a + b; }
+    int addition(int a, int b, int c) { return a + b + c; }
+}
+\`\`\`
+
+## 4. Abstraction — Cacher la complexite
+
+L'abstraction consiste a ne montrer que l'essentiel et a cacher les details d'implementation. On utilise des classes abstraites et des interfaces.
+
+\`\`\`java
+// Interface — contrat pur
+interface Drawable {
+    void draw();
+    double getArea();
 }
 
-// Python
-class Animal:
-    def __init__(self, nom):
-        self.nom = nom
-    
-    def manger(self):
-        print(f"{self.nom} mange")
+abstract class Shape {
+    protected String color;
 
-class Chien(Animal):
-    def manger(self):
-        print(f"{self.nom} mange des croquettes")
+    abstract double getArea();  // Sans implementation
+
+    void setColor(String color) {  // Avec implementation
+        this.color = color;
+    }
+}
+
+class Circle extends Shape implements Drawable {
+    private double radius;
+
+    Circle(double radius, String color) {
+        this.radius = radius;
+        this.color = color;
+    }
+
+    @Override
+    double getArea() {
+        return Math.PI * radius * radius;
+    }
+
+    @Override
+    public void draw() {
+        System.out.println("Drawing circle");
+    }
+}
+\`\`\`
+
+## Les 4 piliers en pratique
+
+| Pilier | Objectif | Mecanisme |
+|--------|----------|-----------|
+| Encapsulation | Proteger l'integrite des donnees | private + getters/setters |
+| Heritage | Reutiliser le code | extends (classe) / implements (interface) |
+| Polymorphisme | Flexibilite et extensibilite | Overriding / Overloading |
+| Abstraction | Simplifier la complexite | Classes abstraites / Interfaces |
+
+## Principes SOLID en lien
+
+Les 4 piliers sont renforces par les principes SOLID :
+
+- **SRP** (Single Responsibility) : renforce la cohesion — un pilier par classe
+- **OCP** (Open/Closed) : rendu possible par le polymorphisme
+- **LSP** (Liskov Substitution) : garantit le bon usage de l'heritage
+- **ISP** (Interface Segregation) : raffine l'abstraction
+- **DIP** (Dependency Inversion) : rendu possible par le polymorphisme
 
 ## Bonnes pratiques
 
-- Favoriser la composition sur l'héritage quand possible
-- Utiliser des interfaces pour définir des contrats
-- Garder les classes avec une seule responsabilité (SRP)
-- Utiliser des noms descriptifs pour les classes et méthodes
-- Limiter la visibilité des attributs (private/protected)
+- Favoriser la composition sur l'heritage (design pattern Strategy)
+- Programmer par interface, pas par implementation
+- Une classe = une responsabilite (SRP)
+- Heritage max 2-3 niveaux de profondeur
+- Toujours utiliser @Override pour detecter les erreurs de signature
 
-## Pièges courants
+## Pieges courants
 
-- Héritage profond (diamond problem) - éviter les hiérarchies trop profondes
-- Violer le principe de substitution de Liskov (LSP)
-- Exposition des données internes via attributs publics
-- Couplage fort entre classes via héritage excessif
+- Heritage la ou la composition suffirait
+- Violation de LSP : sous-classe qui casse le contrat de la super-classe
+- Exposition des donnees internes (attributs publics)
+- Classes "God" qui violent tous les principes
 
-Source : [Oracle Java Documentation - Classes and Objects](https://docs.oracle.com/javase/tutorial/java/concepts/)`},
+Source : [Oracle Java Tutorial — Object-Oriented Programming Concepts](https://docs.oracle.com/javase/tutorial/java/concepts/)
+`},
         {
           id: 'oop-2',
           question: "L'encapsulation",
           answer: "L'**encapsulation** consiste à déclarer les variables comme **privées** et contrôler leur accès via des `getters`/`setters`. Cela permet de valider les données (ex. : refuser un âge négatif dans `setAge()`) et de garantir l'intégrité.\n\nL'interface publique reste stable même si l'implémentation interne change. **Données privées + méthodes publiques = contrôle et intégrité.**",
           example: "Personne avec champ privé nom → accessible uniquement via getNom() / setNom(). On peut ajouter une validation dans setNom() pour refuser les noms vides, par exemple.",
         
-          deepDive: `# L'encapsulation
+          deepDive: `# L'encapsulation en POO
 
-## Quest-ce que cest ?
+## Principe
 
-L'encapsulation est le principe qui consiste à regrouper les données (attributs) et les méthodes qui manipulent ces données dans une seule unité (la classe), tout en limitant l'accès direct aux détails internes.
+L'encapsulation est le pilier de la POO qui consiste a regrouper les donnees (attributs) et les methodes qui les manipulent dans une meme unite (la classe), tout en limitant l'acces direct aux details internes. C'est le mecanisme qui protege l'etat d'un objet contre les modifications non autorisees ou incoherentes.
 
-L'encapsulation protège :
-- L'état interne d'un objet contre les modifications non autorisées
-- La complexité d'implémentationcachee derriere une interface simple
-- La cohérence des données en validant les modifications
+## Les trois piliers de l'encapsulation
 
-## Syntaxe et exemples
+1. **Regroupement** : donnees et comportement dans la meme classe
+2. **Protection** : attributs prives, interface publique
+3. **Controle** : validation des donnees via les methodes d'acces
 
-// Java - Getters et Setters
-public class CompteBancaire {
-    private double solde;
-    private String proprietaire;
-    
-    public double getSolde() {
-        return solde;
+## Implementation en Java
+
+### Getters et Setters avec validation
+
+\`\`\`java
+public class Personne {
+    private String nom;
+    private int age;
+    private String email;
+
+    public String getNom() {
+        return nom;
     }
-    
-    public void deposer(double montant) {
-        if (montant > 0) {
-            solde += montant;
+
+    public void setNom(String nom) {
+        if (nom == null || nom.trim().isEmpty()) {
+            throw new IllegalArgumentException("Le nom ne peut pas etre vide");
         }
+        this.nom = nom.trim();
     }
-    
-    public void retirer(double montant) {
-        if (montant > 0 && montant <= solde) {
-            solde -= montant;
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        if (age < 0 || age > 150) {
+            throw new IllegalArgumentException("Age invalide : " + age);
         }
+        this.age = age;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        if (email != null && !email.contains("@")) {
+            throw new IllegalArgumentException("Email invalide");
+        }
+        this.email = email;
     }
 }
+\`\`\`
 
-// Python - Property decorators
-class CompteBancaire:
-    def __init__(self, proprietaire):
-        self.__solde = 0  # Attribut privé
-        self.__proprietaire = proprietaire
-    
-    @property
-    def solde(self):
-        return self.__solde
-    
-    @solde.setter
-    def solde(self, valeur):
-        if valeur >= 0:
-            self.__solde = valeur
+### Sans getters/setters exposes — Methodes metier
+
+Tous les attributs n'ont pas besoin de getters/setters. Parfois seule l'operation metier est exposee :
+
+\`\`\`java
+public class CompteBancaire {
+    private double solde;
+    private List<Transaction> transactions = new ArrayList<>();
+
+    // Pas de getSolde() — on expose des methodes metier
+    public void crediter(double montant, String libelle) {
+        if (montant <= 0) throw new IllegalArgumentException("Montant invalide");
+        solde += montant;
+        transactions.add(new Transaction(montant, libelle, TypeTransaction.CREDIT));
+    }
+
+    public boolean debiter(double montant, String libelle) {
+        if (montant <= 0 || montant > solde) return false;
+        solde -= montant;
+        transactions.add(new Transaction(montant, libelle, TypeTransaction.DEBIT));
+        return true;
+    }
+
+    public List<Transaction> getHistorique() {
+        return Collections.unmodifiableList(transactions); // Immutable !
+    }
+}
+\`\`\`
+
+## Implementation en TypeScript
+
+\`\`\`typescript
+class Employee {
+    private _firstName: string;
+    private _lastName: string;
+    private _salary: number;
+
+    constructor(firstName: string, lastName: string, salary: number) {
+        this._firstName = firstName;
+        this._lastName = lastName;
+        this._salary = salary;
+    }
+
+    // Getter
+    get fullName(): string {
+        return \\\`\\\${this._firstName} \\\${this._lastName}\\\`;
+    }
+
+    // Getter/Setter avec validation
+    get salary(): number {
+        return this._salary;
+    }
+
+    set salary(value: number) {
+        if (value < 0) {
+            throw new Error('Salary cannot be negative');
+        }
+        this._salary = value;
+    }
+
+    // Methode metier plutot que setter
+    giveRaise(percentage: number): void {
+        if (percentage <= 0 || percentage > 100) {
+            throw new Error('Invalid percentage');
+        }
+        this._salary += this._salary * (percentage / 100);
+    }
+}
+\`\`\`
+
+## Comparaison des niveaux de visibilite
+
+| Modificateur | Classe | Package | Sous-classe | Monde |
+|-------------|--------|---------|-------------|-------|
+| private | Oui | Non | Non | Non |
+| (default/package) | Oui | Oui | Non | Non |
+| protected | Oui | Oui | Oui | Non |
+| public | Oui | Oui | Oui | Oui |
 
 ## Bonnes pratiques
 
-- Toujours declarer les attributs comme privés (private)
-- Fournir des getters/setters uniquement quand nécessaire
-- Valider les donnees dans les methodes de modification
-- Utiliser des methodes métier plutôt que des accès directs
-- Préférer l'immutabilité quand possible (final en Java, readonly en C#)
+- Toujours declarer les attributs comme \`private\`
+- Exposer uniquement ce qui est necessaire (interface minimale)
+- Valider les donnees dans les setters et methodes de modification
+- Retourner des copies (ou collections immutables) des donnees internes
+- Preferer l'immutabilite quand possible (\`final\` en Java, \`readonly\` en TypeScript)
+- Ne pas creer de getters/setters systematiques — seulement si necessaire
+- Utiliser des methodes metier au lieu de simples setters quand il y a une logique
 
-## Pièges courants
+## Pieges courants
 
-- Exposer tous les attributs comme publics
-- Négliger la validation dans les setters
-- Créer des getters qui retournent des objets mutables
-- Oublier de gérer les cas d'erreur (valeurs négatives, null, etc.)
+- Exposer tous les attributs comme publics (pas d'encapsulation)
+- Creer des getters qui retournent des references a des objets mutables (violation)
+- Oublier la validation dans les setters
+- Setters/getters automatiques sans reflexion (Lombok peut cacher le probleme)
+- Exposer des collections internes sans defense
 
-Source : [Oracle Java Documentation - Encapsulation](https://docs.oracle.com/javase/tutorial/java/javaOO/encapsulation.html)`},
+## Encapsulation et immutabilite
+
+\`\`\`java
+public final class ImmutablePerson {
+    private final String name;
+    private final List<String> hobbies;
+
+    public ImmutablePerson(String name, List<String> hobbies) {
+        this.name = name;
+        this.hobbies = new ArrayList<>(hobbies);  // Copie defensive
+    }
+
+    public String getName() { return name; }
+
+    public List<String> getHobbies() {
+        return Collections.unmodifiableList(hobbies);  // Vue immuable
+    }
+}
+\`\`\`
+
+Source : [Oracle Java Tutorial — Encapsulation](https://docs.oracle.com/javase/tutorial/java/javaOO/encapsulation.html)
+`},
         {
           id: 'oop-3',
           question: "L'héritage",
@@ -159,71 +399,195 @@ Source : [Oracle Java Documentation - Encapsulation](https://docs.oracle.com/jav
           code: 'public class Voiture extends Vehicule {\n    public void activerClimatisation() { ... }\n}',
           language: 'java',
         
-          deepDive: `# L'heritage
+          deepDive: `# L'heritage en POO
 
-## Quest-ce que cest ?
+## Principe
 
-L'heritage est un mecanisme qui permet a une classe (classe fille/sous-classe) de recevoir les proprietés et methodes d'une autre classe (classe mere/super-classe). Cela favorise la réutilisation du code et établit une relation "est-un" entre les classes.
+L'heritage est un mecanisme qui permet a une classe (sous-classe / classe fille) de recevoir les proprietes et methodes d'une autre classe (super-classe / classe mere). Il etablit une relation "est-un" (is-a) et favorise la reutilisation du code.
 
-Types d'heritage :
-- **Simple** : une classe hérite d'une seule classe (Java, C#)
-- **Multiple** : une classe hérite de plusieurs classes (C++, Python)
-- **Multiniveau** : héritage en cascade (A -> B -> C)
-- **Hiérarchique** : plusieurs classes héritent d'une même classe
+## Types d'heritage
 
-## Syntaxe et exemples
+| Type | Description | Exemple | Support Java | Support TypeScript |
+|------|-------------|---------|-------------|-------------------|
+| Simple | Une classe herite d'une seule | A → B | Oui | Oui |
+| Multiple | Une classe herite de plusieurs | A, B → C | Non (classes) | Non (classes) |
+| Multiniveau | Heritage en cascade | A → B → C | Oui | Oui |
+| Hierarchique | Plusieurs classes heritent d'une meme | A → B, C | Oui | Oui |
 
-// Java - Héritage simple
-public class Animal {
-    protected String nom;
-    
-    public void manger() {
-        System.out.println("Animal mange");
+## Heritage simple en Java
+
+\`\`\`java
+// Super-classe
+public class Vehicule {
+    protected String marque;
+    protected String modele;
+    protected int vitesse;
+
+    public Vehicule(String marque, String modele) {
+        this.marque = marque;
+        this.modele = modele;
+        this.vitesse = 0;
+    }
+
+    public void demarrer() {
+        System.out.println(marque + " " + modele + " demarre");
+    }
+
+    public void accelerer(int kmh) {
+        this.vitesse += kmh;
+    }
+
+    public void freiner() {
+        this.vitesse = 0;
     }
 }
 
-public class Chien extends Animal {
-    private String race;
-    
-    public void aboyer() {
-        System.out.println(nom + " aboie");
+// Sous-classe
+public class Voiture extends Vehicule {
+    private int nombrePortes;
+
+    public Voiture(String marque, String modele, int nombrePortes) {
+        super(marque, modele);  // Appel du constructeur parent
+        this.nombrePortes = nombrePortes;
     }
-    
+
+    // Redefinition (override)
     @Override
-    public void manger() {
-        System.out.println(nom + " mange des croquettes");
+    public void demarrer() {
+        System.out.println("La voiture " + marque + " " + modele + " ronronne");
+    }
+
+    // Nouvelle methode
+    public void activerClimatisation() {
+        System.out.println("Climatisation activee");
+    }
+}
+\`\`\`
+
+## Heritage en TypeScript
+
+\`\`\`typescript
+class Vehicle {
+    protected brand: string;
+    protected model: string;
+    protected speed: number = 0;
+
+    constructor(brand: string, model: string) {
+        this.brand = brand;
+        this.model = model;
+    }
+
+    start(): void {
+        console.log(\\\`\\\${this.brand} \\\${this.model} is starting\\\`);
+    }
+
+    accelerate(kmh: number): void {
+        this.speed += kmh;
+    }
+
+    brake(): void {
+        this.speed = 0;
     }
 }
 
-// Python - Héritage multiple
-class A:
-    def methode_a(self):
-        print("A")
+class Car extends Vehicle {
+    constructor(brand: string, model: string, private doors: number) {
+        super(brand, model);
+    }
 
-class B:
-    def methode_b(self):
-        print("B")
+    override start(): void {
+        console.log(\\\`The car \\\${this.brand} \\\${this.model} purrs\\\`);
+    }
 
-class C(A, B):
-    pass
+    activateAC(): void {
+        console.log('AC activated');
+    }
+}
+\`\`\`
+
+## Le mot-cle super
+
+\`super\` est essentiel dans l'heritage :
+
+\`\`\`java
+public class Manager extends Employee {
+    private List<Employee> equipe;
+
+    public Manager(String nom, double salaire, List<Employee> equipe) {
+        super(nom, salaire);  // Doit etre la premiere ligne du constructeur
+        this.equipe = equipe;
+    }
+
+    @Override
+    public double getSalaire() {
+        // Utilise la methode du parent puis ajoute un bonus
+        return super.getSalaire() + this.calculerBonus();
+    }
+
+    private double calculerBonus() {
+        return equipe.size() * 100;
+    }
+}
+\`\`\`
+
+## Heritage et constructeurs — Regles importantes
+
+1. Le constructeur de la sous-classe DOIT appeler un constructeur de la super-classe
+2. \`super()\` est implicite si la super-classe a un constructeur sans parametres
+3. Si la super-classe a uniquement des constructeurs parametres, \`super(...)\` est obligatoire
+
+## Le probleme du diamant
+
+L'heritage multiple de classes est interdit en Java et TypeScript a cause du probleme du diamant :
+
+\`\`\`
+    Animal
+    /    \\
+ Chien  Chat
+    \\    /
+   ChienChat  ← Quelle methode \`manger()\` heriter ?
+\`\`\`
+
+Solution : les interfaces permettent d'heriter de plusieurs contrats sans conflit.
+
+\`\`\`java
+interface Volant {
+    void voler();
+}
+
+interface Nageur {
+    void nager();
+}
+
+class Canard implements Volant, Nageur {
+    @Override
+    public void voler() { System.out.println("Le canard vole"); }
+
+    @Override
+    public void nager() { System.out.println("Le canard nage"); }
+}
+\`\`\`
 
 ## Bonnes pratiques
 
-- Préférer la composition à l'héritage quand les relations ne sont pas strictement "est-un"
-- Utiliser le mot-clé @Override pour clarifier les intentions
-- Appeler super() pour initialiser la classe parente
-- Créer des interfaces pour partager des comportements sans couplage fort
-- Garder les hiérarchies de classes plates (max 2-3 niveaux)
+- Relation "est-un" uniquement : ne pas heriter juste pour reutiliser du code
+- Preferer la composition a l'heritage (GoF : "Favor composition over inheritance")
+- Profondeur max 2-3 niveaux
+- Toujours annoter avec \`@Override\` / \`override\` pour la redefinition
+- Appeler \`super()\` dans le constructeur
+- Utiliser \`protected\` pour les membres accessibles aux sous-classes
+- Programmer par interface, pas par implementation
 
-## Pièges courants
+## Pieges courants
 
-- Héritage profond créant un code difficile à maintenir
-- Violation du principe de substitution de Liskov
-- Utiliser l'héritage juste pour réutiliser du code (préférer la composition)
-- Oublier d'appeler super() dans le constructeur
-- Héritage multiple sans gérer les conflits de méthodes
+- Heritage profond (plus de 3 niveaux) — code difficile a maintenir
+- Violation de LSP : une sous-classe qui ne se comporte pas comme sa super-classe
+- Heritage pour reutiliser du code au lieu de composition
+- Oublier d'appeler \`super()\` dans le constructeur
+- Surcharge accidentelle (oublier \`@Override\` et creer une nouvelle methode)
 
-Source : [Oracle Java Documentation - Inheritance](https://docs.oracle.com/javase/tutorial/java/IandI/subclasses.html)`},
+Source : [Oracle Java Tutorial — Inheritance](https://docs.oracle.com/javase/tutorial/java/IandI/subclasses.html)
+`},
         {
           id: 'oop-4',
           question: 'Le polymorphisme',
@@ -231,46 +595,65 @@ Source : [Oracle Java Documentation - Inheritance](https://docs.oracle.com/javas
           code: 'abstract class Forme {\n    abstract void dessiner();\n}\nclass Cercle extends Forme {\n    void dessiner() { System.out.println("Cercle"); }\n}',
           language: 'java',
         
-          deepDive: `# Le polymorphisme
+          deepDive: `# Le polymorphisme en POO
 
-## Quest-ce que cest ?
+## Principe
 
-Le polymorphisme (du grec "plusieurs formes") permet à des objets de différentes classes d'être traités comme des objets d'une classe commune. Il existe deux types principaux :
+Le polymorphisme (du grec "plusieurs formes") est la capacite d'un objet a prendre plusieurs formes. Concretement, une meme interface (methode) peut avoir des comportements differents selon le type reel de l'objet qui l'invoque. C'est le pilier qui rend le code flexible, extensible et decouple.
 
-1. **Polymorphisme statique (compile-time)** : résolu à la compilation
-   - Surcharge de méthodes (method overloading)
-   - Templates / Generics
+## Les deux formes de polymorphisme
 
-2. **Polymorphisme dynamique (runtime)** : résolu à l'exécution
-   - Substitution (method overriding)
-   - Utilisation d'interfaces communes
+| Type | Autre nom | Resolution | Mecanisme |
+|------|-----------|------------|-----------|
+| Polymorphisme statique | Overloading (surcharge) | Compilation | Meme nom, parametres differents |
+| Polymorphisme dynamique | Overriding (redefinition) | Execution | Redefinition dans une sous-classe |
 
-## Syntaxe et exemples
+## Polymorphisme dynamique (overriding)
 
-// Java - Polymorphisme via interfaces
+La forme la plus puissante. Le type de l'objet est determine a l'execution.
+
+\`\`\`java
+// Interface commune
 interface Forme {
     double calculerSurface();
+    void dessiner();
 }
 
+// Implementations concretes
 class Cercle implements Forme {
     private double rayon;
-    
+
     public Cercle(double rayon) {
         this.rayon = rayon;
     }
-    
+
     @Override
     public double calculerSurface() {
         return Math.PI * rayon * rayon;
+    }
+
+    @Override
+    public void dessiner() {
+        System.out.println("Dessine un cercle de rayon " + rayon);
     }
 }
 
 class Rectangle implements Forme {
     private double largeur, hauteur;
-    
+
+    public Rectangle(double largeur, double hauteur) {
+        this.largeur = largeur;
+        this.hauteur = hauteur;
+    }
+
     @Override
     public double calculerSurface() {
         return largeur * hauteur;
+    }
+
+    @Override
+    public void dessiner() {
+        System.out.println("Dessine un rectangle " + largeur + "x" + hauteur);
     }
 }
 
@@ -281,28 +664,152 @@ public class Application {
             new Cercle(5),
             new Rectangle(4, 3)
         );
-        
+
         for (Forme f : formes) {
-            System.out.println(f.calculerSurface());
+            f.dessiner();  // Chaque forme se dessine differemment !
+            System.out.println("Surface: " + f.calculerSurface());
         }
     }
 }
+\`\`\`
+
+## Polymorphisme en TypeScript
+
+\`\`\`typescript
+interface PaymentProcessor {
+    process(amount: number): Promise<PaymentResult>;
+}
+
+class CreditCardProcessor implements PaymentProcessor {
+    async process(amount: number): Promise<PaymentResult> {
+        console.log(\\\`Processing credit card payment: \\$\\\${amount}\\\`);
+        return { success: true, transactionId: 'CC-' + Date.now() };
+    }
+}
+
+class PayPalProcessor implements PaymentProcessor {
+    async process(amount: number): Promise<PaymentResult> {
+        console.log(\\\`Processing PayPal payment: \\$\\\${amount}\\\`);
+        return { success: true, transactionId: 'PP-' + Date.now() };
+    }
+}
+
+class CryptoProcessor implements PaymentProcessor {
+    async process(amount: number): Promise<PaymentResult> {
+        console.log(\\\`Processing crypto payment: \\$\\\${amount}\\\`);
+        return { success: true, transactionId: 'CR-' + Date.now() };
+    }
+}
+
+// Le code appelant n'a pas besoin de connaitre le type concret
+class CheckoutService {
+    constructor(private processor: PaymentProcessor) {}
+
+    async checkout(amount: number): Promise<PaymentResult> {
+        // Logique commune avant payment...
+        const result = await this.processor.process(amount);
+        // Logique commune apres payment...
+        return result;
+    }
+}
+\`\`\`
+
+## Polymorphisme statique (overloading)
+
+\`\`\`java
+public class StringUtils {
+    // Surcharge — meme nom, signatures differentes
+    public String concat(String a, String b) {
+        return a + b;
+    }
+
+    public String concat(String a, String b, String c) {
+        return a + b + c;
+    }
+
+    public String concat(String a, String b, String separator) {
+        return a + separator + b;
+    }
+
+    public String concat(List<String> strings, String separator) {
+        return strings.stream().collect(Collectors.joining(separator));
+    }
+}
+\`\`\`
+
+## Le polymorphisme avec les generiques
+
+\`\`\`java
+// Interface generique
+interface Repository<T> {
+    T findById(Long id);
+    List<T> findAll();
+    T save(T entity);
+    void delete(T entity);
+}
+
+// Implementations concretes
+class UserRepository implements Repository<User> {
+    @Override
+    public User findById(Long id) { return em.find(User.class, id); }
+    // ...
+}
+
+class ProductRepository implements Repository<Product> {
+    @Override
+    public Product findById(Long id) { return em.find(Product.class, id); }
+    // ...
+}
+\`\`\`
+
+## Le principe de substitution de Liskov (LSP)
+
+Le polymorphisme repose sur LSP : une sous-classe doit pouvoir remplacer sa super-classe sans alterer le comportement attendu.
+
+\`\`\`java
+// MAUVAIS — viole LSP
+class Rectangle {
+    private int largeur, hauteur;
+
+    public void setLargeur(int l) { this.largeur = l; }
+    public void setHauteur(int h) { this.hauteur = h; }
+    public int getSurface() { return largeur * hauteur; }
+}
+
+class Carre extends Rectangle {
+    @Override
+    public void setLargeur(int l) {
+        super.setLargeur(l);
+        super.setHauteur(l);  // Effet de bord surprenant !
+    }
+}
+
+// BON — respecte LSP
+interface Forme {
+    int getSurface();
+}
+class Rectangle implements Forme { /* ... */ }
+class Carre implements Forme { /* ... */ }
+\`\`\`
 
 ## Bonnes pratiques
 
-- Programmer contre des interfaces, pas des implémentations
-- Utiliser le polymorphisme pour réduire la duplication de code
-- Favoriser les interfaces pour découpler le code
-- Les методы doivent avoir un comportement cohérent dans la hiérarchie
+- Programmer par interface, pas par implementation (DIP)
+- Utiliser le polymorphisme pour eviter les \`instanceof\` et \`switch\` sur les types
+- Respecter LSP : les sous-classes doivent pouvoir remplacer leur super-classe
+- Les methodes overridees doivent avoir un comportement coherent avec le contrat
+- Utiliser \`@Override\`/\`override\` systematiquement
 
-## Pièges courants
+## Pieges courants
 
-- Ajouter des comportements spécifiques dans une interface partagemetadata
-- Violer le principe de substitution de Liskov
-- Utiliser instanceof pour typer les objets (préférer le polymorphisme)
-- Créer des interfaces trop larges (interface segregation principle)
+- Utiliser \`instanceof\` au lieu du polymorphisme
+- Violer LSP avec des comportements surprenants
+- Creer des interfaces trop larges (ISP)
+- Surcharger au lieu de redéfinir (et vice versa)
+- Oublier que la surcharge est resolue a la compilation (early binding)
 
-Source : [Oracle Java Documentation - Polymorphism](https://docs.oracle.com/javase/tutorial/java/IandI/polymorphism.html)`},
+Source : [Oracle Java Tutorial — Polymorphism](https://docs.oracle.com/javase/tutorial/java/IandI/polymorphism.html)
+`},
         {
           id: 'oop-5',
           question: 'L\'abstraction: Classe abstraite vs Interface',
@@ -482,163 +989,188 @@ Source: https://www.typescriptlang.org/docs/handbook/2/classes.html`},
           code: '// Surcharge\nint add(int a, int b) { return a+b; }\nint add(int a, int b, int c) { return a+b+c; }\n\n// Redéfinition\n@Override\nint add(int a, int b) { return a+b+bonus; }',
           language: 'java',
         
-          deepDive: `# SURCHARGE vs REDEFINITION
+          deepDive: `# Surcharge vs Redefinition
 
-## Qu'est-ce que c'est
+## Principe
 
-**Surcharge (Overloading)**: Definir plusieurs methodes avec le meme nom mais des signatures differentes (parametres differents). Résolution a la compilation.
+La surcharge (overloading) et la redefinition (overriding) sont deux mecanismes qui permettent d'utiliser le meme nom de methode avec des comportements differents. Ils se distinguent par leur contexte, leur moment de resolution et leur objectif.
 
-**Redefinition (Overriding)**: Une subclass fournit une implementation differente d'une methode heritee du parent. Résolution a l'exécution.
+## Tableau comparatif
 
-## TypeScript
+| Aspect | Surcharge (Overloading) | Redefinition (Overriding) |
+|--------|------------------------|--------------------------|
+| Relation | Meme classe (ou classe liee) | Super-classe → Sous-classe |
+| Signature | DOIT differer (parametres) | DOIT etre identique |
+| Resolution | Compilation (early binding) | Execution (late binding) |
+| Mot-cle | Aucun | \`@Override\` (Java) / \`override\` (TS) |
+| Return type | Peut differer | Identique (ou covariant) |
+| Exception | Peut differer | Meme ou sous-classe |
+| Visibilite | Peut differer | Ne peut pas etre reduite |
+| Static | Oui | Non (pas de override statique) |
 
-### Redefinition (override)
+## Surcharge (Overloading) — Meme nom, parametres differents
 
-\`\`\`typescript
-class Animal {
-  speak(): string {
-    return 'Some sound';
-  }
-}
-
-class Dog extends Animal {
-  // REDEFINITION - remplace l'implementation du parent
-  speak(): string {
-    return 'Woof!';
-  }
-}
-
-class Cat extends Animal {
-  // REDEFINITION
-  speak(): string {
-    return 'Meow!';
-  }
-}
-
-const dog = new Dog();
-dog.speak(); // "Woof!" -决定了 a l'exécution selon l'objet reel
-\`\`\`
-
-### Surcharge de methodes
-
-\`\`\`typescript
-// TypeScript ne supporte pas la surcharge directe comme Java
-// Mais on peut simuler avec des signatures union
-
-class Calculator {
-  // Surcharge de signatures
-  add(a: number, b: number): number;
-  add(a: string, b: string): string;
-  add(a: number | string, b: number | string): number | string {
-    if (typeof a === 'number' && typeof b === 'number') {
-      return a + b;
-    }
-    if (typeof a === 'string' && typeof b === 'string') {
-      return a.concat(b);
-    }
-    throw new Error('Invalid types');
-  }
-}
-
-const calc = new Calculator();
-calc.add(1, 2);       // 3
-calc.add('a', 'b'); // "ab"
-\`\`\`
-
-## Java (surcharge vraie)
+La surcharge definit plusieurs methodes avec le meme nom mais des signatures differentes (nombre, type, ou ordre des parametres). Resolution a la compilation.
 
 \`\`\`java
 public class Calculator {
-  // SURCHARGE - meme nom, signatures differentes
-  public int add(int a, int b) {
-    return a + b;
-  }
-  
-  public double add(double a, double b) {
-    return a + b;
-  }
-  
-  public String add(String a, String b) {
-    return a + b;
-  }
-  
-  public int add(int a, int b, int c) {
-    return a + b + c;
-  }
-}
+    // Surcharge par type de parametre
+    public int add(int a, int b) {
+        return a + b;
+    }
 
-// REDEFINITION
-class Animal {
-  protected String name;
-  
-  public String speak() {
-    return 'Some sound';
-  }
-}
+    public double add(double a, double b) {
+        return a + b;
+    }
 
-class Dog extends Animal {
-  @Override
-  public String speak() { // @Override optionnel mais recommandé
-    return name + " says Woof!";
-  }
+    public String add(String a, String b) {
+        return a + b;
+    }
+
+    // Surcharge par nombre de parametres
+    public int add(int a, int b, int c) {
+        return a + b + c;
+    }
 }
 \`\`\`
 
-### Differenciation
+### En TypeScript
 
+TypeScript ne supporte pas la surcharge native comme Java, mais permet des signatures multiples avec une implementation unique :
+
+\`\`\`typescript
+class Calculator {
+    // Signatures de surcharge
+    add(a: number, b: number): number;
+    add(a: string, b: string): string;
+    add(a: number, b: number, c: number): number;
+    // Implementation unique
+    add(a: number | string, b: number | string, c?: number): number | string {
+        if (typeof a === 'number' && typeof b === 'number') {
+            return c !== undefined ? a + b + c : a + b;
+        }
+        if (typeof a === 'string' && typeof b === 'string') {
+            return a.concat(b);
+        }
+        throw new Error('Type mismatch');
+    }
+}
 \`\`\`
-| Aspect | Surcharge | Redefinition |
-|--------|-----------|-------------|
-| Quand | Compilation | Execution |
-| Methode | Meme nom | Meme signature |
-| Classe | Une ou plusieurs | Parent + Enfant |
-| Liaison | Early binding (compile-time) | Late binding (runtime) |
-| Mot-cle | Aucune | @Override (Java) / override (TS) |
-| Resolution | Signatures differentes | Polymorphisme |
+
+## Redefinition (Overriding) — Meme signature, comportement different
+
+La redefinition permet a une sous-classe de fournir une implementation specifique d'une methode deja definie dans sa super-classe. Resolution a l'execution (late binding).
+
+\`\`\`java
+abstract class Employee {
+    protected String name;
+    protected double baseSalary;
+
+    public Employee(String name, double baseSalary) {
+        this.name = name;
+        this.baseSalary = baseSalary;
+    }
+
+    // Methode a redefinir
+    public abstract double calculatePay();
+
+    // Methode concrete qui peut etre redefinie
+    public String getDescription() {
+        return "Employee: " + name;
+    }
+}
+
+class Developer extends Employee {
+    private int overtimeHours;
+
+    public Developer(String name, double baseSalary, int overtimeHours) {
+        super(name, baseSalary);
+        this.overtimeHours = overtimeHours;
+    }
+
+    @Override
+    public double calculatePay() {
+        return baseSalary + (overtimeHours * 50);
+    }
+
+    @Override
+    public String getDescription() {
+        return "Developer: " + name;
+    }
+}
+
+class Manager extends Employee {
+    private double bonus;
+
+    public Manager(String name, double baseSalary, double bonus) {
+        super(name, baseSalary);
+        this.bonus = bonus;
+    }
+
+    @Override
+    public double calculatePay() {
+        return baseSalary + bonus;
+    }
+}
+\`\`\`
+
+## Regles Java pour la redefinition
+
+1. La methode doit avoir la meme signature (nom + parametres)
+2. Le type de retour doit etre identique ou covariant (sous-type)
+3. Le niveau de visibilite ne peut pas etre reduit (\`public\` ne peut pas devenir \`protected\`)
+4. Seules les methodes instanciees peuvent etre redefinies (pas les static)
+5. Les methodes \`final\` ne peuvent pas etre redefinies
+6. Les constructeurs ne sont pas herites et ne peuvent pas etre redefinis
+
+## Covariance du type de retour
+
+\`\`\`java
+class Parent {
+    Animal getAnimal() { return new Animal(); }
+}
+
+class Child extends Parent {
+    @Override
+    Chien getAnimal() { return new Chien(); }  // Covariant : Chien extends Animal
+}
+\`\`\`
+
+## Polymorphisme avec les methodes surchargees
+
+\`\`\`java
+class Printer {
+    void print(Object o) { System.out.println("Object: " + o); }
+    void print(String s) { System.out.println("String: " + s); }
+    void print(Integer i) { System.out.println("Integer: " + i); }
+}
+
+// Test
+Printer p = new Printer();
+p.print("hello");       // String
+p.print(42);            // Integer
+p.print((Object) "hi"); // Object ! (resolution a la compilation)
 \`\`\`
 
 ## Bonnes pratiques
 
-- Use \`override\` keyword en TypeScript pour expliciter la redefinition
-- En Java, utilisez \`@Override\` pour detecter les erreurs de signature
-- Pretez pour la surcharge quand les types de donnees differentes
-- Pretez pour la redefinition quand le comportement differe selon le type
-- Ne surecharger pas (max 3-4 variantes)
+- Toujours utiliser \`@Override\`/\`override\` pour la redefinition (detecte les erreurs de signature)
+- Respecter le contrat de la super-classe (LSP)
+- Ne pas surcharger avec le meme nombre de parametres et types differents sans raison
+- Limiter la surcharge a 3-4 variantes maximum
+- La redefinition doit etre coherente : ne pas changer le comportement attendu
+- Ne pas redefinir une methode pour lever une exception inattendue
 
 ## Pieges courants
 
-- Confusion surcharge/redéfinition dans les discussions d'entretien
-- Oublier \`override\` en TypeScript = risque de creer une nouvelle methode
-- Signatures trop similaires (ambiguite)
-- Surcharge avec le meme nombre de parametres mais types differents
-- Redefinir une methode sans preserve le contrat (Liskov Substitution Principle)
+- Oublier \`@Override\` et creer accidentellement une nouvelle methode
+- Confondre surcharge et redefinition dans les discussions techniques
+- Violer LSP en redefinissant une methode avec un comportement incompatible
+- Surcharger avec des types qui creent des ambiguites (ex: \`Object\` vs \`String\`)
+- Croire que la redefinition s'applique aux methodes statiques (c'est du hiding)
 
-## Pour aller plus loin
-
-\`\`\`typescript
-// Surcharge de constructeur
-class Person {
-  name: string;
-  
-  // Surcharge
-  constructor(name: string);
-  constructor(name: string, age: number);
-  constructor(name: string, age?: number) {
-    this.name = name;
-  }
-}
-
-// Methodes statiques aussi
-class StringUtils {
-  static reverse(s: string): string;
-  static reverse(s: string, encoding: BufferEncoding): Buffer;
-  static reverse(s: string, encoding?: BufferEncoding) {
-    // implementation
-  }
-}
-\`\`\`
-
-Source: https://www.typescriptlang.org/docs/handbook/2/functions.html#overload-signatures`},
+Source : [Oracle Java Tutorial — Overriding and Hiding Methods](https://docs.oracle.com/javase/tutorial/java/IandI/override.html)
+`},
         {
           id: 'oop-7',
           question: 'Association vs Agrégation vs Composition',
@@ -1191,139 +1723,222 @@ Source: https://docs.oracle.com/javase/tutorial/java/IandI/multiple.html`},
           question: 'Couplage faible / Cohésion forte',
           answer: "**Couplage faible** = classes peu dépendantes entre elles ; modifier une classe n'impacte pas les autres. On le réduit avec des interfaces, l'injection de dépendances et le principe de responsabilité unique.\n\n**Cohésion forte** = une classe fait une seule chose et la fait bien ; faible cohésion = classe à découpquer. __Couplage faible + cohésion forte = design robuste et maintenable.__",
         
-          deepDive: `# COUPLAGE FAIBLE / COHESION FORTE
+          deepDive: `# Couplage faible et Cohesion forte
 
-## Qu'est-ce que c'est
+## Principe
 
-**Couplage faible** (Low Coupling): Les modules dependent peu les uns des autres. Un changement dans un module n'impacte pas les autres.
+Le couplage faible (low coupling) et la cohesion forte (high cohesion) sont deux objectifs de conception fondamentaux en genie logiciel. Ils mesurent respectivement le degre de dependance entre modules et le degre de focalisation au sein d'un meme module.
 
-**Cohesion forte** (High Cohesion): Chaque module a une responsabilite unique et bien definie. Ses elements internestravaillent ensemble pour accomplish cette tache.
+- **Couplage faible** : les modules dependent peu les uns des autres. Un changement dans un module impacte minimalement les autres.
+- **Cohesion forte** : un module a une responsabilite unique et bien definie. Ses elements internes travaillent ensemble pour accomplir cette tache.
 
-## Exemples en TypeScript
+## Couplage — Du fort au faible
+
+### Couplage FORT (a eviter)
 
 \`\`\`typescript
-// MAUVAIS: Fort couplage, faible cohesion
-class UserManager {
-  private db: MySQLConnection;
-  private email: SMTPService;
-  private logger: FileLogger;
-  
-  createUser(user: User) {
-    // Creer en base
-    // Envoyer email
-    // Ecrire dans log
-    // Et aussi: valider, hasher mot de passe, generer ID
-  }
+// MAUVAIS : Couplage fort par heritage et dependance concrete
+class MySQLDatabase {
+    connect(): void { /* ... */ }
+    query(sql: string): any[] { /* ... */ }
 }
 
-// BONS: Faible couplage, forte cohesion
 class UserService {
-  private repository: UserRepository;
-  
-  constructor(repository: UserRepository) {
-    this.repository = repository;
-  }
-  
-  createUser(user: User): Promise<User> {
-    return this.repository.save(user);
-  }
+    private db = new MySQLDatabase();  // Dependance concrete
+
+    getUsers(): any[] {
+        this.db.connect();
+        return this.db.query('SELECT * FROM users');
+    }
+}
+// Si on passe de MySQL a PostgreSQL, on doit modifier UserService
+\`\`\`
+
+### Couplage FAIBLE (a viser)
+
+\`\`\`typescript
+// BON : Couplage faible via interface et injection
+interface Database {
+    connect(): void;
+    query(sql: string): any[];
+}
+
+class MySQLDatabase implements Database {
+    connect(): void { /* ... */ }
+    query(sql: string): any[] { /* ... */ }
+}
+
+class PostgreSQLDatabase implements Database {
+    connect(): void { /* ... */ }
+    query(sql: string): any[] { /* ... */ }
+}
+
+class UserService {
+    constructor(private db: Database) {}  // Injection de dependance
+    // UserService ne connait que l'interface Database
+    // On peut changer MySQL → PostgreSQL sans modifier UserService
+}
+\`\`\`
+
+### Les differentes formes de couplage (du pire au meilleur)
+
+| Type de couplage | Description | Niveau |
+|------------------|-------------|--------|
+| Content | Un module modifie les donnees internes d'un autre | Pire |
+| Common | Modules partagent des donnees globales | Mauvais |
+| Control | Un module controle le flux d'un autre | Mauvais |
+| Stamp | Un module recoit une structure de donnees complete | Moyen |
+| Data | Unmodule passe des donnees simples (primitives) | Bon |
+| Message | Communication via messages/evenements | Excellent |
+| None | Aucune dependance | Ideal |
+
+## Cohesion — Du faible au fort
+
+### Cohesion FAIBLE (a eviter)
+
+\`\`\`typescript
+// MAUVAIS : Faible cohesion — la classe fait tout
+class GodClass {
+    readFile(path: string): string { /* ... */ }
+    sendEmail(to: string, body: string) { /* ... */ }
+    generateReport(): string { /* ... */ }
+    validateUser(user: any): boolean { /* ... */ }
+    calculateTax(amount: number): number { /* ... */ }
+    renderHTML(): string { /* ... */ }
+}
+\`\`\`
+
+### Cohesion FORTE (a viser)
+
+\`\`\`typescript
+// BON : Forte cohesion — chaque classe a une responsabilite unique
+class UserValidator {
+    validate(user: User): ValidationResult {
+        if (!user.email.includes('@')) {
+            return { valid: false, error: 'Invalid email' };
+        }
+        if (user.age < 0 || user.age > 150) {
+            return { valid: false, error: 'Invalid age' };
+        }
+        return { valid: true };
+    }
 }
 
 class EmailService {
-  sendWelcomeEmail(email: string): Promise<void> {
-    // ...
-  }
+    constructor(private transporter: MailTransporter) {}
+
+    async sendWelcomeEmail(user: User): Promise<void> {
+        const html = await this.renderTemplate('welcome', { name: user.name });
+        await this.transporter.send({
+            to: user.email,
+            subject: 'Bienvenue !',
+            html
+        });
+    }
+
+    private async renderTemplate(name: string, data: any): Promise<string> {
+        // ...
+    }
 }
 
 class UserRepository {
-  constructor(private db: Database) {}
-  
-  save(user: User): Promise<User> {
-    // logique de persistence
-  }
+    constructor(private db: Database) {}
+
+    async save(user: User): Promise<User> {
+        return this.db.insert('users', user);
+    }
+
+    async findById(id: number): Promise<User | null> {
+        return this.db.findOne('users', { id });
+    }
 }
 \`\`\`
 
-### Signaux de couplage fort
+## Application avec les principes SOLID
 
 \`\`\`typescript
-// Dependance directe sur implementation concrete
-class OrderService {
-  private mysqlRepo = new MySQLOrderRepository(); // FORT
-  
-  // VS injection via interface (FAIBLE)
-  private repo: OrderRepository; // Interface abstraite
+// Application des 5 principes pour couplage faible + cohesion forte
+
+// SRP : UserRepository ne fait que la persistence
+// OCP : On peut ajouter un AuditLogRepository sans modifier UserRepository
+// LSP : Toute implementation de Database peut remplacer l'autre
+// ISP : Database a une interface minimale
+// DIP : UserService depend d'abstraction (Database) pas de concretion (MySQL)
+
+interface Logger {
+    info(message: string): void;
+    error(message: string, error: Error): void;
 }
 
-// Signaux:
-// - \`new\` avec une classe concrete dans une methode
-// - Appeler des methodes specifiques d'une library pas une interface
-// - Modifier un module quand un autre change
+interface EventBus {
+    emit(event: string, data: any): void;
+    on(event: string, handler: (data: any) => void): void;
+}
+
+class OrderService {
+    constructor(
+        private repo: OrderRepository,
+        private logger: Logger,
+        private events: EventBus,
+        private emailService: EmailService
+    ) {}
+
+    async createOrder(order: CreateOrderDto): Promise<Order> {
+        this.logger.info('Creating order');
+
+        const created = await this.repo.save(order);
+
+        this.events.emit('order:created', created);
+        await this.emailService.sendConfirmation(created);
+
+        return created;
+    }
+}
 \`\`\`
 
-## Principes SOLID pour le faible couplage
+## Indices de mauvais design (code smells)
+
+### Couplage fort
+- Changer un module force des changements dans d'autres modules
+- Tests difficiles (besoin de beaucoup de mocks)
+- \`new\` avec des classes concretes dans les methodes
+- Imports directs entre modules non lies
+- Singletons globaux utilises comme dependances cachees
+- Chaines de methodes longues (train wreck : \`a.getB().getC().doSomething()\`)
+
+### Faible cohesion
+- Classes nommees \`Util\`, \`Helper\`, \`Manager\`, \`Service\` tres generiques
+- Methodes qui n'utilisent pas les memes attributs
+- Imports varies dans une meme classe
+- Test unitaire difficile a nommer / trop long
+- Plus de 200 lignes dans une classe
+
+## Mesure pragmatique
 
 \`\`\`typescript
-// Dependency Inversion Principle (DIP)
-// Les modules de haut niveau ne doivent pas dependre des modules de bas niveau
-
-// MAUVAIS
-class OrderService {
-  private db = new MySQLDatabase(); // depend de l'implementateur
-}
-
-// BONS
-interface Database {
-  query(sql: string): Promise<any>;
-}
-
-class OrderService {
-  constructor(private db: Database) {} // depend d'abstraction
-}
-
-// Maintenant on peut injecter MySQL, PostgreSQL, ou mock
+// Poser ces questions pour chaque classe :
+// 1. "Est-ce que je peux decrire son role en une phrase ?"
+//    → Non = faible cohesion
+// 2. "Si cette interface change, combien de classes sont impactees ?"
+//    → Beaucoup = couplage fort
+// 3. "Puis-je tester cette classe en isolant ses dependances ?"
+//    → Non = couplage fort
+// 4. "Est-ce que cette classe a une raison de changer ?"
+//    → Plus d'une = faible cohesion (SRP)
 \`\`\`
 
 ## Bonnes pratiques
 
-- Préférez l'injection de dépendances (constructor injection)
-- Utilisez des interfaces pour découpler les implémentations
-- Appliquez le Single Responsibility Principle (SRP) pour la cohésion
-- Favorisez la composition contre l'héritage (voir composition deep dive)
-- Minimisez les imports directs entre modules non liés
-- Utilisez des events/callbacks pour la communication découplée
+- Injection de dependances (constructeur) plutot que creation directe
+- Interfaces pour decoupler les implementations
+- SRP : une classe = une responsabilite
+- Composition sur heritage
+- Evenements/observers pour la communication decouplee
+- Tests unitaires faciles a ecrire = bon signe
+- Reviser regulierement les dependances entre modules
 
-## Pieges courants
-
-- \`new\` dans les méthodes (couplage compile-time)
-- Classes "God" qui font tout (faible cohesion)
-- Imports circulaires (A importe B, B importe A)
-- Chaines de dépendances tres longues (deep dependency chains)
-- Couplage via singletons globaux
-- Ignorer les сигналы de refactorisation quand une classe change souvent
-
-## Pour aller plus loin
-
-\`\`\`typescript
-// Decouplage avec events (Observer pattern)
-class UserService {
-  constructor(private eventEmitter: EventEmitter) {}
-  
-  async createUser(user: User) {
-    const created = await this.repository.save(user);
-    this.eventEmitter.emit('user:created', created);
-  }
-}
-
-// Les autres modules ecoutent sans etre couples
-class AnalyticsService {
-  constructor(private events: EventEmitter) {
-    events.on('user:created', this.trackUser.bind(this));
-  }
-}
-\`\`\`
-
-Source: https://www.oreilly.com/library/view/architecture-patterns-with/9781492052197/`},
+Source : [Wikipedia — Coupling and Cohesion](https://en.wikipedia.org/wiki/Coupling_(computer_programming))
+`},
         {
           id: 'oop-11',
           question: 'Liaison dynamique',
@@ -1331,82 +1946,227 @@ Source: https://www.oreilly.com/library/view/architecture-patterns-with/97814920
           code: 'Animal a = new Chien();\na.faireDuBruit();  // → appelle Chien.faireDuBruit()',
           language: 'java',
         
-          deepDive: `# Liaison dynamique
+          deepDive: `# Liaison dynamique (Late Binding)
 
-## Quest-ce que cest ?
+## Principe
 
-La liaison dynamique (dynamic binding ou late binding) est le mécanisme par lequel l'appel d'une méthode est résolu à l'exécution plutôt qu'à la compilation. Cela permet au programme de déterminer quale méthode exécuter en fonction du type réel de l'objet au moment de l'appel.
+La liaison dynamique (dynamic binding ou late binding) est le mecanisme par lequel l'appel d'une methode est resolu a l'execution plutot qu'a la compilation. Cela permet au programme de determiner quelle methode executer en fonction du **type reel** de l'objet au moment de l'appel, pas du type declare de la reference.
 
-La liaison dynamique est intimement liée au polymorphisme d'héritage et permet :
-- D'appeler la bonne méthode selon le type réel de l'objet
-- De découpler le code appelant des classes concrètes
-- D'étendre le comportement sans modifier le code existant
+C'est le fondement du polymorphisme dynamique (overriding).
 
-## Syntaxe et exemples
+## Liaison statique vs Liaison dynamique
 
-// Java - Liaison dynamique
-public class Animal {
+| Aspect | Liaison statique (early binding) | Liaison dynamique (late binding) |
+|--------|----------------------------------|----------------------------------|
+| Resolution | A la compilation | A l'execution |
+| Mecanisme | Surcharge (overloading) | Redefinition (overriding) |
+| Performance | Plus rapide | Cout minimal (vtable lookup) |
+| Flexibilite | Faible | Elevee |
+| Type utilise | Type declare de la reference | Type reel de l'objet |
+
+## Exemple fondamental en Java
+
+\`\`\`java
+class Animal {
     public void faireDuBruit() {
-        System.out.println("Animal fait du bruit");
+        System.out.println("Un animal fait du bruit");
     }
 }
 
-public class Chien extends Animal {
+class Chien extends Animal {
     @Override
     public void faireDuBruit() {
-        System.out.println("Le chien aboie");
+        System.out.println("Le chien aboie : Ouaf !");
     }
 }
 
-public class Chat extends Animal {
+class Chat extends Animal {
     @Override
     public void faireDuBruit() {
-        System.out.println("Le chat miaule");
+        System.out.println("Le chat miaule : Miaou !");
     }
 }
 
-// Utilisation
-public class Main {
+public class TestLiaison {
     public static void main(String[] args) {
-        Animal monAnimal = new Chien();  // Type declare : Animal
-        monAnimal.faireDuBruit();        // Type reel : Chien -> aboie
-        
+        // Type declare = Animal, type reel = Chien
+        Animal monAnimal = new Chien();
+        monAnimal.faireDuBruit();  // "Le chien aboie : Ouaf !"
+
+        // Meme reference, nouveau type reel
         monAnimal = new Chat();
-        monAnimal.faireDuBruit();        // Type reel : Chat -> miaule
+        monAnimal.faireDuBruit();  // "Le chat miaule : Miaou !"
+
+        // La methode appellee depend du TYPE REEL (liaison dynamique)
+    }
+}
+\`\`\`
+
+## Comment ca marche en interne (vtable)
+
+Le compilateur cree une **table virtuelle** (vtable) pour chaque classe contenant des methodes overrideables :
+
+\`\`\`java
+// Representation conceptuelle de la vtable
+class Animal {
+    // vtable implicite :
+    // [0] -> Animal.faireDuBruit()
+}
+
+class Chien extends Animal {
+    // vtable (heritee et modifiee) :
+    // [0] -> Chien.faireDuBruit()  // Remplace l'entree
+    // [1] -> Chien.aboyer()        // Nouvelle entree
+}
+
+// A l'execution, monAnimal.faireDuBruit() est compile en :
+// monAnimal.vtable[0]()  -- resolution via l'index, pas le nom
+\`\`\`
+
+## Liaison dynamique avec les interfaces
+
+\`\`\`java
+interface Payable {
+    double calculerSalaire();
+}
+
+class Employe implements Payable {
+    private String nom;
+    private double tauxHoraire;
+    private int heures;
+
+    @Override
+    public double calculerSalaire() {
+        return tauxHoraire * heures;
     }
 }
 
-// Python - idem avec duck typing
-class Animal:
-    def faire_du_bruit(self):
-        pass
+class Consultant implements Payable {
+    private double montantForfait;
 
-class Chien(Animal):
-    def faire_du_bruit(self):
-        print("Le chien aboie")
+    @Override
+    public double calculerSalaire() {
+        return montantForfait;
+    }
 
-class Chat(Animal):
-    def faire_du_bruit(self):
-        print("Le chat miaule")
+    public void facturer() {
+        System.out.println("Facture envoyee");
+    }
+}
 
-def faire_parler(animal):
-    animal.faire_du_bruit()
+// Tout le code qui manipule Payable beneficie du polymorphisme
+class PaieService {
+    public void traiterPaiement(Payable employe) {
+        double salaire = employe.calculerSalaire();  // Liaison dynamique !
+        System.out.println("Paiement : " + salaire);
+        // employe.facturer() — PAS accessible, type declare = Payable
+    }
+}
+\`\`\`
+
+## Liaison dynamique en TypeScript
+
+\`\`\`typescript
+abstract class NotificationSender {
+    abstract send(message: string): Promise<void>;
+
+    sendWithLogging(message: string): Promise<void> {
+        console.log(\\\`Sending: \\\${message.substring(0, 50)}...\\\`);
+        return this.send(message);  // Liaison dynamique !
+    }
+}
+
+class EmailSender extends NotificationSender {
+    async send(message: string): Promise<void> {
+        // Envoi par email
+        console.log('Email sent');
+    }
+}
+
+class SMSSender extends NotificationSender {
+    async send(message: string): Promise<void> {
+        // Envoi par SMS
+        console.log('SMS sent');
+    }
+}
+
+async function notifyAll(senders: NotificationSender[], message: string) {
+    for (const sender of senders) {
+        await sender.sendWithLogging(message);
+        // sender.send() est appele via liaison dynamique
+    }
+}
+\`\`\`
+
+## Liaison dynamique et performance
+
+Le cout de la liaison dynamique est minimal dans les JVM modernes :
+
+1. **Appel standard** : look-up dans la vtable (quelques instructions CPU)
+2. **JIT compilation** : le JIT inline les methodes hot, eliminant la vtable lookup
+3. **Monomorphic call site** : si la JVM voit toujours le meme type, elle optimise completement
+
+\`\`\`java
+// Boucle chaude — la JIT va optimiser
+for (int i = 0; i < 1000000; i++) {
+    animal.faireDuBruit();  // Premier appel : vtable, puis JIT inline
+}
+\`\`\`
+
+## Pieges lies a la liaison dynamique
+
+### 1. Appel de methode overrideable dans le constructeur
+
+\`\`\`java
+class Parent {
+    Parent() {
+        init();  // DANGER : appelle la version de l'enfant avant que l'enfant soit initialise
+    }
+    void init() { System.out.println("Parent init"); }
+}
+
+class Child extends Parent {
+    private String value = "hello";
+
+    Child() {
+        super();  // Appelle Parent() → init() → Child.init() avant que value soit initialisee
+    }
+
+    @Override
+    void init() {
+        System.out.println(value.toUpperCase());  // NullPointerException !
+    }
+}
+\`\`\`
+
+### 2. Confusion avec les methodes statiques
+
+Les methodes statiques utilisent la **liaison statique** (early binding) :
+
+\`\`\`java
+class Animal {
+    static void type() { System.out.println("Animal"); }
+}
+
+class Chien extends Animal {
+    static void type() { System.out.println("Chien"); }  // Hiding, pas overriding
+}
+
+// Test
+Animal a = new Chien();
+a.type();  // "Animal" — pas de liaison dynamique pour les statiques !
+\`\`\`
 
 ## Bonnes pratiques
 
-- Préférer les interfaces pour typer les paramètres
-- Utiliser le polymorphisme au lieu de tests de type (instanceof)
-- Les méthodes surchargées doivent avoir un comportement cohérent
-- Documenter quand une méthode est conçue pour être overridée
+- Programmer par interface : le polymorphisme (liaison dynamique) est alors automatique
+- Ne pas appeler de methodes overrideables dans les constructeurs
+- Utiliser \`@Override\` / \`override\` systematiquement
+- Documenter les methodes conçues pour etre overridees
+- Les performances ne sont pas une raison pour eviter le polymorphisme en Java moderne
 
-## Pièges courants
-
-- Dépendre de liaison dynamique pour des операции critiques (performance)
-- Modifier l'état de lobjet dans le constructeur avant lappel de méthodes
-- Oublier le mot-clé @Override et créer une nouvelle méthode au lieu d'overrider
-- Confusion entre surcharge et substitution
-
-Source : [Oracle Java Documentation - Overriding](https://docs.oracle.com/javase/tutorial/java/IandI/override.html)`},
+Source : [Oracle Java Tutorial — Polymorphism](https://docs.oracle.com/javase/tutorial/java/IandI/polymorphism.html)
+`},
       ],
     },
   ],

@@ -15,264 +15,276 @@ export const methodologyCategory: InterviewCategory = {
           question: 'Agile / Scrum',
           answer: "**Agile** : philosophie privilégiant l'**itération rapide**, la collaboration client et l'adaptation au changement (Manifeste Agile : individus > processus, logiciel fonctionnel > documentation, collaboration > contrat, adaptation > plan).\n\n**Scrum** : framework Agile le plus utilisé — sprints de 1-4 semaines, stand-ups quotidiens, sprint planning, rétrospectives. Scrum ne résout pas les problèmes techniques mais les rend *visibles*.\n\nAvantage principal : **feedback loop court** avec un incrément fonctionnel à chaque sprint.",
         
-          deepDive: `Agile et Scrum
+          deepDive: `# Agile et Scrum
 
-Quest-ce que cest
+## Qu'est-ce que c'est ?
 
-Agile est une philosophie de developpement logiciel qui privilegie la collaboration, la flexibilite et la livraison incrementale. Scrum est un framework operationnel qui implémente Agile avec des roles, ceremonies et artefacts definis.
+Agile est une philosophie de developpement logiciel nee du Manifeste Agile (2001), qui privilegie la collaboration, la flexibilite et la livraison incrementale de valeur. Scrum est le framework Agile le plus repandu, qui structure le travail en sprints (iterations de 1 a 4 semaines) avec des roles, des evenements et des artefacts definis.
 
-## Roles Scrum
+## Pourquoi le recruteur pose cette question
 
-- **Product Owner** - Maximise la valeur du produit, gere le backlog
-- **Scrum Master** - Facilite, supprime les obstacles, coach
-- **Development Team** - Auto-organisee, cross-functionnelle, 3-9 personnes
+Le recruteur cherche a evaluer :
+- Votre comprehension des fondamentaux Agile
+- Votre experience pratique avec Scrum
+- Votre capacite a travailler dans un cadre iteratif
+- Votre comprehension des roles et responsabilites
+- Votre capacite a vous adapter aux ceremonies Agile
 
-## Artefacts
+## Les roles Scrum
 
-- **Product Backlog** - Liste priorisee de tout ce qui pourrait etre besoin
-- **Sprint Backlog** - Items selectionnes pour le sprint en cours + plan de realisation
-- **Increment** - Somme de tous les items terminess du product backlog
+- **Product Owner :** Maximise la valeur du produit, gere le Product Backlog, priorise les items, represente les parties prenantes.
+- **Scrum Master :** Facilite le processus Scrum, supprime les obstacles, coach l'equipe, protege l'equipe des distractions externes.
+- **Development Team :** Auto-organisee, cross-fonctionnelle, typiquement 3 a 9 personnes. Responsable de livrer l'increment.
 
-## Ceremonies
+## Les ceremonies Scrum
 
-- **Sprint Planning** - Definit quoi faire et comment (max 8h pour 2 semaines)
-- **Daily Scrum** - 15 min quotidien pour synchroniser (3 questions)
-- **Sprint Review** - Demontrer l increment aux parties prenantes
-- **Sprint Retrospective** - Reflechir sur le sprint et sameliorer
+- **Sprint Planning (max 8h pour 2 semaines) :** Definit l'objectif du sprint et selectionne les items du backlog.
+- **Daily Scrum (15 min) :** Synchronisation quotidienne. Que s'est-il passe hier ? Que vais-je faire aujourd'hui ? Quels bloqueurs ?
+- **Sprint Review :** Demonstration de l'increment aux parties prenantes. Collecte de feedback.
+- **Sprint Retrospective :** Reflechir sur le sprint. Qu'est-ce qui a bien fonctionne ? Qu'est-ce qui peut etre ameliore ?
 
-## Sprint
+## Exemple concret
 
-Duree fixe (1-4 semaines, generalement 2). Une fois commence, la duree ne change pas. Le contenu peut etre reestime mais pas la duree.
+**Situation :** Mon equipe etions censee etre Agile mais pratiquait en realite du « Waterfall desguise » : le PO definissait tout en amont, les sprints de 4 semaines etaient trop longs, et la retrospective ne debouchait sur aucune action concrete.
+
+**Action :** J'ai propose de reduire les sprints a 2 semaines pour accelerer le feedback. J'ai introduit les « retrospectives animees » avec des actions SMART dont on mesurait l'impact au sprint suivant. J'ai forme l'equipe a l'estimation collaborative (Planning Poker). J'ai aide le PO a decomposer les stories en plus petites unites livrables.
+
+**Resultat :** La velocity a augmente de 30% en 3 mois. La satisfaction de l'equipe s'est amelioree. Le PO a apprecie d'avoir des retours utilisateurs plus frequents. L'equipe a ete citee en exemple lors d'une communaute de pratique Agile interne.
 
 ## Bonnes pratiques
 
-1. Le Product Owner doit etre disponible et avere
-2. Les estimations doivent etre collaboratives (Planning Poker)
-3. Les daily standups doivent etre courts etaxes sur le travail
-4. Ne pas ajouter de nouveaux items pendant le sprint
-5. La retrospectives doit conduire a des actions concretes
+- Les sprints sont de duree fixe (ne jamais prolonger un sprint)
+- Le Product Owner doit etre disponible et impliqué
+- Les estimations doivent etre collaboratives (Planning Poker)
+- Les daily standups doivent etre courts et focalises sur le travail
+- Ne pas ajouter de nouveaux items en cours de sprint (scope creep)
+- La retrospective doit conduire a des actions concretes et mesurees
 
 ## Pieges courants
 
-- Transformer Scrum en cycle en cascade (plan tout au debut)
-- Pas de preparation du backlog entre les sprints
+- Transformer Scrum en cascade (tout planifier au debut)
+- Sprint backlog non prepare entre les sprints
 - Sprint qui depasse la duree (scope creep)
-- ceremonies trop longues et non productives
+- Ceremonies trop longues et non productives
 - Confondre Scrum Master et chef de projet
+- Daily standup qui devient un reporting au manager
+- Retrospective sans actions concretes (perte de sens)
 
-Source : Atlassian (https://www.atlassian.com/agile/scrum)
-`},
+Source : [Atlassian – Guide Scrum](https://www.atlassian.com/fr/agile/scrum)`},
         {
           id: 'meth-2',
           question: 'Kanban vs Scrum',
           answer: "**Scrum** : sprints fixes, rôles définis (PO, SM, Dev), cérémonies (planning, stand-up, retro), engagements par sprint. Plus structuré.\n\n**Kanban** : flux continu, pas de sprints ni rôles imposés. Tableau visuel avec limites de **WIP** (Work In Progress) — on ne commence pas une nouvelle tâche tant que le flux est saturé.\n\nScrum pour les projets avec des releases planifiées, Kanban pour le support/maintenance et les flux continus. __Les deux peuvent coexister : « Scrumban ».__",
         
-          deepDive: `Kanban vs Scrum
+          deepDive: `# Kanban vs Scrum
 
-Quest-ce que cest
+## Qu'est-ce que c'est ?
 
-Kanban et Scrum sont deux frameworks Agile. Scrum utilise des sprints temporels fixes tandis que Kanban gere le flux de maniere continue. Les deux peuvent etre adaptes selon le contexte.
+Kanban et Scrum sont deux frameworks Agile populaires avec des approches differentes. Scrum utilise des iterations temporelles (sprints) tandis que Kanban gere le flux de travail en continu. Le choix entre les deux depend du contexte de l'equipe et du type de travail.
 
-## Scrum en resume
+## Pourquoi le recruteur pose cette question
 
-- Sprints de duree fixe (1-4 semaines)
-- Roles definis (PO, SM, Team)
-- ceremonies planifiees
-- Commitment sur le contenu du sprint
-- Changement de scope uniquement entre sprints
+Le recruteur cherche a evaluer :
+- Votre connaissance des differents frameworks Agile
+- Votre capacite a choisir la bonne methode selon le contexte
+- Votre experience pratique avec l'un ou l'autre
+- Votre flexibilite methodologique
 
-## Kanban en resume
+## Comparaison detaillee
 
-- Pas de sprints, flux continu
-- Pas de roles imposes
-- Tableau Kanban avec colonnes (To Do, In Progress, Done)
-- Limites WIP (Work In Progress) par colonne
-- Changements priorite a tout moment
+| Criteres | Scrum | Kanban |
+|----------|-------|--------|
+| Rythme | Sprints fixes (1-4 sem) | Flux continu |
+| Roles | PO, SM, Dev Team | Non imposés |
+| Ceremonies | Planning, Daily, Review, Retro | Optionnelles |
+| Engagement | Contenu du sprint | Pas d'engagement |
+| Changement | Entre les sprints | A tout moment |
+| Mesure cle | Velocity | Lead time / Cycle time |
 
-## Tableau Kanban - Exemple
+## Les limites WIP (Work In Progress)
 
-| To Do | In Progress (max 3) | Review | Done |
-|-------|---------------------|--------|------|
-| Item  | Item A              | Item C | Item |
-| Item  | Item B              |        | Item |
+Le principe fondamental de Kanban : limiter le nombre de taches en cours a chaque etape. Par exemple, une colonne « In Progress » avec une limite WIP de 3 signifie qu'on ne peut pas commencer une 4e tache avant qu'une des 3 ne soit terminee. Cela :
+- Reduit le multitasking (gaspillage cognitif)
+- Revele les goulots d'etranglement
+- Ameliore le temps de cycle
+- Augmente la predictibilite
 
-Les limites WIP empechent de surcharger les etapes. Si In Progress est a 3, pas de nouveaux items tant quun nest pas termine.
+## Exemple concret d'hybride (Scrumban)
 
-## Quand utiliser Scrum
+**Situation :** Notre equipe de support technique utilisait un kanban tres simple mais les priorites etaient instables. Parallelement, nous avions des projets de 2 semaines qui auraient beneficie d'une structure Scrum.
 
-- Equipe stable avec objectifs a court terme definis
-- Necessite de livraison predicible (sprint = engagement)
-- Environnement reglemente (compliance)
-- Besoin de ceremonies pour maintenir la synchronisation
+**Action :** J'ai propose un modele hybride : sprints de 2 semaines pour les projets (Scrum) avec un tableau Kanban visible pour les tickets de support. Les limites WIP etaient imposees pour chaque colonne. Le daily standup durait 15 minutes et couvrait les deux flux.
 
-## Quand utiliser Kanban
-
-- Travail en continu sans sprints naturelle (maintenance, support)
-- Priorites qui changent frequemment
-- Equipes operationnelles (ops, devops)
-- Debut de transformation Agile (moins de friction)
-
-## Hybride (Scrumban)
-
-Combine les deux : sprints fixes avec Kanban visuel. Utile pour les equipes qui font la transition.
+**Resultat :** Le temps de traitement des tickets support a baisse de 40% grace aux limites WIP. Les projets avancaient avec des sprints structures. L'equipe etait plus sereine avec une visibilite claire.
 
 ## Bonnes pratiques
 
-1. Commencer par comprendre le besoin client et le flux
-2. Mesurer et ameliorer le temps de cycle (lead time)
-3. Imposer des limites WIP realistas et les respecter
-4. Ne pas simplement ajouter des colonnes pour faire beau
-5. Regularite dans les revues de processus
+- Commencez par comprendre le besoin client et le flux actuel
+- Mesurez et ameliorez le temps de cycle (lead time)
+- Imposez des limites WIP realistes et respectez-les
+- Adaptez la methode au contexte (pas de dogmatisme)
+- Revoyez regulierement le processus en equipe
+- Utilisez des metriques pour guider les decisions
 
-Source : Atlassian (https://www.atlassian.com/agile/kanban)
-`},
+## Pieges courants
+
+- Melanger les deux sans comprendre les principes fondamentaux
+- Choisir Scrum quand le travail est imprevisible (support)
+- Choisir Kanban quand l'equipe a besoin de structure (projets)
+- Limites WIP trop elevees (aucun effet)
+- Kanban sans mesures (on ne voit pas l'amelioration)
+- Scrum sans retrospective (on n'apprend pas)
+- Ceremonies Scrum videes de leur sens
+
+Source : [Atlassian – Kanban vs Scrum](https://www.atlassian.com/fr/agile/kanban/kanban-vs-scrum)`},
         {
           id: 'meth-3',
           question: 'User stories',
           answer: "Description d'une fonctionnalité du point de vue utilisateur : « En tant que **[rôle]**, je veux **[action]** afin de **[bénéfice]**. »\n\nChaque story inclut des **critères d'acceptation** (conditions testables de succès). Estimée en **story points** (complexité relative, pas en heures).\n\nDécoupées en tâches techniques lors du sprint planning. Bonnes stories : **INVEST** (Independent, Negotiable, Valuable, Estimable, Small, Testable). __Une story trop grande = epic, à découper avant le sprint.__",
         
-          deepDive: `User Stories
+          deepDive: `# User Stories
 
-Quest-ce que cest
+## Qu'est-ce que c'est ?
 
-Une user story est une description courte dun besoin utilisateur ecrit dans un langage naturel. Elle remplace les specifications techniques traditionnelles par une focalisation sur la valeur apportee a lutilisateur.
+Une user story est une description d'une fonctionnalite du point de vue de l'utilisateur final. Elle suit le format : « En tant que [type d'utilisateur], je veux [action] afin de [benefice] ». Les user stories remplacent les specifications techniques traditionnelles en focalisant sur la valeur apportee a l'utilisateur.
 
-## Format standard
+## Pourquoi le recruteur pose cette question
 
-En tant que [type d'utilisateur], je veux [fonctionnalite] afin de [benefice].
+Le recruteur cherche a evaluer :
+- Votre capacite a vous mettre a la place de l'utilisateur
+- Votre comprehension des methodes Agile
+- Votre capacite a decomposer des fonctionnalites complexes
+- Votre maitrise des criteres d'acceptation
+- Votre approche de la definition du besoin
 
-Exemple :
-En tant que visiteur, je veux pouvoir m'inscrire par email afin de creer un compte personnel.
+## Les criteres INVEST
 
-## Critères SMART pour les stories
+Une bonne user story doit etre :
+- **I**ndependent (Independante) : Peut etre developpee et livree separement
+- **N**egotiable (Negociable) : Pas une specification figee, sujette a discussion
+- **V**aluable (Valorisable) : Apporte de la valeur a l'utilisateur ou au metier
+- **E**stimable (Estimable) : Assez claire pour etre estimee
+- **S**mall (Petite) : Realisable dans un sprint (1-3 jours)
+- **T**estable (Testable) : Des criteres d'acceptation clairs
 
-- **S**pecific - Une seule fonctionnalité par story
-- **M**easurable - On peut verifier quand cest termine
-- **A**ttainable - Realiste avec les ressources disponibles
-- **R**elevant - Alignee avec les objectifs metier
-- **T**ime-bound - Peut etre realisee dans un sprint
+## Exemple concret
 
-## Critères d'acceptance
+**Mauvaise user story (trop vague) :**
+« En tant qu'admin, je veux gerer les utilisateurs. »
+-> Pas de perimetre, pas de criteres d'acceptation, trop grosse.
 
-Chaque story doit avoir des criteres d'acceptance explicites :
+**Bonnes user stories :**
+1. « En tant qu'admin, je veux ajouter un nouvel utilisateur avec email et mot de passe afin de lui donner acces a la plateforme. »
+2. « En tant qu'admin, je veux modifier les informations d'un utilisateur existant afin de mettre a jour son profil. »
+3. « En tant qu'admin, je veux desactiver un utilisateur afin de bloquer son acces en cas de depart. »
 
-Story : Connexion utilisateur
-Criteria :
-- L'utilisateur peut saisir email et mot de passe
-- Un message d'erreur saffiche si identifiants incorrects
-- L'utilisateur est redirige vers le dashboard apres connexion reussie
-- La session persiste pendant 7 jours
+**Criteres d'acceptation pour la story 1 :**
+- L'admin peut saisir nom, email, mot de passe
+- L'email est valide (format xxx@yyy.zz)
+- Le mot de passe fait au moins 8 caracteres
+- Un email de confirmation est envoye a l'utilisateur
+- Un message d'erreur s'affiche si l'email existe deja
+- L'utilisateur est cree et visible dans la liste immediatement
 
-## Points de story et estimation
+## Questions de suivi possibles
 
-Les points ne mesurent pas le temps mais la complexite relative :
-- 1 point : trivial, quelques heures
-- 2 points : simple, demi-journee
-- 3 points : moyen, 1-2 jours
-- 5 points : complexe, plusieurs jours
-- 8 points : tres complexe, a decomposer
-
-## Décomposition
-
-Une story trop grande doit etre decomposee :
-
-Mauvais : En tant qu'admin, je veux gere tous les utilisateurs
-Bon :
-- En tant qu'admin, je veux ajouter un nouvel utilisateur
-- En tant qu'admin, je veux modifier un utilisateur existant
-- En tant qu'admin, je veux desactiver un utilisateur
-- En tant qu'admin, je veux voir la liste des utilisateurs
+- « Comment decoupez-vous une epic en user stories ? »
+- « Quelle est la difference entre une user story et une tache technique ? »
+- « Comment estimez-vous une user story ? »
 
 ## Bonnes pratiques
 
-1. Ecrire du point de vue de l'utilisateur, pas de la technique
-2. Toujours inclure le "pourquoi" (benefice)
-3. Garder les stories peties (1-3 jours max)
-4. Ne pas preciser la solution dans la story
-5. Collaborer avec le PO pour les criteria d'acceptance
+- Ecrivez du point de vue de l'utilisateur, pas de la technique
+- Incluez toujours le « pourquoi » (le benefice)
+- Gardez les stories petites (1-3 jours max)
+- Ne specifiez pas la solution dans la story (laissez de la place a l'equipe)
+- Collaborez avec le PO pour les criteres d'acceptation
+- Utilisez le format « Given-When-Then » pour les criteres
+- Revoyez les stories collectivement avant le sprint planning
 
 ## Pieges courants
 
-- Ecrire des stories techniques (Changer la table user pour ajouter un champ)
-- Stories trop vagues sans criteria mesurables
-- Depasser 2 semaines de travail (trop gros)
-- Oublier le benefice (le "pourquoi")
-- Non-inclusion des cas limites dans les criteria
+- Ecrire des stories techniques : « Changer la table user pour ajouter un champ »
+- Stories trop vagues sans criteres mesurables
+- Depasser 2 semaines de travail (c'est une epic)
+- Oublier le benefice (le « pourquoi »)
+- Ne pas inclure les cas limites dans les criteres
+- Stories trop detaillees (pas de place a la discussion)
+- Stories qui dependent les unes des autres
 
-Source : Atlassian (https://www.atlassian.com/agile/user-stories)
-`},
+Source : [Atlassian – User Stories](https://www.atlassian.com/fr/agile/user-stories)`},
         {
           id: 'meth-4',
           question: 'Definition of Done (DoD)',
           answer: "Checklist **commune à l'équipe** définissant quand un increment est vraiment « terminé ». Exemples de critères : code écrit, tests unitaires passent, revue de code effectuée, documentation mise à jour, déployé en staging, critères d'acceptation validés.\n\nSans DoD, « c'est fini » signifie des choses différentes pour chacun → dette technique accumulée.\n\n__La DoD est non-négociable pour chaque item du sprint__. Elle peut évoluer lors des rétrospectives, mais jamais être contournée pour un item spécifique.",
         
-          deepDive: `Definition of Done (DoD)
+          deepDive: `# Definition of Done (DoD)
 
-Quest-ce que cest
+## Qu'est-ce que c'est ?
 
-La Definition of Done est un accord de lequipe sur les criteres quune story doit satisfaire pour etre consideree comme terminee. Elle va au-dela du "ca fonctionne" et inclut tous les aspects qualite.
+La Definition of Done (DoD) est un accord d'equipe sur les criteres qu'une story doit satisfaire pour etre consideree comme terminee. Elle va au-dela du « ca compile et ca marche » et garantit un niveau de qualite minimum pour chaque increment livrable.
+
+## Pourquoi le recruteur pose cette question
+
+Le recruteur cherche a evaluer :
+- Votre comprehension des standards de qualite en equipe
+- Votre approche de la qualite logicielle
+- Votre capacite a travailler en equipe sur des criteres communs
+- Votre maturite sur les pratiques de developpement
 
 ## DoD vs Acceptance Criteria
 
-- **Acceptance Criteria** - Ce que le Product Owner attend du point de vue metier
-- **Definition of Done** - Les criteres de qualite partages par toute lequipe
+- **Acceptance Criteria :** Ce que le Product Owner attend specifiquement pour cette story (vue metier).
+- **Definition of Done :** Les criteres de qualite transverses que TOUTES les stories doivent respecter (vue technique).
 
-Une story peut satisfaire ses acceptance criteria mais ne pas etre "done" selon le DoD.
+Une story peut satisfaire tous ses criteres d'acceptation mais ne pas etre « done » si elle ne respecte pas la DoD (ex : tests manquants, documentation absente).
 
-## Exemple de DoD
+## Exemple de DoD pour une equipe
 
-1. Code ecrit et review par un pair
-2. Tests unitaires passes (couverture > 80%)
-3. Tests d'integration passes
-4. Deploiement en staging effectue
-5. Pas de regression sur les autres tests
-6. Documentation mise a jour
-7. Pas de warnings ni erreurs dans le build
-8. Validation sur les criteria d'acceptance
+**Niveau Story :**
+1. Code ecrit et compile sans erreur
+2. Tests unitaires passes avec couverture > 80%
+3. Revue de code effectuee par un pair
+4. Tests d'integration passes
+5. Deploie en environnement de staging
+6. Documentation mise a jour (si necessaire)
+7. Pas de regression detectee
+8. Criteres d'acceptation validates par le PO
 
-## Niveaux de DoD
+**Niveau Sprint :**
+1. Toutes les stories du sprint sont done
+2. Les bugs critiques sont corriges
+3. La demo est preparee pour la sprint review
+4. La retrospective a ete realisee
 
-DoD produit :
-- Developpement termine
-- Tests termines
-- Documentation mise a jour
+## Exemple concret d'evolution du DoD
 
-DoD sprint :
-- Toutes les stories sont done
-- Release note prete
-- Demonstration faite
+**Situation :** Mon equipe n'avait pas de Definition of Done formelle. Chaque developpeur avait sa propre definition de « terminer », ce qui creait des problemes de qualite recurrents.
 
-DoD release :
-- Toutes les conditions du DoD produit
-- Tests de performance reussis
-- Approbation du Product Owner
-- Deploiement en production effectue
+**Action :** J'ai propose d'organiser un atelier d'equipe pour definir collectivement notre DoD. Nous avons commence par 5 criteres essentiels et convenu d'en ajouter au fil des retrospectives. J'ai cree un poster visible dans le bureau et integre la DoD dans le template des pull requests.
 
-## Pourquoi le DoD est important
-
-- **Visibilite** - Tout le monde sait ce que signifie "termine"
-- **Qualite** - Enforce des standards minimaux
-- **Transparence** - Pas de surprises en sprint review
-- **Confiance** - Increment toujours livrable
+**Resultat :** La qualite globale s'est amelioree. Le nombre de bugs en production a baisse de 40% en 2 mois. L'equipe etait plus alignee sur ce que signifie « fini ».
 
 ## Bonnes pratiques
 
-1. Debuter simple et ajouter des criteres au fil du temps
-2. Tous les membres de lequipe doivent accepter le DoD
-3. Le DoD doit etre visible (affiche dans le bureau)
-4. Si une story nest pas done, elle revient au sprint suivant
-5. Revoir regulierement le DoD lors des retrospectives
+- Commencez simple (5-7 criteres) et ajoutez-en avec le temps
+- Impliquez TOUTE l'equipe dans la definition
+- La DoD doit etre visible par tous (poster, wiki, template de PR)
+- Une story sans DoD respectee n'est pas terminee
+- Re voyez la DoD regulierement en retrospective
+- La DoD s'applique a TOUTES les stories (pas negociable par item)
 
 ## Pieges courants
 
-- Un DoD trop leger (risque de qualite)
-- Un DoD trop lourd (decourage lequipe)
-- Ne pas respecter le DoD en fin de sprint
-- DoD defini par le chef sans concertation
-- Ne pas adapter le DoD quand le contexte change
+- DoD trop legere (risque qualite eleve)
+- DoD trop lourde (decourage l'equipe)
+- Contourner la DoD en fin de sprint pour « livrer a tout prix »
+- DoD definie par le chef sans concertation
+- DoD jamais revue (devient obselete)
+- DoD pas respectee (perd sa valeur)
+- Confondre DoD et criteres d'acceptation
 
-Source : Atlassian (https://www.atlassian.com/agile/scrum/definition-of-done)
-`},
+Source : [Atlassian – Definition of Done](https://www.atlassian.com/fr/agile/scrum/definition-of-done)`},
       ],
     },
     {
@@ -284,105 +296,287 @@ Source : Atlassian (https://www.atlassian.com/agile/scrum/definition-of-done)
           question: 'TDD',
           answer: "**Test-Driven Development** : écrire les tests avant le code. Cycle **Red-Green-Refactor** : test qui échoue (`Red`), code minimum pour le passer (`Green`), puis refactoring (tout vert).\n\nÉcrire le test en premier force à réfléchir à l'interface et au comportement souhaité, conduisant à des classes plus petites et un **couplage plus faible**.\n\nDemande de la discipline, mais les praticiens réguliers constatent moins de bugs et un code plus *maintenable*. Pas dogmatique : tout ne s'y prête pas (POCs, explorations), mais __excellent pour le code métier critique__.",
         
-          deepDive: `TDD - Test-Driven Development
+          deepDive: `# TDD (Test-Driven Development)
 
-Quest-ce que cest
+## Qu'est-ce que c'est ?
 
-TDD est une approche de developpement ou les tests sont ecrits avant le code. Le cycle est : Rouge (test qui echoue) -> Vert (code minimal pour passer) -> Refactor (ameliorer). Cela s'appelle aussi "Red-Green-Refactor".
+Le TDD (Test-Driven Development) est une pratique de developpement ou les tests sont ecrits AVANT le code de production. Le cycle est : Rouge (test qui echoue) -> Vert (code minimal pour passer le test) -> Refactor (amelioration du code).
 
-## Le cycle TDD
+## Pourquoi le recruteur pose cette question
 
-1. **Red** - Ecrire un test qui decrit ce quon veut sans encore implementer. Le test echoue.
-2. **Green** - Ecrire le minimum de code pour que le test passe. Pas d'optimisation.
-3. **Refactor** - Ameliorer le code tout en gardant les tests verts. Supprimer les duplications.
+Le recruteur cherche a evaluer :
+- Votre approche de la qualite logicielle
+- Votre discipline de developpement
+- Votre comprehension des tests et de leur valeur
+- Votre capacite a produire du code testable et maintenable
+- Votre experience pratique avec les tests
+
+## Le cycle Red-Green-Refactor
+
+1. **Red :** Ecrivez un test qui decrit le comportement souhaite. Le test echoue car la fonctionnalite n'existe pas encore.
+2. **Green :** Ecrivez le minimum de code pour faire passer le test. Pas d'optimisation, pas de refactoring.
+3. **Refactor :** Ameliorez le code tout en gardant les tests verts. Supprimez les duplications, ameliorez le nommage.
 
 ## Exemple concret
 
--- Etape 1 : Ecrire le test (Red) --
-test("should return true for palindrome", () => {
-  expect(isPalindrome("radar")).toBe(true);
+**Fonctionnalite :** Calculer le montant total d'un panier avec reduction.
+
+**Etape 1 (Red) :**
+\`\`\`javascript
+test('calcule le total avec reduction de 10%', () => {
+  const panier = new Panier();
+  panier.ajoute(100);
+  panier.ajoute(50);
+  expect(panier.totalAvecReduction(10)).toBe(135);
 });
+\`\`\`
+-> FAIL : La methode totalAvecReduction n'existe pas.
 
--- Resultat : FAIL (isPalindrome nexiste pas)
-
--- Etape 2 : Implementer minimal (Green) --
-function isPalindrome(str) {
-  return str === "radar";
+**Etape 2 (Green) :**
+\`\`\`javascript
+class Panier {
+  constructor() { this.items = []; }
+  ajoute(prix) { this.items.push(prix); }
+  totalAvecReduction(pourcentage) {
+    const total = this.items.reduce((a, b) => a + b, 0);
+    return total * (1 - pourcentage / 100);
+  }
 }
+\`\`\`
+-> PASS
 
--- Resultat : PASS (mais seulement pour radar)
+**Etape 3 (Refactor) :**
+Ajouter de la validation, gerer les cas limites (panier vide, reduction > 100%).
 
--- Etape 3 : Refactor + etendre --
-function isPalindrome(str) {
-  const reversed = str.split("").reverse().join("");
-  return str === reversed;
-}
+## Les types de tests
 
--- Resultat : PASS pour tous les palindromes
-
-## Types de tests en TDD
-
-- **Unit tests** - Tests isoles des fonctions/classes
-- **Integration tests** - Tests des interactions entre composants
-- **Contract tests** - Tests des APIs entre services
-
-## Ratio de tests recommande
-
-- 70% unit tests (tests rapides, nombreux)
-- 20% integration tests (plus lents)
-- 10% e2e tests (lents, peu nombreux)
-
-## Avantages du TDD
-
-- Code testable des le depart
-- Specification a jour (les tests documentent)
-- Refactoring confiant
-- Moins de bugs en production
-- Design plus modulaire (sinon difficile a tester)
-
-## Inconvenients et myths
-
-- "Ca ralentit le developpement" - Vrai au debut, gagne du temps ensuite
-- "On ecrit 100% de tests" - Non, focus sur la criticite
-- "Ca garantit labsence de bugs" - Non, mais reduit significativement
-- "Impossible sur du legacy" - On peut commencer par les nouvelles features
+- **Tests unitaires (70%) :** Testent une fonction/classe isolee. Rapides (ms), nombreux.
+- **Tests d'integration (20%) :** Testent les interactions entre composants. Plus lents (secondes).
+- **Tests E2E (10%) :** Testent l'application de bout en bout. Lents (minutes), peu nombreux.
 
 ## Bonnes pratiques
 
-1. Les tests doivent etre petits et rapides
-2. Un test = une assertion (ou quelques liees)
-3. AAA pattern (Arrange, Act, Assert)
-4. Ne pas tester des details d'implementation
-5. Les tests doivent etre independants (pas d'ordre)
+- Un test = une seule assertion (ou un groupe logique)
+- Utilisez le pattern AAA : Arrange, Act, Assert
+- Les tests doivent etre independants (pas d'ordre)
+- Ne testez pas les details d'implementation (testez le contrat)
+- Les tests sont de la documentation vivante
+- Refactorez les tests comme le code de production
+- Couverture > 80% sur le code critique metier
 
 ## Pieges courants
 
-- Ecrire des tests sans refactoriser (code duplique)
-- Tests trop couples a l'implementation
-- Negliger les cas limites (test only happy path)
-- Utiliser des tests pour "tester le test"
-- Oublier que les tests sont de la documentation
+- Ecrire les tests apres le code (ce n'est plus du TDD)
+- Tests trop couples a l'implementation (cassent au moindre changement)
+- Négliger les cas limites (happy path uniquement)
+- Tests qui dependent les uns des autres (ordre)
+- Couverture elevee mais tests de mauvaise qualite
+- Ne pas refactoriser les tests (code duplique)
+- TDD dogmatique (tout ne se prete pas au TDD : POCs, exploration)
 
-Source : Atlassian (https://www.atlassian.com/agile/test-driven-development)
-`},
+Source : [Atlassian – Test-Driven Development](https://www.atlassian.com/fr/agile/test-driven-development)`},
         {
           id: 'meth-6',
           question: 'Revues de code',
           answer: "Un ou plusieurs développeurs relisent le code avant merge.\n\n**Bénéfices** : détection d'erreurs (des yeux frais voient ce que l'auteur n'a pas vu), apprentissage mutuel (découverte de patterns et bibliothèques), homogénéisation du style, amélioration de la lisibilité (on écrit mieux quand on sait qu'on sera lu).\n\nPour être efficaces : PRs petites et ciblées, ton constructif, review en moins de 24h. Investissement qui paie en **qualité, formation et cohésion d'équipe**.",
         
-          deepDive: `# Revues de code\\n\\n## Quest-ce que cest\\nLa revue de code est une pratique ou un ou plusieurs developpeurs examinent le code ecrit par un pair avant son integration. Elle permet de detecter les bugs, ameliorer la qualite et partager les connaissances.\\n\\n## Quest-ce que cest\\nLes revues de code sont systematiquement organisees avec des checklists, des criteria d'acceptation, et un workflow defini. Les PR doivent etre petites (moins de 400 lignes) pour faciliter la revue.\\n\\n## Bonnes pratiques\\n- Revoir dans les 24h pour eviter de bloque le dev\\n- Separer les concerns: style, logic, performance, tests\\n- Utiliser des outils automatises pour le style et les tests\\n- Donner du feedback constructif avec propositions de correction\\n- Celebrer les bonnes pratiques看到他\\n\\n## Pieges courants\\n- Revues de 2h sur des PR geantes (inefficace)\\n- Etre trop directif ("tu dois faire ci")\\n- Négliger les tests (toujours verifier la coverage)\\n- Prendre le feedback personnel\\n- Hacer des revues opportunistes (pas de processus)\\n\\n## Sources\\nhttps://www.atlassian.com/blog/developer/developer-education/code-review-best-practices`},
+          deepDive: `# Revues de code
+
+## Qu'est-ce que c'est ?
+
+La revue de code est une pratique ou un ou plusieurs developpeurs examinent le code ecrit par un pair avant son integration. C'est l'un des leviers les plus efficaces pour la qualite logicielle, le partage de connaissances et la cohesion d'equipe.
+
+## Pourquoi le recruteur pose cette question
+
+Le recruteur cherche a evaluer :
+- Votre approche de la qualite et de la collaboration
+- Votre capacite a donner et recevoir du feedback technique
+- Votre discipline de developpement
+- Votre capacite a apprendre des autres et a partager
+- Votre maturite technique
+
+## Les benefices
+
+- **Detection d'erreurs :** Des yeux frais voient ce que l'auteur n'a pas vu (bugs, regressions, failles de securite).
+- **Apprentissage mutuel :** Decouverte de patterns, d'APIs, de bibliotheques.
+- **Homogeneisation :** Le code suit les conventions de l'equipe (style, architecture).
+- **Amelioration de la qualite :** On code mieux quand on sait qu'on sera relu.
+- **Resilience :** Plusieurs personnes connaissent chaque partie du code.
+
+## Exemple concret d'organisation
+
+**Situation :** Notre equipe n'avait pas de processus de code review. Les bugs arrivaient regulierement en production et la connaissance etait tres isolee.
+
+**Action :** J'ai propose de mettre en place un processus simple mais efficace :
+1. PR de moins de 400 lignes (si plus gros, decomposer)
+2. Au moins 1 reviewer obligatoire
+3. Review dans les 24h (ne pas bloquer l'auteur)
+4. Checklist automatisee (linter, tests, build)
+5. Ton constructif : « Qu'en penses-tu si on essayait... ? »
+6. Celebration des bonnes pratiques dans la PR
+
+**Resultat :** Les bugs en production ont baisse de 60%. La connaissance du code s'est repartie dans l'equipe. Les juniors ont progresse beaucoup plus vite en voyant le code des seniors.
+
+## Conseils pour une bonne review
+
+- Revoyez dans les 24h pour ne pas bloquer l'equipe
+- PRs petites et ciblees (< 400 lignes)
+- Commencez par une vue d'ensemble, puis les details
+- Distinguez les problemes bloquants des suggestions
+- Utilisez un ton constructif : question plutot qu'affirmation
+- Expliquez le POURQUOI d'une suggestion, pas seulement le QUOI
+- Celebrez les bonnes pratiques quand vous en voyez
+
+## Pieges courants
+
+- Revues de 2 heures sur des PRs geantes (inefficace et epuisant)
+- Etre trop directif : « Tu dois faire comme ceci »
+- Négliger les tests (toujours verifier la couverture)
+- Prendre le feedback personnellement (ego)
+- Reviews sans processus (opportunistes, pas systematiques)
+- Trop de reviewers (dilution de la responsabilite)
+- Reviewer trop vite (approuver sans verifier)
+
+## Erreurs a eviter absolument
+
+Ne dites jamais « C'est nul, refais tout ». Ne faites pas de review sans avoir lu le code. N'approuvez pas une PR sans la comprendre. Ne laissez pas le code non-reviewed plus de 48h.
+
+Source : [Atlassian – Code Review Best Practices](https://www.atlassian.com/fr/blog/developer/code-review-best-practices)`},
         {
           id: 'meth-7',
           question: 'Pair programming / Mob programming',
           answer: "**Pair programming** : deux développeurs sur un même poste — un **driver** (tape le code) et un **navigator** (réfléchit à la stratégie, identifie les problèmes). Rotation régulière des rôles.\n\n**Mob programming** : toute l'équipe sur un écran — un driver, les autres naviguent. Excellent pour les problèmes complexes et le partage de connaissances.\n\nBénéfices : **qualité supérieure** (deux paires d'yeux), transfert de compétences instantané, design mieux pensé. Coût : 2 personnes sur 1 tâche, mais moins de bugs et de rework. __Investissement rentable sur le code critique.__",
         
-          deepDive: `# Pair programming et Mob programming\\n\\n## Quest-ce que cest\\nLe pair programming est une technique ou deux developpeurs travaillent ensemble sur le meme code, l'un ecrivant (driver) et l'autre guidant (navigator). Le mob programming etend ce principe a toute l'equipe.\\n\\n## Syntaxe et exemples\\n\\n### Pair Programming classique\\n- Driver: ecrit le code, se concentre sur la tache immediate\\n- Navigator: relit, pense a la strategie, aux tests, aux cas limites\\n- Roles changes toutes les 30-45 minutes\\n\\n### Mob Programming\\n- Toute l'equipe sur un seul poste\\n- Driver change toutes les 10-15 minutes (rotations)\\n- Les autres contribuent via discussion\\n- Ideal pour problemes complexes ou apprentissage\\n\\n## Bonnes pratiques\\n- Alterner regulierement les roles\\n- Commencer par des sessions courtes (1h)\\n- Choisir des pairing elastique (navigation active)\\n- Reduire les distractions (notifications off)\\n- Utiliser un IDE avec partages d'ecran en remote\\n\\n## Pieges courants\\n- Le driver fait tout sans interaction (pseudo-pairing)\\n- Sessions trop longues (fatigue cognitive)\\n- Imposer le pairing sur toutes les taches\\n- Négliger le debrief post-session\\n\\n## Sources\\nhttps://www.atlassian.com/blog/developer/developer-education/pair-programming`},
+          deepDive: `# Pair programming et Mob programming
+
+## Qu'est-ce que c'est ?
+
+Le pair programming est une pratique ou deux developpeurs travaillent ensemble sur le meme code : l'un ecrit (le driver), l'autre guide et relit (le navigateur). Le mob programming etend ce principe a toute l'equipe : un seul driver, les autres naviguent. Ces pratiques sont excellentes pour la qualite, le partage de connaissances et la resolution de problemes complexes.
+
+## Pourquoi le recruteur pose cette question
+
+Le recruteur cherche a evaluer :
+- Votre ouverture a la collaboration en temps reel
+- Votre capacite a travailler en binome
+- Votre approche du partage de connaissances
+- Votre experience avec differentes pratiques de developpement
+
+## Les roles en pair programming
+
+- **Driver :** Ecrit le code, suit les instructions du navigateur, se concentre sur l'implementation immediate.
+- **Navigator :** Relit chaque ligne, pense a la strategie generale, aux tests, aux cas limites, aux alternatives. Anticipe les problemes.
+
+**Frequence de rotation :** Toutes les 30-45 minutes pour les roles. Plus court (10-15 min) en mob programming. La rotation reguliere est essentielle pour que les deux restent engages.
+
+## Exemple concret
+
+**Situation :** Un probleme de performance complexe sur le moteur de recherche nous bloquait depuis 3 jours. Chaque developpeur avait essaye seul sans succes.
+
+**Action :** J'ai propose une session de mob programming avec toute l'equipe (5 personnes) sur un ecran partage. Chaque personne tournait au clavier pendant 10 minutes. Nous avons collectivement analyse les requetes SQL, identifie un probleme d'indexation et propose une solution.
+
+**Resultat :** Le probleme a ete resolu en 2 heures (3 jours de frustration). L'equipe entiere comprenait desormais le fonctionnement du moteur de recherche, et le code etait bien meilleur que ce qu'un seul developpeur aurait produit.
+
+## Quand utiliser le pair programming
+
+- Code complexe ou critique (algorithme, securite)
+- Onboarding d'un nouveau membre
+- Resolution de bug difficile
+- Design d'architecture
+- Debut d'une nouvelle feature complexe
+
+## Bonnes pratiques
+
+- Alternez les roles regulierement (toutes les 30 min)
+- Commencez par des sessions courtes (1h) pour apprendre
+- Choisissez le pair programming pour le code critique, pas pour tout
+- Mettez les telephones en silencieux, fermez les notifications
+- Utilisez des IDE partages (VS Code Live Share, Tuple) pour le remote
+- Debriefez apres la session : qu'est-ce qui a bien fonctionne ?
+
+## Pieges courants
+
+- Le driver fait tout sans interagir (pseudo-pairing)
+- Sessions trop longues (fatigue cognitive, 4h max)
+- Imposer le pairing sur toutes les taches (pas necessaire)
+- Navigateur qui fait autre chose (distraction)
+- Personnalites trop fortes (un des deux domine)
+- Négliger le debrief post-session
+- Utiliser le pairing pour « surveiller » un junior
+
+## Erreurs a eviter absolument
+
+Ne faites pas du pair programming si vous n'etes pas concentres. Ne laissez pas un des deux faire tout le travail. N'imposez pas le pairing a quelqu'un qui n'est pas a l'aise.
+
+Source : [Atlassian – Pair Programming](https://www.atlassian.com/fr/blog/developer/pair-programming)`},
         {
           id: 'meth-8',
           question: 'Principes DRY et KISS',
           answer: "**DRY** (*Don't Repeat Yourself*) : chaque connaissance doit avoir une **représentation unique** et non ambiguë. Dupliquer = risquer des incohérences. Extrayez dans des méthodes, classes ou services partagés.\n\n**KISS** (*Keep It Simple, Stupid*) : la solution la plus simple est souvent la meilleure. Ne pas sur-ingenieurer : pas de design pattern inutile, pas d'abstraction prématurée.\n\n__DRY évite la duplication, KISS évite la complexité inutile. Les deux visent la maintenabilité.__",
         
-          deepDive: `# Principes DRY et KISS\\n\\n## Quest-ce que cest\\n- DRY (Don't Repeat Yourself): Chaque connaissance doit avoir une representation unique et non dupliquee dans le systeme\\n- KISS (Keep It Simple, Stupid): Privilégier la simplicite dans la conception et l'implementation\\n\\n## Quest-ce que cest\\nDRY et KISS sont des principes de conception qui s'appliquent a tous les niveaux: code, architecture, documentation. Ils reduisent la maintenance et ameliorent la lisibilite.\\n\\n## Bonnes pratiques DRY\\n- Extraire le code duplique en fonctions/modules partages\\n- Utiliser des constantes pour les valeurs magiques\\n- Centraliser la configuration et les messages d'erreur\\n- Refactorer progressivement avec tests\\n\\n## Bonnes pratiques KISS\\n- Preferer le code simple au code "intelligent"\\n- Decouper les fonctions longues en fonctions plus petites\\n- Eviter l'over-engineering\\n- Valider regulierement que la solution n'est pas plus complexe que necessaire\\n\\n## Tension entre DRY et KISS\\nParfois, extraire le code pour eviter la duplication ajoute de la complexity. Dans ce cas:\\n- Si le code est unlikely to change: garder duplique c'est acceptable\\n- Si le code est volatile: investir dans l'extraction en vaut la peine\\n\\n## Pieges courants\\n- DRY pris trop loin (over-abstraction)\\n- KISS ignore pour des optimisations prematurées\\n- Refactorer sans tests\\n- Appliquer ces principes dogmatiquement\\n\\n## Sources\\nhttps://www.atlassian.com/blog/quality/why-code-quality-matters/dry-duplicate-code`},
+          deepDive: `# Principes DRY et KISS
+
+## Qu'est-ce que c'est ?
+
+DRY (Don't Repeat Yourself) et KISS (Keep It Simple, Stupid) sont deux principes fondamentaux de conception logicielle. DRY vise a reduire la duplication de code, tandis que KISS vise a eviter la complexite inutile. Ensemble, ils forment la base d'un code maintenable et de qualite.
+
+## Pourquoi le recruteur pose cette question
+
+Le recruteur cherche a evaluer :
+- Votre maitrise des principes fondamentaux de conception
+- Votre capacite a produire du code maintenable
+- Votre jugement technique (quand appliquer quel principe)
+- Votre experience pratique avec la refactorisation
+
+## DRY (Don't Repeat Yourself)
+
+Le principe : chaque connaissance doit avoir une representation unique et non ambigue dans le systeme. La duplication est source d'incoherence et de bugs de maintenance.
+
+**Application :**
+- Extraire le code duplique en fonctions, classes ou modules
+- Factoriser les constantes (pas de valeurs magiques)
+- Centraliser la configuration
+- Creer des composants reutilisables
+
+**Tension avec KISS :** Parfois, extraire le code pour eviter la duplication introduit de la complexite. Si le code duplique est simple et unlikely to change, la duplication est parfois acceptable.
+
+## KISS (Keep It Simple, Stupid)
+
+Le principe : la solution la plus simple est souvent la meilleure. Evitez la sur-ingenierie, les design patterns inutiles, les abstractions prematures.
+
+**Application :**
+- Commencez simple, complexifiez si necessaire
+- Une fonction = une responsabilite (principe SRP)
+- Preferez le code simple au code « intelligent »
+- N'utilisez pas un pattern complexe quand une boucle suffit
+- Validez qu'une abstraction apporte de la valeur
+
+## Exemple concret
+
+**Situation :** Un developpeur avait cree un systeme complexe de factory patterns et d'interfaces pour gerer... 3 types de notifications (email, SMS, push).
+
+**Action :** J'ai montre que l'abstraction etait prematuree : 3 types de notifications ne justifiaient pas 5 classes et 3 interfaces. Nous avons remplace toute la structure par une simple fonction avec un switch. Le code est passe de 200 lignes a 30 lignes.
+
+**Resultat :** Le code etait 7 fois plus court, 3 fois plus rapide a charger, et beaucoup plus facile a comprendre. Quand nous avons ajoute un 4e type (notification in-app), l'ajout a pris 10 minutes au lieu de 2 heures de ceremonie.
+
+## Conseils d'application
+
+- Commencez par la solution la plus simple
+- Appliquez DRY uniquement si le code est vraiment duplique (pas juste similaire)
+- N'abstrayez pas avant d'avoir 3 occurrences au moins (regle du 3)
+- Validez qu'une abstraction paye son cout de maintenance
+- Refactorez avec des tests pour valider que vous ne cassez rien
+
+## Pieges courants
+
+- DRY pris trop loin (over-abstraction, code illisible)
+- KISS utilise comme excuse pour ne pas refactorer
+- Appliquer des design patterns sans raison
+- Refactorer sans tests (risque de regression)
+- Trop d'abstraction prematurée (on ne connait pas encore le besoin)
+- Code « intelligent » que personne d'autre ne comprend
+- Premier code qui marche comme unique critere
+
+Source : [Atlassian – Principes DRY et KISS](https://www.atlassian.com/fr/blog/quality/code-quality-matters)`},
       ],
     },
     {
@@ -394,19 +588,212 @@ Source : Atlassian (https://www.atlassian.com/agile/test-driven-development)
           question: 'Prioriser les tâches',
           answer: "**Matrice d'Eisenhower** : quatre quadrants selon urgence/importance (faire, planifier, déléguer, éliminer). Backlog priorisé par **valeur métier** et impact utilisateur.\n\n**Méthode MoSCoW** : **M**ust have, **S**hould have, **C**ould have, **W**on't have.\n\nL'essentiel : prioriser, c'est aussi décider ce qu'on ne va **PAS** faire — *savoir dire non aux demandes hors objectifs*. En pratique, combiner le backlog du PO avec l'évaluation technique des dépendances et risques.",
         
-          deepDive: `# Priorisation des tâches\\n\\n## Quest-ce que cest\\nLa priorisation des taches est le processus d'ordonnancement du travail selon des critares objectifs: impact, urgence, dependances, cout, et valeur business.\\n\\n## Syntaxe et exemples\\n\\n### Matrice Eisenhower\\n| | Urgent | Non Urgent |\\n|---|---|---|\\n| **Important** | Doit faire (crises) | Planifier (investissement) |\\n| **Non Important** | Deleguer | Eliminer |\\n\\n### Methodes de priorisation\\n\\n**RICE:**\\n- Reach (portee):Combien de users sont affectés?\\n- Impact (impact): Effet sur la metrique (0.25, 0.5, 1, 2, 3)\\n- Confidence (confiance): certitude des estimations\\n- Effort (effort): mois/homme necessaires\\n- Score = (R x I x C) / E\\n\\n**MoSCoW:**\\n- Must have (critique)\\n- Should have (important)\\n- Could have (souhaitable)\\n- Won't have (exclu pour cette iteration)\\n\\n## Bonnes pratiques\\n- Revoir les priorites regulierement (sprint planning, daily)\\n- Impliquer les parties prenantes dans les decisions de priorite\\n- Documenter les critares de priorisation\\n- Communicuer transparentement sur les trade-offs\\n- Prioriser la reduction de la dette technique\\n\\n## Pieges courants\\n- Prioriser selon celui qui crie le plus fort\\n- Ignorer la capacite de l'equipe\\n- Négliger les dependances entre taches\\n- Ne pas revoir les priorites quand les circonstances changent\\n\\n## Sources\\nhttps://www.atlassian.com/project-management/project-terminology`},
+          deepDive: `# Prioriser les taches
+
+## Qu'est-ce que c'est ?
+
+La priorisation des taches est le processus d'ordonnancement du travail selon des criteres objectifs : impact, urgence, dependances, cout, valeur business. C'est une competence cle pour les developpeurs seniors et les tech leads, qui doivent constamment arbitrer entre des demandes concurrentes.
+
+## Pourquoi le recruteur pose cette question
+
+Le recruteur cherche a evaluer :
+- Votre capacite a prendre des decisions structurees
+- Votre maitrise des outils de priorisation
+- Votre capacite a communiquer les trade-offs
+- Votre maturite dans la gestion des contraintes
+
+## Les methodes de priorisation
+
+**Matrice Eisenhower :**
+| | Urgent | Non Urgent |
+|---|---|---|
+| **Important** | Faire immediatement (crises) | Planifier (investissement) |
+| **Non Important** | Deleguer (taches administratives) | Eliminer (distractions) |
+
+**MoSCoW :**
+- **M**ust have : Indispensable pour la livraison (50-60% de l'effort)
+- **S**hould have : Important mais peut attendre (20-30%)
+- **C**ould have : Souhaitable si le temps le permet (10-15%)
+- **W**on't have : Exclu pour cette iteration (0%)
+
+**RICE :**
+- Reach (Portee) : Combien d'utilisateurs impactes ?
+- Impact : Effet sur la metrique (0.25, 0.5, 1, 2, 3)
+- Confidence : Certitude des estimations (20% a 100%)
+- Effort : Mois/homme necessaires
+- Score = (Reach * Impact * Confidence) / Effort
+
+## Exemple concret
+
+**Situation :** Tech lead sur une plateforme SaaS, j'avais plusieurs demandes urgentes : un bug critique (paiement bloqué), une feature promise a un client majeur pour la semaine suivante, et un sprint a preparer.
+
+**Action :** J'ai utilise la matrice Eisenhower :
+1. Le bug paiement etait urgent ET important -> fait immédiatement par un dev dedie
+2. La feature client etait importante mais pas urgente (deadline dans 1 semaine) -> planifiee avec un planning
+3. Le sprint suivant etait important mais pas urgent -> preparation en parallele par les autres membres
+
+J'ai communique clairement les choix a toutes les parties prenantes avec les justifications.
+
+**Resultat :** Le bug a ete corrige en 2h. La feature client livree dans les temps. Le sprint suivant etait bien prepare. Collaboration renforcee avec le client.
+
+## Bonnes pratiques
+
+- Utilisez des frameworks de priorisation (pas de l'intuition)
+- Impliquez les parties prenantes dans les decisions
+- Documentez les criteres de priorisation
+- Communiquez transparentement sur les trade-offs
+- Priorisez aussi la reduction de la dette technique
+- Revoyez les priorites regulierement (au moins chaque sprint)
+- Distinguez l'urgent de l'important
+
+## Pieges courants
+
+- Prioriser selon le bruit (celui qui crie le plus fort)
+- Ignorer la capacite de l'equipe
+- Négliger les dependances entre taches
+- Ne pas revoir les priorites quand le contexte change
+- Accepter tout le travail sans evaluer la charge
+- Confondre urgence et importance
+- Prioriser uniquement les nouvelles features (pas de dette technique)
+
+Source : [Atlassian – Priorisation des taches](https://www.atlassian.com/fr/project-management/project-terminology)`},
         {
           id: 'meth-10',
           question: 'Dette technique',
           answer: "Raccourcis de conception/codage pris pour livrer rapidement, qu'il faudra **rembourser** plus tard avec des intérêts (maintenance coûteuse, bugs, ralentissement).\n\nPas toujours mauvaise : la dette **délibérée** (consciente, planifiée) est un outil de delivery. La dette **involontaire** (mauvais code par méconnaissance) est dangereuse.\n\nGestion : la **visualiser** (backlog technique), la **quantifier** (coût de maintenance vs refactoring), allouer **20% du sprint** à la réduction. __Ignorer la dette technique, c'est comme ignorer une fuite d'eau — ça ne s'arrange pas seul.__",
         
-          deepDive: `# Dette technique\\n\\n## Quest-ce que cest\\nLa dette technique est le cout implicite du travail supplémentaire causé par un choix technique rapide ou suboptimal. Elle peut etre volontaire (pour accelerer un delivery) ou involontaire (mauvaise conception initiale).\\n\\n## Types de dette technique\\n- **Deliberate:** Decision consciencee de prendre un raccourci\\n- **Accidental:** Resultat d'incompetence ou manque de connaissance\\n- **Bit rot:** Degradation du code avec le temps\\n- **Environmental:** Depreciated libraries, infrastructure obsolete\\n\\n## Bonnes pratiques\\n- Tracker la dette technique dans le backlog (tag \\"tech-debt\\")\\n- Allouer 15-20% du sprint a la reduction de dette\\n- Utiliser la matrice: impact vs effort pour prioriser\\n- Documenter chaque dette avec le \\"interest\\" associé\\n- presenter la dette en termes business (cout de maintenance)\\n\\n## Pieges courants\\n- Ignorer la dette (elle ne disparait pas)\\n- Ne pas la quantifier en temps/argent\\n- Faire trop de dette deliberee sans la solder\\n- Négliger la communication aux parties prenantes\\n- Refuser toute dette (parfois necessary evil)\\n\\n## Sources\\nhttps://www.atlassian.com/blog/technology/manage-technical-debt`},
+          deepDive: `# Dette technique
+
+## Qu'est-ce que c'est ?
+
+La dette technique est le cout implicite du travail supplementaire cause par un choix technique rapide ou suboptimal. Comme une dette financiere, elle peut etre volontaire (decision consciente pour accelerer) ou involontaire (mauvaise conception initiale). Si elle n'est pas remboursee, les interets s'accumulent.
+
+## Pourquoi le recruteur pose cette question
+
+Le recruteur cherche a evaluer :
+- Votre maturite technique et votre pragmatisme
+- Votre capacite a arbitrer entre vitesse et qualite
+- Votre approche de la maintenance logicielle
+- Votre capacite a expliquer des concepts techniques
+
+## Les 4 types de dette technique
+
+1. **Dette deliberee :** Decision consciente de prendre un raccourci pour livrer plus vite, avec un plan de remboursement.
+2. **Dette accidentelle :** Resultat d'incompetence, de manque de connaissance ou de negligence.
+3. **Bit rot :** Degradation naturelle du code avec le temps (dependances obsoletes, accumulation de detours).
+4. **Dette d'environnement :** Outils, processus ou infrastructure obsoletes.
+
+## La metaphore financiere
+
+- **Principal :** Le travail supplementaire necessaire pour « bien faire » la fonctionnalite
+- **Interets :** Le surcout de maintenance chaque fois qu'on touche au code (bugs, temps de developpement, frustration)
+- **Remboursement :** Le refactoring, la reecriture, la mise a jour
+
+Un code avec dette technique peut fonctionner, mais chaque modification devient plus longue et plus risquee.
+
+## Exemple concret
+
+**Situation :** Nous devions livrer une fonctionnalite critique sous 2 semaines pour un salon professionnel. L'approche propre (refactoring prealable, tests, architecture) aurait pris 4 semaines.
+
+**Action :** J'ai propose un compromis : implementer la fonctionnalite de maniere pragmatique avec des commentaires TODO et une dette technique documentee, avec un plan de remboursement sur les 2 sprints suivants. J'ai cree des tickets techniques dans le backlog avec le cout estime de remboursement.
+
+**Resultat :** La fonctionnalite a ete livree dans les temps. Le salon a ete un succes. Sur les 2 sprints suivants, nous avons rembourse 80% de la dette avec des sessions dediees. L'equipe etait satisfaite car la dette etait visible et planifiee, pas cachee.
+
+## Bonnes pratiques
+
+- Trackez la dette technique dans le backlog avec un tag « tech-debt »
+- Allouez 15-20% du sprint a la reduction de dette
+- Utilisez la matrice Impact vs Effort pour prioriser le remboursement
+- Documentez chaque dette avec les « interets » associes
+- Presentez la dette en termes business (cout de maintenance, cout d'opportunite)
+- Dette volontaire = OK si documentee et planifiee
+- Dette involontaire = danger, a reduire en priorite
+
+## Pieges courants
+
+- Ignorer la dette technique (elle ne disparait pas)
+- Ne pas la quantifier (en temps, en bugs, en frustration)
+- Faire trop de dette deliberee sans jamais la solder
+- Négliger de communiquer aux parties prenantes
+- Refuser TOUTE dette (parfois necessaire pour survivre)
+- Utiliser la dette comme excuse pour du mauvais code
+- Sous-estimer les interets de la dette (cout cache)
+
+Source : [Atlassian – Dette technique](https://www.atlassian.com/fr/blog/technology/manage-technical-debt)`},
         {
           id: 'meth-11',
           question: 'Documentation',
           answer: "Pour les APIs : `Swagger`/`OpenAPI` documente automatiquement endpoints, paramètres, réponses et génère une interface de test.\n\nPour le code : commentaires sur le **pourquoi** (pas le quoi), `Javadoc` sur les méthodes publiques, conventions de nommage cohérentes.\n\n__Règle clé : une documentation obsolète est pire que pas de documentation__ (elle est trompeuse). Privilégier la documentation proche du code (annotations, `Javadoc`) — plus de chances d'être maintenue à jour. Documenter ce qui n'est pas évident, automatiser ce qui peut l'être.",
         
-          deepDive: `# Documentation\\n\\n## Quest-ce que cest\\nLa documentation technique englobe tous les documents qui expliquent le fonctionnement d'un systeme: readmes, API docs, architecture diagrams, runbooks, et guides utilisateur.\\n\\n## Types de documentation\\n- **Architecture:** ADR, diagrams C4, decisions de design\\n- **API:** Swagger/OpenAPI, guides d'utilisation\\n- **Code:** JSDoc, comments in-line (only when necessary)\\n- **Operations:** Runbooks, troubleshooting guides\\n- **Onboarding:** Guides de setup, tutoriels\\n\\n## Bonnes pratiques\\n- Documenter le "pourquoi" pas le "quoi" (le code montre le quoi)\\n- Utiliser des outils de documentation (Swagger, Storybook)\\n- Garder la documentation proche du code (docs as code)\\n- Revoir et mettre a jour lors des changes\\n- Automatiser la generation de documentation ou possible\\n\\n## Pieges courants\\n- Documenter pour le plaisir de documenter (no value)\\n- La documentation desaccord avec le code\\n- Comments triviaux (i = i + 1 // increment i)\\n- Documentation outdated car pas de process de mise a jour\\n- Over-documenting simple code\\n\\n## Sources\\nhttps://www.atlassian.com/blog/technology/technical-documentation-best-practices`},
+          deepDive: `# Documentation
+
+## Qu'est-ce que c'est ?
+
+La documentation technique englobe tout ce qui explique le fonctionnement d'un systeme : README, documentation d'API, diagrammes d'architecture, guides d'utilisation, runbooks. La documentation de qualite est un investissement qui reduit les couts d'onboarding, de maintenance et de support.
+
+## Pourquoi le recruteur pose cette question
+
+Le recruteur cherche a evaluer :
+- Votre approche de la documentation et du partage de connaissances
+- Votre sensibilite a la maintenance a long terme
+- Votre capacite a communiquer par ecrit
+- Votre pragmatisme (documenter utile sans surdocumenter)
+
+## Les types de documentation
+
+**Documentation d'architecture :**
+- ADR (Architecture Decision Record) : Pour chaque decision architecturale, documentez le contexte, les options envisagees, la decision et ses consequences.
+- Diagrammes C4 : Contexte, Conteneur, Composant, Code. Plusieurs niveaux de detail selon l'audience.
+
+**Documentation de code :**
+- JSDoc / Javadoc : Documentez les fonctions et methodes publiques (ce qu'elles font, leurs parametres, leur valeur de retour).
+- Commentaires in-line : UNIQUEMENT pour le « pourquoi », jamais pour le « quoi » (le code montre le quoi).
+
+**Documentation d'API :**
+- Swagger / OpenAPI : Documentation auto-generée a partir du code. Interface interactive pour tester les endpoints.
+
+**Documentation operationnelle :**
+- Runbooks : Procedures pour les taches recurrentes (deploiement, incident, restauration).
+- README : Comment installer, configurer, lancer, tester le projet.
+
+## Exemple concret
+
+**Situation :** Notre equipe passait beaucoup de temps a repondre aux memes questions sur le fonctionnement du systeme. Chaque nouvel arrivant mettait 3 mois a devenir productif.
+
+**Action :** J'ai initie un effort de documentation progressif :
+1. README du projet : comment installer, configurer, lancer les tests (1h)
+2. ADR pour les decisions architecturales (30 min apres chaque decision)
+3. Runbook de deploiement (1h, mis a jour a chaque deploiement)
+4. Documentation OpenAPI de notre API REST (automatisée avec Swagger)
+5. Session de « documentation sprint » : 30 min a chaque sprint pour mettre a jour
+
+**Resultat :** Le temps d'onboarding des nouveaux est passe de 3 mois a 1 mois. Les questions recurrentes ont diminue de 70%. L'equipe etait plus autonome.
+
+## Bonnes pratiques
+
+- Documentez dans le code (proche de l'implementation), pas dans un wiki separe
+- Automatisez la generation de documentation (Swagger, Storybook, Compodoc)
+- Revoyez et mettez a jour lors de chaque changement significatif
+- Documentez le « pourquoi » pas le « quoi » (le code montre le quoi)
+- Une documentation obsolete est PIRE que pas de documentation
+- Utilisez le principe DRY aussi pour la documentation
+- Favorisez la documentation interactive (exemple : Swagger UI)
+
+## Pieges courants
+
+- Documenter pour le plaisir de documenter (aucune valeur ajoutee)
+- Documentation en desaccord avec le code (trompeuse)
+- Commentaires triviaux : \`i = i + 1; // incrementer i\`
+- Documentation jamais mise a jour (devient obsolete rapidement)
+- Surdocumenter du code simple ou evident
+- Documentation dans un wiki detaché du code
+- Négliger la documentation operationnelle (runbooks)
+
+## Erreurs a eviter absolument
+
+Ne laissez pas la documentation devenir obsolete (c'est pire que pas de documentation). Ne commentez pas l'evidence. Ne documentez pas dans un endroit que personne ne lit. Ne passez pas plus de temps a documenter qu'a coder.
+
+Source : [Atlassian – Documentation technique](https://www.atlassian.com/fr/blog/technology/technical-documentation-best-practices)`},
       ],
     },
   ],
