@@ -11,117 +11,108 @@ interface Row {
   code: string | null; language: string | null; sort_order: number;
   deep_dive: string | null;
 }
-interface SectionGroup { id: string; title: string; questions: Row[]; }
 
 @Component({
   selector: 'app-admin-questions',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LucideAngularModule],
   template: `
-    <div class="layout">
-      <!-- Sidebar -->
-      <aside class="sidebar">
-        <div class="sidebar-header">
-          <lucide-icon name="folder-tree" class="sidebar-header-icon" />
-          <span>Catégories</span>
-        </div>
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <select #catSelect (change)="selectCat(catSelect.value)" class="select">
+        <option value="">Toutes les catégories</option>
         @for (cat of cats(); track cat.id) {
-          <button class="cat-btn" [class.active]="activeCat() === cat.id" (click)="selectCat(cat.id)">
-            <span class="cat-name">{{ cat.title }}</span>
-            <span class="cat-badge" [class.active]="activeCat() === cat.id">{{ count(cat.id) }}</span>
+          <option [value]="cat.id" [selected]="activeCat() === cat.id">{{ cat.title }}</option>
+        }
+      </select>
+      <div class="search-wrap">
+        <lucide-icon name="search" class="search-icon" />
+        <input #searchInput type="text" placeholder="Rechercher une question…" class="search-input"
+          [value]="searchQuery()" (input)="searchQuery.set(searchInput.value)" />
+        @if (searchQuery()) {
+          <button class="search-clear" (click)="searchQuery.set(''); searchInput.value = ''; searchInput.focus()">
+            <lucide-icon name="x" class="h-3 w-3" />
           </button>
         }
-      </aside>
-
-      <!-- Main -->
-      <div class="main">
-        @if (activeCat() === '') {
-          <div class="empty-state">
-            <div class="empty-icon">
-              <lucide-icon name="arrow-left" class="h-6 w-6" />
-            </div>
-            <h2 class="empty-title">Choisissez une catégorie</h2>
-            <p class="empty-desc">Sélectionnez une catégorie dans le panneau latéral pour éditer ses questions.</p>
-          </div>
-        } @else {
-          <!-- Section header -->
-          <div class="page-header">
-            <div class="page-header-icon">
-              <lucide-icon name="file-text" class="h-5 w-5" />
-            </div>
-            <div>
-              <h2 class="page-header-title">{{ activeCatTitle() }}</h2>
-              <p class="page-header-sub">{{ questions().length }} questions &middot; {{ sections().length }} sections</p>
-            </div>
-          </div>
-
-          <!-- Sections -->
-          @for (sec of sections(); track sec.id) {
-            <div class="section">
-              <h3 class="section-title">{{ sec.title }}</h3>
-              <div class="section-cards">
-                @for (q of sec.questions; track q.id) {
-                  <div class="q-card" [class.open]="editingId() === q.id">
-                    <button class="q-bar" (click)="toggleEdit(q.id)" [attr.aria-expanded]="editingId() === q.id">
-                      <div class="q-bar-left">
-                        <span class="q-id">{{ q.id }}</span>
-                        <span class="q-question">{{ q.question }}</span>
-                      </div>
-                      <div class="q-bar-right">
-                        <span class="q-answer-preview">{{ truncate(q.answer, 80) }}</span>
-                        <lucide-icon [name]="editingId() === q.id ? 'chevron-up' : 'chevron-down'" class="q-chevron" />
-                      </div>
-                    </button>
-
-                    @if (editingId() === q.id) {
-                      <div class="q-editor">
-                        <div class="editor-grid">
-                          <label class="field">
-                            <span class="field-label">Question</span>
-                            <input #qTitle [value]="editQ()" (input)="editQ.set(qTitle.value)" class="input" />
-                          </label>
-
-                          <label class="field span-2">
-                            <span class="field-label">Réponse</span>
-                            <textarea #qAns [value]="editA()" (input)="editA.set(qAns.value)" class="input textarea"></textarea>
-                          </label>
-
-                          <label class="field">
-                            <span class="field-label">Code (optionnel)</span>
-                            <textarea #qCode [value]="editC()" (input)="editC.set(qCode.value)" class="input textarea mono"></textarea>
-                          </label>
-
-                          <label class="field field-sm">
-                            <span class="field-label">Langage</span>
-                            <input #qLang [value]="editL()" (input)="editL.set(qLang.value)" placeholder="java, sql…" class="input" />
-                          </label>
-
-                          <label class="field span-2">
-                            <span class="field-label">Deep Dive (optionnel)</span>
-                            <textarea #qDd [value]="editD()" (input)="editD.set(qDd.value)" class="input textarea mono" style="min-height: 180px"></textarea>
-                          </label>
-                        </div>
-
-                        <div class="editor-actions">
-                          @if (savedId() === q.id) {
-                            <span class="save-ok"><lucide-icon name="check-circle" class="h-4 w-4" /> Sauvegardé</span>
-                          }
-                          @if (saveError()) {
-                            <span class="save-err">{{ saveError() }}</span>
-                          }
-                          <span class="spacer"></span>
-                          <button class="btn-cancel" (click)="toggleEdit('')">Annuler</button>
-                          <button class="btn-save" (click)="save(q)">Sauvegarder</button>
-                        </div>
-                      </div>
-                    }
-                  </div>
-                }
-              </div>
-            </div>
-          }
-        }
       </div>
+      <span class="toolbar-count">{{ filtered().length }} question{{ filtered().length !== 1 ? 's' : '' }}</span>
+    </div>
+
+    <!-- Data table -->
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th class="col-id">ID</th>
+            <th class="col-q">Question</th>
+            <th class="col-a">Réponse</th>
+            <th class="col-act"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (q of filtered(); track q.id) {
+            <tr [class.editing]="editingId() === q.id">
+              <td class="col-id"><span class="cell-id">{{ q.id }}</span></td>
+              <td class="col-q">{{ q.question }}</td>
+              <td class="col-a">{{ truncate(q.answer, 100) }}</td>
+              <td class="col-act">
+                <button class="edit-btn" (click)="toggleEdit(q.id)">
+                  <lucide-icon [name]="editingId() === q.id ? 'x' : 'pencil'" class="h-3.5 w-3.5" />
+                  {{ editingId() === q.id ? 'Fermer' : 'Éditer' }}
+                </button>
+              </td>
+            </tr>
+            @if (editingId() === q.id) {
+              <tr class="editor-row">
+                <td colspan="4">
+                  <div class="editor">
+                    <div class="editor-grid">
+                      <label class="field span-2">
+                        <span class="field-label">Question</span>
+                        <input #qTitle [value]="editQ()" (input)="editQ.set(qTitle.value)" class="input" />
+                      </label>
+                      <label class="field span-2">
+                        <span class="field-label">Réponse</span>
+                        <textarea #qAns [value]="editA()" (input)="editA.set(qAns.value)" class="input textarea"></textarea>
+                      </label>
+                      <label class="field">
+                        <span class="field-label">Code (optionnel)</span>
+                        <textarea #qCode [value]="editC()" (input)="editC.set(qCode.value)" class="input textarea mono"></textarea>
+                      </label>
+                      <label class="field" style="max-width: 160px">
+                        <span class="field-label">Langage</span>
+                        <input #qLang [value]="editL()" (input)="editL.set(qLang.value)" placeholder="java, sql…" class="input" />
+                      </label>
+                      <label class="field span-2">
+                        <span class="field-label">Deep Dive (optionnel)</span>
+                        <textarea #qDd [value]="editD()" (input)="editD.set(qDd.value)" class="input textarea mono" style="min-height: 160px"></textarea>
+                      </label>
+                    </div>
+                    <div class="editor-actions">
+                      @if (savedId() === q.id) {
+                        <span class="save-ok"><lucide-icon name="check-circle" class="h-4 w-4" /> Sauvegardé</span>
+                      }
+                      @if (saveError()) { <span class="save-err">{{ saveError() }}</span> }
+                      <span class="spacer"></span>
+                      <button class="btn-cancel" (click)="toggleEdit('')">Annuler</button>
+                      <button class="btn-save" (click)="save(q)">Sauvegarder</button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            }
+          } @empty {
+            <tr>
+              <td colspan="4" class="empty-cell">
+                <div class="empty">
+                  <lucide-icon name="search" class="empty-icon" />
+                  <p>Aucune question trouvée</p>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
     </div>
 
     @if (loading()) {
@@ -129,164 +120,131 @@ interface SectionGroup { id: string; title: string; questions: Row[]; }
     }
   `,
   styles: `
-    :host { display: block; height: 100%; }
+    :host { display: block; }
 
-    /* ── Layout ────────────────────────────────────── */
-    .layout { display: flex; gap: 2rem; height: 100%; align-items: flex-start; }
-
-    /* ── Sidebar ───────────────────────────────────── */
-    .sidebar {
-      width: 220px; flex-shrink: 0; position: sticky; top: 5rem;
-      display: flex; flex-direction: column; gap: 0.25rem;
-    }
-    .sidebar-header {
-      display: flex; align-items: center; gap: 0.5rem;
-      padding: 0 0.5rem 0.75rem;
-      font-size: 0.6875rem; font-weight: 600; text-transform: uppercase;
-      letter-spacing: 0.08em; color: var(--color-text-muted);
-    }
-    .sidebar-header-icon { width: 0.875rem; height: 0.875rem; }
-
-    .cat-btn {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0.5rem 0.75rem; border: none; border-radius: var(--radius-full);
-      background: transparent; color: var(--color-text-muted);
-      font-size: 0.8125rem; font-weight: 500; font-family: inherit; cursor: pointer;
-      transition: background 180ms ease, color 180ms ease, box-shadow 180ms ease;
-    }
-    .cat-btn:hover { background: var(--color-surface-hover); color: var(--color-text-secondary); }
-    .cat-btn.active {
-      background: var(--color-surface); color: var(--color-text-primary);
-      border: 1px solid var(--color-border); box-shadow: var(--shadow-sm);
-    }
-    .cat-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .cat-badge {
-      min-width: 20px; height: 18px; padding: 0 5px; border-radius: var(--radius-full);
-      font-size: 0.6875rem; font-weight: 600; display: flex; align-items: center; justify-content: center;
-      background: var(--color-surface-hover); color: var(--color-text-muted); margin-left: 0.375rem;
-    }
-    .cat-badge.active { background: var(--color-accent-soft); color: var(--color-accent); }
-
-    /* ── Main area ─────────────────────────────────── */
-    .main { flex: 1; min-width: 0; padding-bottom: 4rem; }
-
-    /* ── Empty state ───────────────────────────────── */
-    .empty-state {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 6rem 2rem; text-align: center; gap: 1rem;
-    }
-    .empty-icon {
-      width: 56px; height: 56px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      background: var(--color-surface-hover); color: var(--color-text-muted);
-    }
-    .empty-title { font-family: var(--font-display); font-size: 1.125rem; font-weight: 600; margin: 0; color: var(--color-text-primary); }
-    .empty-desc { font-size: 0.875rem; color: var(--color-text-muted); margin: 0; max-width: 320px; }
-
-    /* ── Page header (matches section-header pattern) ── */
-    .page-header { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 2rem; }
-    .page-header-icon {
-      width: 44px; height: 44px; border-radius: var(--radius-lg);
-      background: var(--color-accent-soft); border: 1px solid var(--color-border-subtle);
-      display: flex; align-items: center; justify-content: center; color: var(--color-accent); flex-shrink: 0;
-    }
-    .page-header-title {
-      font-family: var(--font-display); font-size: 1.25rem; font-weight: 600;
-      letter-spacing: -0.01em; color: var(--color-text-primary); margin: 0 0 0.125rem;
-    }
-    .page-header-sub { font-size: 0.8125rem; color: var(--color-text-muted); margin: 0; }
-
-    /* ── Sections ──────────────────────────────────── */
-    .section { margin-bottom: 2.5rem; }
-    .section-title {
-      font-family: var(--font-display); font-size: 1rem; font-weight: 600;
-      color: var(--color-text-secondary); margin: 0 0 0.75rem;
-      padding-bottom: 0.5rem; border-bottom: 1px solid var(--color-border-subtle);
-    }
-    .section-cards { display: flex; flex-direction: column; gap: 0.5rem; }
-
-    /* ── Question card ─────────────────────────────── */
-    .q-card {
+    /* ── Toolbar ────────────────────────────────────── */
+    .toolbar {
+      display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;
+      padding: 0.75rem; border-radius: var(--radius-lg);
       background: var(--color-surface); border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg); overflow: hidden;
-      box-shadow: var(--shadow-card);
+    }
+    .select {
+      height: 34px; padding: 0 0.75rem; border: 1px solid var(--color-border);
+      border-radius: var(--radius-full); background: var(--color-surface-raised);
+      color: var(--color-text-primary); font-size: 0.8125rem; font-family: inherit;
+      cursor: pointer; min-width: 180px;
+    }
+    .select:focus { outline: none; border-color: var(--color-accent); }
+    .search-wrap {
+      flex: 1; position: relative; display: flex; align-items: center;
+    }
+    .search-icon { position: absolute; left: 12px; width: 0.875rem; height: 0.875rem; color: var(--color-text-muted); pointer-events: none; }
+    .search-input {
+      width: 100%; height: 34px; padding: 0 2rem 0 2.25rem;
+      border: 1px solid var(--color-border); border-radius: var(--radius-full);
+      background: var(--color-surface-raised); color: var(--color-text-primary);
+      font-size: 0.8125rem; font-family: inherit;
       transition: border-color 200ms ease, box-shadow 200ms ease;
     }
-    .q-card:hover { border-color: var(--color-border-strong); box-shadow: var(--shadow-card-hover); }
-    .q-card.open { border-color: var(--color-accent); box-shadow: 0 0 0 1px var(--color-accent-soft), var(--shadow-card); }
+    .search-input:focus { outline: none; border-color: var(--color-accent); box-shadow: 0 0 0 3px var(--color-accent-soft); }
+    .search-input::placeholder { color: var(--color-text-placeholder); }
+    .search-clear {
+      position: absolute; right: 8px; display: flex; align-items: center; justify-content: center;
+      width: 18px; height: 18px; border: none; border-radius: var(--radius-full);
+      background: transparent; color: var(--color-text-muted); cursor: pointer;
+    }
+    .search-clear:hover { background: var(--color-surface-hover); color: var(--color-text-primary); }
+    .toolbar-count { font-size: 0.75rem; color: var(--color-text-muted); white-space: nowrap; flex-shrink: 0; }
 
-    .q-bar {
-      display: flex; align-items: center; gap: 1rem;
-      width: 100%; padding: 0.875rem 1.25rem; border: none;
-      background: transparent; color: inherit; text-align: left;
-      font-family: inherit; cursor: pointer;
-      transition: background 150ms ease;
+    /* ── Table ──────────────────────────────────────── */
+    .table-wrap {
+      border: 1px solid var(--color-border); border-radius: var(--radius-lg);
+      overflow: hidden; background: var(--color-surface);
     }
-    .q-bar:hover { background: var(--color-surface-raised); }
-    .q-bar-left { display: flex; align-items: center; gap: 0.75rem; min-width: 0; flex: 2; }
-    .q-id {
-      font-size: 0.6875rem; font-weight: 600; color: var(--color-accent);
-      font-family: var(--font-mono); flex-shrink: 0;
+    .table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
+    thead { position: sticky; top: 3.5rem; z-index: 10; }
+    th {
+      text-align: left; padding: 0.625rem 1rem;
+      font-size: 0.6875rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--color-text-muted);
+      background: var(--color-surface-raised); border-bottom: 1px solid var(--color-border);
     }
-    .q-question { font-size: 0.875rem; font-weight: 500; color: var(--color-text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .q-bar-right { display: flex; align-items: center; gap: 0.75rem; flex: 1; justify-content: flex-end; min-width: 0; }
-    .q-answer-preview { font-size: 0.75rem; color: var(--color-text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .q-chevron { width: 1rem; height: 1rem; flex-shrink: 0; color: var(--color-text-muted); }
+    td { padding: 0.625rem 1rem; border-bottom: 1px solid var(--color-border-subtle); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    tbody tr { transition: background 120ms ease; }
+    tbody tr:hover { background: var(--color-surface-raised); }
+    tr.editing { background: var(--color-accent-soft); }
+    tr.editing:hover { background: var(--color-accent-soft); }
 
-    /* ── Editor ─────────────────────────────────────── */
-    .q-editor {
-      padding: 0 1.25rem 1.25rem;
-      border-top: 1px solid var(--color-border-subtle);
-      background: var(--color-surface-raised);
+    .col-id { width: 80px; white-space: nowrap; }
+    .col-q { min-width: 200px; }
+    .col-a { min-width: 200px; color: var(--color-text-secondary); }
+    .col-act { width: 100px; text-align: right; white-space: nowrap; }
+
+    .cell-id {
+      font-family: var(--font-mono); font-size: 0.6875rem; font-weight: 600;
+      color: var(--color-accent);
     }
+
+    .edit-btn {
+      display: inline-flex; align-items: center; gap: 0.25rem;
+      height: 28px; padding: 0 0.625rem; border: 1px solid var(--color-border);
+      border-radius: var(--radius-full); background: var(--color-surface);
+      color: var(--color-text-secondary); font-size: 0.75rem; font-family: inherit;
+      cursor: pointer; transition: all 150ms ease;
+    }
+    .edit-btn:hover { border-color: var(--color-accent); color: var(--color-accent); background: var(--color-accent-soft); }
+
+    /* ── Editor row ─────────────────────────────────── */
+    .editor-row { background: var(--color-surface-raised); }
+    .editor-row td { padding: 0; }
+    .editor { padding: 1.25rem; border-top: 2px solid var(--color-accent); }
     .editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
     .span-2 { grid-column: span 2; }
 
     .field { display: flex; flex-direction: column; gap: 0.375rem; }
-    .field-sm { max-width: 160px; }
     .field-label {
       font-size: 0.6875rem; font-weight: 600; text-transform: uppercase;
       letter-spacing: 0.05em; color: var(--color-text-muted);
     }
     .input {
-      width: 100%; padding: 0.625rem 0.875rem;
+      width: 100%; padding: 0.5rem 0.75rem;
       background: var(--color-surface); border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg); color: var(--color-text-primary);
-      font-size: 0.875rem; font-family: inherit; line-height: 1.6;
+      border-radius: var(--radius-md); color: var(--color-text-primary);
+      font-size: 0.8125rem; font-family: inherit; line-height: 1.6;
       transition: border-color 200ms ease, box-shadow 200ms ease;
     }
     .input:focus { outline: none; border-color: var(--color-accent); box-shadow: 0 0 0 3px var(--color-accent-soft); }
-    .input::placeholder { color: var(--color-text-placeholder); }
-    .textarea { resize: vertical; min-height: 100px; }
-    .mono { font-family: var(--font-mono); font-size: 0.8125rem; }
+    .textarea { resize: vertical; min-height: 80px; }
+    .mono { font-family: var(--font-mono); font-size: 0.75rem; }
 
-    /* ── Editor actions ─────────────────────────────── */
     .editor-actions { display: flex; align-items: center; gap: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--color-border-subtle); }
     .spacer { flex: 1; }
     .save-ok { display: flex; align-items: center; gap: 0.375rem; font-size: 0.8125rem; font-weight: 600; color: var(--color-success); }
     .save-err { font-size: 0.8125rem; color: var(--color-error); }
-
     .btn-cancel {
-      height: 34px; padding: 0 1rem; border: 1px solid var(--color-border);
+      height: 32px; padding: 0 0.875rem; border: 1px solid var(--color-border);
       border-radius: var(--radius-full); background: transparent;
-      color: var(--color-text-secondary); font-size: 0.8125rem; font-weight: 500;
+      color: var(--color-text-secondary); font-size: 0.75rem; font-weight: 500;
       font-family: inherit; cursor: pointer;
-      transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+      transition: background 150ms ease, border-color 150ms ease;
     }
-    .btn-cancel:hover { background: var(--color-surface-hover); border-color: var(--color-border-strong); color: var(--color-text-primary); }
-
+    .btn-cancel:hover { background: var(--color-surface-hover); border-color: var(--color-border-strong); }
     .btn-save {
-      height: 34px; padding: 0 1rem; border: none; border-radius: var(--radius-full);
+      height: 32px; padding: 0 0.875rem; border: none; border-radius: var(--radius-full);
       background: var(--color-accent); color: var(--color-accent-text);
-      font-size: 0.8125rem; font-weight: 600; font-family: inherit; cursor: pointer;
-      transition: background 150ms ease, transform 120ms ease;
+      font-size: 0.75rem; font-weight: 600; font-family: inherit; cursor: pointer;
+      transition: background 150ms ease;
     }
-    .btn-save:hover { background: var(--color-accent-hover); transform: translateY(-1px); }
-    .btn-save:active { transform: translateY(0); }
+    .btn-save:hover { background: var(--color-accent-hover); }
+
+    /* ── Empty ──────────────────────────────────────── */
+    .empty-cell { text-align: center; }
+    .empty { padding: 3rem 1rem; color: var(--color-text-muted); }
+    .empty-icon { width: 1.5rem; height: 1.5rem; margin-bottom: 0.5rem; }
 
     .loading-overlay {
-      position: fixed; inset: 0; z-index: 100;
-      display: flex; align-items: center; justify-content: center;
+      position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center;
       background: rgba(0,0,0,0.35); backdrop-filter: blur(4px);
       color: white; font-weight: 600; font-size: 1rem;
     }
@@ -295,7 +253,7 @@ interface SectionGroup { id: string; title: string; questions: Row[]; }
 export class AdminQuestionsPage {
   readonly cats = signal<Cat[]>(interviewCategories.map(c => ({ id: c.id, title: c.title })));
   readonly activeCat = signal('');
-  readonly questions = signal<Row[]>([]);
+  readonly searchQuery = signal('');
   readonly editingId = signal('');
   readonly loading = signal(false);
   readonly savedId = signal('');
@@ -310,87 +268,52 @@ export class AdminQuestionsPage {
   private sb: SupabaseClient;
   private all: Row[] = [];
 
-  // Section metadata from the static data
-  private sectionMap: Record<string, string> = {};
-
-  readonly sections = computed<SectionGroup[]>(() => {
-    const qs = this.questions();
-    const groups: SectionGroup[] = [];
-    const seen = new Set<string>();
-    for (const q of qs) {
-      const sid = q.section_id;
-      if (!seen.has(sid)) {
-        seen.add(sid);
-        groups.push({ id: sid, title: this.sectionMap[sid] ?? sid, questions: [] });
-      }
-      const group = groups.find(g => g.id === sid)!;
-      group.questions.push(q);
-    }
-    return groups;
-  });
-
-  readonly activeCatTitle = computed(() => {
-    return this.cats().find(c => c.id === this.activeCat())?.title ?? '';
+  readonly filtered = computed(() => {
+    let qs = this.all;
+    const cat = this.activeCat();
+    if (cat) qs = qs.filter(q => q.category_id === cat);
+    const q = this.searchQuery().toLowerCase();
+    if (q) qs = qs.filter(r => r.question.toLowerCase().includes(q) || r.answer.toLowerCase().includes(q) || r.id.includes(q));
+    return qs;
   });
 
   constructor() {
     this.sb = createClient(environment.supabaseUrl, environment.supabaseAnonKey);
-
-    // Build section title map from static data
-    for (const cat of interviewCategories) {
-      for (const sec of cat.sections) {
-        this.sectionMap[sec.id] = sec.title;
-      }
-    }
-
     this.sb.from('questions').select('*').order('sort_order').then(({ data }) => {
       this.all = data ?? [];
     });
   }
 
-  truncate(text: string, max: number): string {
-    return text.length > max ? text.slice(0, max) + '…' : text;
-  }
-  total() { return this.all.length; }
   count(catId: string): number { return this.all.filter(q => q.category_id === catId).length; }
+  truncate(text: string, max: number): string { return text.length > max ? text.slice(0, max) + '…' : text; }
 
-  selectCat(catId: string): void {
-    this.activeCat.set(catId);
-    this.editingId.set('');
-    this.questions.set(this.all.filter(q => q.category_id === catId));
-  }
+  selectCat(catId: string): void { this.activeCat.set(catId); this.editingId.set(''); }
+  total() { return this.all.length; }
 
   toggleEdit(qid: string): void {
     if (this.editingId() === qid) { this.editingId.set(''); return; }
-    const q = this.questions().find(q => q.id === qid);
+    const q = this.all.find(q => q.id === qid);
     if (!q) return;
-    this.saveError.set('');
-    this.savedId.set('');
-    this.editQ.set(q.question);
-    this.editA.set(q.answer);
-    this.editC.set(q.code ?? '');
-    this.editL.set(q.language ?? '');
+    this.saveError.set(''); this.savedId.set('');
+    this.editQ.set(q.question); this.editA.set(q.answer);
+    this.editC.set(q.code ?? ''); this.editL.set(q.language ?? '');
     this.editD.set(q.deep_dive ?? '');
     this.editingId.set(qid);
   }
 
   async save(q: Row): Promise<void> {
-    this.loading.set(true);
-    this.saveError.set('');
+    this.loading.set(true); this.saveError.set('');
     const { error } = await this.sb.from('questions').update({
       question: this.editQ(), answer: this.editA(),
       code: this.editC() || null, language: this.editL() || null,
       deep_dive: this.editD() || null,
     }).eq('id', q.id);
-
     this.loading.set(false);
     if (error) { this.saveError.set(error.message); return; }
-
     const idx = this.all.findIndex(x => x.id === q.id);
     if (idx >= 0) {
       this.all[idx] = { ...this.all[idx], question: this.editQ(), answer: this.editA(), code: this.editC() || null, language: this.editL() || null, deep_dive: this.editD() || null };
     }
-    this.selectCat(this.activeCat());
     this.savedId.set(q.id);
     setTimeout(() => { if (this.savedId() === q.id) this.savedId.set(''); }, 2000);
   }
