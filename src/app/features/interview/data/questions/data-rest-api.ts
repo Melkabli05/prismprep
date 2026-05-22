@@ -21,7 +21,7 @@ export const restApiCategory: InterviewCategory = {
 
 REST (Representational State Transfer) est un style darchitecture cree par Roy Fielding en 2000 dans sa these de doctorat. Ce nest pas un protocole mais un ensemble de contraintes architecturales pour concevoir des services web Scalables, performants et maintenables.
 
-REST defini comment les ressources sont adressees via des URI et comment etre transferees entre client et serveur en utilisant les methodes HTTP standard.
+REST defini comment les ressources sont adressees via des URI et comment être transferees entre client et serveur en utilisant les méthodes HTTP standard.
 
 ## Syntaxe et exemples
 
@@ -31,8 +31,8 @@ Une API REST typique expose des ressources via des URLs structustees:
 GET    /api/users          - Liste tous les utilisateurs
 GET    /api/users/123       - Recupere un utilisateur specifique
 POST   /api/users           - Cree un nouvel utilisateur
-PUT    /api/users/123       - Met a jour un utilisateur entier
-PATCH  /api/users/123       - Met a jour partiellement un utilisateur
+PUT    /api/users/123       - Met à jour un utilisateur entier
+PATCH  /api/users/123       - Met à jour partiellement un utilisateur
 DELETE /api/users/123       - Supprime un utilisateur
 \`\`\`
 
@@ -49,7 +49,7 @@ Chaque ressource peut avoir plusieurs representations (JSON, XML, HTML).
    - 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found
    - 500 Internal Server Error
 
-3. **Stateless** - Chaque requete doit contenir toutes les informations necessaires
+3. **Stateless** - Chaque requête doit contenir toutes les informations necessaires
 
 4. **Support du versionnage** via headers ou dans l'URL: /api/v1/users
 
@@ -71,11 +71,11 @@ Source : [RESTful API Tutorial](https://restfulapi.net/)
           code: 'GET    /users       → liste des utilisateurs\nGET    /users/42    → utilisateur 42\nPOST   /users       → créer un utilisateur\nPUT    /users/42    → remplacer utilisateur 42\nPATCH  /users/42    → modifier partiellement utilisateur 42\nDELETE /users/42    → supprimer utilisateur 42',
           language: 'http',
         
-          deepDive: `# Les methodes HTTP et leur semantique
+          deepDive: `# Les méthodes HTTP et leur semantique
 
 ## Quest-ce que c'est ?
 
-HTTP defini un ensemble de methodes (aussi appelees verbes) qui indiquent l'action desiree sur une ressource. Chaque methode a une semantique precise que les clients et serveurs doivent respecter.
+HTTP defini un ensemble de méthodes (aussi appelees verbes) qui indiquent l'action desiree sur une ressource. Chaque méthode à une semantique precise que les clients et serveurs doivent respecter.
 
 ## Syntaxe et exemples
 
@@ -87,7 +87,7 @@ HTTP defini un ensemble de methodes (aussi appelees verbes) qui indiquent l'acti
 | PATCH   | Modification partielle | Non | Non |
 | DELETE  | Suppression | Oui | Non |
 | HEAD    | Idem GET sans le corps | Oui | Oui |
-| OPTIONS | Decrit les options de communication | Oui | Oui |
+| OPTIONS | Décrit les options de communication | Oui | Oui |
 
 ### Exemples concrets
 
@@ -100,7 +100,7 @@ Body: { "title": "Nouvel article", "content": "..." }
 Reponse: 201 Created { "id": 43, "title": "Nouvel article", ... }
 
 PUT /api/articles/43
-Body: { "id": 43, "title": "Titre mis a jour", "content": "Nouveau contenu" }
+Body: { "id": 43, "title": "Titre mis à jour", "content": "Nouveau contenu" }
 Reponse: 200 OK
 
 PATCH /api/articles/43
@@ -117,13 +117,13 @@ Reponse: 204 No Content
 2. **POST** cree une nouvelle ressource, utilise souvent pour des actions complexes
 3. **PUT** remplace entierement la ressource - si un champ est absent, il est mis a null
 4. **PATCH** modifie uniquement les champs fournis
-5. **DELETE** doit retourner 204 apres suppression reussie
+5. **DELETE** doit retourner 204 après suppression reussie
 
 ## Pièges courants
 
 - Utiliser GET pour des suppressions (violation de la semantique)
 - Retourner 200 OK pour DELETE alors que la ressource est supprimee
-- Utiliser POST la ou PUT serait plus approprie (et inversement)
+- Utiliser POST là où PUT serait plus approprie (et inversement)
 - Oublier que PATCH nest pas idempotent sur tous les serveurs
 
 Source : [MDN Web Docs - HTTP Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods)
@@ -137,19 +137,19 @@ Source : [MDN Web Docs - HTTP Methods](https://developer.mozilla.org/en-US/docs/
 
 ## Quest-ce que c'est ?
 
-Les codes de statut HTTP sont des codes numeriques retournes par un serveur pour indiquer le resultat d'une requete cliente. Ils sont organises en classes de 5 categories principales.
+Les codes de statut HTTP sont des codes numeriques retournes par un serveur pour indiquer le resultat d'une requête cliente. Ils sont organises en classes de 5 categories principales.
 
 ## Syntaxe et exemples
 
 ### 1xx - Information
-- **100 Continue** : Le serveur a recu les headers, le client peut envoyer le corps
+- **100 Continue** : Le serveur a reçu les headers, le client peut envoyer le corps
 - **101 Switching Protocols** : Le serveur accepte de changer de protocole
 
 ### 2xx - Succes
 - **200 OK** : Requete reussie (GET, PUT, PATCH)
 - **201 Created** : Ressource creee (POST)
 - **202 Accepted** : Requete acceptee pour traitement asynchrone
-- **204 No Content** : Succes sans corps de reponse (DELETE)
+- **204 No Content** : Succes sans corps de réponse (DELETE)
 
 ### 3xx - Redirection
 - **301 Moved Permanently** : Ressource deplacee definitivement
@@ -162,22 +162,22 @@ Les codes de statut HTTP sont des codes numeriques retournes par un serveur pour
 - **403 Forbidden** : Acces refuse (meme avec auth)
 - **404 Not Found** : Ressource inexistante
 - **405 Method Not Allowed** : Methode non supportee pour cette ressource
-- **409 Conflict** : Conflit avec etat actuel de la ressource
+- **409 Conflict** : Conflit avec état actuel de la ressource
 - **422 Unprocessable Entity** : Syntaxe correcte mais semantique erronee
 - **429 Too Many Requests** : Rate limit depassee
 
 ### 5xx - Erreur serveur
 - **500 Internal Server Error** : Erreur generique
-- **502 Bad Gateway** : Le serveur agit comme proxy et recoit une reponse invalide
+- **502 Bad Gateway** : Le serveur agit comme proxy et recoit une réponse invalide
 - **503 Service Unavailable** : Serveur temporairement indisponible
-- **504 Gateway Timeout** : Le proxy na pas recu de reponse a temps
+- **504 Gateway Timeout** : Le proxy na pas reçu de réponse a temps
 
 ## Bonnes pratiques
 
 1. **Retourner le code le plus precis** pour chaque situation
-2. **Inclure un corps de reponse** avec un message derreur explicite en 4xx/5xx
+2. **Inclure un corps de réponse** avec un message derreur explicite en 4xx/5xx
 3. **Ne pas retourner 200 OK** pour des erreurs
-4. **Utiliser 201** apres POST qui cree une ressource
+4. **Utiliser 201** après POST qui cree une ressource
 5. **Utiliser 204** pour DELETE reussi sans corps
 
 ## Pièges courants
@@ -198,16 +198,16 @@ Source : [MDN Web Docs - HTTP Status Codes](https://developer.mozilla.org/en-US/
 
 ## Quest-ce que c'est ?
 
-L'idempotence est une propriete dune methode HTTP qui signifie qu'appliquer la meme requete plusieurs fois produit le meme resultat que si elle navait ete appliquee quune seule fois. Le serveur peut stocker le resultat et retourner la meme reponse.
+L'idempotence est une propriete dune méthode HTTP qui signifie qu'appliquer la meme requête plusieurs fois produit le meme resultat que si elle navait ete appliquee quune seule fois. Le serveur peut stocker le resultat et retourner la meme réponse.
 
-Cette propriete est critique pour la fiabilite des systemes Distribues car elle permet de safely retry des requetes en cas de timeout ou de perdue de paquets.
+Cette propriete est critique pour la fiabilite des systèmes Distribues car elle permet de safely retry des requêtes en cas de timeout ou de perdue de paquets.
 
 ## Syntaxe et exemples
 
 ### Methodes idempotentes
 - **GET** : Toujours idempotente, ne fait que lire
-- **PUT** : Idempotente, remplacer une ressource donne le meme etat final
-- **DELETE** : Idempotente, supprimer plusieurs fois une ressource deja supprimee retourne 204
+- **PUT** : Idempotente, remplacer une ressource donne le meme état final
+- **DELETE** : Idempotente, supprimer plusieurs fois une ressource déjà supprimee retourne 204
 - **HEAD** : Idempotente, comme GET mais sans corps
 - **OPTIONS** : Idempotente, interroge les capacites
 
@@ -221,35 +221,35 @@ Cette propriete est critique pour la fiabilite des systemes Distribues car elle 
 PUT /api/users/123
 Body: { "name": "Alice", "email": "alice@example.com" }
 
-Premiere requete: 200 OK { "id": 123, "name": "Alice", ... }
+Premiere requête: 200 OK { "id": 123, "name": "Alice", ... }
 Retry (timeout): 200 OK { "id": 123, "name": "Alice", ... }  <- meme resultat
 
 DELETE /api/users/123
-Premiere requete: 204 No Content
+Premiere requête: 204 No Content
 Retry: 204 No Content  <- toujours pas derreur (idempotent)
 \`\`\`
 
 ## Bonnes pratiques
 
-1. **Concevoir les DELETE comme idempotents** - retourner 204 memes apres suppression
-2. **Utiliser PUT pour les mises a jour complete** - plus sur que PATCH
-3. **Implanter une strategie de retry** uniquement pour les operations idempotentes
-4. **Documenter les codes derreur** pour chaquemethode
+1. **Concevoir les DELETE comme idempotents** - retourner 204 memes après suppression
+2. **Utiliser PUT pour les mises à jour complete** - plus sur que PATCH
+3. **Implanter une stratégie de retry** uniquement pour les operations idempotentes
+4. **Documenter les codes derreur** pour chaqueméthode
 5. **Considerer l'utilisation d'ETag** pour gerer les conflits de concurrence
 
 ## Pièges courants
 
-- Croire que DELETE doit retourner 404 apres suppression (devrait retourner 204)
+- Croire que DELETE doit retourner 404 après suppression (devrait retourner 204)
 - Implementer PATCH comme non idempotent alors que le client s'y attend
 - Ne pas gerer les races conditions sur les updates concurrents
-- Confondre idempotence et surete (safety) - une operation suree ne modifie pas letat
+- Confondre idempotence et surete (safety) - une operation suree ne modifie pas létat
 
 Source : [RESTful API Tutorial - Idempotent](https://restfulapi.net/idempotent-rest-apis/)
 `},
         {
           id: 'api-5',
           question: 'Comment versionner une API REST ?',
-          answer: 'Trois approches principales : **versionnement dans l\'URL** (`/api/v1/users` — le plus courant et explicite), **via le header** (`Accept: application/vnd.myapi.v1+json` — plus *clean* mais moins visible), **via un query param** (`/api/users?version=1` — déconseillé, pollue l\'URL).\n\nL\'approche par **URL** est la plus adoptée : simple à comprendre, facile à router, compatible avec les outils de monitoring et les proxys.\n\n__Gardez au maximum 2 versions en parallèle__, dépréciez l\'ancienne avec un header `Sunset`, et communiquez clairement les timelines de suppression.',
+          answer: 'Trois approches principales : **versionnement dans l\'URL** (`/api/v1/users` — le plus courant et explicite), **via le header** (`Accept: application/vnd.myapi.v1+json` — plus *clean* mais moins visible), **vià un query param** (`/api/users?version=1` — déconseillé, pollue l\'URL).\n\nL\'approche par **URL** est la plus adoptée : simple à comprendre, facile à router, compatible avec les outils de monitoring et les proxys.\n\n__Gardez au maximum 2 versions en parallèle__, dépréciez l\'ancienne avec un header `Sunset`, et communiquez clairement les timelines de suppression.',
           code: '// Approche URL (recommandée)\nGET /api/v1/users\nGET /api/v2/users\n\n// Approche Header\nAccept: application/vnd.myapi.v2+json',
           language: 'http',
         
@@ -296,7 +296,7 @@ Inconvenient: melange URL et configuration
 
 ## Bonnes pratiques
 
-1. **Choisir une strategie et la garder** - la coherence compte plus que la perfection
+1. **Choisir une stratégie et la garder** - la coherence compte plus que la perfection
 2. **Deprecier progressivement** - informer les clients et donner du temps
 3. **Documenter les differences** entre versions
 4. **Limiter le nombre de versions actives** - 2 maximum en general
@@ -307,7 +307,7 @@ Inconvenient: melange URL et configuration
 - Versionner des details minimes (breaker pas toujours necessaire)
 - Forcer tous les clients a migrer immediatement
 - Ne pas communiquer les deprecations a lavance
-- Melanger plusieurs strategies de versionnement
+- Melanger plusieurs stratégies de versionnement
 - Oublier dinclure la version dans la documentation OpenAPI
 
 Source : [RESTful API Tutorial - Versioning](https://restfulapi.net/versioning/)
@@ -315,7 +315,7 @@ Source : [RESTful API Tutorial - Versioning](https://restfulapi.net/versioning/)
         {
           id: 'api-6',
           question: 'Comment implémenter la pagination dans une API REST ?',
-          answer: 'Trois stratégies : **offset/limit** (`?offset=20&limit=10` — simple mais lent sur de gros offset car la BDD scanne tout), **cursor-based** (`?cursor=abc123` — utilise un identifiant de référence, performant même sur de grandes collections, idéal pour le scroll infini), **page/size** (`?page=2&size=10` — intuitif mais même problème que l\'offset).\n\nIncluez les **métadonnées** dans la réponse : `totalElements`, `totalPages`, `next`, `prev`.\n\n__Pour les grandes collections ou le temps réel, privilégiez le cursor-based pagination.__',
+          answer: 'Trois stratégies : **offset/limit** (`?offset=20&limit=10` — simple mais lent sur de gros offset car la BDD scanne tout), **cursor-based** (`?cursor=abc123` — utilise un identifiant de référence, performant même sur de grandes collections, idéal pour le scroll infini), **page/size** (`?page=2&size=10` — intuitif mais même problème que l\'offset).\n\nIncluez les **métadonnées** dans la réponse : `totalElements`, `totalPages`, `next`, `prev`.\n\n__Pour les grandes collections où le temps réel, privilégiez le cursor-based pagination.__',
           code: '{\n  "data": [...],\n  "pagination": {\n    "total": 1050,\n    "page": 2,\n    "size": 10,\n    "next": "/api/v1/users?page=3&size=10",\n    "prev": "/api/v1/users?page=1&size=10"\n  }\n}',
           language: 'json',
         
@@ -329,11 +329,11 @@ La pagination divise un grand ensemble de donnees en plusieurs pages, facilitant
 
 ### Offset-based Pagination
 
-Requete avec parametres de pagination:
+Requete avec paramêtrès de pagination:
 
 GET /api/users?page=2&limit=20
 
-Format de reponse:
+Format de réponse:
 
 {
   data: [],
@@ -355,7 +355,7 @@ GET /api/users?cursor=ENCODED_CURSOR&limit=20
 
 Le cursor est un objet encode en base64 contenant { id: lastId }
 
-Format de reponse:
+Format de réponse:
 
 {
   data: [],
@@ -365,7 +365,7 @@ Format de reponse:
   }
 }
 
-### En-tetes HTTP pour la pagination
+### En-têtes HTTP pour la pagination
 
 res.set({
   X-Total-Count: 100,
@@ -375,10 +375,10 @@ res.set({
 ## Bonnes pratiques
 
 - Preferer cursor-based pour grandes listes (meilleure performance)
-- Definir des limites maximales pour eviter les surcharges
+- Definir des limites maximales pour éviter les surcharges
 - Toujours retourner des metadata de pagination
 - Implementer le tri stable (par id ou timestamp)
-- Utiliser les en-tetes HTTP (Link) pour discoverabilite
+- Utiliser les en-têtes HTTP (Link) pour discoverabilite
 - Cache les resultats de maniere appropriee
 
 ## Pièges courants
@@ -399,7 +399,7 @@ Source : [Restfulapi.net](https://restfulapi.net/pagination/)`},
         {
           id: 'api-7',
           question: 'Qu\'est-ce que HATEOAS et pourquoi est-il important ?',
-          answer: '**HATEOAS** (*Hypermedia as the Engine of Application State*) : le client découvre les actions disponibles via des **liens hypermédia** dans la réponse, pas via une documentation externe. Le serveur indique ce qu\'il est possible de faire ensuite.\n\nC\'est la contrainte REST la **moins respectée** en pratique. Sans HATEOAS, l\'URL et les actions sont *hardcodées* côté client — le couplage reste fort.\n\n__HATEOAS permet une évolution indépendante du serveur sans casser les clients existants.__ En pratique, peu d\'APIs l\'implémentent entièrement.',
+          answer: '**HATEOAS** (*Hypermedia as the Engine of Application State*) : le client découvre les actions disponibles via des **liens hypermédia** dans la réponse, pas vià une documentation externe. Le serveur indique ce qu\'il est possible de faire ensuite.\n\nC\'est la contrainte REST la **moins respectée** en pratique. Sans HATEOAS, l\'URL et les actions sont *hardcodées* côté client — le couplage reste fort.\n\n__HATEOAS permet une évolution indépendante du serveur sans casser les clients existants.__ En pratique, peu d\'APIs l\'implémentent entièrement.',
           code: '{\n  "id": 42,\n  "name": "Jean",\n  "_links": {\n    "self": { "href": "/api/v1/users/42" },\n    "orders": { "href": "/api/v1/users/42/orders" },\n    "deactivate": { "href": "/api/v1/users/42/deactivate" }\n  }\n}',
           language: 'json',
         
@@ -464,7 +464,7 @@ function addLinks(resource, baseUrl) {
 ## Pièges courants
 
 - Ne pas surcharger les responses avec trop de liens
-- Liens incorrects ou non a jour
+- Liens incorrects ou non à jour
 - Ne pas gerer les cas ou laction nest pas disponible
 - Melanger les formats de liens
 - Oublier les liens dans les erreurs
@@ -479,7 +479,7 @@ Source : [Restfulapi.net - HATEOAS](https://restfulapi.net/hateoas/)`},
 
 Qu'est-ce que c'est
 
-Le rate limiting controle le nombre de requetes quun client peut faire dans un laps de temps donne. Il protege les APIs contre les abus, les attaques DoS, et assure une distribution equitable des ressources.
+Le rate limiting contrôle le nombre de requêtes quun client peut faire dans un laps de temps donne. Il protege les APIs contre les abus, les attaques DoS, et assure une distribution equitable des ressources.
 
 Syntaxe et exemples
 
@@ -487,7 +487,7 @@ Implementation avec Express et Redis
 
 npm install express ioredis
 
-Une fonction rateLimiter qui utilise Redis pour compter les requetes par IP. Elle stocke chaque requete avec un timestamp dans un sorted set, puis compte combien de requetes ont eu lieu dans la fenetre de temps.
+Une fonction rateLimiter qui utilise Redis pour compter les requêtes par IP. Elle stocke chaque requête avec un timestamp dans un sorted set, puis compte combien de requêtes ont eu lieu dans la fenêtre de temps.
 
 Si le nombre depasse le maximum, retourner 429 avec un message derreur.
 
@@ -495,22 +495,22 @@ Exemple de configuration:
 
 app.use(rateLimiter({ windowMs: 60000, maxRequests: 100 }))
 
-Pour 60 secondes et 100 requetes max par IP.
+Pour 60 secondes et 100 requêtes max par IP.
 
-En-tetes standard
+En-têtes standard
 
-X-RateLimit-Limit: Nombre max de requetes autorisees dans la fenetre
-X-RateLimit-Remaining: Nombre de requetes restantes dans la fenetre courante
-X-RateLimit-Reset: Timestamp quand la fenetre sera reinitialisee
+X-RateLimit-Limit: Nombre max de requêtes autorisees dans la fenêtre
+X-RateLimit-Remaining: Nombre de requêtes restantes dans la fenêtre courante
+X-RateLimit-Reset: Timestamp quand la fenêtre sera reinitialisee
 Retry-After: Secondes avant de pouvoir reessai (seulement pour 429)
 
 Bonnes pratiques
 
-- Implementer differentes limites pour differentes operations (lecture vs ecriture)
+- Implementer différentes limites pour différentes operations (lecture vs écriture)
 - Utiliser Redis pour les installations distribuees (plusieurs serveurs)
 - Definir des limites souples avec avertissement et limites dures
-- Toujours retourner les informations de rate limit dans les en-tetes
-- Implementer le exponential backoff cote client (delai double entre tentatives)
+- Toujours retourner les informations de rate limit dans les en-têtes
+- Implementer le exponential backoff côté client (delai double entre tentatives)
 - Prevoir des endpoints publics avec limites plus permissives
 
 Pièges courants
@@ -518,14 +518,14 @@ Pièges courants
 - Ne pas implementer de rate limiting du tout (vulnerabilite DoS)
 - Limites trop restrictives sans notification prealable
 - Ne pas gerer les clients distribues (meme IP, plusieurs machines)
-- Ne pas differencier les types de requetes (cheres vs legieres)
+- Ne pas differencier les types de requêtes (cheres vs legieres)
 - Pas de plan de contingence en cas dattaque reelle
 
 Source : Restfulapi.net - Rate Limiting`},
         {
           id: 'api-9',
           question: 'Comment gérer CORS pour une API REST ?',
-          answer: '**CORS** (*Cross-Origin Resource Sharing*) est une politique de sécurité navigateur. Par défaut, le navigateur bloque les requêtes cross-origin. L\'API doit envoyer les headers `Access-Control-Allow-Origin`, `Access-Control-Allow-Methods`, `Access-Control-Allow-Headers`, `Access-Control-Allow-Credentials`.\n\nLes requêtes *preflight* (`OPTIONS`) sont envoyées automatiquement par le navigateur avant les requêtes complexes (méthodes autres que `GET`/`POST` simples, headers custom).\n\n__Ne jamais utiliser `Access-Control-Allow-Origin: *` avec des credentials — c\'est bloqué par les navigateurs.__ Configurez les origines autorisées explicitement.',
+          answer: '**CORS** (*Cross-Origin Resource Sharing*) est une politique de sécurité navigateur. Par défaut, le navigateur bloque les requêtes cross-origin. L\'API doit envoyer les headers `Access-Control-Allow-Origin`, `Access-Control-Allow-Methods`, `Access-Control-Allow-Headers`, `Access-Control-Allow-Credentials`.\n\nLes requêtes *preflight* (`OPTIONS`) sont envoyées automatiquement par le navigateur avant les requêtes complexes (méthodes autrès que `GET`/`POST` simples, headers custom).\n\n__Ne jamais utiliser `Access-Control-Allow-Origin: *` avec des credentials — c\'est bloqué par les navigateurs.__ Configurez les origines autorisées explicitement.',
           code: '// Headers de réponse CORS\nAccess-Control-Allow-Origin: https://mon-app.com\nAccess-Control-Allow-Methods: GET, POST, PUT, DELETE\nAccess-Control-Allow-Headers: Content-Type, Authorization\nAccess-Control-Max-Age: 86400',
           language: 'http',
         
@@ -533,7 +533,7 @@ Source : Restfulapi.net - Rate Limiting`},
 
 Qu'est-ce que c'est
 
-CORS (Cross-Origin Resource Sharing) est un mecanisme de securite HTTP qui controle lacces aux ressources dune API depuis des domaines differents du domaine qui a servi la page web. Il permet aux navigateurs dadapter les requetes cross-origin.
+CORS (Cross-Origin Resource Sharing) est un mecanisme de securite HTTP qui contrôle lacces aux ressources dune API depuis des domaines différents du domaine qui a servi la page web. Il permet aux navigateurs dadapter les requêtes cross-origin.
 
 Syntaxe et exemples
 
@@ -565,17 +565,17 @@ app.use(cors({
   }
 }))
 
-En-tetes CORS principaux
+En-têtes CORS principaux
 
-Access-Control-Allow-Origin: Indique quels domaines peuvent acceder a la ressource. Peut etre une origine precise ou * (mais pas avec credentials).
-Access-Control-Allow-Methods: Les methodes HTTP autorisees pour les requetes cross-origin.
-Access-Control-Allow-Headers: Les en-tetes HTTP autorises dans les requetes.
-Access-Control-Allow-Credentials: Si true, les cookies sont autorises dans les requetes cross-origin.
+Access-Control-Allow-Origin: Indique quels domaines peuvent acceder à la ressource. Peut être une origine precise ou * (mais pas avec credentials).
+Access-Control-Allow-Methods: Les méthodes HTTP autorisees pour les requêtes cross-origin.
+Access-Control-Allow-Headers: Les en-têtes HTTP autorises dans les requêtes.
+Access-Control-Allow-Credentials: Si true, les cookies sont autorises dans les requêtes cross-origin.
 Access-Control-Max-Age: Duree en secondes pendant laquelle le resultat du preflight est cache.
 
 Requete Preflight
 
-Quand une requete cross-origin utilise dautres methodes ou en-tetes, le navigateur envoie dabord une requete OPTIONS (preflight). Le serveur doit repondre avec les bons en-tetes CORS.
+Quand une requête cross-origin utilise dautrès méthodes ou en-têtes, le navigateur envoie dabord une requête OPTIONS (preflight). Le serveur doit repondre avec les bons en-têtes CORS.
 
 Exemple Preflight:
 
@@ -589,18 +589,18 @@ Bonnes pratiques
 
 - Toujours specifier les origines exactes dans Access-Control-Allow-Origin (pas de * si possible)
 - Ne jamais utiliser * avec Access-Control-Allow-Credentials: true
-- Mettre en cache les resultats preflight avec maxAge pour eviter des requetes OPTIONS inutiles
+- Mettre en cache les resultats preflight avec maxAge pour éviter des requêtes OPTIONS inutiles
 - Separer les APIs publiques (sans CORS restrictif) et privees (avec validation)
-- Logger les requetes CORS bloquees pour le monitoring de securite
-- Ajouter dautres en-tetes de securite (CSP, X-Frame-Options) en complement
+- Logger les requêtes CORS bloquees pour le monitoring de securite
+- Ajouter dautrès en-têtes de securite (CSP, X-Frame-Options) en complement
 
 Pièges courants
 
 - Utiliser Access-Control-Allow-Origin: * ce qui permet a nimporte quel site d acceder a lAPI
-- Oublier de gerer les requetes preflight (OPTIONS) - le navigateur ne fera pas la requete reelle
+- Oublier de gerer les requêtes preflight (OPTIONS) - le navigateur ne fera pas la requête reelle
 - Bloquer toutes les origines alors quune liste precise suffit
-- Ne pas inclure les bons en-tetes Access-Control- pour les requetes avec credentials
-- Permettre toutes les methodes HTTP sans necessity
+- Ne pas inclure les bons en-têtes Access-Control- pour les requêtes avec credentials
+- Permettre toutes les méthodes HTTP sans necessity
 - Ne pas valider lorigine de maniere securisee (seuls les noms dhotres)
 
 Source : MDN CORS`},
@@ -615,7 +615,7 @@ Source : MDN CORS`},
 
 ## Qu'est-ce que c'est
 
-Les REST Best Practices sont un ensemble de conventions et recommandations pour concevoir des APIs RESTful robustes, evolutives et facile a maintenir. Elles couvrent la structure des URLs, lutilisation des methodes HTTP, la gestion des erreurs, la pagination, le versioning et la documentation.
+Les REST Best Practices sont un ensemble de conventions et recommandations pour concevoir des APIs RESTful robustes, evolutives et facile a maintenir. Elles couvrent la structure des URLs, lutilisation des méthodes HTTP, la gestion des erreurs, la pagination, le versioning et la documentation.
 
 ## Syntaxe et exemples
 
@@ -628,8 +628,8 @@ Utiliser des noms de ressources au pluriel et des verbes pour les actions:
 GET    /api/users          # Lister les utilisateurs
 GET    /api/users/123       # Obtenir un utilisateur
 POST   /api/users           # Creer un utilisateur
-PUT    /api/users/123       # Mettre a jour entierement
-PATCH  /api/users/123       # Mise a jour partielle
+PUT    /api/users/123       # Mettre à jour entierement
+PATCH  /api/users/123       # Mise à jour partielle
 DELETE /api/users/123       # Supprimer
 
 # Mauvaise pratique
@@ -650,7 +650,7 @@ POST /createUser
 500 Internal Server Error # Erreur serveur
 \`\`\`
 
-### Format de reponse derreur
+### Format de réponse derreur
 
 \`\`\`typescript
 interface ErrorResponse {
@@ -669,19 +669,19 @@ interface ErrorResponse {
 - Implementer le versioning de lAPI (Accept header ou URL path)
 - Utiliser HATEOAS pour la navigation (liens hypermedias)
 - Mettre en place la pagination pour les listes volumineuses
-- Implementer le cache avec les en-tetes ETag et Last-Modified
+- Implementer le cache avec les en-têtes ETag et Last-Modified
 - Validator et sanitizer toutes les entrees utilisateur
 - Utiliser HTTPS uniquement
-- Logger toutes les requetes pour le monitoring
+- Logger toutes les requêtes pour le monitoring
 
 ## Pièges courants
 
 - Melanger les verbes et les noms dans les URLs
 - Ignorer les codes de statut HTTP (retourner toujours 200)
-- Exposer des ID internes dans les reponses
+- Exposer des ID internes dans les réponses
 - Ne pas implanter de limite de taille pour les listes
 - Oublier de securiser lAPI (pas dauthentification)
-- Creer des APIs avec etat (stateful) alors que REST est sans etat
+- Creer des APIs avec état (stateful) alors que REST est sans état
 
 Source : [Restfulapi.net](https://restfulapi.net)`},
         {
@@ -712,7 +712,7 @@ grant_type=authorization_code&code=AUTH_CODE&client_id=CLIENT_ID&client_secret=C
 
 ### Bearer Token
 
-Le token est envoye dans len-tete Authorization:
+Le token est envoye dans len-tête Authorization:
 
 Authorization: Bearer access_token
 
@@ -740,13 +740,13 @@ function verifyToken(token) {
 - Stocker les client secrets de maniere securisee
 - Implementer le refresh token pour une meilleure securite
 - Utiliser des scopes minimaux (principe du moindre privilege)
-- Valider tous les tokens a chaque requete
+- Valider tous les tokens a chaque requête
 - Logger toutes les tentatives dauthentification
 
 ## Pièges courants
 
 - Stocker les mots de passe en clair (utiliser bcrypt)
-- Exposer les tokens dans lURL (utiliser les en-tetes)
+- Exposer les tokens dans lURL (utiliser les en-têtes)
 - Ne pas expirer les tokens (utiliser des access tokens courts)
 - Oublier de valider les scopes demandes
 - Utiliser des algorithmes JWT faibles
@@ -761,7 +761,7 @@ Source : [MDN OAuth 2.0](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authe
 
 ## Qu'est-ce que c'est
 
-REST et GraphQL sont deux approches differentes pour concevoir des APIs web. REST utilise une architecture resource-based avec des endpoints fixes, tandis que GraphQL offre un langage de requete flexible permettant aux clients de demander exactement les donnees necessaires.
+REST et GraphQL sont deux approches différentes pour concevoir des APIs web. REST utilise une architecture resource-based avec des endpoints fixes, tandis que GraphQL offre un langage de requête flexible permettant aux clients de demander exactement les donnees necessaires.
 
 ## Syntaxe et exemples
 
@@ -773,11 +773,11 @@ GET /api/users/123
 GET /api/users/123/posts
 GET /api/users/123/posts/456/comments
 
-Pour obtenir plusieurs ressources, plusieurs requetes sont necessaires.
+Pour obtenir plusieurs ressources, plusieurs requêtes sont necessaires.
 
-### GraphQL - Une seule requete
+### GraphQL - Une seule requête
 
-Avec GraphQL, une seule requete peut obtenir toutes les donnees:
+Avec GraphQL, une seule requête peut obtenir toutes les donnees:
 
 query GetUser(userId: ID!) {
   user(id: userId) {
@@ -828,10 +828,10 @@ type Query {
 ## Bonnes pratiques GraphQL
 
 - Definir un schema clair et type
-- Utiliser DataLoader pour eviter le N+1
+- Utiliser DataLoader pour éviter le N+1
 - Implementer pagination (Relay-style)
 - Securiser avec depth limiting
-- Utiliser les mutations pour ecrire
+- Utiliser les mutations pour écrire
 
 ## Pièges courants
 

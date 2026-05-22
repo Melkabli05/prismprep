@@ -13,7 +13,7 @@ export const systemDesignCategory: InterviewCategory = {
         {
           id: 'sd-1',
           question: 'Scaling horizontal vs vertical : différences et compromis ?',
-          answer: '**Vertical** (*scale up*) : augmenter les ressources d\'un serveur (CPU, RAM). Simple, pas de changement d\'architecture, mais **limite physique** et point de défaillance unique.\n\n**Horizontal** (*scale out*) : ajouter des serveurs. Pas de limite théorique, résilience (un serveur tombe, les autres prennent le relais), mais **complexité** : load balancing, cohérence des données, sessions distribuées.\n\n__Le vertical a ses limites — le horizontal est la seule voie vers l\'échelle.__ En pratique : on commence vertical, puis on passe horizontal quand ça ne suffit plus. Le cloud facilite le horizontal avec l\'auto-scaling.',
+          answer: '**Vertical** (*scale up*) : augmenter les ressources d\'un serveur (CPU, RAM). Simple, pas de changement d\'architecture, mais **limite physique** et point de défaillance unique.\n\n**Horizontal** (*scale out*) : ajouter des serveurs. Pas de limite théorique, résilience (un serveur tombe, les autrès prennent le relais), mais **complexité** : load balancing, cohérence des données, sessions distribuées.\n\n__Le vertical a ses limites — le horizontal est la seule voie vers l\'échelle.__ En pratique : on commence vertical, puis on passe horizontal quand ça ne suffit plus. Le cloud facilite le horizontal avec l\'auto-scaling.',
         
           deepDive: `# Scaling Horizontal vs Vertical
 
@@ -201,7 +201,7 @@ Un serveur qui échoue N fois consécutives est retiré de la rotation (et réin
 ## Avantages et inconvénients
 
 **Avantages :**
-- Disponibilité : si un serveur tombe, les autres prennent le relais.
+- Disponibilité : si un serveur tombe, les autrès prennent le relais.
 - Scalabilité : ajouter des serveurs sans changer l'URL publique.
 - Sécurité : cache les serveurs internes, peut faire office de WAF.
 - Flexibilité : mises à jour sans interruption (drain de connexions).
@@ -305,7 +305,7 @@ Write-Behind :
 
 **Avantages :**
 - Réduction drastique de la latence (cache hit : ~1-5ms vs BDD : ~10-100ms).
-- Réduction de la charge sur la BDD ou les API externes.
+- Réduction de la charge sur la BDD où les API externes.
 - Élasticité : absorbe les pics de trafic sans dimensionner la BDD pour le peak.
 - Économies : moins d'instances BDD nécessaires.
 
@@ -352,7 +352,7 @@ Source : [Redis — Caching Strategies](https://redis.io/docs/manual/patterns/)`
 
 Le **sharding** (ou partitionnement horizontal) consiste à diviser une base de données en plusieurs partitions indépendantes appelées **shards**, chacune contenant un sous-ensemble des données. Chaque shard est un serveur (ou cluster) distinct avec son propre CPU, RAM, disque. L'objectif est de distribuer la charge au-delà de ce qu'un seul serveur peut supporter.
 
-Le sharding est la **solution ultime de scaling de base de données** — on n'y recourt qu'après avoir épuisé toutes les autres options : indexation, optimisation des requêtes, cache, réplication, partitionnement vertical.
+Le sharding est la **solution ultime de scaling de base de données** — on n'y recourt qu'après avoir épuisé toutes les autrès options : indexation, optimisation des requêtes, cache, réplication, partitionnement vertical.
 
 ## Concept détaillé
 
@@ -797,7 +797,7 @@ Source : [AWS DynamoDB — Eventual Consistency](https://docs.aws.amazon.com/ama
 
 ## Qu'est-ce que c'est ?
 
-Un **raccourcisseur d'URL** (URL shortener) transforme une URL longue en une chaîne courte unique (ex : \`https://bit.ly/3uXeF7k\`). Quand un utilisateur visite l'URL courte, le serveur la redirige vers l'URL originale via une réponse HTTP 301 (permanent) ou 302 (temporaire).
+Un **raccourcisseur d'URL** (URL shortener) transforme une URL longue en une chaîne courte unique (ex : \`https://bit.ly/3uXeF7k\`). Quand un utilisateur visite l'URL courte, le serveur la redirige vers l'URL originale vià une réponse HTTP 301 (permanent) ou 302 (temporaire).
 
 Le défi : des millions d'URLs à stocker, des billions de redirections avec une latence < 10ms, et une génération d'identifiants courts garantie sans collision.
 
@@ -901,7 +901,7 @@ Le mapping \`short_code → long_url\` doit être lu à chaque redirection :
 ## Pièges courants
 
 1. **Ne pas prévoir l'épuisement des IDs** : avec un compteur 32 bits, seulement 4 milliards d'URLs possibles. Passer à 64 bits.
-2. **Générer des URLs prédictibles** : des IDs séquentiels permettent de deviner d'autres URLs. Solution : ajouter un sel ou utiliser un ID non séquentiel.
+2. **Générer des URLs prédictibles** : des IDs séquentiels permettent de deviner d'autrès URLs. Solution : ajouter un sel ou utiliser un ID non séquentiel.
 3. **Pas de cache** : si chaque redirection va en BDD, le système s'effondre sous charge.
 4. **URL malveillantes** : les raccourcisseurs sont utilisés pour cacher des liens de phishing. Implémenter un système de vérification.
 5. **Oublier le cleanup** : les URLs obsolètes doivent être purgées périodiquement (TTL et archivage).
@@ -910,7 +910,7 @@ Source : [Bitly — Architecture](https://bitly.com/blog/architecture/)`},
         {
           id: 'sd-9',
           question: 'Concevez un système de chat en temps réel',
-          answer: '**Protocole** : `WebSocket` pour la communication bidirectionnelle temps réel (pas du polling HTTP). **Architecture** : chaque serveur de chat gère les connexions WebSocket actives, les messages sont routés via un **message broker** (`Redis Pub/Sub` ou `Kafka`) entre serveurs.\n\n**Stockage** : BDD NoSQL (`Cassandra`/`DynamoDB`) pour l\'historique des messages, clé = `conversation_id`, tri par timestamp. **Présence** : heartbeat + Redis pour les statuts en ligne.\n\n**Groupes** : un message → broadcast à tous les membres du groupe via le broker. **Push notifications** pour les utilisateurs hors ligne via `Firebase`/`APNs`.\n\n__Le défi principal est le routage inter-serveurs quand les membres d\'un chat sont connectés à des serveurs différents.__',
+          answer: '**Protocole** : `WebSocket` pour la communication bidirectionnelle temps réel (pas du polling HTTP). **Architecture** : chaque serveur de chat gère les connexions WebSocket actives, les messages sont routés vià un **message broker** (`Redis Pub/Sub` ou `Kafka`) entre serveurs.\n\n**Stockage** : BDD NoSQL (`Cassandra`/`DynamoDB`) pour l\'historique des messages, clé = `conversation_id`, tri par timestamp. **Présence** : heartbeat + Redis pour les statuts en ligne.\n\n**Groupes** : un message → broadcast à tous les membres du groupe via le broker. **Push notifications** pour les utilisateurs hors ligne via `Firebase`/`APNs`.\n\n__Le défi principal est le routage inter-serveurs quand les membres d\'un chat sont connectés à des serveurs différents.__',
         
           deepDive: `# Concevoir un Système de Chat en Temps Réel
 
@@ -1134,7 +1134,7 @@ Lecture du fil (utilisateur B) :
 1. **Réseau social grand public** (Facebook, Instagram) : billions de posts, algorithmes de ranking sophistiqués.
 2. **Fil professionnel** (LinkedIn) : tri par pertinence et relations professionnelles.
 3. **Actualités** (Reddit, Twitter/X) : mélange de chronologique et tendances.
-4. **Plateforme de contenu** (Medium, Substack) : recommandations basées sur les centres d'intérêt.
+4. **Plateforme de contenu** (Medium, Substack) : recommandations basées sur les centrès d'intérêt.
 
 ## Bonnes pratiques
 
@@ -1147,7 +1147,7 @@ Lecture du fil (utilisateur B) :
 
 ## Pièges courants
 
-1. **Fan-out synchrone** : le créateur attend 3 secondes que les 10 000 écritures Redis se terminent.
+1. **Fan-out synchrone** : le créateur attend 3 secondès que les 10 000 écritures Redis se terminent.
 2. **Fil trop gros en mémoire** : un utilisateur très actif peut avoir des milliers de posts dans son fil. Limiter à 1000.
 3. **Incohérence post-suppression** : un post supprimé reste dans les fils. Nécessite un mécanisme de nettoyage (TTL ou event de suppression).
 4. **Célébrité non gérée** : une célébrité avec 50M d'abonnés → fan-out impossible. L'approche pull est obligatoire.

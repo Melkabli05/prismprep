@@ -19,7 +19,7 @@ export const performanceCategory: InterviewCategory = {
 
 ## Qu'est-ce que c'est ?
 
-L'optimisation des performances d'une application Java repose sur la compréhension de trois piliers : **l'algorithmique** (la plus impactante), **la gestion mémoire/Garbage Collection**, et **l'exécution JVM (JIT)**. Contrairement à une idée reçue, la JVM moderne est extrêmement performante — le goulot d'étranglement est presque toujours le code applicatif ou la base de données.
+L'optimisation des performances d'une application Java repose sur la compréhension de trois piliers : **l'algorithmique** (la plus impactante), **la gestion mémoire/Garbage Collection**, et **l'exécution JVM (JIT)**. Contrairement à une idée reçue, la JVM moderne est extrêmement performante — le goulot d'étranglement est presque toujours le code applicatif où la base de données.
 
 Le mantra : **mesurer avant d'optimiser**. L'intuition humaine est très mauvaise pour identifier les vrais goulots d'étranglement.
 
@@ -58,7 +58,7 @@ La JVM compile les méthodes « chaudes » (hot spots) en code natif pendant l'e
 
 ## Bonnes pratiques
 
-1. **Algorithmique d'abord** : avant d'optimiser le GC ou la JVM, vérifier la complexité des algorithmes.
+1. **Algorithmique d'abord** : avant d'optimiser le GC où la JVM, vérifier la complexité des algorithmes.
 2. **Éviter les allocations inutiles** : String + dans les boucles → StringBuilder. Boxing int → Integer dans les collections.
 3. **Fermer les ressources** : try-with-resources pour les flux, connexions, fichiers.
 4. **Connection pooling** : HikariCP pour les connexions BDD. Ne pas créer de connexion par requête.
@@ -273,7 +273,7 @@ Un cache distribué est indispensable dès qu'une application a **plusieurs inst
 
 - **Client-Server (Redis)** : un serveur central qui stocke toutes les données. Les clients se connectent et font des opérations clé-valeur. Simple et performant.
 - **Peer-to-Peer (Hazelcast, Apache Ignite)** : chaque nœud de l'application participe au cache (données partitionnées entre les nœuds). Pas de point central, mais plus complexe.
-- **Replicated** : chaque nœud a une copie complète des données. Rapide en lecture mais coûteux en écriture (propagation à tous les nœuds).
+- **Replicated** : chaque nœud à une copie complète des données. Rapide en lecture mais coûteux en écriture (propagation à tous les nœuds).
 
 ### Stratégies d'éviction
 
@@ -285,7 +285,7 @@ Un cache distribué est indispensable dès qu'une application a **plusieurs inst
 ### Problème du Cache Stampede (Thundering Herd)
 
 Quand une clé populaire expire et que 1000 requêtes simultanées tentent de la re-générer → 1000 appels BDD en parallèle. Solutions :
-- **Lock** : un seul thread régénère la clé, les autres attendent.
+- **Lock** : un seul thread régénère la clé, les autrès attendent.
 - **Probabilistic Early Expiration** : rafraîchir la clé avant son expiration avec une probabilité.
 - **Mise en cache de la valeur périmée** : servir l'ancienne valeur pendant la régénération (stale-while-revalidate).
 
@@ -431,7 +431,7 @@ L'optimisation du temps de chargement combine des améliorations **frontend** (i
 ## Pièges courants
 
 1. **Images non optimisées** : servir une image de 5000px pour une vignette de 200px. Utiliser des responsive images.
-2. **Trop de requêtes HTTP** : chaque requête a un overhead (DNS, TCP, TLS). Limiter à 20-30 requêtes.
+2. **Trop de requêtes HTTP** : chaque requête à un overhead (DNS, TCP, TLS). Limiter à 20-30 requêtes.
 3. **CSS/JS non minifiés** : des fichiers de 1Mo+ ralentissent le parsing.
 4. **Pas de cache navigateur** : sans Cache-Control, le navigateur re-télécharge tout à chaque visite.
 5. **Police bloquante** : une police qui ne se charge pas bloque l'affichage du texte (FOIT). Utiliser \`font-display: swap\`.
@@ -464,7 +464,7 @@ const routes: Routes = [
 \`\`\`
 
 **Lazy loading d'images :**
-Les images hors écran ne sont téléchargées que lorsque l'utilisateur s'approche. Utilise \`loading="lazy"\` (natif HTML) ou l'Intersection Observer API.
+Les images hors écran ne sont téléchargées que lorsque l'utilisateur s'approche. Utilise \`loading="lazy"\` (natif HTML) où l'Intersection Observer API.
 \`\`\`html
 <img src="photo.jpg" loading="lazy" alt="...">
 \`\`\`

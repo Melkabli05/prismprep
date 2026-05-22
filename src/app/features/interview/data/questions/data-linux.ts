@@ -114,7 +114,7 @@ Source : [GNU Coreutils Manual](https://www.gnu.org/software/coreutils/manual/)`
 
 ## Qu'est-ce que c'est ?
 
-Linux gère les accès aux fichiers via un modèle de permissions à trois niveaux : propriétaire (owner), groupe (group) et autres (others). Chaque fichier et répertoire possède trois types de droits : lecture (r), écriture (w) et exécution (x). Ce système permet un contrôle d'accès discrétionnaire (DAC) où le propriétaire définit qui peut lire, écrire ou exécuter.
+Linux gère les accès aux fichiers vià un modèle de permissions à trois niveaux : propriétaire (owner), groupe (group) et autrès (others). Chaque fichier et répertoire possède trois types de droits : lecture (r), écriture (w) et exécution (x). Ce système permet un contrôle d'accès discrétionnaire (DAC) où le propriétaire définit qui peut lire, écrire ou exécuter.
 
 ## Syntaxe et exemples
 
@@ -276,7 +276,7 @@ renice -n 5 -p 1234       # Change la priorité d'un processus en cours
 
 ### Ordonnancement CFS (Completely Fair Scheduler)
 
-Le CFS alloue le CPU équitablement. Chaque processus a une \`nice\` value de -20 (priorité max) à +19 (priorité min). Par défaut : 0.
+Le CFS alloue le CPU équitablement. Chaque processus à une \`nice\` value de -20 (priorité max) à +19 (priorité min). Par défaut : 0.
 
 ## Cas d'utilisation concrets
 
@@ -510,7 +510,7 @@ ssh-keygen -t rsa -b 4096 -C "user@email.com"
 # Copie vers le serveur
 ssh-copy-id -i ~/.ssh/id_ed25519.pub user@host
 
-# Agent SSH (évite de retaper la passphrase)
+# Agent SSH (évite de rétaper la passphrase)
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
 \`\`\`
@@ -544,7 +544,7 @@ ssh -R 2222:localhost:22 user@gateway
 # SOCKS proxy (navigation sécurisée)
 ssh -D 1080 user@gateway
 
-# Jump host (via un bastion)
+# Jump host (vià un bastion)
 ssh -J bastion.example.com target.internal
 \`\`\`
 
@@ -589,7 +589,7 @@ Algorithmes supportés : AES-256-GCM (chiffrement), SHA-256 (HMAC), Curve25519 (
 1. Désactivez l'authentification par mot de passe (\`PasswordAuthentication no\`)
 2. Utilisez Ed25519 plutôt que RSA (plus rapide, plus sûr)
 3. Protégez vos clés privées avec une passphrase (chmod 600)
-4. Utilisez \`ssh-agent\` pour éviter de retaper la passphrase
+4. Utilisez \`ssh-agent\` pour éviter de rétaper la passphrase
 5. Configurez \`MaxAuthTries 3\` et \`ClientAliveInterval\` côté serveur
 6. Bannissez IPs après échecs avec fail2ban
 7. Utilisez des bastions/jump hosts pour l'accès aux réseaux privés
@@ -812,7 +812,7 @@ AGE=30
 FRUITS=("pomme" "banane" "cerise")
 declare -r CONSTANTE="valeur"   # Lecture seule
 
-# Paramètres positionnels
+# Paramètrès positionnels
 echo "Script: $0"
 echo "Args: $#"
 echo "Premier: $1"
@@ -930,7 +930,7 @@ Source : [Bash Reference Manual](https://www.gnu.org/software/bash/manual/html_n
         {
           id: 'linux-8',
           question: 'Comment utiliser les gestionnaires de paquets ?',
-          answer: '**Debian/Ubuntu** : `apt` — `apt update` (rafraîchir les sources), `apt install nginx` (installer), `apt remove nginx` (supprimer), `apt upgrade` (mettre à jour).\n\n**RHEL/CentOS** : `yum` (ancien) ou `dnf` (nouveau) — commandes similaires. Les paquets sont signés et vérifiés. Les dépôts officiels garantissent la stabilité.\n\n__Règle : ne jamais installer de paquets non vérifiés.__ Préférez les dépôts officiels. Pour des versions récentes, utilisez les PPA (Ubuntu) ou les dépôts officiels de l\'éditeur.',
+          answer: '**Debian/Ubuntu** : `apt` — `apt update` (rafraîchir les sources), `apt install nginx` (installer), `apt remove nginx` (supprimer), `apt upgrade` (mettre à jour).\n\n**RHEL/CentOS** : `yum` (ancien) ou `dnf` (nouveau) — commandes similaires. Les paquets sont signés et vérifiés. Les dépôts officiels garantissent la stabilité.\n\n__Règle : ne jamais installer de paquets non vérifiés.__ Préférez les dépôts officiels. Pour des versions récentes, utilisez les PPA (Ubuntu) où les dépôts officiels de l\'éditeur.',
           code: '# Debian/Ubuntu\nsudo apt update && sudo apt upgrade\nsudo apt install nginx\nsudo apt remove nginx\napt list --installed\n\n# RHEL/CentOS\nsudo dnf install nginx\nsudo dnf remove nginx',
           language: 'bash',
         
@@ -1299,7 +1299,7 @@ Source : [systemd Documentation](https://www.freedesktop.org/software/systemd/ma
 
 ## Qu'est-ce que c'est ?
 
-Cron est le planificateur de tâches historique sous Unix/Linux. Il exécute des commandes à des moments définis (minute, heure, jour, mois, jour de la semaine). Chaque utilisateur peut avoir sa propre crontab. Les tâches cron sont idéales pour les sauvegardes, nettoyages, rapports et autres opérations récurrentes.
+Cron est le planificateur de tâches historique sous Unix/Linux. Il exécute des commandes à des moments définis (minute, heure, jour, mois, jour de la semaine). Chaque utilisateur peut avoir sa propre crontab. Les tâches cron sont idéales pour les sauvegardes, nettoyages, rapports et autrès opérations récurrentes.
 
 ## Syntaxe et exemples
 
@@ -1368,7 +1368,7 @@ crontab -u user -l        # Liste celle d'un autre utilisateur (root)
 
 ### Cron système (/etc/crontab)
 
-Le fichier \`/etc/crontab\` a un champ supplémentaire : l'utilisateur.
+Le fichier \`/etc/crontab\` à un champ supplémentaire : l'utilisateur.
 
 \`\`\`
 # /etc/crontab
@@ -1382,7 +1382,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 ### /etc/cron.d, cron.hourly, etc.
 
 \`\`\`bash
-# /etc/cron.d/mon-tache
+# /etc/cron.d/mon-tâche
 SHELL=/bin/bash
 PATH=/usr/local/bin:/usr/bin
 MAILTO=admin@example.com
@@ -1635,8 +1635,8 @@ export LC_ALL=fr_FR.UTF-8
 
 ## Pièges courants
 
-1. Hardcoder des secrets dans le code ou les Dockerfiles
-2. Exposer des variables dans les logs ou les stacktraces
+1. Hardcoder des secrets dans le code où les Dockerfiles
+2. Exposer des variables dans les logs où les stacktraces
 3. Variable non définie = comportement silencieusement incorrect
 4. \`.env\` commité dans Git = fuite de secrets dans l'historique
 5. Confondre variables shell (locale) et variables d'environnement (exportée)
@@ -1802,7 +1802,7 @@ cw                 # Changer le mot
 ## Pièges courants
 
 1. Impossible de quitter Vim (classique des entretiens) : \`Échap\` → \`:q!\` → Entrée
-2. Modifier sans être en mode insertion (les lettres sont des commandes)
+2. Modifier sans être en mode insertion (les lettrès sont des commandes)
 3. Oublier de sauvegarder avant de quitter (\`:q\` au lieu de \`:wq\`)
 4. \`:q!\` ne sauvegarde pas les modifications (les pertes sont irrécupérables)
 5. Coller du texte avec l'auto-indentation qui décale tout (utilisez \`:set paste\`)

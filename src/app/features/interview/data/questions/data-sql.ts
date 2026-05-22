@@ -16,11 +16,11 @@ export const sqlCategory: InterviewCategory = {
           answer: "**`INNER JOIN`** : lignes correspondantes dans les deux tables seulement. **`LEFT JOIN`** : toutes les lignes de la table gauche + correspondances droite (`NULL` si pas de match). **`RIGHT JOIN`** : inverse du LEFT. **`FULL JOIN`** : toutes les lignes des deux tables, `NULL` là où il n'y a pas de correspondance.\n\n**`CROSS JOIN`** : produit cartésien (chaque ligne A × chaque ligne B). **`SELF JOIN`** : une table jointe avec elle-même (hiérarchies).\n\nLe `LEFT JOIN` est le plus courant en pratique pour lister tout même sans correspondance.",
           code: 'SELECT u.nom, o.numero\nFROM users u\nLEFT JOIN orders o ON u.id = o.user_id;',
           language: 'sql',
-          deepDive: `# Les differents JOINs en SQL
+          deepDive: `# Les différents JOINs en SQL
 
 ## Principe general
 
-Les JOINs permettent de combiner des donnees provenant de plusieurs tables en une seule requete. C'est l'un des concepts les plus fondamentaux en SQL relationnel. PostgreSQL supporte tous les types de JOINs standards avec une syntaxe riche et des comportements bien definis.
+Les JOINs permettent de combiner des donnees provenant de plusieurs tables en une seule requête. C'est l'un des concepts les plus fondamentaux en SQL relationnel. PostgreSQL supporte tous les types de JOINs standards avec une syntaxe riche et des comportements bien definis.
 
 Chaque type de JOIN determine quelles lignes sont conservees dans le resultat final. Le choix du JOIN depend de la question metier : voulez-vous toutes les lignes de la table A ? Seulement celles qui correspondent dans les deux tables ? Toutes les lignes des deux tables ?
 
@@ -53,7 +53,7 @@ WHERE e.departement_id = d.id;
 
 ## LEFT JOIN — Toutes les lignes de la table gauche
 
-Retourne toutes les lignes de la table de gauche (la premiere dans la requete). Si aucune correspondance n'existe dans la table de droite, les colonnes de droite sont NULL.
+Retourne toutes les lignes de la table de gauche (la premiere dans la requête). Si aucune correspondance n'existe dans la table de droite, les colonnes de droite sont NULL.
 
 \`\`\`sql
 -- Tous les clients, meme ceux sans commande
@@ -62,7 +62,7 @@ FROM clients c
 LEFT JOIN commandes cmd ON c.id = cmd.client_id
 ORDER BY c.nom;
 
--- Combinaison avec COUNT et COALESCE pour eviter les NULLs
+-- Combinaison avec COUNT et COALESCE pour éviter les NULLs
 SELECT c.nom, COALESCE(COUNT(cmd.id), 0) AS nb_commandes
 FROM clients c
 LEFT JOIN commandes cmd ON c.id = cmd.client_id
@@ -71,7 +71,7 @@ GROUP BY c.nom;
 
 ## RIGHT JOIN — Symetrique du LEFT
 
-Moins courant, car on peut toujours reecrire avec LEFT JOIN en inversant l'ordre des tables.
+Moins courant, car on peut toujours reécrire avec LEFT JOIN en inversant l'ordre des tables.
 
 \`\`\`sql
 -- Equivalent a LEFT JOIN en inversant les tables
@@ -87,7 +87,7 @@ LEFT JOIN employes e ON e.id = p.responsable_id;
 
 ## FULL JOIN — Toutes les lignes des deux tables
 
-Combine LEFT et RIGHT : toutes les lignes des deux tables sont presentes, avec NULL la ou il n'y a pas de correspondance.
+Combine LEFT et RIGHT : toutes les lignes des deux tables sont presentes, avec NULL la où il n'y a pas de correspondance.
 
 \`\`\`sql
 -- Utile pour comparer deux listes
@@ -166,24 +166,24 @@ Source : [PostgreSQL Docs — JOINs](https://www.postgresql.org/docs/current/que
         {
           id: 'sql-2',
           question: 'Sous-requêtes vs JOINs',
-          answer: "**Sous-requête** : requête imbriquée dans une autre — lisible pour les filtres simples (`WHERE id IN (SELECT...)`). **JOIN** : fusion de tables — plus performant en général car le SGBD optimise mieux.\n\nRègle pratique : les sous-requêtes corrélées (qui référencent la requête externe) sont souvent **lentes** — à remplacer par un `JOIN` ou `EXISTS`.\n\nLes **CTE** (`WITH ... AS`) améliorent la lisibilité des sous-requêtes complexes. __Préférez les JOIN pour la performance, les CTE pour la lisibilité.__",
+          answer: "**Sous-requête** : requête imbriquée dans une autre — lisible pour les filtrès simples (`WHERE id IN (SELECT...)`). **JOIN** : fusion de tables — plus performant en général car le SGBD optimise mieux.\n\nRègle pratique : les sous-requêtes corrélées (qui référencent la requête externe) sont souvent **lentes** — à remplacer par un `JOIN` ou `EXISTS`.\n\nLes **CTE** (`WITH ... AS`) améliorent la lisibilité des sous-requêtes complexes. __Préférez les JOIN pour la performance, les CTE pour la lisibilité.__",
           code: '-- Sous-requête\nSELECT * FROM users WHERE id IN (\n    SELECT user_id FROM orders WHERE total > 100\n);\n\n-- CTE (plus lisible)\nWITH gros_clients AS (\n    SELECT user_id FROM orders WHERE total > 100\n)\nSELECT * FROM users WHERE id IN (\n    SELECT user_id FROM gros_clients\n);',
           language: 'sql',
-          deepDive: `# Sous-requetes vs JOINs en SQL
+          deepDive: `# Sous-requêtes vs JOINs en SQL
 
 ## Principe et definitions
 
-Une **sous-requete** est une requete SELECT imbriquee a l'interieur d'une autre requete (SELECT, FROM, WHERE, HAVING, ou meme dans une expression). Un **JOIN** combine les colonnes de deux tables en une seule table resultat via une condition de correspondance. Les deux techniques peuvent souvent produire le meme resultat, mais elles different fondamentalement en termes de performance, lisibilite et flexibilite.
+Une **sous-requête** est une requête SELECT imbriquee à l'interieur d'une autre requête (SELECT, FROM, WHERE, HAVING, ou meme dans une expression). Un **JOIN** combine les colonnes de deux tables en une seule table resultat vià une condition de correspondance. Les deux techniques peuvent souvent produire le meme resultat, mais elles différent fondamentalement en termes de performance, lisibilite et flexibilite.
 
-Le choix entre sous-requete et JOIN depend de plusieurs facteurs : la presence de donnees NULL, la cardinalite des tables, la possibilite d'utiliser des index, et la structure du plan d'execution.
+Le choix entre sous-requête et JOIN depend de plusieurs facteurs : la presence de donnees NULL, la cardinalite des tables, la possibilite d'utiliser des index, et la structure du plan d'execution.
 
-## Sous-requetes non correlees
+## Sous-requêtes non correlees
 
-Une sous-requete non correlee est executee une seule fois, independamment de la requete externe. Ses resultats sont materialises (stockes en memoire ou sur disque temporaire) puis utilises par la requete principale :
+Une sous-requête non correlee est executee une seule fois, independamment de la requête externe. Ses resultats sont materialises (stockes en mémoire ou sur disque temporaire) puis utilises par la requête principale :
 
 \`\`\`sql
 -- Employes des departements a gros budget
--- La sous-requete est executee une seule fois
+-- La sous-requête est executee une seule fois
 SELECT nom, prenom
 FROM employes
 WHERE departement_id IN (
@@ -197,12 +197,12 @@ INNER JOIN departements d ON e.departement_id = d.id
 WHERE d.budget > 100000;
 \`\`\`
 
-## Sous-requetes correlees — Attention performances
+## Sous-requêtes correlees — Attention performances
 
-Une sous-requete correlee reference une colonne de la requete externe. Le probleme : elle est re-executee pour chaque ligne de la requete externe, ce qui peut etre extremement couteux :
+Une sous-requête correlee reference une colonne de la requête externe. Le problème : elle est re-executee pour chaque ligne de la requête externe, ce qui peut être extremement couteux :
 
 \`\`\`sql
--- Cette sous-requete est executee pour CHAQUE employe (N executions)
+-- Cette sous-requête est executee pour CHAQUE employe (N executions)
 SELECT e1.nom, e1.salaire, e1.departement_id
 FROM employes e1
 WHERE e1.salaire > (
@@ -212,7 +212,7 @@ WHERE e1.salaire > (
 );
 \`\`\`
 
-Pour 1000 employes, la sous-requete est executee 1000 fois. Avec une window function, le meme resultat est obtenu en un seul parcours :
+Pour 1000 employes, la sous-requête est executee 1000 fois. Avec une window function, le meme resultat est obtenu en un seul parcours :
 
 \`\`\`sql
 -- Equivalent 1000 fois plus rapide avec une window function
@@ -225,9 +225,9 @@ FROM (
 WHERE salaire > moyenne_dept;
 \`\`\`
 
-## CTE (Common Table Expressions) — Sous-requetes nommees
+## CTE (Common Table Expressions) — Sous-requêtes nommees
 
-Les CTE (WITH) ameliorent la lisibilite des requetes complexes et peuvent etre referencees plusieurs fois dans la meme requete :
+Les CTE (WITH) ameliorent la lisibilite des requêtes complexes et peuvent être referencees plusieurs fois dans la meme requête :
 
 \`\`\`sql
 WITH ventes_recentes AS (
@@ -245,7 +245,7 @@ INNER JOIN meilleurs_clients mc ON c.id = mc.client_id
 ORDER BY mc.total DESC;
 \`\`\`
 
-Les CTE sont aussi le seul moyen de faire des requetes recursives (WITH RECURSIVE) pour les structures hierarchiques :
+Les CTE sont aussi le seul moyen de faire des requêtes reçursives (WITH RECURSIVE) pour les structures hierarchiques :
 
 \`\`\`sql
 WITH RECURSIVE hierarchie AS (
@@ -261,9 +261,9 @@ WITH RECURSIVE hierarchie AS (
 SELECT * FROM hierarchie ORDER BY niveau, nom;
 \`\`\`
 
-## LATERAL — Sous-requete avec reference
+## LATERAL — Sous-requête avec reference
 
-LATERAL permet a une sous-requete dans le FROM de referencer les colonnes des tables precedentes, ce qui ouvre des possibilites puissantes :
+LATERAL permet à une sous-requête dans le FROM de referencer les colonnes des tables precedentes, ce qui ouvre des possibilites puissantes :
 
 \`\`\`sql
 -- Top 3 produits les plus chers par categorie
@@ -280,23 +280,23 @@ LATERAL (
 
 ## Tableau comparatif complet
 
-| Critere | Sous-requete | JOIN | CTE |
+| Critere | Sous-requête | JOIN | CTE |
 |---------|-------------|------|-----|
-| Lisibilite | Bonne pour WHERE IN | Claire pour multi-tables | Excellente pour requetes complexes |
+| Lisibilite | Bonne pour WHERE IN | Claire pour multi-tables | Excellente pour requêtes complexes |
 | Performance non correlee | Bonne (execution unique) | Optimale | Optimale |
 | Performance correlee | Mauvaise (N executions) | Optimale | Optimale |
 | Reutilisabilite | Non | Non | Oui |
 | Recursivite | Non | Non | Oui (WITH RECURSIVE) |
-| Sous-requete en SELECT | Oui | Non | Non |
+| Sous-requête en SELECT | Oui | Non | Non |
 
 ## Resume des recommandations
 
-- **IN** : pour les listes de valeurs fixes ou les petites sous-requetes
-- **EXISTS** : pour les sous-requetes correlees sur grands volumes
+- **IN** : pour les listes de valeurs fixes où les petites sous-requêtes
+- **EXISTS** : pour les sous-requêtes correlees sur grands volumes
 - **JOIN** : quand les colonnes des deux tables sont necessaires dans le resultat
-- **CTE** : pour les requetes complexes, recursives ou multi-etapes
+- **CTE** : pour les requêtes complexes, reçursives ou multi-étapes
 - **LATERAL** : pour le pattern "top N par groupe"
-- **Window functions** : alternative performante aux sous-requetes correlees avec agregation
+- **Window functions** : alternative performante aux sous-requêtes correlees avec agregation
 
 Source : [PostgreSQL Docs — Queries](https://www.postgresql.org/docs/current/queries.html)
 `},

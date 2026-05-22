@@ -13,7 +13,7 @@ export const devopsCategory: InterviewCategory = {
         {
           id: 'dv-1',
           question: 'Docker',
-          answer: "Outil de **conteneurisation** : package l'application avec toutes ses dépendances dans un **conteneur** léger et portable. Contrairement à une VM, le conteneur partage le noyau hôte — démarrage rapide, empreinte minimale.\n\nLe même conteneur tourne de façon identique du laptop du dev à la production. Le `Dockerfile` décrit la construction de l'image, distribuée via un registre (`Docker Hub`).\n\n**Standard de fait** pour le déploiement, brique de base de `Kubernetes`.",
+          answer: "Outil de **conteneurisation** : package l'application avec toutes ses dépendances dans un **conteneur** léger et portable. Contrairement à une VM, le conteneur partage le noyau hôte — démarrage rapide, empreinte minimale.\n\nLe même conteneur tourne de façon identique du laptop du dev à la production. Le `Dockerfile` décrit la construction de l'image, distribuée vià un registre (`Docker Hub`).\n\n**Standard de fait** pour le déploiement, brique de base de `Kubernetes`.",
           code: 'FROM openjdk:17-jdk-slim\nCOPY target/app.jar /app.jar\nEXPOSE 8080\nENTRYPOINT ["java", "-jar", "/app.jar"]',
           language: 'dockerfile',
         
@@ -95,7 +95,7 @@ Comparaison entre la conteneurisation (Docker) et les machines virtuelles (VM) p
 ## Architecture VM
 
  Chaque VM inclut:
-- OS complet (kernel, systeme)
+- OS complet (kernel, système)
 - Applications
 - Bibliothèques
 
@@ -145,7 +145,7 @@ Comparaison entre la conteneurisation (Docker) et les machines virtuelles (VM) p
 ## Cas d'usage
 
 - **Docker** : Microservices, CI/CD, applications cloud-native
-- **VM** : Applicationslegacy, differents OS requis, haute sécurité
+- **VM** : Applicationslegacy, différents OS requis, haute sécurité
 
 ## Combinaison possible
 
@@ -475,7 +475,7 @@ Source : [Atlassian CI/CD](https://www.atlassian.com/continuous-delivery/princip
 
 ## Qu'est-ce que c'est
 
-Deployment strategies define how software is released to production environments. The main strategies are:
+Deployment stratégies define how software is released to production environments. The main stratégies are:
 
 - **Rolling**: Replace instances gradually
 - **Blue-Green**: Run two identical environments, switch traffic
@@ -829,7 +829,7 @@ https://prometheus.io/docs/introduction/overview/ | https://grafana.com/docs/ | 
         {
           id: 'dv-10',
           question: 'Distributed tracing',
-          answer: "Dans une chaîne d'appels inter-services, un seul requête utilisateur peut traverser **5-10 services**. Le *distributed tracing* suit le parcours complet via un **correlation ID** (`trace ID`) unique propagé de service en service.\n\nOutils : **Jaeger**, **Zipkin**, **AWS X-Ray**. Visualisation : timeline de chaque span (unité de travail) dans la trace.\n\n__Indispensable pour diagnostiquer les problèmes de latence et les erreurs en architecture distribuée.__ Sans tracing, le debugging est quasi impossible.",
+          answer: "Dans une chaîne d'appels inter-services, un seul requête utilisateur peut traverser **5-10 services**. Le *distributed tracing* suit le parcours complet vià un **correlation ID** (`trace ID`) unique propagé de service en service.\n\nOutils : **Jaeger**, **Zipkin**, **AWS X-Ray**. Visualisation : timeline de chaque span (unité de travail) dans la trace.\n\n__Indispensable pour diagnostiquer les problèmes de latence et les erreurs en architecture distribuée.__ Sans tracing, le debugging est quasi impossible.",
         
           deepDive: `# Distributed Tracing
 

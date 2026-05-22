@@ -13,7 +13,7 @@ export const designPatternsCategory: InterviewCategory = {
         {
           id: 'dp-1',
           question: 'Singleton',
-          answer: "Pattern garantissant une **seule instance** d'une classe avec un point d'accès global. Constructeur privé + méthode statique créant l'instance au premier appel.\n\nCas d'usage : connexionion BDD, logger, config globale.\n\nCritiques : état global *difficile à tester* (hard to mock), viole la responsabilité unique, concurrence à gérer en multi-thread. En Java, l'**enum** avec un seul élément est l'implémentation la plus robuste (thread-safe + résiste à la sérialisation). Autres approches thread-safe : **holder statique** (lazy + thread-safe via chargement de classe) ou **synchronisation** (coûteuse).\n\n__Préférer l'injection de dépendances quand c'est possible.__",
+          answer: "Pattern garantissant une **seule instance** d'une classe avec un point d'accès global. Constructeur privé + méthode statique créant l'instance au premier appel.\n\nCas d'usage : connexionion BDD, logger, config globale.\n\nCritiques : état global *difficile à tester* (hard to mock), viole la responsabilité unique, concurrence à gérer en multi-thread. En Java, l'**enum** avec un seul élément est l'implémentation la plus robuste (thread-safe + résiste à la sérialisation). Autrès approches thread-safe : **holder statique** (lazy + thread-safe via chargement de classe) ou **synchronisation** (coûteuse).\n\n__Préférer l'injection de dépendances quand c'est possible.__",
           code: 'public class Config {\n    private static Config instance;\n    private Config() {}\n    public static Config get() {\n        if (instance == null) instance = new Config();\n        return instance;\n    }\n}',
           language: 'java',
         
@@ -21,11 +21,11 @@ export const designPatternsCategory: InterviewCategory = {
 
 ## Qu'est-ce que c'est ?
 
-Le pattern Singleton garantit qu'une classe n'a qu'une **seule instance** et fournit un point d'acces global a cette instance. C'est l'un des patterns les plus connus mais aussi l'un des plus controversees, car il introduit un etat global dans l'application.
+Le pattern Singleton garantit qu'une classe n'a qu'une **seule instance** et fournit un point d'acces global a cette instance. C'est l'un des patterns les plus connus mais aussi l'un des plus controversees, car il introduit un état global dans l'application.
 
 ## Probleme resolu
 
-Certaines ressources doivent etre partagees par toute l'application : connexion a une base de donnees, logger, configuration globale, cache. Creer plusieurs instances de ces ressources est inutile (gaspillage memoire) et peut etre dangereux (conflits d'acces).
+Certaines ressources doivent être partagees par toute l'application : connexion à une base de donnees, logger, configuration globale, cache. Creer plusieurs instances de ces ressources est inutile (gaspillage mémoire) et peut être dangereux (conflits d'acces).
 
 \`\`\`typescript
 // Avant Singleton : instances multiples possibles
@@ -114,8 +114,8 @@ public enum ConfigSingleton {
 
 ## Cas d'utilisation concrets
 
-1. **Pool de connexions** : une seule instance gere toutes les connexions BDD
-2. **Logger** : ecriture centralisee dans un seul fichier
+1. **Pool de connexions** : une seule instance gère toutes les connexions BDD
+2. **Logger** : écriture centralisee dans un seul fichier
 3. **Cache applicatif** : cache partage entre tous les composants
 4. **Gestionnaire de configuration** : proprietes chargees une seule fois
 5. **Service de logging** : thread-safe pour les logs
@@ -130,7 +130,7 @@ public enum ConfigSingleton {
 | Concurrence | A gerer en multi-thread | Holder pattern ou enum |
 | SRP viole | Gere sa creation + sa logique | Separation des concerns |
 
-**Alternative recommandee** : injection de dependances (Angular \`providedIn: 'root'\`, Spring \`@Service\`). Le framework gere la portee unique sans les inconvenients du Singleton.
+**Alternative recommandee** : injection de dependances (Angular \`providedIn: 'root'\`, Spring \`@Service\`). Le framework gère la portee unique sans les inconvenients du Singleton.
 
 \`\`\`typescript
 // Angular : meilleur que Singleton
@@ -147,7 +147,7 @@ export class LoggerService {
 4. Eviter les singletons mutables
 
 ## Pièges courants
-1. Singletons mutables : l'etat global change de maniere imprevisible
+1. Singletons mutables : l'état global change de maniere imprevisible
 2. Singletons dans les tests unitaires : impossible a isoler
 3. Singletons et threads : mauvaise gestion de la concurrence
 4. Singletons et serialisation : peut creer une deuxieme instance
@@ -164,11 +164,11 @@ Sources : https://refactoring.guru/design-patterns/singleton | https://martinfow
 
 ## Qu'est-ce que c'est ?
 
-Le pattern Factory Method definit une interface pour creer un objet, mais laisse les sous-classes decider quelle classe instancier. Il permet de deferer la creation d'objets aux classes filles, suivant le principe **Open/Closed** : ouvert a l'extension, ferme a la modification.
+Le pattern Factory Method definit une interface pour creer un objet, mais laisse les sous-classes decider quelle classe instancier. Il permet de deferer la creation d'objets aux classes filles, suivant le principe **Open/Closed** : ouvert à l'extension, ferme à la modification.
 
 ## Probleme resolu
 
-Vous devez creer des objets dont le type exact n'est pas connu a l'avance. Le code client ne doit pas dependre des implementations concretes.
+Vous devez creer des objets dont le type exact n'est pas connu à l'avance. Le code client ne doit pas dependre des implementations concretes.
 
 \`\`\`typescript
 // MAUVAIS : couplage fort, modification a chaque ajout
@@ -312,22 +312,22 @@ Sources : https://refactoring.guru/design-patterns/factory-method`},
         {
           id: 'dp-3',
           question: 'Builder',
-          answer: "Pattern séparant la **construction** d'un objet complexe de sa **représentation**. Au lieu d'un constructeur avec 10 paramètres, on chaîne les appels de méthode de façon lisible.\n\nAvantages : **lisible** (on sait ce qu'on construit), **flexible** (paramètres optionnels sans surcharge), **immuable** (l'objet est construit d'un coup).\n\nUtilisé par `StringBuilder`, `Stream.Builder` en Java, et les `Request` dans les APIs HTTP. __Quand un constructeur a plus de 4 paramètres → pensez Builder.__",
-          code: 'User user = new User.Builder()\n    .nom("Dupont")\n    .email("dupont@mail.com")\n    .age(30)\n    .role(Role.ADMIN)\n    .build();',
+          answer: "Pattern séparant la **construction** d'un objet complexe de sa **représentation**. Au lieu d'un constructeur avec 10 paramètres, on chaîne les appels de méthode de façon lisible.\n\nAvantages : **lisible** (on sait ce qu'on construit), **flexible** (paramètrès optionnels sans surcharge), **immuable** (l'objet est construit d'un coup).\n\nUtilisé par `StringBuilder`, `Stream.Builder` en Java, et les `Request` dans les APIs HTTP. __Quand un constructeur a plus de 4 paramètrès → pensez Builder.__",
+          code: 'User user = new User.Builder()\n    .nom("Dupont")\n    .email("dupont@mail.com")\n    .age(30)\n    .rôle(Role.ADMIN)\n    .build();',
           language: 'java',
         
           deepDive: `# Builder
 
 ## Qu'est-ce que c'est ?
 
-Le pattern Builder permet de construire des objets complexes **etape par etape**. Il separe la construction de la representation finale, permettant de creer differentes representations avec le meme processus de construction.
+Le pattern Builder permet de construire des objets complexes **étape par étape**. Il separe la construction de la representation finale, permettant de creer différentes representations avec le meme processus de construction.
 
 ## Probleme resolu
 
-Les constructeurs avec beaucoup de parametres sont illisibles, source d'erreurs et difficiles a maintenir. C'est le probleme du **telescoping constructor** (constructeur a longue vue).
+Les constructeurs avec beaucoup de paramêtrès sont illisibles, source d'erreurs et difficiles a maintenir. C'est le problème du **telescoping constructor** (constructeur a longue vue).
 
 \`\`\`typescript
-// MAUVAIS : constructeur avec 8 parametres
+// MAUVAIS : constructeur avec 8 paramêtres
 class User {
     constructor(
         public name: string,          // obligatoire
@@ -337,7 +337,7 @@ class User {
         public phone?: string,        // optionnel
         public avatar?: string,       // optionnel
         public newsletter?: boolean,  // optionnel
-        public role?: string          // optionnel
+        public rôle?: string          // optionnel
     ) {}
 }
 // new User("John", "john@mail.com", undefined, undefined, undefined, undefined, true, "admin")
@@ -471,15 +471,15 @@ HttpRequest request = HttpRequest.newBuilder()
 
 | Aspect | Builder | Constructeur |
 |--------|---------|-------------|
-| Lisibilite | Elevee (noms des methodes) | Faible (ordre des params) |
+| Lisibilite | Elevee (noms des méthodes) | Faible (ordre des params) |
 | Immutabilite | Possible (objet construit) | Possible |
 | Complexite | Plus de code | Moins de code |
 | Validation | Dans build() | Dans le constructeur |
-| Param requis | Non enforce a la compilation | Enforce |
+| Param requis | Non enforce à la compilation | Enforce |
 
 ## Cas d'utilisation
-1. **Objets avec >4 parametres optionnels** : requetes HTTP, configs, DTOs
-2. **Construction multi-etapes** : documents, rapports
+1. **Objets avec >4 paramêtrès optionnels** : requêtes HTTP, configs, DTOs
+2. **Construction multi-étapes** : documents, rapports
 3. **Validation complexe** : build() valide l'objet final
 4. **Immutabilite** : l'objet construit est immutable
 
@@ -490,9 +490,9 @@ HttpRequest request = HttpRequest.newBuilder()
 4. Rendre l'objet construit immutable
 
 ## Pièges courants
-1. Builder mutable apres construction (l'objet peut etre modifie)
+1. Builder mutable après construction (l'objet peut être modifie)
 2. Pas de validation dans build()
-3. Builder non reutilisable (etat residuel entre builds)
+3. Builder non reutilisable (état residuel entre builds)
 
 Sources : https://refactoring.guru/design-patterns/builder`},
       ],
@@ -516,7 +516,7 @@ Le pattern Adapter convertit l'interface d'une classe en une autre interface att
 
 ## Probleme resolu
 
-Vous avez une classe existante avec une interface specifique, mais votre application attend une interface differente. Modifier la classe existante n'est pas possible (code legacy, bibliotheque tierce).
+Vous avez une classe existante avec une interface specifique, mais votre application attend une interface différente. Modifier la classe existante n'est pas possible (code legacy, bibliotheque tierce).
 
 \`\`\`typescript
 // Interface attendue par le client
@@ -642,14 +642,14 @@ class UserApiAdapter implements OldUserApi {
 
 | Aspect | Adapter | Facade | Proxy |
 |--------|---------|--------|-------|
-| Objectif | Changer d'interface | Simplifier une interface | Controler l'acces |
+| Objectif | Changer d'interface | Simplifier une interface | Contrôler l'acces |
 | Interface | Differente | Simplifiee | Identique |
-| Utilisation | Integration | Simplification | Controle |
+| Utilisation | Integration | Simplification | Contrôle |
 
 ## Utilisation dans les frameworks
 
 Spring utilise les adapters partout :
-- \`HandlerAdapter\` dans Spring MVC : adapte les controleurs
+- \`HandlerAdapter\` dans Spring MVC : adapte les contrôleurs
 - \`MessageConverter\` : adapte les formats de message
 - \`TaskExecutorAdapter\` : adapte les executors
 
@@ -675,7 +675,7 @@ Sources : https://refactoring.guru/design-patterns/adapter | https://www.oodesig
 
 ## Qu'est-ce que c'est ?
 
-Le pattern Decorator attache dynamiquement de nouvelles responsabilites a un objet. Il fournit une alternative flexible a l'heritage pour etendre les fonctionnalites. Chaque decorateur "enveloppe" l'objet original et peut ajouter son comportement avant ou apres l'appel a l'objet encapsule.
+Le pattern Decorator attâche dynamiquement de nouvelles responsabilites à un objet. Il fournit une alternative flexible à l'heritage pour etendre les fonctionnalites. Chaque decorateur "enveloppe" l'objet original et peut ajouter son comportement avant ou après l'appel à l'objet encapsule.
 
 ## Probleme resolu
 
@@ -836,7 +836,7 @@ handler = new AuthDecorator(handler);
 
 ## Bonnes pratiques
 1. Interface du composant simple et stable
-2. Decorateur sans etat (ajoute juste un comportement)
+2. Decorateur sans état (ajoute juste un comportement)
 3. Un decorateur = une responsabilite
 4. Ordre des decorateurs important
 
@@ -857,11 +857,11 @@ Sources : https://refactoring.guru/design-patterns/decorator | https://www.oodes
 
 ## Qu'est-ce que c'est ?
 
-Le pattern Proxy fournit un **substitut** ou **placeholder** pour un autre objet afin de controler l'acces a celui-ci. Le proxy implemente la meme interface que l'objet reel et intercepte les appels pour ajouter des fonctionnalites : chargement paresseux, controle d'acces, logging, mise en cache.
+Le pattern Proxy fournit un **substitut** ou **placeholder** pour un autre objet afin de contrôler l'acces a celui-ci. Le proxy implemente la meme interface que l'objet reel et intercepte les appels pour ajouter des fonctionnalites : chargement paresseux, contrôle d'acces, logging, mise en cache.
 
 ## Probleme resolu
 
-Vous devez controler l'acces a un objet sans modifier son code. L'objet peut etre couteux a creer, sensible (securite), ou distant (reseau).
+Vous devez contrôler l'acces à un objet sans modifier son code. L'objet peut être couteux a creer, sensible (securite), ou distant (reseau).
 
 \`\`\`typescript
 // Objet couteux : image haute resolution
@@ -960,10 +960,10 @@ class VirtualProxy implements Image {
 const img = new VirtualProxy("sunset.jpg");
 console.log("Image created, not loaded yet");
 img.display(); // Chargement + affichage
-img.display(); // Affichage seulement (deja charge)
+img.display(); // Affichage seulement (déjà charge)
 \`\`\`
 
-### Protection Proxy (controle d'acces)
+### Protection Proxy (contrôle d'acces)
 
 \`\`\`typescript
 interface Document {
@@ -1040,7 +1040,7 @@ class CachedWeatherProxy implements WeatherService {
 | Type | Objectif | Exemple |
 |------|----------|---------|
 | Virtual | Chargement paresseux | Images, documents volumineux |
-| Protection | Controle d'acces | Droits utilisateur, RBAC |
+| Protection | Contrôle d'acces | Droits utilisateur, RBAC |
 | Remote | Acces a distance | RMI, gRPC, Web services |
 | Cache | Mise en cache | API responses, DB queries |
 | Logging | Audit et logging | Traces, metriques |
@@ -1065,10 +1065,10 @@ public class UserService {
 
 | Aspect | Proxy | Decorator |
 |--------|-------|-----------|
-| Objectif | Controler l'acces | Ajouter des comportements |
+| Objectif | Contrôler l'acces | Ajouter des comportements |
 | Interface | Identique | Identique |
 | Creation | Cree le sujet | Enveloppe un objet existant |
-| Relation | Protege/gere le sujet | Enrichit le sujet |
+| Relation | Protege/gère le sujet | Enrichit le sujet |
 
 ## Bonnes pratiques
 1. Mettre en cache les resultats des proxies distants
@@ -1098,11 +1098,11 @@ Sources : https://refactoring.guru/design-patterns/proxy | https://www.oodesign.
 
 ## Qu'est-ce que c'est ?
 
-Le pattern Strategy definit une famille d'algorithmes, les encapsule chacun dans une classe separee, et les rend **interchangeables** a l'execution. Le client peut choisir dynamiquement quel algorithme utiliser, sans modifier le code qui les utilise.
+Le pattern Strategy definit une famille d'algorithmes, les encapsule chacun dans une classe separee, et les rend **interchangeables** à l'execution. Le client peut choisir dynamiquement quel algorithme utiliser, sans modifier le code qui les utilise.
 
 ## Probleme resolu
 
-Un switch ou if/else geant qui choisit un comportement different selon un type est difficile a maintenir, tester et etendre.
+Un switch ou if/else geant qui choisit un comportement différent selon un type est difficile a maintenir, tester et etendre.
 
 \`\`\`typescript
 // MAUVAIS : modification a chaque nouvel algorithme
@@ -1147,7 +1147,7 @@ interface ValidationStrategy {
     validate(data: unknown): { valid: boolean; errors: string[] };
 }
 
-// Concrete strategies
+// Concrete stratégies
 class EmailValidation implements ValidationStrategy {
     validate(data: unknown): { valid: boolean; errors: string[] } {
         const email = String(data);
@@ -1180,13 +1180,13 @@ class RequiredValidation implements ValidationStrategy {
 
 // Context
 class FormField {
-    private strategies: ValidationStrategy[] = [];
+    private stratégies: ValidationStrategy[] = [];
     private value: unknown;
 
     constructor(private name: string) {}
 
     addStrategy(strategy: ValidationStrategy): this {
-        this.strategies.push(strategy);
+        this.stratégies.push(strategy);
         return this;
     }
 
@@ -1196,7 +1196,7 @@ class FormField {
 
     validate(): { valid: boolean; errors: string[] } {
         const allErrors: string[] = [];
-        for (const strategy of this.strategies) {
+        for (const strategy of this.stratégies) {
             const result = strategy.validate(this.value);
             allErrors.push(...result.errors);
         }
@@ -1213,7 +1213,7 @@ emailField.setValue("invalid-email");
 console.log(emailField.validate());
 \`\`\`
 
-### Exemple : systeme de paiement
+### Exemple : système de paiement
 
 \`\`\`java
 // Strategy interface
@@ -1222,7 +1222,7 @@ public interface PaymentStrategy {
     boolean validate();
 }
 
-// Concrete strategies
+// Concrete stratégies
 public class CreditCardPayment implements PaymentStrategy {
     private String cardNumber;
     private String cvv;
@@ -1299,28 +1299,28 @@ class ShippingCalculator {
 
 | Aspect | Strategy | State |
 |--------|----------|-------|
-| Objectif | Changer d'algorithme | Changer de comportement selon l'etat |
-| qui change la strategie/etat ? | Le client | Le contexte ou l'etat lui-meme |
-| Nombre de strategies/etats | Souvent connu | Peut evoluer |
+| Objectif | Changer d'algorithme | Changer de comportement selon l'état |
+| qui change la stratégie/état ? | Le client | Le contexte où l'état lui-meme |
+| Nombre de stratégies/états | Souvent connu | Peut evoluer |
 | Transitions | Choisies par le client | Automatiques |
 
 ## Cas d'utilisation concrets
-1. **Validation** : differentes strategies selon le type de champ
+1. **Validation** : différentes stratégies selon le type de champ
 2. **Paiement** : carte, PayPal, virement, Apple Pay
 3. **Tri** : tri par nom, date, priorite, statut
 4. **Compression** : ZIP, GZip, RAR, 7z
 5. **Authentification** : OAuth, JWT, Basic, SAML
 
 ## Bonnes pratiques
-1. Strategies sans etat (stateless) de preference
+1. Strategies sans état (stateless) de preference
 2. Interface strategy simple et stable
 3. Strategies interchangeables sans effet de bord
-4. Parallelisme : une strategie ne doit pas partager d'etat
+4. Parallelisme : une stratégie ne doit pas partager d'état
 
 ## Pièges courants
-1. Trop de strategies (classe explosion)
-2. Strategies avec etat (side effects inattendus)
-3. Interface trop complexe (trop de methodes dans Strategy)
+1. Trop de stratégies (classe explosion)
+2. Strategies avec état (side effects inattendus)
+3. Interface trop complexe (trop de méthodes dans Strategy)
 
 Sources : https://refactoring.guru/design-patterns/strategy | https://www.oodesign.com/strategy-pattern.html`},
         {
@@ -1334,11 +1334,11 @@ Sources : https://refactoring.guru/design-patterns/strategy | https://www.oodesi
 
 ## Qu'est-ce que c'est ?
 
-Le pattern Observer definit une dependance **un-vers-plusieurs** entre des objets. Quand le sujet change d'etat, tous ses observateurs sont notifies automatiquement. C'est le fondement de la **programmation reactive** et des **systemes d'evenements**.
+Le pattern Observer definit une dependance **un-vers-plusieurs** entre des objets. Quand le sujet change d'état, tous ses observateurs sont notifies automatiquement. C'est le fondement de la **programmation reactive** et des **systèmes d'événements**.
 
 ## Probleme resolu
 
-Un objet doit notifier d'autres objets de ses changements d'etat, sans connaitre leurs types concrets (couplage faible).
+Un objet doit notifier d'autrès objets de ses changements d'état, sans connaitre leurs types concrets (couplage faible).
 
 \`\`\`typescript
 // MAUVAIS : couplage fort, difficile a etendre
@@ -1399,12 +1399,12 @@ class Observable<T> implements Subject<T> {
 
     attach(observer: Observer<T>): void {
         this.observers.add(observer);
-        console.log("Observer attached. Total: " + this.observers.size);
+        console.log("Observer attâched. Total: " + this.observers.size);
     }
 
     detach(observer: Observer<T>): void {
         this.observers.delete(observer);
-        console.log("Observer detached. Total: " + this.observers.size);
+        console.log("Observer detâched. Total: " + this.observers.size);
     }
 
     notify(): void {
@@ -1520,7 +1520,7 @@ eventBus.pipe(filter(e => e.type === "ORDER_CREATED"))
 eventBus.pipe(filter(e => e.type === "PAYMENT_RECEIVED"))
     .subscribe(e => console.log("Payment:", e.data));
 
-// Emission d'evenements
+// Emission d'événements
 eventBus.next({ type: "ORDER_CREATED", data: { id: "123" } });
 eventBus.next({ type: "PAYMENT_RECEIVED", data: { amount: 100 } });
 \`\`\`
@@ -1530,26 +1530,26 @@ eventBus.next({ type: "PAYMENT_RECEIVED", data: { amount: 100 } });
 | Aspect | Observer | Event Emitter | Pub-Sub |
 |--------|----------|---------------|---------|
 | Couplage | Faible | Faible | Tres faible |
-| Communication | Directe objet-objet | Par evenements nommes | Via un bus |
-| Filtrage | Non | Par type d'evenement | Par sujet/topic |
+| Communication | Directe objet-objet | Par événements nommes | Vià un bus |
+| Filtrage | Non | Par type d'événement | Par sujet/topic |
 | Scale | Un processus | Un processus | Distribue |
 
 ## Cas d'utilisation concrets
 1. **UI Events** : clics, changements, entree utilisateur
-2. **Trading** : mise a jour des prix en temps reel
-3. **IoT** : capteurs qui notifient les controleurs
+2. **Trading** : mise à jour des prix en temps reel
+3. **IoT** : capteurs qui notifient les contrôleurs
 4. **Reactive Programming** : RxJS, ReactiveX
 5. **Messaging** : files d'attente, event sourcing
 
 ## Bonnes pratiques
-1. Fournir un moyen de se desabonner (prevention des fuites memoires)
-2. Notifier seulement si l'etat a change
-3. Observer sans etat si possible
+1. Fournir un moyen de se desabonner (prevention des fuites mémoires)
+2. Notifier seulement si l'état a change
+3. Observer sans état si possible
 4. Gestion des erreurs dans la notification
 
 ## Pièges courants
-1. **Fuite memoire** : observateur jamais detache = reference persistante
-2. **Sur-notification** : trop d'evenements = performance degradee
+1. **Fuite mémoire** : observateur jamais detâche = reference persistante
+2. **Sur-notification** : trop d'événements = performance degradee
 3. **Ordre de notification** : ne pas supposer un ordre specifique
 4. **Notification synchrone** : peut bloquer le sujet longtemps
 
@@ -1613,7 +1613,7 @@ interface User {
     id: string;
     email: string;
     name: string;
-    role: "USER" | "ADMIN";
+    rôle: "USER" | "ADMIN";
     createdAt: Date;
     updatedAt: Date;
 }
@@ -1622,11 +1622,11 @@ interface User {
 interface UserRepository {
     findById(id: string): Promise<User | null>;
     findByEmail(email: string): Promise<User | null>;
-    findAll(filter?: { name?: string; role?: string; limit?: number }): Promise<User[]>;
+    findAll(filter?: { name?: string; rôle?: string; limit?: number }): Promise<User[]>;
     save(user: Omit<User, "id" | "createdAt" | "updatedAt">): Promise<User>;
     update(id: string, data: Partial<User>): Promise<User>;
     delete(id: string): Promise<void>;
-    count(role?: string): Promise<number>;
+    count(rôle?: string): Promise<number>;
 }
 \`\`\`
 
@@ -1652,7 +1652,7 @@ class PostgresUserRepository implements UserRepository {
         return result.rows[0] || null;
     }
 
-    async findAll(filter?: { name?: string; role?: string; limit?: number }): Promise<User[]> {
+    async findAll(filter?: { name?: string; rôle?: string; limit?: number }): Promise<User[]> {
         let query = "SELECT * FROM users WHERE 1=1";
         const params: unknown[] = [];
         let paramIndex = 1;
@@ -1661,9 +1661,9 @@ class PostgresUserRepository implements UserRepository {
             query += " AND name ILIKE $" + paramIndex++;
             params.push("%" + filter.name + "%");
         }
-        if (filter?.role) {
-            query += " AND role = $" + paramIndex++;
-            params.push(filter.role);
+        if (filter?.rôle) {
+            query += " AND rôle = $" + paramIndex++;
+            params.push(filter.rôle);
         }
         query += " ORDER BY created_at DESC";
         if (filter?.limit) {
@@ -1676,10 +1676,10 @@ class PostgresUserRepository implements UserRepository {
 
     async save(user: Omit<User, "id" | "createdAt" | "updatedAt">): Promise<User> {
         const result = await this.db.query(
-            \`INSERT INTO users (email, name, role)
+            \`INSERT INTO users (email, name, rôle)
              VALUES ($1, $2, $3)
              RETURNING *\`,
-            [user.email, user.name, user.role]
+            [user.email, user.name, user.rôle]
         );
         return result.rows[0];
     }
@@ -1700,11 +1700,11 @@ class PostgresUserRepository implements UserRepository {
         await this.db.query("DELETE FROM users WHERE id = $1", [id]);
     }
 
-    async count(role?: string): Promise<number> {
-        if (role) {
+    async count(rôle?: string): Promise<number> {
+        if (rôle) {
             const result = await this.db.query(
-                "SELECT COUNT(*) FROM users WHERE role = $1",
-                [role]
+                "SELECT COUNT(*) FROM users WHERE rôle = $1",
+                [rôle]
             );
             return parseInt(result.rows[0].count);
         }
@@ -1731,13 +1731,13 @@ class InMemoryUserRepository implements UserRepository {
         return null;
     }
 
-    async findAll(filter?: { name?: string; role?: string; limit?: number }): Promise<User[]> {
+    async findAll(filter?: { name?: string; rôle?: string; limit?: number }): Promise<User[]> {
         let results = Array.from(this.users.values());
         if (filter?.name) {
             results = results.filter(u => u.name.includes(filter.name!));
         }
-        if (filter?.role) {
-            results = results.filter(u => u.role === filter.role);
+        if (filter?.rôle) {
+            results = results.filter(u => u.rôle === filter.rôle);
         }
         if (filter?.limit) {
             results = results.slice(0, filter.limit);
@@ -1768,9 +1768,9 @@ class InMemoryUserRepository implements UserRepository {
         this.users.delete(id);
     }
 
-    async count(role?: string): Promise<number> {
-        if (role) {
-            return Array.from(this.users.values()).filter(u => u.role === role).length;
+    async count(rôle?: string): Promise<number> {
+        if (rôle) {
+            return Array.from(this.users.values()).filter(u => u.rôle === rôle).length;
         }
         return this.users.size;
     }
@@ -1784,7 +1784,7 @@ async function testUserService() {
     const user = await service.createUser({
         email: "test@test.com",
         name: "Test User",
-        role: "USER"
+        rôle: "USER"
     });
     console.assert(user.id !== undefined, "User should have an id");
 
@@ -1798,10 +1798,10 @@ async function testUserService() {
 \`\`\`java
 // Spring Data genere l'implementation automatiquement
 public interface UserRepository extends JpaRepository<User, Long> {
-    // Derivation du nom de methode
+    // Derivation du nom de méthode
     Optional<User> findByEmail(String email);
     List<User> findByNameContainingIgnoreCase(String name);
-    long countByRole(String role);
+    long countByRole(String rôle);
 
     // JPQL personnalise
     @Query("SELECT u FROM User u WHERE u.email = :email")
@@ -1827,14 +1827,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
 1. **Interface dans le domaine, implementation dans l'infrastructure**
 2. **Un repository par aggregate root** (pas par table)
 3. **Methode retournant des Promises** (asynchrone)
-4. **Idempotence** : le meme appel peut etre repete
+4. **Idempotence** : le meme appel peut être repete
 5. **Pagination** pour les listes potentiellement grandes
 6. **Tests avec implementation InMemory**
 
 ## Pièges courants
 1. **Leaking domain logic** : des regles metier dans le repository
 2. **Anemic repository** : simple CRUD sans valeur ajoutee
-3. **N+1 queries** : chargement paresseux mal gere
+3. **N+1 queries** : chargement paresseux mal gère
 4. **Repository trop generique** : \`findAll()\` sans filtre
 5. **Transactions dans le repository** : la transaction est orchestree au niveau service
 

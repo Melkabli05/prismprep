@@ -13,7 +13,7 @@ export const microservicesCategory: InterviewCategory = {
         {
           id: 'ms-1',
           question: "C'est quoi les microservices ?",
-          answer: "Architecture où l'application est découpée en **services indépendants**, chacun responsable d'une **fonctionnalité métier** avec sa propre BDD et son cycle de déploiement.\n\nIls communiquent via APIs : **`REST`/`gRPC`** en **synchrone**, **`Kafka`/`RabbitMQ`** en **asynchrone**. __Si un service tombe, les autres continuent__ — *résilience par isolation*.",
+          answer: "Architecture où l'application est découpée en **services indépendants**, chacun responsable d'une **fonctionnalité métier** avec sa propre BDD et son cycle de déploiement.\n\nIls communiquent via APIs : **`REST`/`gRPC`** en **synchrone**, **`Kafka`/`RabbitMQ`** en **asynchrone**. __Si un service tombe, les autrès continuent__ — *résilience par isolation*.",
           example: "E-commerce : ServiceCommande, ServicePaiement, ServiceInventaire — déployables séparément.",
         
           deepDive: `# Microservices
@@ -355,7 +355,7 @@ Centraliser les métriques d'accès.
 Open source, extensible, performant.
 
 ### AWS API Gateway
-Managed service AWS, интеграция avec Lambda.
+Managed service AWS, integration avec Lambda.
 
 ### NGINX
  reverse proxy avec capacités API Gateway.
@@ -395,7 +395,7 @@ Une gateway par type de client:
 [Mobile BFF] -> Services
 [Third-party BFF] -> Services
 
-Utile quand les besoins des clients different significativement.
+Utile quand les besoins des clients différent significativement.
 
 ## GraphQL Gateway
 
@@ -918,7 +918,7 @@ class InventoryService {
   }
 }
 
-### Outbox Pattern (可靠投递)
+### Outbox Pattern (delivrance fiable)
 
 class OutboxRepository {
   async save(outbox: OutboxMessage): Promise<void> {
@@ -1055,7 +1055,7 @@ https://microservices.io/patterns/data/event-sourcing.html | https://martinfowle
 
 ## Qu'est-ce que c'est
 
-CQRS (Command Query Responsibility Segregation) is a pattern that separates read and write operations into different models. Commands modify state (writes), queries read state (reads). This allows independent scaling and optimization of read vs write paths.
+CQRS (Command Query Responsibility Segregation) is a pattern that separates read and write operations into différent models. Commands modify state (writes), queries read state (reads). This allows independent scaling and optimization of read vs write paths.
 
 ## Syntaxe et exemples
 
@@ -1489,7 +1489,7 @@ CREATE TABLE orders.order (
   created_at TIMESTAMP DEFAULT NOW()
 );
 
--- Service B schema (different service, different schema)
+-- Service B schema (différent service, différent schema)
 CREATE SCHEMA inventory;
 CREATE TABLE inventory.stock (
   product_id UUID PRIMARY KEY,

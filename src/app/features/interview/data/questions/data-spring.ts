@@ -19,7 +19,7 @@ export const springCategory: InterviewCategory = {
 
 ## Qu'est-ce que c'est ?
 
-Spring Boot est un framework construit sur top de Spring qui simplifie radicalement la création d'applications Spring en production. Il elimine la configuration XML longue et offre une convention sobre configuration.
+Spring Boot est un framework construit sur top de Spring qui simplifie radicalement la création d'applications Spring en production. Il élimine la configuration XML longue et offre une convention sobre configuration.
 
 Avantages cles :
 - **Auto-configuration** : configure automatiquement les composants Spring selon les dependencies presentes
@@ -143,9 +143,9 @@ Source : [Spring Boot vs Spring](https://spring.io/projects/spring-boot)`},
 
 ## Qu'est-ce que c'est ?
 
-**Inversion of Control (IoC)** est un principe de conception ou le contrôle du flux d'execution est transféré à un framework ou conteneur. Au lieu que votre code contrôle l'appel des libraries, le framework appelle votre code.
+**Inversion of Control (IoC)** est un principe de conception où le contrôle du flux d'execution est transféré à un framework ou conteneur. Au lieu que votre code contrôle l'appel des libraries, le framework appelle votre code.
 
-**Dependency Injection (DI)** est une forme d'IoC ou les dépendances d'un objet lui sont fournies par un conteneur (au lieu que l'objet les crée lui-même).
+**Dependency Injection (DI)** est une forme d'IoC où les dépendances d'un objet lui sont fournies par un conteneur (au lieu que l'objet les crée lui-même).
 
 Avantages :
 - Couplage faible entre composants
@@ -320,7 +320,7 @@ Spring utilise des annotations pour registrar les beans dans le conteneur IoC. V
 ## Annotations de stereotype
 
 **@Component**
-Annotation de base pour标记 une classe comme candidate au scanning automatique des composants.
+Annotation de base pourmarquer une classe comme candidate au scanning automatique des composants.
 
 **@Service**
 Stéréotype pour la couche service. Identique à @Component fonctionnellement, mais communique l'intention :
@@ -411,7 +411,7 @@ Source : [Spring Framework Documentation - Stereotype Annotations](https://docs.
 
 ## Qu'est-ce que c'est
 
-Un scope definit le cycle de vie et la visibilite d'un bean dans le conteneur Spring. Par defaut, Spring cree un seul bean partagable (singleton) pour toute l'application, mais chaque bean peut avoir un scope different selon les besoins.
+Un scope definit le cycle de vie et la visibilite d'un bean dans le conteneur Spring. Par defaut, Spring cree un seul bean partagable (singleton) pour toute l'application, mais chaque bean peut avoir un scope différent selon les besoins.
 
 Spring Framework supporte plusieurs scopes predefinis, et vous pouvez egalement definir des scopes personnalises.
 
@@ -423,7 +423,7 @@ Spring Framework supporte plusieurs scopes predefinis, et vous pouvez egalement 
 |-------|-------------|
 | singleton | Une seule instance par conteneur IoC (defaut) |
 | prototype | Nouvelle instance a chaque demande |
-| request | Une instance par requete HTTP (Web only) |
+| request | Une instance par requête HTTP (Web only) |
 | session | Une instance par session HTTP (Web only) |
 | application | Une instance par contexte ServletContext |
 | websocket | Une instance par websocket |
@@ -442,7 +442,7 @@ public class CommandProcessor { }
 public class PaymentService { }
 \`\`\`
 
-### Annotation sur methode @Bean
+### Annotation sur méthode @Bean
 
 \`\`\`java
 @Configuration
@@ -472,8 +472,8 @@ public abstract class CommandManager {
 
 ## Bonnes pratiques
 
-- **Utiliser singleton pour les services sans etat (stateless)**: la majorite des services applicatifs sont sans etat et peuvent etre des singletons
-- **Utiliser prototype pour les objets avec etat qui dependent du contexte**: chaque utilisation doit obtenir une nouvelle instance
+- **Utiliser singleton pour les services sans état (stateless)**: la majorite des services applicatifs sont sans état et peuvent être des singletons
+- **Utiliser prototype pour les objets avec état qui dependent du contexte**: chaque utilisation doit obtenir une nouvelle instance
 - **Etre conscient du cout des prototypes**: chaque injection prototype dans un singleton cree une nouvelle instance
 - **Eviter les dependances circulaires avec les prototypes**
 
@@ -501,13 +501,13 @@ public void usePrototype() {
         {
           id: 'sp-6',
           question: 'Auto-configuration',
-          answer: "Au démarrage, Spring Boot scanne le *classpath* et configure automatiquement les beans selon les dépendances détectées (**Hibernate** → `EntityManagerFactory`, **spring-web** → Tomcat + MVC).\n\nRepose sur `@ConditionalOnClass`, `@ConditionalOnMissingBean`, `@ConditionalOnProperty` : l'auto-config s'active si les conditions sont remplies, et recule si vous définissez votre propre bean. Excluable via `@SpringBootApplication(exclude = ...)`.",
+          answer: "Au démarrage, Spring Boot scanne le *classpath* et configure automatiquement les beans selon les dépendances détectées (**Hibernate** → `EntityManagerFactory`, **spring-web** → Tomcat + MVC).\n\nRepose sur `@ConditionalOnClass`, `@ConditionalOnMissingBean`, `@ConditionalOnProperty` : l'auto-config s'active si les conditions sont remplies, et reçule si vous définissez votre propre bean. Excluable via `@SpringBootApplication(exclude = ...)`.",
         
           deepDive: `# Auto-configuration Spring Boot
 
 ## Qu'est-ce que c'est
 
-L'auto-configuration est le mecanisme central de Spring Boot qui permet de configurer automatiquement l'application en fonction des dependencies presentes dans le classpath. Elle elimine le besoin d'ecrire des configurations manuelles exhaustives.
+L'auto-configuration est le mecanisme central de Spring Boot qui permet de configurer automatiquement l'application en fonction des dependencies presentes dans le classpath. Elle élimine le besoin d'écrire des configurations manuelles exhaustives.
 
 L'auto-configuration utilise le mecanisme @Conditional pour n'appliquer une configuration que si certaines conditions sont remplies (classes presentes dans le classpath, proprietaires definies, etc.).
 
@@ -556,7 +556,7 @@ spring.main.banner-mode=log
 META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
 \`\`\`
 
-## Comment ca marche
+## Comment ça marche
 
 1. **@EnableAutoConfiguration** analyse les fichiers dans \`META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports\`
 2. Chaque auto-configuration est une classe @Configuration avec des annotations @Conditional
@@ -574,14 +574,14 @@ public class DataSourceAutoConfiguration {
 ## Bonnes pratiques
 
 - **Utiliser les starters officiels**: ils incluent les bonnes combinaisons de-dependencies
-- **Specifier les proprietaires dans application.properties**: preferer une configuration explicite a l'auto-configuration
+- **Specifier les proprietaires dans application.properties**: preferer une configuration explicite à l'auto-configuration
 - **Comprendre les conditions @Conditional**: essentielles pour deboguer
 - **Utiliser @ConditionalOnMissingBean** quand vous voulez permettre le survol de l'auto-configuration
 
 ## Pièges courants
 
 - **Confondre auto-configuration avec magie**: derriere il y a du code Java standard
-- **Ne pas surcharger accidentellement**: une propriete definie par l'utilisateur peut etre ignoree si l'ordre de configuration est incorrect
+- **Ne pas surcharger accidentellement**: une propriete definie par l'utilisateur peut être ignoree si l'ordre de configuration est incorrect
 - **Problemes de classpath**: une dependencia manquante peut empecher une auto-configuration de fonctionner
 - **Confondre enable et disable**: \`spring.autoconfigure.enabled=false\` desactive TOUTE l'auto-configuration
 
@@ -638,7 +638,7 @@ public class UserController {
 ## Bonnes pratiques
 
 - Preferer @RestController pour les APIs RESTful qui retournent des donnees.
-- Utiliser @Controller + ModelAndView pour les applications avec rendu cote serveur (SSR).
+- Utiliser @Controller + ModelAndView pour les applications avec rendu côté serveur (SSR).
 - Configurer correctly ObjectMapper pour la sérialisation JSON.
 
 ## Pièges courants
@@ -651,7 +651,7 @@ Source : [Spring Docs](https://docs.spring.io/spring-framework/reference/web/web
         {
           id: 'sp-16',
           question: '@PathVariable vs @RequestParam vs @RequestBody',
-          answer: "**`@PathVariable`** : extrait une valeur de l'URL (`/users/{id}` → `id`). **`@RequestParam`** : extrait un paramètre de requête (`?name=dupont`). **`@RequestBody`** : désérialise le corps JSON dans un objet.\n\nRègle : `@PathVariable` pour les identifiants dans l'URL, `@RequestParam` pour les filtres et options, `@RequestBody` pour les données de création/mise à jour. __Pour les formulaires HTML, utilisez `@ModelAttribute`.__",
+          answer: "**`@PathVariable`** : extrait une valeur de l'URL (`/users/{id}` → `id`). **`@RequestParam`** : extrait un paramètre de requête (`?name=dupont`). **`@RequestBody`** : désérialise le corps JSON dans un objet.\n\nRègle : `@PathVariable` pour les identifiants dans l'URL, `@RequestParam` pour les filtrès et options, `@RequestBody` pour les données de création/mise à jour. __Pour les formulaires HTML, utilisez `@ModelAttribute`.__",
           code: '@PostMapping("/users")\npublic User create(@RequestBody UserDTO dto) { ... }\n\n@GetMapping("/users")\npublic List<User> search(@RequestParam String name) { ... }',
           language: 'java',
         
@@ -660,8 +660,8 @@ Source : [Spring Docs](https://docs.spring.io/spring-framework/reference/web/web
 ## Qu'est-ce que c'est
 
 - @PathVariable: Extrait une variable de lURL (URI template).
-- @RequestParam: Extrait un parametre de query string ou form data.
-- @RequestBody: Extrait le corps de la requete et deserialize JSON vers objet Java.
+- @RequestParam: Extrait un paramêtre de query string ou form data.
+- @RequestBody: Extrait le corps de la requête et deserialize JSON vers objet Java.
 
 ## Syntaxe et exemples
 
@@ -685,21 +685,21 @@ public User createUser(@RequestBody UserCreateRequest request) {
 ## Bonnes pratiques
 
 - Utiliser @PathVariable pour les identifiants de ressource (RESTful).
-- Utiliser @RequestParam pour les filtres et options de requete.
+- Utiliser @RequestParam pour les filtrès et options de requête.
 - Valider @RequestBody avec @Valid et des annotations JSR-380.
-- Specifier les noms explicites pour eviter les erreurs de mapping.
+- Specifier les noms explicites pour éviter les erreurs de mapping.
 
 ## Pièges courants
 
 - Confondre @RequestParam (query string) avec @PathVariable (URI path).
 - Ne pas valider @RequestBody =Donnees invalides en base.
-- Oublier required=false pour parametres optionnels = 400 Bad Request.
+- Oublier required=false pour paramêtrès optionnels = 400 Bad Request.
 
 Source : [Spring Docs](https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-ann-requestbody.html)`},
         {
           id: 'sp-17',
           question: 'Validation des données (@Valid)',
-          answer: "**Bean Validation** (JSR 380) via l'annotation `@Valid` sur le paramètre + les contraintes sur le DTO : `@NotNull`, `@Size(min=2)`, `@Email`, `@Pattern`, `@Min`, `@Max`.\n\nSi la validation échoue, Spring lance `MethodArgumentNotValidException` → à capturer dans le `@ControllerAdvice` pour renvoyer une **réponse 400** structurée avec les erreurs par champ.\n\n__Toujours valider côté serveur__, même si le frontend valide aussi. Ne jamais faire confiance au client.",
+          answer: "**Bean Validation** (JSR 380) vià l'annotation `@Valid` sur le paramètre + les contraintes sur le DTO : `@NotNull`, `@Size(min=2)`, `@Email`, `@Pattern`, `@Min`, `@Max`.\n\nSi la validation échoue, Spring lance `MethodArgumentNotValidException` → à capturer dans le `@ControllerAdvice` pour renvoyer une **réponse 400** structurée avec les erreurs par champ.\n\n__Toujours valider côté serveur__, même si le frontend valide aussi. Ne jamais faire confiance au client.",
           code: 'public record UserDTO(\n    @NotBlank String nom,\n    @Email String email,\n    @Min(18) int age\n) {}\n\n@PostMapping\npublic User create(@Valid @RequestBody UserDTO dto) { ... }',
           language: 'java',
         
@@ -747,7 +747,7 @@ public class UserRequest {
 ## Bonnes pratiques
 
 - Toujours valider les entrees utilisateur avec @Valid.
-- Utiliser des messages derreur explicites en francais.
+- Utiliser des messages derreur explicites en français.
 - Creer un @ControllerAdvice pour centraliser la gestion des erreurs.
 - Grouper les validations avec des sequences de groupes.
 
@@ -782,7 +782,7 @@ Le mecanisme s'appuie sur DataSourceAutoConfiguration et HibernateJpaAutoConfigu
 
 ## Syntaxe et exemples
 
-### Configuration avec H2 (developpement)
+### Configuration avec H2 (développement)
 
 \`\`\`properties
 # application.properties
@@ -866,17 +866,17 @@ public class DataSourceConfig {
 
 ## Bonnes pratiques
 
-- **Utiliser un pool de connexions**: HikariCP est inclus par defaut, ajuster les parametres selon la charge
+- **Utiliser un pool de connexions**: HikariCP est inclus par defaut, ajuster les paramêtrès selon la charge
 - **Ne jamais commiter les mots de passe dans le code**: utiliser des variables d'environnement ou un service de secrets
-- **Desactiver Open-In-View en production**: evite les LazyInitializationException inattendues
+- **Desactiver Open-In-View en production**: évite les LazyInitializationException inattendues
 - **DDL-auto en dev, validate/migrate en prod**: utiliser Flyway ou Liquibase pour les migrations
 
 ## Pièges courants
 
 - **Oublier le driver dans le classpath**: l'auto-configuration echoue silencieusement
 - **HikariCP timeout par defaut trop long**: le timeout de connexion est de 30s, a ajuster
-- **Confondre spring.datasource avec spring.jpa**: ils peuvent avoir des configurations differentes
-- **Memoire insuffisante pour H2 en memoire**: ajouter \`;DB_CLOSE_DELAY=-1\` si la connexion est fermee trop tot
+- **Confondre spring.datasource avec spring.jpa**: ils peuvent avoir des configurations différentes
+- **Memoire insuffisante pour H2 en mémoire**: ajouter \`;DB_CLOSE_DELAY=-1\` si la connexion est fermee trop tot
 
 ## Source
 
@@ -892,9 +892,9 @@ public class DataSourceConfig {
 
 ## Qu'est-ce que c'est
 
-Spring Data JPA est un module du projet Spring Data qui simplifie le developpement de la couche d'acces aux donnees. Il permet de creer des repositories JPA sans effort en eliminant le besoin d'ecrire les implementations des operations CRUD et des requetes personnalisees.
+Spring Data JPA est un module du projet Spring Data qui simplifie le développement de la couche d'acces aux donnees. Il permet de creer des repositories JPA sans effort en eliminant le besoin d'écrire les implementations des operations CRUD et des requêtes personnalisees.
 
-Le mecanisme central est le mechanisme de derivation de requetes (query derivation): Spring Data analyse le nom de vos methodes pour construire automatiquement les requetesJPQL correspondantes.
+Le mecanisme central est le mechanisme de derivation de requêtes (query derivation): Spring Data analyse le nom de vos méthodes pour construire automatiquement les requêtesJPQL correspondantes.
 
 ## Syntaxe et exemples
 
@@ -902,14 +902,14 @@ Le mecanisme central est le mechanisme de derivation de requetes (query derivati
 
 \`\`\`java
 public interface UserRepository extends JpaRepository<User, Long> {
-    // Derivation automatique par nom de methode
+    // Derivation automatique par nom de méthode
     Optional<User> findByUsername(String username);
     List<User> findByEmailContaining(String emailDomain);
     List<User> findByAgeGreaterThanEqual(int minAge);
 }
 \`\`\`
 
-### Derivation de requetes par mots-cles
+### Derivation de requêtes par mots-cles
 
 \`\`\`java
 public interface ProductRepository extends JpaRepository<Product, Long> {
@@ -950,18 +950,18 @@ int updatePricesByCategory(@Param("factor") double factor, @Param("cat") String 
 
 ## Bonnes pratiques
 
-- **Utiliser Optional pour les methodes qui retournent une seule entite**: \`Optional<User> findByUsername(String username);\`
-- **Limiter l'utilisation des requetes natives**: elles ne beneficient pas de la validation de requetes et peuvent presenter des risques de securite (SQL injection)
-- **Specifier les noms de colonnes avec @Column pour eviter les surprises**: \`@Column(name = "user_id")\`
+- **Utiliser Optional pour les méthodes qui retournent une seule entite**: \`Optional<User> findByUsername(String username);\`
+- **Limiter l'utilisation des requêtes natives**: elles ne beneficient pas de la validation de requêtes et peuvent presenter des risques de securite (SQL injection)
+- **Specifier les noms de colonnes avec @Column pour éviter les surprises**: \`@Column(name = "user_id")\`
 - **Utiliser les projections et DTOs** pour ne pas charger des entites entieres: \`interface UserNameOnly { String getUsername(); }\`
 - **Eviter les operations en masse dans les transactions** sans configuration appropriee
 
 ## Pièges courants
 
-- **Confondre @Transactional en lecture et ecriture**: une lecture seule utilise moins de ressources: \`@Transactional(readOnly = true)\`
-- **N+1 probleme**: les requetes derivees peuvent declencher des requetes supplementaires pour les relations paresseuses (LAZY). Utiliser \`JOIN FETCH\` dans les requetes @Query.
-- **Pagination mal configuree**: ne pas oublier \`Pageable\` pour eviter de charger tous les enregistrements en memoire
-- **忘记了事务边界**: les operations de modification necessitent un @Transactional
+- **Confondre @Transactional en lecture et écriture**: une lecture seule utilise moins de ressources: \`@Transactional(readOnly = true)\`
+- **N+1 problème**: les requêtes derivees peuvent déclencher des requêtes supplementaires pour les relations paresseuses (LAZY). Utiliser \`JOIN FETCH\` dans les requêtes @Query.
+- **Pagination mal configuree**: ne pas oublier \`Pageable\` pour éviter de charger tous les enregistrements en mémoire
+- **Oublier les frontieres transactionnelles**: les operations de modification necessitent un @Transactional
 
 ## Source
 
@@ -975,9 +975,9 @@ int updatePricesByCategory(@Param("factor") double factor, @Param("cat") String 
 
 ## Qu'est-ce que c'est
 
-Le profiling dans Spring Boot permet de conditionner la configuration et les beans a l'environnement d'execution (dev, test, prod). C'est un mecanisme puissant pour adapter le comportement de l'application sans modifier le code.
+Le profiling dans Spring Boot permet de conditionner la configuration et les beans à l'environnement d'execution (dev, test, prod). C'est un mecanisme puissant pour adapter le comportement de l'application sans modifier le code.
 
-Les profiles sont actives via la proprietaires \`spring.profiles.active\` ou programmatiquement.
+Les profiles sont actives vià la proprietaires \`spring.profiles.active\` ou programmatiquement.
 
 ## Syntaxe et exemples
 
@@ -1078,7 +1078,7 @@ public NewUiService newUiService() {
         {
           id: 'sp-10',
           question: '@Transactional',
-          answer: "**`@Transactional`** enveloppe l'exécution dans une transaction : commit si succès, **rollback automatique** sur `RuntimeException`/`Error` (configurable via `rollbackFor`). Implémenté via AOP — __les appels internes (`this.methode()`) ne sont pas interceptés__.\n\nPropagation par défaut : `REQUIRED` (rejoint la transaction existante ou en crée une nouvelle). Autres modes : `REQUIRES_NEW`, `NESTED`, `SUPPORTS`. Indispensable pour la cohérence des opérations BDD.",
+          answer: "**`@Transactional`** enveloppe l'exécution dans une transaction : commit si succès, **rollback automatique** sur `RuntimeException`/`Error` (configurable via `rollbackFor`). Implémenté via AOP — __les appels internes (`this.méthode()`) ne sont pas interceptés__.\n\nPropagation par défaut : `REQUIRED` (rejoint la transaction existante ou en crée une nouvelle). Autrès modes : `REQUIRES_NEW`, `NESTED`, `SUPPORTS`. Indispensable pour la cohérence des opérations BDD.",
           code: '@Transactional\npublic void transferer(Long from, Long to, double montant) {\n    compteDao.debiter(from, montant);\n    compteDao.crediter(to, montant);\n}',
           language: 'java',
         
@@ -1086,9 +1086,9 @@ public NewUiService newUiService() {
 
 ## Qu'est-ce que c'est
 
-L'annotation @Transactional en Spring permet de declarer qu'une methode (ou une classe) doit etre executee dans le cadre d'une transaction. Spring gere automatiquement le demarrage, la validation (commit) ou l'annulation (rollback) de la transaction.
+L'annotation @Transactional en Spring permet de déclarer qu'une méthode (ou une classe) doit être executee dans le cadre d'une transaction. Spring gère automatiquement le demarrage, la validation (commit) où l'annulation (rollback) de la transaction.
 
-Par defaut, Spring utilise un proxy AOP pour encapsuler les appelsmethode, ce qui implique certaines limitations (appels internes, accesoirs).
+Par defaut, Spring utilise un proxy AOP pour encapsuler les appelsméthode, ce qui implique certaines limitations (appels internes, accesoirs).
 
 ## Syntaxe et exemples
 
@@ -1111,7 +1111,7 @@ public class UserService {
 @Transactional
 @Service
 public class AccountService {
-    // Toutes les methodes sont transactionnelles
+    // Toutes les méthodes sont transactionnelles
 }
 \`\`\`
 
@@ -1149,14 +1149,14 @@ public List<User> findAllUsers() {
 
 ## Bonnes pratiques
 
-- **Utiliser @Transactional sur les methodes publiques uniquement**: Spring AOP ne fonctionne qu'avec les methodes publiques
-- **Specifier le service en premiere couche transactionnelle**: le controller ne devrait generalement pas etre transactionnel
+- **Utiliser @Transactional sur les méthodes publiques uniquement**: Spring AOP ne fonctionne qu'avec les méthodes publiques
+- **Specifier le service en premiere couche transactionnelle**: le controller ne devrait generalement pas être transactionnel
 - **Utiliser readOnly = true pour les lectures**: permet des optimisations
-- **Declarer les exceptions qui declenchent le rollback**: rollbackFor = {IOException.class}
+- **Declarer les exceptions qui déclenchent le rollback**: rollbackFor = {IOException.class}
 
 ## Pièges courants
 
-- **Appels internes (self-invocation)**: un appel de methode interne ne passe pas par le proxy, donc pas de transaction
+- **Appels internes (self-invocation)**: un appel de méthode interne ne passe pas par le proxy, donc pas de transaction
 
 \`\`\`java
 @Service
@@ -1171,9 +1171,9 @@ public class Service {
 
 Solution: utiliser un self bean ou injecter le service lui-meme.
 
-- **Rollback automatique uniquement pour RuntimeException**: les exceptions checkees ne declenchent pas de rollback par defaut
+- **Rollback automatique uniquement pour RuntimeException**: les exceptions checkees ne déclenchent pas de rollback par defaut
 - **Confondre transaction et session**: dans Hibernate, une session peut survivre au-dela de la transaction avec Open Session in View
-- **Oublier que les modifications en cache doivent etre flush**: entityManager.flush() peut etre necessaire
+- **Oublier que les modifications en cache doivent être flush**: entityManager.flush() peut être necessaire
 
 ## Source
 
@@ -1181,7 +1181,7 @@ Solution: utiliser un self bean ou injecter le service lui-meme.
         {
           id: 'sp-11',
           question: 'AOP',
-          answer: "L'**AOP** gère les **préoccupations transversales** (logging, sécurité, transactions) sans polluer le code métier. Un **Aspect** contient le code commun, les **Pointcuts** définissent où l'appliquer.\n\nTypes d'*advice* : `@Before`, `@After`, `@AfterReturning`, `@AfterThrowing`, `@Around` (le plus puissant). Spring utilise des **proxys dynamiques** — __les appels internes (`this.methode()`) ne passent pas par le proxy__. `@Transactional` et `@Async` sont implémentés via AOP.",
+          answer: "L'**AOP** gère les **préoccupations transversales** (logging, sécurité, transactions) sans polluer le code métier. Un **Aspect** contient le code commun, les **Pointcuts** définissent où l'appliquer.\n\nTypes d'*advice* : `@Before`, `@After`, `@AfterReturning`, `@AfterThrowing`, `@Around` (le plus puissant). Spring utilise des **proxys dynamiques** — __les appels internes (`this.méthode()`) ne passent pas par le proxy__. `@Transactional` et `@Async` sont implémentés via AOP.",
           code: '@Aspect\n@Component\npublic class LogAspect {\n    @Before("execution(* com.example.service.*.*(..))")\n    public void log(JoinPoint jp) {\n        System.out.println("Appel: " + jp.getSignature());\n    }\n}',
           language: 'java',
         
@@ -1189,7 +1189,7 @@ Solution: utiliser un self bean ou injecter le service lui-meme.
 
 ## Qu'est-ce que c'est
 
-AOP (Aspect-Oriented Programming) est un paradigme de programmation qui permet de separer les preoccupations transversales (cross-cutting concerns) du code metier principal. Spring AOP permet d'implmenter des aspects qui declenchent des comportements avant, apres, ou autour des methodes cible.
+AOP (Aspect-Oriented Programming) est un paradigme de programmation qui permet de separer les preoccupations transversales (cross-cutting concerns) du code metier principal. Spring AOP permet d'implmenter des aspects qui déclenchent des comportements avant, après, ou autour des méthodes cible.
 
 Les concepts cles sont: Aspect (classe regroupant les conseils), Join Point (moment d'execution), Advice (action a realiser), Pointcut (expression controlant ou appliquer), Weaving (lie le code d'aspect au code cible).
 
@@ -1203,7 +1203,7 @@ Les concepts cles sont: Aspect (classe regroupant les conseils), Join Point (mom
 public class LoggingAspect {
     private static final Logger log = LoggerFactory.getLogger(LoggingAspect.class);
 
-    // Pointcut sur toutes les methodes du package service
+    // Pointcut sur toutes les méthodes du package service
     @Pointcut("execution(* com.example.service..*.*(..))")
     public void serviceMethods() {}
 
@@ -1273,7 +1273,7 @@ public void logError(JoinPoint joinPoint, Exception ex) {
 | @After | Apres l'execution (succes ou echec) |
 | @AfterReturning | Apres le retour reussi |
 | @AfterThrowing | Apres une exception |
-| @Around | Entoure l'execution, controle total |
+| @Around | Entoure l'execution, contrôle total |
 
 ## Bonnes pratiques
 
@@ -1295,7 +1295,7 @@ public void logError(JoinPoint joinPoint, Exception ex) {
         {
           id: 'sp-12',
           question: 'Spring Security',
-          answer: "Framework d'**authentification** (« qui êtes-vous ? ») et d'**autorisation** (« que pouvez-vous faire ? »). Architecture : chaîne de filtres servlet interceptant chaque requête HTTP. `SecurityFilterChain` configurable via `HttpSecurity`.\n\nMécanismes : form login, Basic, **JWT**, **OAuth2**. Par défaut : CSRF, headers de sécurité, validation de session activés. Pour les APIs REST *stateless* avec JWT : __désactiver CSRF, session `STATELESS`__. Puissant mais courbe d'apprentissage raide.",
+          answer: "Framework d'**authentification** (« qui êtes-vous ? ») et d'**autorisation** (« que pouvez-vous faire ? »). Architecture : chaîne de filtrès servlet interceptant chaque requête HTTP. `SecurityFilterChain` configurable via `HttpSecurity`.\n\nMécanismes : form login, Basic, **JWT**, **OAuth2**. Par défaut : CSRF, headers de sécurité, validation de session activés. Pour les APIs REST *stateless* avec JWT : __désactiver CSRF, session `STATELESS`__. Puissant mais courbe d'apprentissage raide.",
           code: '@Configuration\n@EnableWebSecurity\npublic class SecurityConfig {\n    @Bean\n    public SecurityFilterChain chain(HttpSecurity http) throws Exception {\n        http.authorizeHttpRequests(a -> a\n            .requestMatchers("/public/**").permitAll()\n            .anyRequest().authenticated()\n        );\n        return http.build();\n    }\n}',
           language: 'java',
         
@@ -1303,9 +1303,9 @@ public void logError(JoinPoint joinPoint, Exception ex) {
 
 ## Qu'est-ce que c'est
 
-Spring Security est le framework de reference pour l'authentification et l'autorisation dans les applications Spring. Il fournit un systeme complet de securisation des endpoints, incluant l'authentification (qui etes-vous?), l'autorisation (avez-vous le droit?), et la protection contre les attaques (CSRF, XSS, etc.).
+Spring Security est le framework de reference pour l'authentification et l'autorisation dans les applications Spring. Il fournit un système complet de securisation des endpoints, incluant l'authentification (qui etes-vous?), l'autorisation (avez-vous le droit?), et la protection contre les attaques (CSRF, XSS, etc.).
 
-L'architecture repose sur des filtres chaines (Filter Chain) qui intercepte chaque requeteHTTP.
+L'architecture repose sur des filtrès chaines (Filter Chain) qui intercepte chaque requêteHTTP.
 
 ## Syntaxe et exemples
 
@@ -1347,13 +1347,13 @@ public class SecurityConfig {
         UserDetails user = User.builder()
             .username("user")
             .password(passwordEncoder().encode("password"))
-            .roles("USER")
+            .rôles("USER")
             .build();
 
         UserDetails admin = User.builder()
             .username("admin")
             .password(passwordEncoder().encode("admin"))
-            .roles("ADMIN", "USER")
+            .rôles("ADMIN", "USER")
             .build();
 
         return new InMemoryUserDetailsManager(user, admin);
@@ -1384,13 +1384,13 @@ public class CustomUserDetailsService implements UserDetailsService {
 }
 \`\`\`
 
-### Securisation methodes
+### Securisation méthodes
 
 \`\`\`java
 @Configuration
 @EnableMethodSecurity
 public class MethodSecurityConfig {
-    // Permet @PreAuthorize sur les methodes
+    // Permet @PreAuthorize sur les méthodes
 }
 \`\`\`
 
@@ -1426,14 +1426,14 @@ public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthFilter jwtFilte
 - **Toujours utiliser BCrypt ou Argon2** pour encoder les mots de passe, jamais MD5 ou SHA
 - **Desactiver CSRF uniquement quand necessaire**: les APIs REST avec JWT peuvent le desactiver
 - **Configurer le logout correctement**: invalider la session et les tokens
-- **Utiliser @PreAuthorize pour la securisation methodes**: plus fin que lesregles URL
+- **Utiliser @PreAuthorize pour la securisation méthodes**: plus fin que lesregles URL
 
 ## Pièges courants
 
-- **Confondre authentication et authorization**: deux concepts differents
+- **Confondre authentication et authorization**: deux concepts différents
 - **Oublier le PasswordEncoder bean**: les mots de passe ne seront pas encodes
 - **CSRF desactive pour les APIs sans JWT**: expose aux attaques CSRF
-- **Session fixation**: configurer \`sessionManagement\` pour eviter les attaques de fixation
+- **Session fixation**: configurer \`sessionManagement\` pour éviter les attaques de fixation
 
 ## Source
 
@@ -1451,7 +1451,7 @@ public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthFilter jwtFilte
 
 Spring MVC offre un mecanisme d'gestion des exceptions via @ExceptionHandler et @ControllerAdvice qui permet de centraliser le traitement des erreurs et de retourner des responses JSON ou HTML standardisees.
 
-Ce mecanisme evite de repeter du code de gestion d'erreurs dans chaque controleur.
+Ce mecanisme évite de repeter du code de gestion d'erreurs dans chaque contrôleur.
 
 ## Syntaxe et exemples
 
@@ -1524,14 +1524,14 @@ public ResponseEntity<Map<String, Object>> handleValidationErrors(
 - **Centraliser tous les traitement d'exceptions** dans un @ControllerAdvice
 - **Utiliser des codes d'erreur constants** pour une API stable
 - **Logger les exceptions inattendues** pour faciliter le debug
-- **Retourner des informations كافية mais pas trop** pour eviter de reveler des details internes
+- **Retourner des informations كافية mais pas trop** pour éviter de reveler des details internes
 
 ## Pièges courants
 
-- **Mauvais ordre des handlers**: le handler le plus general doit etre en dernier
+- **Mauvais ordre des handlers**: le handler le plus general doit être en dernier
 - **Oublier les exceptions du conteneur** (404, 405): elles ne passent pas par @ExceptionHandler
-- **Reponse mal formee**: s'assurer que la reponse JSON est toujours valide
-- **Exception null dans le handler**: verifier les cas ou l'exception peut etre null
+- **Reponse mal formee**: s'assurer que la réponse JSON est toujours valide
+- **Exception null dans le handler**: verifier les cas où l'exception peut être null
 
 ## Source
 
@@ -1575,10 +1575,10 @@ management:
 Endpoints disponibles:
 - /actuator/health - Sante de application
 - /actuator/info - Informations personnalisees
-- /actuator/metrics - Metriques (memoire, CPU, etc.)
+- /actuator/metrics - Metriques (mémoire, CPU, etc.)
 - /actuator/env - Variables denvironnement
 - /actuator/beans - Tous les beans Spring
-- /actuator/httptrace - Trace des requetes HTTP
+- /actuator/httptrace - Trace des requêtes HTTP
 
 ## Bonnes pratiques
 
@@ -1695,18 +1695,18 @@ Source : [Spring Docs](https://docs.spring.io/spring-boot/reference/testing.html
 
 ## Qu'est-ce que c'est
 
-Le probleme N+1 survient quand JPA execute 1 requete pour charger les parents, puis N requetes pour charger les enfants de chaque parent.
+Le problème N+1 survient quand JPA execute 1 requête pour charger les parents, puis N requêtes pour charger les enfants de chaque parent.
 
 ## Syntaxe et exemples
 
 Probleme N+1:
 \`\`\`java
-// 1 requete pour les auteurs
+// 1 requête pour les auteurs
 List<Author> authors = authorRepository.findAll();
 
-// N requetes pour les livres de chaque auteur
+// N requêtes pour les livres de chaque auteur
 authors.forEach(author -> 
-    author.getBooks().size()  // 1 requete par auteur!
+    author.getBooks().size()  // 1 requête par auteur!
 );
 \`\`\`
 
@@ -1754,10 +1754,10 @@ spring:
 
 ## Bonnes pratiques
 
-- Utiliser EXPLAIN ANALYZE pour detecter les probleme N+1.
-- Preferez les requetes JPQL avec JOIN FETCH.
+- Utiliser EXPLAIN ANALYZE pour detecter les problème N+1.
+- Preferez les requêtes JPQL avec JOIN FETCH.
 - Configurer le batch fetching pour les relations lazy.
-- Monitorer le nombre de requetes en developpement.
+- Monitorer le nombre de requêtes en développement.
 
 ## Pièges courants
 

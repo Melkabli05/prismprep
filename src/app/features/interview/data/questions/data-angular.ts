@@ -38,7 +38,7 @@ Syntaxe HTML enrichie avec quatre formes de data binding :
 
 - Interpolation \`{{ expression }}\` — modèle vers vue
 - Property binding \`[prop]="valeur"\` — modèle vers vue dynamique
-- Event binding \`(event)="methode()"\` — vue vers modèle
+- Event binding \`(event)="méthode()"\` — vue vers modèle
 - Two-way binding \`[(ngModel)]="valeur"\` — bidirectionnel
 
 ### Services
@@ -64,7 +64,7 @@ Le fait qu'Angular impose une structure rend la vie plus facile sur les gros pro
         {
           id: 'ng-2',
           question: 'Data Binding',
-          answer: "Quatre formes de synchronisation modèle↔vue : **interpolation** \`{{ expr }}\` (modèle→vue), **property binding** \`[prop]='val'\` (modèle→vue dynamique), **event binding** \`(event)='methode()'\` (vue→modèle), **two-way binding** \`[(ngModel)]='val'\` (bidirectionnel, idéal pour les formulaires).\n\nPrivilégier le **one-way binding** : flux de données plus simple à suivre et plus performant.",
+          answer: "Quatre formes de synchronisation modèle↔vue : **interpolation** \`{{ expr }}\` (modèle→vue), **property binding** \`[prop]='val'\` (modèle→vue dynamique), **event binding** \`(event)='méthode()'\` (vue→modèle), **two-way binding** \`[(ngModel)]='val'\` (bidirectionnel, idéal pour les formulaires).\n\nPrivilégier le **one-way binding** : flux de données plus simple à suivre et plus performant.",
           code: '<p>{{ nom }}</p>\n<img [src]="url">\n<button (click)="go()">OK</button>\n<input [(ngModel)]="user.nom">',
           language: 'html',
           deepDive: `Le data binding est le cœur de la synchronisation entre la logique TypeScript et le DOM. Comprendre les quatre formes est essential pour écrire des composants Angular efficaces.
@@ -312,7 +312,7 @@ ngAfterViewInit() {
 
 \`\`\`typescript
 @NgModule({
-  declarations: [UserComponent],
+  déclarations: [UserComponent],
   imports: [CommonModule, FormsModule],
   exports: [UserComponent]
 })
@@ -804,7 +804,7 @@ export class RealTimeComponent {
 }
 \`\`\`
 
-## Detached strategy
+## Detâched strategy
 
 Pour isoler complètement un subtree du cycle de change detection. Utilisé pour les dashboards temps réel qui se mettent à jour via WebSocket sans interaction utilisateur.
 
@@ -968,7 +968,7 @@ providers: [
 ]
 \`\`\`
 
-Pour les tests ou les implémentations alternatives.
+Pour les tests où les implémentations alternatives.
 
 ### useFactory — création avec dépendances dynamiques
 
@@ -986,7 +986,7 @@ Pour les tests ou les implémentations alternatives.
 { provide: 'API_URL', useValue: 'https://api.example.com' }
 \`\`\`
 
-Pour les constantes ou les configurations.
+Pour les constantes où les configurations.
 
 ## InjectionToken — pour les non-classes
 

@@ -160,7 +160,7 @@ Source additionnelle : [Pro Git Book (FR)](https://git-scm.com/book/fr/v2)
 
 ## Principe fondamental
 
-Un bon commit est une **unité logique de modification** qui doit pouvoir être comprise, appliquée ou annulée indépendamment des autres commits. Chaque commit raconte une partie de l'histoire du projet.
+Un bon commit est une **unité logique de modification** qui doit pouvoir être comprise, appliquée ou annulée indépendamment des autrès commits. Chaque commit raconte une partie de l'histoire du projet.
 
 Un commit de qualité répond à trois questions :
 - **QUOI** a été modifié ? (le titre)
@@ -222,7 +222,7 @@ Un commit **atomique** respecte ces critères :
 
 1. **Une seule responsabilité** : une feature, un fix, un refactoring — pas tout à la fois
 2. **Testable** : le projet compile et les tests passent après ce commit
-3. **Réversible** : on peut annuler ce commit sans conséquences sur les autres fonctionnalités
+3. **Réversible** : on peut annuler ce commit sans conséquences sur les autrès fonctionnalités
 
 \`\`\`bash
 # MAUVAIS : tout dans un seul commit
@@ -299,7 +299,7 @@ Source : [Conventional Commits](https://www.conventionalcommits.org/fr/v1.0.0/) 
 
 ## Principe
 
-Un depot distant (remote) est une version de votre projet hebergee sur un serveur (GitHub, GitLab, Bitbucket, etc.). Les remotes permettent la collaboration entre developpeurs en servant de reference commune pour synchroniser le travail.
+Un depot distant (remote) est une version de votre projet hebergee sur un serveur (GitHub, GitLab, Bitbucket, etc.). Les remotes permettent la collaboration entre développeurs en servant de reference commune pour synchroniser le travail.
 
 ## Commandes de base
 
@@ -405,7 +405,7 @@ git branch -a
 # Creer une branche locale qui suit une branche distante
 git checkout --track origin/feature-auth
 
-# Ou avec un nom different
+# Ou avec un nom différent
 git checkout -b ma-feature origin/feature-auth
 
 # Supprimer une branche distante
@@ -419,8 +419,8 @@ git push origin --delete feature-auth
 | Operation | Telecharge seulement | Fetch + Merge |
 | Working directory | Non modifie | Modifie (merge) |
 | Securite | Plus sur (vous decidez quand merger) | Risque de conflits inattendus |
-| Controle | Total | Moindre |
-| Cas d'usage | Verifier avant d'integrer | Mise a jour rapide |
+| Contrôle | Total | Moindre |
+| Cas d'usage | Verifier avant d'integrer | Mise à jour rapide |
 
 ### Workflow recommande
 
@@ -446,7 +446,7 @@ git pull --rebase origin main
 git remote add origin https://github.com/mon-compte/repo.git
 git remote add upstream https://github.com/original/repo.git
 
-# Recuperer les mises a jour du projet original
+# Recuperer les mises à jour du projet original
 git fetch upstream
 git merge upstream/main
 
@@ -956,7 +956,7 @@ Source : [Git Ignore Documentation](https://git-scm.com/docs/gitignore)`},
 
 Une branche Git est un **pointeur mobile** vers un commit dans l'historique. Elle permet de travailler sur des fonctionnalités, corrections ou expériences de manière **isolée** sans affecter le code principal.
 
-Contrairement à d'autres VCS où copier une branche signifie dupliquer tous les fichiers, Git crée simplement un **pointeur de 41 octets** (40 pour le SHA-1 + 1 pour le newline). Les branches sont donc extrêmement légères et rapides à créer.
+Contrairement à d'autrès VCS où copier une branche signifie dupliquer tous les fichiers, Git crée simplement un **pointeur de 41 octets** (40 pour le SHA-1 + 1 pour le newline). Les branches sont donc extrêmement légères et rapides à créer.
 
 \`\`\`
 HEAD → main → abc123 (Commit C3)
@@ -975,9 +975,9 @@ HEAD est un pointeur spécial qui indique où vous vous trouvez actuellement :
 git log --oneline -1
 # abc123 (HEAD -> main) Commit C3
 
-# En detached HEAD : HEAD pointe directement sur un commit
+# En detâched HEAD : HEAD pointe directement sur un commit
 git checkout abc123
-# Vous êtes en 'detached HEAD' state
+# Vous êtes en 'detâched HEAD' state
 \`\`\`
 
 ## Commandes de gestion des branches
@@ -1040,14 +1040,14 @@ git branch -vv
 git push origin --delete feature-auth
 \`\`\`
 
-## Détached HEAD — comprendre et récupérer
+## Détâched HEAD — comprendre et récupérer
 
 \`\`\`bash
 # Se placer sur un commit spécifique (pas une branche)
 git checkout abc123
-# Warning: detached HEAD state
+# Warning: detâched HEAD state
 
-# Faire des commits en detached HEAD
+# Faire des commits en detâched HEAD
 git commit -m "experiment"
 # Les commits ne sont rattachés à aucune branche !
 
@@ -1055,7 +1055,7 @@ git commit -m "experiment"
 git switch -c recovery-branch
 
 # Ou revenir à la branche sans perdre les commits
-git branch recovery-branch  # depuis le detached HEAD
+git branch recovery-branch  # depuis le detâched HEAD
 git switch main
 \`\`\`
 
@@ -1154,7 +1154,7 @@ git merge --squash feature-auth
 git merge --abort
 
 # Merge avec stratégie spécifique
-git merge -s recursive -X theirs feature-branch
+git merge -s reçursive -X theirs feature-branch
 
 # Simuler un merge sans l'appliquer
 git merge --no-commit --no-ff feature-auth
@@ -1165,7 +1165,7 @@ git diff --cached
 
 | Stratégie | Usage |
 |-----------|-------|
-| \`recursive\` (défaut) | Gère les merges avec deux parents, idéal pour la plupart des cas |
+| \`reçursive\` (défaut) | Gère les merges avec deux parents, idéal pour la plupart des cas |
 | \`resolve\` | Plus simple, pour historiques linéaires |
 | \`octopus\` | Pour merger plus de 2 branches simultanément |
 | \`ours\` | Garde la version de la branche courante, ignore l'autre |
@@ -1173,7 +1173,7 @@ git diff --cached
 
 \`\`\`bash
 # Stratégies avancées
-git merge -s recursive -X patience feature-branch
+git merge -s reçursive -X patience feature-branch
 git merge -s octopus branch1 branch2 branch3
 git merge -s ours feature-branch  # garder NOTRE version
 \`\`\`
@@ -1290,7 +1290,7 @@ main:      A---B---C---D'---E'
                     (nouveaux hashes : D' et E')
 \`\`\`
 
-**Règle d'or : ne jamais rebaser une branche déjà pushée et partagée.** Le rebase réécrit l'historique, ce qui désynchronise tous les autres développeurs.
+**Règle d'or : ne jamais rebaser une branche déjà pushée et partagée.** Le rebase réécrit l'historique, ce qui désynchronise tous les autrès développeurs.
 
 ## Syntaxe de base
 
@@ -1383,7 +1383,7 @@ git rebase origin/main
 git rebase --rebase-merges main
 
 # Rebase avec stratégie de merge
-git rebase -s recursive -X theirs main
+git rebase -s reçursive -X theirs main
 
 # Rebaser uniquement les commits non pushés
 git rebase -i @{u}
@@ -1577,7 +1577,7 @@ git merge --no-ff feature-auth
 git config --global pull.rebase true
 
 # Rebase avec l'algorithme histogram (meilleur pour refactors)
-git rebase -s recursive -X histogram main
+git rebase -s reçursive -X histogram main
 
 # Voir la différence visuelle entre merge et rebase
 git log --graph --oneline --all
@@ -1702,7 +1702,7 @@ git rebase -i main
 
 # Dans l'éditeur :
 # Garder le premier commit en "pick"
-# Mettre tous les autres en "squash" ou "fixup"
+# Mettre tous les autrès en "squash" ou "fixup"
 
 # Résultat : un seul commit propre qui représente toute la feature
 git log --oneline main..HEAD
@@ -1946,7 +1946,7 @@ Un conflit de merge survient quand Git ne peut pas résoudre automatiquement les
 
 **Approche préventive** : la meilleure résolution de conflit est celle qu'on n'a pas à faire. Fusionnez régulièrement depuis \`main\` dans votre branche, faites des PR courtes, communiquez avec l'équipe.
 
-**La résolution** : comprendre les deux versions, choisir la bonne (ou les combiner), supprimer les marqueurs Git.
+**La résolution** : comprendre les deux versions, choisir la bonne (où les combiner), supprimer les marqueurs Git.
 
 ## Les marqueurs de conflit
 
@@ -1956,11 +1956,11 @@ Quand un conflit survient, Git insère des marqueurs dans les fichiers concerné
 <<<<<<< HEAD
 const name = "Alice";
 const age = 30;
-const role = "admin";
+const rôle = "admin";
 =======
 const name = "Bob";
 const age = 25;
-const role = "user";
+const rôle = "user";
 >>>>>>> feature-branch
 \`\`\`
 
@@ -2008,10 +2008,10 @@ git add src/app.ts
 
 \`\`\`bash
 # Stratégie "ours" — garder notre version en cas de conflit
-git merge -s recursive -X ours feature-branch
+git merge -s reçursive -X ours feature-branch
 
 # Stratégie "theirs" — garder leur version
-git merge -s recursive -X theirs feature-branch
+git merge -s reçursive -X theirs feature-branch
 
 # Abandonner complètement le merge
 git merge --abort
@@ -2113,7 +2113,7 @@ git diff HEAD...MERGE_HEAD
 
 # Réessayer un merge avec une autre stratégie
 git merge --abort
-git merge -s recursive -X patience feature-branch
+git merge -s reçursive -X patience feature-branch
 
 # Voir l'historique des résolutions
 git log --oneline --grep="Merge\\|conflict"
@@ -2137,7 +2137,7 @@ Source : [Git Merge Documentation](https://git-scm.com/docs/git-merge) et [Pro G
 
 ## Principe fondamental
 
-\`git stash\` permet de **mettre de côté temporairement** les modifications non commitées de votre répertoire de travail, afin de pouvoir basculer sur une autre branche ou effectuer d'autres opérations sans perdre votre travail.
+\`git stash\` permet de **mettre de côté temporairement** les modifications non commitées de votre répertoire de travail, afin de pouvoir basculer sur une autre branche ou effectuer d'autrès opérations sans perdre votre travail.
 
 Les stashs sont stockés dans une **pile LIFO** (Last In, First Out). Vous pouvez empiler plusieurs stashs et les récupérer sélectivement.
 
@@ -2649,7 +2649,7 @@ git log -p
 git log --format="%h %an: %s (%cr)"
 \`\`\`
 
-## Filtres puissants
+## Filtrès puissants
 
 \`\`\`bash
 # Par auteur
@@ -2962,7 +2962,7 @@ Source : [Git Tag Documentation](https://git-scm.com/docs/git-tag) et [Semantic 
         {
           id: 'git-16',
           question: 'git cherry-pick ?',
-          answer: "`git cherry-pick` copie un commit spécifique d'une branche et l'applique sur une autre, **sans fusion complète**. Utile pour appliquer un correctif de bug sur la production sans prendre tout le reste, ou récupérer un commit fait par erreur sur la mauvaise branche.\n\nAttention aux conflits si le commit dépend d'autres commits absents de la branche cible. **Cherry-pick** = copier un commit précis d'une branche à l'autre.",
+          answer: "`git cherry-pick` copie un commit spécifique d'une branche et l'applique sur une autre, **sans fusion complète**. Utile pour appliquer un correctif de bug sur la production sans prendre tout le reste, ou récupérer un commit fait par erreur sur la mauvaise branche.\n\nAttention aux conflits si le commit dépend d'autrès commits absents de la branche cible. **Cherry-pick** = copier un commit précis d'une branche à l'autre.",
           code: 'git cherry-pick <commit-hash>',
           language: 'bash',
         
@@ -3094,14 +3094,14 @@ git rebase main
 
 - **Toujours utiliser \`-x\`** pour garder la trace du commit source
 - **Un cherry-pick par fonctionnalité** : évitez de cherry-picker 15 commits d'un coup
-- **Tester après cherry-pick** : le code dépend peut-être d'autres commits non copiés
+- **Tester après cherry-pick** : le code dépend peut-être d'autrès commits non copiés
 - **Documenter le cherry-pick** dans le message (référence au ticket, à la PR)
 - **Vérifier avec \`--dry-run\`** avant de cherry-picker plusieurs commits
-- **Préférer le merge ou le rebase** quand les commits sont nombreux et liés
+- **Préférer le merge où le rebase** quand les commits sont nombreux et liés
 
 ## Pièges courants
 
-- Cherry-picker un commit qui dépend d'autres commits non appliqués (conflits en cascade)
+- Cherry-picker un commit qui dépend d'autrès commits non appliqués (conflits en cascade)
 - Dupliquer des commits si le même fix est cherry-pické plusieurs fois
 - Perdre le contexte de branches si on oublie \`-x\`
 - Conflits répétés si les branches ont fortement divergé

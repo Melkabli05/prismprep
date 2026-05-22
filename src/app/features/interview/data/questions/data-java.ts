@@ -149,10 +149,10 @@ champPrive.setAccessible(true);  // Outrepasse l'encapsulation
 
 ## Pièges courants
 
-1. **Champ public = API figée** — une fois qu'un champ public est utilisé par d'autres classes, le changer devient une breaking change.
+1. **Champ public = API figée** — une fois qu'un champ public est utilisé par d'autrès classes, le changer devient une breaking change.
 2. **\`protected\` n'est pas vraiment privé** — toute sous-classe dans n'importe quel package y accède. C'est le modificateur le plus souvent mal utilisé.
 3. **Default package peut piéger** — si vous déplacez une classe dans un autre package, elle perd tout accès aux membres default.
-4. **Les classes internes匿名 peuvent accéder aux membres privés** de la classe englobante, ce qui peut surprendre.
+4. **Les classes internes anonymes peuvent acceder aux membres prives** de la classe englobante, ce qui peut surprendre.
 5. **Confusion entre \`protected\` et default** — beaucoup de développeurs oublient que \`protected\` est *plus* permissif que default (package + sous-classes).
 
 Source : [Oracle Java Documentation — Controlling Access](https://docs.oracle.com/javase/tutorial/java/javaOO/accesscontrol.html)`},
@@ -286,7 +286,7 @@ public class CalculCoordonnees {
 public class Exemple {
     private int instanceVar = 10;
 
-    public static void methodeStatic() {
+    public static void méthodeStatic() {
         // this.instanceVar;     // ERREUR : pas de this en contexte static
         // instanceVar;          // ERREUR : pas d'accès aux membres d'instance
     }
@@ -807,13 +807,13 @@ List strings = new ArrayList();
 \`\`\`java
 public class Exemple<T> {
     // Compilation OK
-    // public void methode(List<String> a) {}
-    // public void methode(List<Integer> a) {}
+    // public void méthode(List<String> a) {}
+    // public void méthode(List<Integer> a) {}
     // ERREUR : même signature après erasure (List)
 }
 \`\`\`
 
-## Comparaison : généricité Java vs autres langages
+## Comparaison : généricité Java vs autrès langages
 
 | Aspect | Java (Type Erasure) | C# (Reified) | TypeScript |
 |---|---|---|---|
@@ -845,15 +845,15 @@ Source : [Oracle Java Documentation — Generics](https://docs.oracle.com/javase
           question: 'Classe finale / méthode finale',
           answer: "`final` sur une classe empêche l'héritage (ex. : `String` est finale pour garantir son **immuabilité**). `final` sur une méthode empêche la redéfinition dans les sous-classes, utile pour les comportements critiques qui doivent rester identiques.\n\n**Classe finale** = pas d'héritage, **méthode finale** = pas de redéfinition. Objectif : **sécurité** et **prévisibilité** du comportement.",
         
-          deepDive: `# Classe finale et methode finale en Java
+          deepDive: `# Classe finale et méthode finale en Java
 
 ## Qu'est-ce que c'est ?
 
-Le mot-cle \`final\` applique une restriction definitive selon le contexte. Sur une **classe**, il empeche l'heritage. Sur une **methode**, il empeche la surcharge (override). Ces restrictions sont verifiees a la compilation, offrant des garanties fortes au programmeur.
+Le mot-cle \`final\` applique une restriction definitive selon le contexte. Sur une **classe**, il empeche l'heritage. Sur une **méthode**, il empeche la surcharge (override). Ces restrictions sont verifiees à la compilation, offrant des garanties fortes au programmeur.
 
 ## Pourquoi empecher l'heritage ?
 
-L'heritage est un outil puissant mais il a un cout : une classe heritable engage son auteur a maintenir son contrat pour toutes les sous-classes futures. Rendre une classe \`final\` est une decision de conception qui libere de cette contrainte.
+L'heritage est un outil puissant mais il à un cout : une classe heritable engage son auteur a maintenir son contrat pour toutes les sous-classes futures. Rendre une classe \`final\` est une decision de conception qui libere de cette contrainte.
 
 **Classes finales dans la JDK** : \`String\`, \`Integer\`, \`Double\`, \`System\` — toutes sont finales. Imaginez si quelqu'un pouvait heriter de \`String\` et modifier son comportement...
 
@@ -861,8 +861,8 @@ L'heritage est un outil puissant mais il a un cout : une classe heritable engage
 
 | Niveau de restriction | Mot-cle | Heritage | Surcharge | Cas d'usage |
 |----------------------|---------|----------|-----------|-------------|
-| Aucune restriction | *(aucun)* | Possible | Possible | Classes conçues pour etre etendues |
-| Methode figee | \`final\` sur methode | Possible | Interdite | Contrat preserve, classe extensible |
+| Aucune restriction | *(aucun)* | Possible | Possible | Classes conçues pour être etendues |
+| Methode figee | \`final\` sur méthode | Possible | Interdite | Contrat preserve, classe extensible |
 | Classe figee | \`final\` sur classe | Impossible | N/A | Immutabilite, securite |
 | Immuable | \`final\` + \`record\` | Impossible | N/A | DTO, Value Objects |
 
@@ -887,11 +887,11 @@ public final class FileUtils {
 // Toute tentative : "cannot inherit from final class"
 \`\`\`
 
-### Exemple 2 : Template Method avec methode finale
+### Exemple 2 : Template Method avec méthode finale
 
 \`\`\`java
 public abstract class DataProcessor {
-    // Template method — l'ordre des etapes est fige
+    // Template method — l'ordre des étapes est fige
     public final void process(String input) {
         String cleaned = clean(input);
         String transformed = transform(cleaned);
@@ -924,7 +924,7 @@ public class CsvProcessor extends DataProcessor {
         return input.toUpperCase();
     }
 
-    // Impossible de surcharger process() — l'ordre des etapes est garanti
+    // Impossible de surcharger process() — l'ordre des étapes est garanti
 }
 \`\`\`
 
@@ -972,23 +972,23 @@ public final class Rectangle extends Shape { /* ... */ }
 // non-sealed : heritage ouvert (mais le parent est sealed)
 public sealed class Message permits TextMessage, BinaryMessage { /* ... */ }
 public non-sealed class TextMessage extends Message { /* ... */ }
-// TextMessage peut desormais etre etendu librement
+// TextMessage peut désormais être etendu librement
 \`\`\`
 
 ## Bonnes pratiques
 
 1. **Rendre une classe finale par defaut** — n'ouvrez l'heritage que si vous avez un besoin explicite (Effective Java, Item 19)
-2. **Utiliser \`final\` sur les methodes du Template Method pattern** — garantit l'ordre d'execution
+2. **Utiliser \`final\` sur les méthodes du Template Method pattern** — garantit l'ordre d'execution
 3. **Combiner \`final\` avec constructeur prive** pour les classes utilitaires — pas d'instanciation ni d'heritage
 4. **Documenter pourquoi une classe est finale** — dans un commentaire ou une annotation, expliquez la decision
 5. **\`final\` sur les champs** — cree des objets immuables (thread-safe par defaut)
 6. **Ne pas rendre une classe finale trop tot** — il est plus facile de passer de non-final a final que l'inverse (retrocompatibilite)
-7. **Preferer sealed a final** quand vous voulez controler mais pas interdire completement
+7. **Preferer sealed a final** quand vous voulez contrôler mais pas interdire completement
 
 ## Pièges courants
 
 1. **Classe finale avec champs mutables** — l'objet n'est pas immutable meme si la classe est finale
-2. **Final sur une interface** — une interface ne peut pas etre declaree \`final\` (cela n'a pas de sens)
+2. **Final sur une interface** — une interface ne peut pas être declaree \`final\` (cela n'a pas de sens)
 3. **Heritage casse** — si vous rendez une classe \`final\` dans une API publique, les utilisateurs ne peuvent pas l'etendre
 4. **Proxies et mocking** — les frameworks de mock (Mockito) et les proxies (Hibernate) peuvent echouer avec des classes finales (sauf avec des outils comme Mockito inline)
 5. **Confondre \`final\` et \`immutable\`** — \`final\` empeche la reassignation de reference, pas la modification de l'objet
@@ -1006,11 +1006,11 @@ Source : [Oracle Java Documentation — Writing Final Classes and Methods](https
 
 ## Qu'est-ce que c'est ?
 
-Introduit en Java 7, \`try-with-resources\` est un mecanisme qui **ferme automatiquement** les ressources declarees dans l'en-tete du \`try\`, meme en cas d'exception. Il remplace la gestion manuelle fastidieuse et source d'erreurs des blocs \`try-catch-finally\`.
+Introduit en Java 7, \`try-with-resources\` est un mecanisme qui **ferme automatiquement** les ressources declarees dans l'en-tête du \`try\`, meme en cas d'exception. Il remplace la gestion manuelle fastidieuse et source d'erreurs des blocs \`try-catch-finally\`.
 
-Toute ressource implementant \`AutoCloseable\` (ou \`Closeable\`, sa sous-interface) peut etre utilisee.
+Toute ressource implementant \`AutoCloseable\` (ou \`Closeable\`, sa sous-interface) peut être utilisee.
 
-## Avant vs apres try-with-resources
+## Avant vs après try-with-resources
 
 \`\`\`java
 // AVANT Java 7 — gestion manuelle (verbeuse et fragile)
@@ -1052,7 +1052,7 @@ try (FileInputStream fis = new FileInputStream("fichier.txt");
 
 ## Ordre de fermeture
 
-Les ressources sont fermees dans **l'ordre inverse** de leur declaration :
+Les ressources sont fermees dans **l'ordre inverse** de leur déclaration :
 
 \`\`\`java
 try (ResourceA a = new ResourceA();
@@ -1141,7 +1141,7 @@ try (reader) {
 
 ## Bonnes pratiques
 
-1. **Toujours preferer try-with-resources** a la gestion manuelle — c'est plus sur et plus lisible
+1. **Toujours preferer try-with-resources** à la gestion manuelle — c'est plus sur et plus lisible
 2. **Implementer \`AutoCloseable\`** dans vos propres classes gerant des ressources (connexions, flux, locks)
 3. **Ne pas mettre de \`return\`** dans le bloc — le \`close()\` est appele automatiquement avant le \`return\`
 4. **Declarer chaque ressource sur une ligne separee** pour la lisibilite
@@ -1151,18 +1151,18 @@ try (reader) {
 
 ## Pièges courants
 
-1. **\`close()\` qui jette une \`Exception\`** — pensez a la signature, utilisez plutot \`Closeable\` qui jette \`IOException\`
+1. **\`close()\` qui jette une \`Exception\`** — pensez à la signature, utilisez plutot \`Closeable\` qui jette \`IOException\`
 2. **\`finalize()\` ou \`final\`** — ne pas confondre avec \`finally\` : \`try-with-resources\` remplace \`finally\`
 3. **Ressources avec constructeur qui echoue** — si le constructeur leve une exception, \`close()\` n'est pas appele
 4. **Oublier le \`catch\`** — try-with-resources sans \`catch\` n'attrape pas l'exception, il faut un \`throws\`
-5. **Confondre ordre de fermeture** — les ressources sont fermees en ordre inverse de declaration
+5. **Confondre ordre de fermeture** — les ressources sont fermees en ordre inverse de déclaration
 
 Source : [Oracle Java Documentation — The try-with-resources Statement](https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html)
 `},
       ],
     },
     {
-      id: 'java-memoire',
+      id: 'java-mémoire',
       title: 'Mémoire',
       questions: [
         {
@@ -1174,9 +1174,9 @@ Source : [Oracle Java Documentation — The try-with-resources Statement](https:
 
 ## Qu'est-ce que le Garbage Collection ?
 
-Le Garbage Collector (GC) est un mecanisme automatique de gestion memoire integre a la JVM. Il **identifie et libere** automatiquement la memoire occupee par les objets qui ne sont plus accessibles. Le programmeur n'a pas besoin d'appeler \`free()\` ou \`delete()\` comme en C/C++.
+Le Garbage Collector (GC) est un mecanisme automatique de gestion mémoire integre à la JVM. Il **identifie et libere** automatiquement la mémoire occupee par les objets qui ne sont plus accessibles. Le programmeur n'a pas besoin d'appeler \`free()\` ou \`delete()\` comme en C/C++.
 
-## Architecture de la memoire Heap
+## Architecture de la mémoire Heap
 
 La heap (tas) Java est divisee en **generations** pour optimiser la collecte :
 
@@ -1194,7 +1194,7 @@ La heap (tas) Java est divisee en **generations** pour optimiser la collecte :
 |  +------------------+  +------------------+               |
 |  +------------------------------------------+             |
 |  |  Metaspace (hors heap)                    |             |
-|  |  Classes, methodes, constantes            |             |
+|  |  Classes, méthodes, constantes            |             |
 |  +------------------------------------------+             |
 +----------------------------------------------------------+
 \`\`\`
@@ -1205,7 +1205,7 @@ La heap (tas) Java est divisee en **generations** pour optimiser la collecte :
 |-----------|---------|---------------|----------|
 | **Young** | Objets nouvellement crees | ~10-40% du heap | Minor GC (frequent, rapide) |
 | Eden | Ou les objets sont alloues d'abord | Majorite du Young | Netoye a chaque Minor GC |
-| Survivor (S0, S1) | Objets ayant survecu a un Minor GC | Petit | Alterne S0/S1 |
+| Survivor (S0, S1) | Objets ayant survecu à un Minor GC | Petit | Alterne S0/S1 |
 | **Old** | Objets ayant survecu a plusieurs Minor GC | ~60-90% du heap | Major GC (rare, lent) |
 | **Metaspace** | Metadonnees des classes | Variable (hors heap) | Full GC |
 
@@ -1214,7 +1214,7 @@ La heap (tas) Java est divisee en **generations** pour optimiser la collecte :
 \`\`\`java
 public class GcLifecycle {
     public static void main(String[] args) {
-        // 1. Allocation dans Eden (espace contigu, tres rapide)
+        // 1. Allocation dans Eden (espace contigu, très rapide)
         Object obj = new Object();
 
         // 2. Premier Minor GC — si obj est toujours reference
@@ -1228,13 +1228,13 @@ public class GcLifecycle {
         //    obj est promu vers Old Generation
         obj = null; // Plus reference — eligible pour GC
 
-        // 5. Le prochain GC liberera la memoire de obj
+        // 5. Le prochain GC libererà la mémoire de obj
         //    (dans Old si obj y a ete promu)
     }
 }
 \`\`\`
 
-## Les differents Garbage Collectors
+## Les différents Garbage Collectors
 
 \`\`\`bash
 # Serial GC — thread unique, stop-the-world
@@ -1296,11 +1296,11 @@ jvisualvm
 
 ## Bonnes pratiques
 
-1. **Dimensionner correctement le heap** — \`-Xms\` et \`-Xmx\` identiques evite les redimensionnements dynamiques
+1. **Dimensionner correctement le heap** — \`-Xms\` et \`-Xmx\` identiques évite les redimensionnements dynamiques
 2. **Choisir le GC adapte** — throughput (Parallel) pour batch, latence (ZGC/G1) pour interactif
 3. **Eviter les allocations temporaires excessives** — les objets ephemeres saturent le Young Gen
 4. **Surveiller le ratio de promotion** — si beaucoup d'objets passent vite en Old, augmentez le Young Gen
-5. **Utiliser les flags de logging** en production pour diagnostiquer les problemes de memoire
+5. **Utiliser les flags de logging** en production pour diagnostiquer les problèmes de mémoire
 6. **Tester avec les flags \`-XX:+PrintGCDetails\`** pour comprendre le comportement
 7. **Ne pas appeler \`System.gc()\`** — c'est une suggestion, pas une garantie
 
@@ -1317,18 +1317,18 @@ Source : [Oracle Java Documentation — Garbage Collection](https://docs.oracle.
         {
           id: 'java-9',
           question: 'StackOverflowError vs OutOfMemoryError',
-          answer: "**`StackOverflowError`** : la pile d'exécution est pleine, typiquement par récursion infinie (stack ~512Ko-1Mo). **`OutOfMemoryError`** : le tas (*heap*) est saturé, par exemple une liste qui grandit indéfiniment.\n\n`StackOverflow` se diagnostique facilement via la trace d'appels ; `OutOfMemory` nécessite souvent un profiling (`JVisualVM`, `Eclipse MAT`). En production : `-Xmx` pour le heap, `-Xss` pour la stack.",
+          answer: "**`StackOverflowError`** : la pile d'exécution est pleine, typiquement par récursion infinie (stack ~512Ko-1Mo). **`OutOfMemoryError`** : le tas (*heap*) est saturé, par exemple une liste qui grandit indéfiniment.\n\n`StackOverflow` se diagnostique facilement vià la trace d'appels ; `OutOfMemory` nécessite souvent un profiling (`JVisualVM`, `Eclipse MAT`). En production : `-Xmx` pour le heap, `-Xss` pour la stack.",
         
           deepDive: `# StackOverflowError vs OutOfMemoryError en Java
 
 ## Qu'est-ce que c'est ?
 
-Ces deux erreurs indiquent un epuisement de memoire, mais dans des **regions differentes** de la JVM :
+Ces deux erreurs indiquent un epuisement de mémoire, mais dans des **regions différentes** de la JVM :
 
-- **\`StackOverflowError\`** : epuisement de la pile d'appel (stack), typiquement par recursion infinie
-- **\`OutOfMemoryError\`** : epuisement du tas (heap), typiquement par fuite memoire ou charge excessive
+- **\`StackOverflowError\`** : epuisement de la pile d'appel (stack), typiquement par reçursion infinie
+- **\`OutOfMemoryError\`** : epuisement du tas (heap), typiquement par fuite mémoire ou charge excessive
 
-## Les deux regions memoire
+## Les deux regions mémoire
 
 \`\`\`
 +------------------------------------------+
@@ -1372,14 +1372,14 @@ public class Factorial {
 public class DeepRecursion {
     private static int depth = 0;
 
-    public static void recurse() {
+    public static void reçurse() {
         depth++;
-        recurse();  // Va finir par deborder
+        reçurse();  // Va finir par deborder
     }
 
     public static void main(String[] args) {
         try {
-            recurse();
+            reçurse();
         } catch (StackOverflowError e) {
             System.out.println("Profondeur maximale: " + depth);
             // Sur JVM typique: ~10000 a ~20000 appels
@@ -1424,7 +1424,7 @@ public class Department {
 ### Solutions
 
 \`\`\`java
-// Solution 1 : Version iterative (pas de recursion)
+// Solution 1 : Version iterative (pas de reçursion)
 public static int factorial(int n) {
     int result = 1;
     for (int i = 2; i <= n; i++) {
@@ -1436,7 +1436,7 @@ public static int factorial(int n) {
 // Solution 2 : Augmenter la pile (dernier recours)
 // java -Xss2m MonApp  (2 Mo par thread)
 
-// Solution 3 : Tail recursion (optimisation non garantie en Java)
+// Solution 3 : Tail reçursion (optimisation non garantie en Java)
 public static int factorial(int n, int accumulator) {
     if (n <= 1) return accumulator;
     return factorial(n - 1, n * accumulator);  // Tail call
@@ -1449,8 +1449,8 @@ public static int factorial(int n, int accumulator) {
 
 | Type d'OOM | Cause frequente | Solution |
 |-----------|----------------|----------|
-| \`Java heap space\` | Trop d'objets crees, fuite memoire | Augmenter heap (\`-Xmx\`), corriger fuite |
-| \`GC overhead limit exceeded\` | GC passe >98% du temps, recupere <2% | Augmenter heap, optimiser allocations |
+| \`Java heap space\` | Trop d'objets crees, fuite mémoire | Augmenter heap (\`-Xmx\`), corriger fuite |
+| \`GC overhead limit exceeded\` | GC passe >98% du temps, reçupere <2% | Augmenter heap, optimiser allocations |
 | \`Unable to create new native thread\` | Trop de threads (limite OS depassee) | Reduire le nombre de threads |
 | \`Metaspace\` | Trop de classes chargees | Augmenter \`-XX:MaxMetaspaceSize\` |
 | \`Requested array size exceeds VM limit\` | Tableau trop grand pour la JVM | Reduire la taille du tableau |
@@ -1458,7 +1458,7 @@ public static int factorial(int n, int accumulator) {
 ### Exemples
 
 \`\`\`java
-// Fuite memoire : collection qui grandit sans limite
+// Fuite mémoire : collection qui grandit sans limite
 public class MemoryLeak {
     private static final List<byte[]> LEAK = new ArrayList<>();
 
@@ -1481,7 +1481,7 @@ public class GCOverhead {
         while (true) {
             map.put(r.nextInt(), "value");
             if (map.size() > 100_000) {
-                map.clear();  // Vide mais le GC souffre deja
+                map.clear();  // Vide mais le GC souffre déjà
             }
         }
         // Exception: java.lang.OutOfMemoryError: GC overhead limit exceeded
@@ -1510,19 +1510,19 @@ jhat /tmp/dump.hprof  # Navigateur HTTP sur port 7000
 
 # Monitoring en direct
 jstat -gcutil <pid> 1000
-# Si Old Gen croit sans jamais diminuer → fuite memoire
+# Si Old Gen croit sans jamais diminuer → fuite mémoire
 
 # Voir les threads et leur stack
 jstack <pid>
 
-# Voir la configuration memoire
+# Voir la configuration mémoire
 jinfo -flags <pid>
 \`\`\`
 
 ## Bonnes pratiques
 
-1. **Toujours avoir un cas de base** dans les fonctions recursives
-2. **Utiliser des structures iteratives** quand la profondeur de recursion est imprevisible
+1. **Toujours avoir un cas de base** dans les fonctions reçursives
+2. **Utiliser des structures iteratives** quand la profondeur de reçursion est imprevisible
 3. **Ne pas catcher \`StackOverflowError\`** — c'est un \`Error\`, pas une \`Exception\`
 4. **Dimensionner le heap** avec \`-Xms\` et \`-Xmx\` identiques
 5. **Ajouter \`-XX:+HeapDumpOnOutOfMemoryError\`** en production
@@ -1530,10 +1530,10 @@ jinfo -flags <pid>
 
 ## Pièges courants
 
-1. **Catcher \`OutOfMemoryError\`** et continuer — la JVM est dans un etat instable
+1. **Catcher \`OutOfMemoryError\`** et continuer — la JVM est dans un état instable
 2. **Recursion sans cas de base** — erreur la plus frequente
 3. **\`toString()\` cyclique** — difficile a reperer sans stack trace complete
-4. **\`-Xss\` trop petit** — pour les apps avec recursion profonde (parsing, arbres)
+4. **\`-Xss\` trop petit** — pour les apps avec reçursion profonde (parsing, arbres)
 5. **ThreadLocal non nettoye** — fuite silencieuse dans les threads de pool
 
 Source : [Oracle Java Documentation — Common Problems](https://docs.oracle.com/javase/tutorial/essential/environment/problems.html)
@@ -1541,17 +1541,17 @@ Source : [Oracle Java Documentation — Common Problems](https://docs.oracle.com
         {
           id: 'java-10',
           question: 'Fuites mémoire en Java',
-          answer: "Le GC nettoie les objets *inaccessibles*, mais pas les objets **oubliés dans des collections statiques**, les **listeners non désenregistrés**, les **cachées sans taille limite**, ou les **références vers des objets externes** non fermés (`Connection`, `Stream`).\n\nDétection : monitoring de la mémoire (`JVisualVM`, heap dump), tests de charge avec analyse de l'évolution du heap. __Prévention : toujours fermer les ressources, limiter les cachées, utiliser `WeakReference` quand approprié.__",
+          answer: "Le GC nettoie les objets *inaccessibles*, mais pas les objets **oubliés dans des collections statiques**, les **listeners non désenregistrés**, les **cachées sans taille limite**, où les **références vers des objets externes** non fermés (`Connection`, `Stream`).\n\nDétection : monitoring de la mémoire (`JVisualVM`, heap dump), tests de charge avec analyse de l'évolution du heap. __Prévention : toujours fermer les ressources, limiter les cachées, utiliser `WeakReference` quand approprié.__",
         
-          deepDive: `# Fuites memoire en Java
+          deepDive: `# Fuites mémoire en Java
 
-## Qu'est-ce qu'une fuite memoire ?
+## Qu'est-ce qu'une fuite mémoire ?
 
-Contrairement a C/C++ ou une fuite est un objet alloue jamais libere, en Java une fuite memoire est un **objet toujours reference mais plus utilise**. Le GC ne peut pas le liberer car il est encore accessible, meme si le programme n'en a plus besoin.
+Contrairement a C/C++ ou une fuite est un objet alloue jamais libere, en Javà une fuite mémoire est un **objet toujours reference mais plus utilise**. Le GC ne peut pas le liberer car il est encore accessible, meme si le programme n'en a plus besoin.
 
-Les fuites memoire sont insidieuses : elles s'accumulent lentement et provoquent un \`OutOfMemoryError\` apres des heures ou des jours d'execution.
+Les fuites mémoire sont insidieuses : elles s'accumulent lentement et provoquent un \`OutOfMemoryError\` après des heures ou des jours d'execution.
 
-## Les 5 causes principales de fuites memoire
+## Les 5 causes principales de fuites mémoire
 
 ### 1. Collections statiques sans eviction
 
@@ -1612,7 +1612,7 @@ class MyController {
     MyController(EventBus bus) {
         this.bus = bus;
         bus.register(event -> handleEvent(event));
-        // Le controller ne peut pas etre GC car le listener
+        // Le controller ne peut pas être GC car le listener
         // reference this (closure)
     }
 }
@@ -1711,7 +1711,7 @@ public class FileProcessor {
 \`\`\`java
 // Java 6 — substring() conservait la reference au char[] original !
 String huge = loadHugeFile();  // 100 Mo
-String small = huge.substring(0, 5);  // "Hello" mais conserve 100 Mo en memoire
+String small = huge.substring(0, 5);  // "Hello" mais conserve 100 Mo en mémoire
 
 // Solution : new String(small) force la copie du char[]
 String reallySmall = new String(small);  // ~10 octets seulement
@@ -1719,7 +1719,7 @@ String reallySmall = new String(small);  // ~10 octets seulement
 // Depuis Java 7+, substring() cree un nouveau char[] — plus de fuite
 \`\`\`
 
-## Detection des fuites memoire
+## Detection des fuites mémoire
 
 \`\`\`java
 // Programme de test pour detecter une fuite
@@ -1763,7 +1763,7 @@ jstat -gcutil <pid> 5s
 | Listeners non retires | Objets non GC | WeakReference, deregister explicite |
 | ThreadLocal non nettoye | Fuite par thread de pool | remove() dans finally |
 | Ressources non fermees | File descriptors epuises | try-with-resources |
-| Inner class non statique | Reference implicite a l'externe | Classe statique ou interface |
+| Inner class non statique | Reference implicite à l'externe | Classe statique ou interface |
 
 ## Bonnes pratiques
 
@@ -1771,7 +1771,7 @@ jstat -gcutil <pid> 5s
 2. **Utiliser \`WeakHashMap\` ou \`WeakReference\`** pour les mappings temporaires
 3. **Nettoyer les \`ThreadLocal\`** dans un bloc \`finally\`
 4. **Toujours fermer les ressources** avec \`try-with-resources\`
-5. **Faire des classes internes \`static\`** quand elles n'ont pas besoin de reference a l'exterieure
+5. **Faire des classes internes \`static\`** quand elles n'ont pas besoin de reference à l'exterieure
 6. **Profiler regulierement** avec \`jvisualvm\` ou \`async-profiler\`
 7. **Ajouter \`-XX:+HeapDumpOnOutOfMemoryError\`** en production
 
@@ -1781,7 +1781,7 @@ jstat -gcutil <pid> 5s
 2. **Callbacks** — frameworks comme Spring, Hibernate ou Android (Activity) en sont coutumiers
 3. **Pool de threads** — ThreadLocal + pool = cocktail explosif
 4. **CustomClassLoader** — classes non dechargeables (PermGen/Metaspace leak)
-5. **Interned strings** — \`String.intern()\` sans limite peut saturer la memoire
+5. **Interned strings** — \`String.intern()\` sans limite peut saturer la mémoire
 
 Source : [Oracle Java Documentation — Understanding Memory Leaks](https://docs.oracle.com/javase/tutorial/essential/environment/understandingMemory.html)
 `},
@@ -1802,7 +1802,7 @@ Source : [Oracle Java Documentation — Understanding Memory Leaks](https://docs
 
 ## Qu'est-ce qu'une exception ?
 
-Une exception est un evenement qui interrompt le flux normal d'execution. En Java, les exceptions sont des objets heritage de \`Throwable\`. Comprendre la hierarchie est fondamental pour bien les utiliser.
+Une exception est un événement qui interrompt le flux normal d'execution. En Java, les exceptions sont des objets heritage de \`Throwable\`. Comprendre la hierarchie est fondamental pour bien les utiliser.
 
 ## Hierarchie des exceptions
 
@@ -1847,13 +1847,13 @@ String[][] checkedVsUnchecked = {
     {"Critere", "Checked", "Unchecked"},
     {"Verification", "Compile-time", "Runtime"},
     {"Heritage", "Exception (sauf RuntimeException)", "RuntimeException"},
-    {"Obligation", "Catcher ou declarer", "Optionnel"},
-    {"Usage", "Erreurs recuperables", "Erreurs de programmation"},
+    {"Obligation", "Catcher ou déclarer", "Optionnel"},
+    {"Usage", "Erreurs reçuperables", "Erreurs de programmation"},
     {"Exemples", "IOException, SQLException", "NPE, IllegalArgumentException"},
 };
 \`\`\`
 
-## Les differents blocs de gestion
+## Les différents blocs de gestion
 
 ### try-catch-finally — le bloc classique
 
@@ -1969,9 +1969,9 @@ public void processPayment(Payment payment) throws PaymentException {
 1. **Utiliser des exceptions specifiques** — pas de \`catch (Exception e)\` generique
 2. **Ne pas avaler les exceptions** — catcher sans traiter ni relancer
 3. **Preserver l'exception originale** — utiliser le constructeur avec \`cause\`
-4. **Checked pour erreurs recuperables, Unchecked pour bugs**
+4. **Checked pour erreurs reçuperables, Unchecked pour bugs**
 5. **Utiliser try-with-resources** systematiquement
-6. **Ne pas utiliser les exceptions pour le controle de flux** — c'est lent
+6. **Ne pas utiliser les exceptions pour le contrôle de flux** — c'est lent
 7. **Documenter les exceptions lancees** avec \`@throws\` dans la Javadoc
 
 ## Pièges courants
@@ -1987,7 +1987,7 @@ Source : [Oracle Java Documentation — Exceptions](https://docs.oracle.com/java
         {
           id: 'java-12',
           question: 'throw vs throws',
-          answer: "**`throw`** lance explicitement une exception dans le code (ex. `throw new IllegalArgumentException()`). **`throws`** déclare dans la signature qu'une méthode peut lancer une exception — surtout pour les *checked exceptions*.\n\n`throws` sert de contrat : l'appelant doit attraper l'exception ou la redéclarer. C'est un mécanisme de **transparence** qui empêche d'ignorer les erreurs potentielles.",
+          answer: "**`throw`** lance explicitement une exception dans le code (ex. `throw new IllegalArgumentException()`). **`throws`** déclare dans la signature qu'une méthode peut lancer une exception — surtout pour les *checked exceptions*.\n\n`throws` sert de contrat : l'appelant doit attraper l'exception où la redéclarer. C'est un mécanisme de **transparence** qui empêche d'ignorer les erreurs potentielles.",
           code: 'void verifier(int v) throws IllegalArgumentException {\n    if (v < 0) throw new IllegalArgumentException("Négatif");\n}',
           language: 'java',
         
@@ -1997,10 +1997,10 @@ Source : [Oracle Java Documentation — Exceptions](https://docs.oracle.com/java
 
 \`throw\` et \`throws\` sont deux mots-cles complementaires pour la gestion des exceptions :
 
-- **\`throw\`** : **declenche** une exception dans le code (action, au sein du corps de methode)
-- **\`throws\`** : **declare** qu'une methode peut lancer des exceptions (contrat, dans la signature)
+- **\`throw\`** : **déclenche** une exception dans le code (action, au sein du corps de méthode)
+- **\`throws\`** : **declare** qu'une méthode peut lancer des exceptions (contrat, dans la signature)
 
-## throw — declencher une exception
+## throw — déclencher une exception
 
 \`throw\` est un mot-cle qui interrompt immediatement le flux et propage l'exception vers l'appelant.
 
@@ -2059,14 +2059,14 @@ public void withdraw(double amount) {
 }
 \`\`\`
 
-## throws — declarer les exceptions possibles
+## throws — déclarer les exceptions possibles
 
-\`throws\` apparait dans la signature de la methode pour informer l'appelant des exceptions checked qui peuvent etre lancees.
+\`throws\` apparait dans la signature de la méthode pour informer l'appelant des exceptions checked qui peuvent être lancees.
 
 \`\`\`java
 // Signature : returntype methodName(params) throws ExceptionType1, ExceptionType2
 public void readFile(String path) throws IOException {
-    // IOException est checked : doit etre declaree
+    // IOException est checked : doit être declaree
     Files.readString(Path.of(path));
 }
 
@@ -2078,7 +2078,7 @@ public void processConfig(String path) throws IOException, ParseException {
 \`\`\`
 
 \`\`\`java
-// L'appelant doit gerer (catcher ou re-declarer)
+// L'appelant doit gerer (catcher ou re-déclarer)
 public class CallerExample {
 
     // Option 1 : catcher
@@ -2090,9 +2090,9 @@ public class CallerExample {
         }
     }
 
-    // Option 2 : re-declarer
+    // Option 2 : re-déclarer
     public void unsafeRead() throws IOException {
-        readFile("config.txt");  // Passe la responsabilite a l'appelant
+        readFile("config.txt");  // Passe la responsabilite à l'appelant
     }
 }
 \`\`\`
@@ -2102,10 +2102,10 @@ public class CallerExample {
 | Aspect | \`throw\` | \`throws\` |
 |--------|---------|----------|
 | Role | Declencher une exception | Declarer les exceptions possibles |
-| Emplacement | Corps de la methode | Signature de la methode |
-| Nombre d'exceptions | Une seule a la fois | Plusieurs, separees par des virgules |
+| Emplacement | Corps de la méthode | Signature de la méthode |
+| Nombre d'exceptions | Une seule à la fois | Plusieurs, separees par des virgules |
 | Type d'exception | N'importe quel \`Throwable\` | Souvent checked exceptions |
-| Obligation | Quand une condition d'erreur est rencontree | Quand la methode peut lancer des checked |
+| Obligation | Quand une condition d'erreur est rencontree | Quand la méthode peut lancer des checked |
 
 ## Exemple complet
 
@@ -2113,7 +2113,7 @@ public class CallerExample {
 public class BankAccount {
     private double balance;
 
-    // throws : declare que cette methode peut lancer ces exceptions
+    // throws : declare que cette méthode peut lancer ces exceptions
     public void transfer(double amount, BankAccount target)
             throws InsufficientFundsException, AccountClosedException {
 
@@ -2125,7 +2125,7 @@ public class BankAccount {
             throw new AccountClosedException("Target account is closed");
         }
 
-        // throw : declenche l'exception
+        // throw : déclenche l'exception
         if (amount > balance) {
             throw new InsufficientFundsException(balance, amount);
         }
@@ -2146,19 +2146,19 @@ public class BankAccount {
 
 ## Bonnes pratiques
 
-1. **\`throw\` pour les etats invalides** — lancez tot, echouez tot (fail-fast)
+1. **\`throw\` pour les états invalides** — lancez tot, echouez tot (fail-fast)
 2. **\`throws\` pour documenter le contrat** — toute checked exception fait partie de l'API
 3. **Preserver la cause** — utilisez toujours \`throw new Exception("message", cause)\`
-4. **Ne pas declarer des unchecked dans \`throws\`** — inutile, encombre la signature
+4. **Ne pas déclarer des unchecked dans \`throws\`** — inutile, encombre la signature
 5. **Utiliser des exceptions specifiques** — chaque type d'erreur a sa propre exception
 6. **Ne pas abuser des checked** — si l'appelant ne peut pas remedier, utilisez unchecked
 
 ## Pièges courants
 
-1. **Confondre \`throw\` et \`throws\`** — l'un est une action, l'autre une declaration
+1. **Confondre \`throw\` et \`throws\`** — l'un est une action, l'autre une déclaration
 2. **Declarer trop d'exceptions dans \`throws\`** — rend l'API fragile (toute modification casse les appelants)
 3. **Oublier \`throws\` pour une checked** — erreur de compilation
-4. **Lancer une checked sans la declarer** — impossible, le compilateur refuse
+4. **Lancer une checked sans la déclarer** — impossible, le compilateur refuse
 5. **\`throws\` avec \`RuntimeException\`** — completement inutile et trompeur
 
 Source : [Oracle Java Documentation — Throwing Exceptions](https://docs.oracle.com/javase/tutorial/essential/exceptions/throwing.html)
@@ -2172,14 +2172,14 @@ Source : [Oracle Java Documentation — Throwing Exceptions](https://docs.oracle
 
 ## Qu'est-ce que c'est ?
 
-Java divise les exceptions en deux categories : **checked** (verifiees a la compilation) et **unchecked** (non verifiees). Cette distinction est une decision de conception du langage qui force les developpeurs a gerer certaines erreurs.
+Java divise les exceptions en deux categories : **checked** (verifiees à la compilation) et **unchecked** (non verifiees). Cette distinction est une decision de conception du langage qui force les développeurs a gerer certaines erreurs.
 
 ## La regle fondamentale
 
 \`\`\`
-Si l'appelant peut raisonnablement recuperer l'erreur → Checked
+Si l'appelant peut raisonnablement reçuperer l'erreur → Checked
 Si l'erreur est un bug de programmation              → Unchecked (RuntimeException)
-Si l'erreur est systeme et irreversible               → Error (ne pas catcher)
+Si l'erreur est système et irreversible               → Error (ne pas catcher)
 \`\`\`
 
 ## Tableau comparatif
@@ -2188,10 +2188,10 @@ Si l'erreur est systeme et irreversible               → Error (ne pas catcher)
 |---------|---------|-----------|
 | Heritage | \`Exception\` (sauf \`RuntimeException\`) | \`RuntimeException\` |
 | Verification | Compile-time | Runtime |
-| Obligation | Catcher OU declarer (\`throws\`) | Optionnel |
+| Obligation | Catcher OU déclarer (\`throws\`) | Optionnel |
 | Cas typique | Fichier introuvable, connexion perdue | NullPointer, index invalide |
 | Impact API | Fort — change la signature | Nul — pas dans la signature |
-| Quand creer | Erreur exterieure recuperable | Bug interne irremediable |
+| Quand creer | Erreur exterieure reçuperable | Bug interne irremediable |
 
 ## Exemples detailles
 
@@ -2211,7 +2211,7 @@ public class Controller {
             String content = service.readFile("/etc/config.txt");
             process(content);
         } catch (IOException e) {
-            // L'appelant PEUT recuperer : utiliser un fichier par defaut
+            // L'appelant PEUT reçuperer : utiliser un fichier par defaut
             log.warn("Config not found, using defaults");
             process(DEFAULT_CONFIG);
         }
@@ -2249,7 +2249,7 @@ public class Client {
 try {
     conn.executeQuery(sql);
 } catch (SQLException e) {
-    // On ne peut pas "recuperer" une requete invalide
+    // On ne peut pas "reçuperer" une requête invalide
     // On va juste logger et echouer
     throw new RuntimeException("Database error", e);
     // La conversion checked→unchecked est un pattern courant
@@ -2266,7 +2266,7 @@ public class BusinessException extends Exception {
 }
 
 public class TechnicalException extends RuntimeException {
-    // UNCHECKED — bug interne, pas de recuperation possible
+    // UNCHECKED — bug interne, pas de reçuperation possible
     public TechnicalException(String message, Throwable cause) {
         super(message, cause);
     }
@@ -2275,9 +2275,9 @@ public class TechnicalException extends RuntimeException {
 
 ## Bonnes pratiques
 
-1. **Checked pour les erreurs recuperables** — fichier manquant, connexion refusee, solde insuffisant
-2. **Unchecked pour les bugs** — argument null, index out of bounds, etat illegal
-3. **Convertir les checked en unchecked** a la frontiere du systeme (DAO → Service)
+1. **Checked pour les erreurs reçuperables** — fichier manquant, connexion refusee, solde insuffisant
+2. **Unchecked pour les bugs** — argument null, index out of bounds, état illegal
+3. **Convertir les checked en unchecked** à la frontiere du système (DAO → Service)
 4. **Ne pas creer de checked exception pour une erreur que l'appelant ne peut pas traiter**
 5. **Documenter TOUTES les exceptions** (checked et unchecked) avec \`@throws\` dans la Javadoc
 6. **@Transactional et checked exceptions** — attention, Spring ne rollback pas sur checked exception par defaut
@@ -2285,7 +2285,7 @@ public class TechnicalException extends RuntimeException {
 
 ## Pièges courants
 
-1. **Creer une checked pour une erreur de programmation** — NPE ou IllegalArgumentException devraient etre unchecked
+1. **Creer une checked pour une erreur de programmation** — NPE ou IllegalArgumentException devraient être unchecked
 2. **Catcher \`Exception\` trop largement** — masque les unchecked inattendues
 3. **Checked exceptions dans les interfaces fonctionnelles** — impossible avec \`Consumer<T>\` ou \`Function<T,R>\` qui ne declarent pas \`throws\`
 4. **Checked exceptions et lambdas** — complique considerablement le code
@@ -2302,7 +2302,7 @@ Source : [Oracle Java Documentation — Exceptions](https://docs.oracle.com/java
         {
           id: 'java-14',
           question: 'Array vs ArrayList',
-          answer: "**`Array`** : taille fixe, accepte les primitives, syntaxe crochets. **`ArrayList`** : taille dynamique, objets uniquement (*autoboxing* pour les primitives), méthodes `add`/`get`/`remove`.\n\n`ArrayList` est plus flexible et préférée dans la plupart des cas. `Array` reste utile pour les performances critiques ou les tailles connues à l'avance.",
+          answer: "**`Array`** : taille fixe, accepte les primitives, syntaxe crochets. **`ArrayList`** : taille dynamique, objets uniquement (*autoboxing* pour les primitives), méthodes `add`/`get`/`remove`.\n\n`ArrayList` est plus flexible et préférée dans la plupart des cas. `Array` reste utile pour les performances critiques où les tailles connues à l'avance.",
         
           deepDive: `# Array vs ArrayList en Java
 
@@ -2314,12 +2314,12 @@ Source : [Oracle Java Documentation — Exceptions](https://docs.oracle.com/java
 
 | Caracteristique | Array | ArrayList |
 |----------------|-------|-----------|
-| Taille | Fixe (definie a la creation) | Dynamique (s'agrandit automatiquement) |
+| Taille | Fixe (definie à la creation) | Dynamique (s'agrandit automatiquement) |
 | Primitives | Oui (\`int[]\`, \`boolean[]\`, etc.) | Non (autoboxing : \`Integer\`, \`Boolean\`) |
-| Performance | Plus rapide (acces direct memoire) | Legerement plus lent (methodes, autoboxing) |
+| Performance | Plus rapide (acces direct mémoire) | Legerement plus lent (méthodes, autoboxing) |
 | Syntaxe | \`Type[] arr = new Type[n]\` | \`new ArrayList<>()\` |
-| Longueur | \`arr.length\` (champ) | \`list.size()\` (methode) |
-| Type securite | Verifie a la compilation | Verifie a la compilation (generiques) |
+| Longueur | \`arr.length\` (champ) | \`list.size()\` (méthode) |
+| Type securite | Verifie à la compilation | Verifie à la compilation (generiques) |
 | Methodes | Aucune (length, index) | \`add\`, \`remove\`, \`contains\`, \`sort\`, etc. |
 
 \`\`\`java
@@ -2366,7 +2366,7 @@ int[] more = new int[10];
 System.arraycopy(primes, 0, more, 0, primes.length);  // Copie manuelle pour "agrandir"
 \`\`\`
 
-### ArrayList — flexible, riche en methodes
+### ArrayList — flexible, riche en méthodes
 
 \`\`\`java
 ArrayList<String> list = new ArrayList<>();
@@ -2443,7 +2443,7 @@ int[] fixedScores = new int[100];  // 100 scores, jamais plus
 byte[] buffer = new byte[4096];    // Buffer de taille fixe
 int[][] gameBoard = new int[8][8]; // Plateau d'echecs
 
-// ArrayList — taille variable, besoin de methodes, collections
+// ArrayList — taille variable, besoin de méthodes, collections
 ArrayList<Product> cart = new ArrayList<>();  // Panier d'achat (taille variable)
 ArrayList<User> searchResults = new ArrayList<>();  // Resultats de recherche
 \`\`\`
@@ -2477,22 +2477,22 @@ Source : [Oracle Java Documentation — Arrays](https://docs.oracle.com/javase/t
 
 ## Qu'est-ce que c'est ?
 
-\`ArrayList\` et \`LinkedList\` sont les deux implementations principales de l'interface \`List\` en Java. Meme interface, performances radicalement differentes selon l'operation.
+\`ArrayList\` et \`LinkedList\` sont les deux implementations principales de l'interface \`List\` en Java. Meme interface, performances radicalement différentes selon l'operation.
 
-- **ArrayList** : tableau redimensionnable contigu en memoire
+- **ArrayList** : tableau redimensionnable contigu en mémoire
 - **LinkedList** : liste doublement chainee (nœuds avec pointeurs prev/next)
 
 ## Complexites algorithmiques
 
 | Operation | ArrayList | LinkedList |
 |-----------|-----------|------------|
-| \`get(int index)\` | **O(1)** — calcul d'adresse direct | **O(n)** — parcours depuis la tete |
+| \`get(int index)\` | **O(1)** — calcul d'adresse direct | **O(n)** — parcours depuis la tête |
 | \`add(E element)\` | **O(1)** amorti (ajout en fin) | **O(1)** (ajout en fin) |
 | \`add(int index, E)\` | **O(n)** — decalage des elements | **O(n)** — recherche + O(1) insertion |
 | \`remove(int index)\` | **O(n)** — decalage | **O(n)** — recherche + O(1) suppression |
 | \`remove(Object)\` | **O(n)** — recherche + decalage | **O(n)** — recherche + O(1) |
 | \`contains(Object)\` | **O(n)** | **O(n)** |
-| Iteration | **O(n)** (tres rapide, cache CPU) | **O(n)** (plus lent, pointeurs disperses) |
+| Iteration | **O(n)** (très rapide, cache CPU) | **O(n)** (plus lent, pointeurs disperses) |
 | Memoire | Faible (objet + array) | Elevee (objet + 3 refs par nœud) |
 
 ## Comment ils fonctionnent en interne
@@ -2540,7 +2540,7 @@ for (int i = 0; i < 100_000; i++) {
     linkedList.add(i);
 }
 
-// Acces a l'index 50 000
+// Acces à l'index 50 000
 long start = System.nanoTime();
 arrayList.get(50_000);  // ~0.02 microsecondes
 long arrayTime = System.nanoTime() - start;
@@ -2557,7 +2557,7 @@ long linkedTime = System.nanoTime() - start;
 List<Integer> arrayList = new ArrayList<>(100_000);
 List<Integer> linkedList = new LinkedList<>();
 
-// Mesurer l'insertion en tete
+// Mesurer l'insertion en tête
 long arrayTime = 0;
 long linkedTime = 0;
 
@@ -2568,7 +2568,7 @@ for (int i = 0; i < 10_000; i++) {
 }
 arrayTime = System.nanoTime() - start;
 
-// Pour LinkedList, add(0, x) insere juste un nœud en tete → O(1)
+// Pour LinkedList, add(0, x) insere juste un nœud en tête → O(1)
 start = System.nanoTime();
 for (int i = 0; i < 10_000; i++) {
     linkedList.add(0, i);  // Insere un nouveau first node
@@ -2598,11 +2598,11 @@ for (int i = 0; i < linkedList.size(); i++) {
 
 // BON parcours de LinkedList (iterateur)
 total = 0;
-for (int value : linkedList) {  // O(1) par etape → O(n)
+for (int value : linkedList) {  // O(1) par étape → O(n)
     total += value;
 }
 
-// Pour ArrayList, les deux parcours sont O(n) — la localite memoire rend
+// Pour ArrayList, les deux parcours sont O(n) — la localite mémoire rend
 // le parcours avec iterateur 2-3× plus rapide que get(i)
 \`\`\`
 
@@ -2625,7 +2625,7 @@ stack.push("C");
 String top = stack.pop();        // removeFirst : "C"
 \`\`\`
 
-## Impact memoire
+## Impact mémoire
 
 \`\`\`java
 // ArrayList : [obj, obj, obj, obj, obj, ...]  → contigu
@@ -2635,7 +2635,7 @@ String top = stack.pop();        // removeFirst : "C"
 // ArrayList<Integer> : ~20 Mo (objet Integer + reference)
 // LinkedList        : ~64 Mo (objet Integer + 2 references de nœud)
 
-// LinkedList utilise ~3× plus de memoire !
+// LinkedList utilise ~3× plus de mémoire !
 \`\`\`
 
 ## Quand utiliser quoi ?
@@ -2646,13 +2646,13 @@ String top = stack.pop();        // removeFirst : "C"
 - Ajout principalement en fin de liste
 - Parcours intensif (meilleure localite cache)
 - Pas de modification en milieu de liste
-- Contrainte memoire
+- Contrainte mémoire
 
 ### LinkedList — pour des cas specifiques
 
-- Insertions/suppressions frequentes en tete ou en milieu (avec iterateur)
+- Insertions/suppressions frequentes en tête ou en milieu (avec iterateur)
 - File (FIFO) ou pile (LIFO) — mais \`ArrayDeque\` est souvent meilleure
-- Quand on dispose deja d'un iterateur a la position d'insertion
+- Quand on dispose déjà d'un iterateur à la position d'insertion
 
 \`\`\`java
 // Tableau de decision
@@ -2660,9 +2660,9 @@ String[][] decision = {
     {"Besoin", "Choix", "Raison"},
     {"get(i) frequent", "ArrayList", "O(1) vs O(n)"},
     {"add en fin", "ArrayList", "O(1) amorti vs O(1)"},
-    {"add en tete", "LinkedList", "O(n) vs O(1)"},
+    {"add en tête", "LinkedList", "O(n) vs O(1)"},
     {"FIFO Queue", "LinkedList/ArrayDeque", "Deque interface"},
-    {"Parcours", "ArrayList", "Localite memoire"},
+    {"Parcours", "ArrayList", "Localite mémoire"},
     {"Memoire limitee", "ArrayList", "3× moins de RAM"},
 };
 \`\`\`
@@ -2672,7 +2672,7 @@ String[][] decision = {
 1. **ArrayList par defaut** — dans le doute, utilisez ArrayList
 2. **Capacite initiale pour ArrayList** — si la taille est connue
 3. **Iterateur pour LinkedList** — ne jamais utiliser \`get(i)\` en boucle
-4. **\`ArrayDeque\` > \`LinkedList\`** pour les piles/files (moins de memoire, meilleure performance)
+4. **\`ArrayDeque\` > \`LinkedList\`** pour les piles/files (moins de mémoire, meilleure performance)
 5. **Profiler si necessaire** — les benchmarks varient selon la JVM et le CPU
 6. **Utiliser l'interface \`List\`** dans les signatures — changez d'implementation sans casser le code
 
@@ -2695,7 +2695,7 @@ Source : [Oracle Java Documentation — List Implementations](https://docs.oracl
 
 ## Qu'est-ce que c'est ?
 
-Les trois classes permettent de manipuler des chaines de caracteres, mais avec des comportements differents :
+Les trois classes permettent de manipuler des chaines de caractères, mais avec des comportements différents :
 
 - **\`String\`** : **immuable** — chaque modification cree un nouvel objet
 - **\`StringBuilder\`** : **mutable**, non synchronise — rapide, usage general
@@ -2712,10 +2712,10 @@ s = s + " World";  // Ne modifie PAS "Hello", cree un nouveau String "Hello Worl
 // L'ancien "Hello" est eligible pour le GC
 
 // Pourquoi String est immuable ?
-// 1. Securite : les mots de passe, URLs, Class names ne peuvent pas etre modifies
+// 1. Securite : les mots de passe, URLs, Class names ne peuvent pas être modifies
 // 2. Cache : le String pool permet de partager les chaines
 // 3. Thread-safety : pas de race condition
-// 4. Hashcode : peut etre calcule une fois et mis en cache (HashMap key)
+// 4. Hashcode : peut être calcule une fois et mis en cache (HashMap key)
 \`\`\`
 
 \`\`\`java
@@ -2778,15 +2778,15 @@ sb.replace(6, 11, "Java");     // "Hello, Java"
 sb.delete(5, 6);               // "Hello Java"
 sb.reverse();                  // "avaJ olleH"
 
-sb.length();                   // 10 (nombre de caracteres)
+sb.length();                   // 10 (nombre de caractères)
 sb.capacity();                 // capacite du buffer interne (≥ length)
-sb.setLength(5);               // Tronque a 5 caracteres
-sb.charAt(0);                  // 'a' (apres reverse: 'a' est a l'index 0)
+sb.setLength(5);               // Tronque a 5 caractères
+sb.charAt(0);                  // 'a' (après reverse: 'a' est à l'index 0)
 \`\`\`
 
 ## StringBuffer — thread-safe
 
-\`StringBuffer\` a la meme API que \`StringBuilder\` mais avec des methodes \`synchronized\`. Utilisez-le uniquement en contexte multi-thread.
+\`StringBuffer\` à la meme API que \`StringBuilder\` mais avec des méthodes \`synchronized\`. Utilisez-le uniquement en contexte multi-thread.
 
 \`\`\`java
 // StringBuffer est identique mais synchronise
@@ -2843,7 +2843,7 @@ System.out.println("StringBuffer: " + (end - start) / 1_000_000 + " ms");
 String name = "Alice";                  // String : constante
 String message = "Hello, " + name;      // String : petite concaténation unique
 StringBuilder sb = new StringBuilder(); // StringBuilder : boucle/construction complexe
-sb.append("...");                       // (le compilateur utilise deja StringBuilder
+sb.append("...");                       // (le compilateur utilise déjà StringBuilder
 sb.append("...");                       //  pour les concaténations simples)
 String result = sb.toString();
 \`\`\`
@@ -2852,7 +2852,7 @@ String result = sb.toString();
 
 1. **Utiliser \`StringBuilder\` pour les boucles** — toute concaténation repetitive
 2. **Utiliser \`String\` pour les constantes** — literal pool, immutable
-3. **Utiliser \`StringBuffer\` uniquement en multi-thread** — tres rare
+3. **Utiliser \`StringBuffer\` uniquement en multi-thread** — très rare
 4. **Specifier la capacite initiale** si la taille approximative est connue : \`new StringBuilder(1000)\`
 5. **\`String.join()\` pour les listes** — \`String.join(", ", list)\` est plus lisible que la boucle
 6. **\`String.format()\` pour le formatage** — plus propre que les concatenations multiples
@@ -2862,7 +2862,7 @@ String result = sb.toString();
 
 1. **Concaténation en boucle** — cree des milliers d'objets intermediaires
 2. **\`toString()\` dans une boucle avec StringBuilder** — annule l'avantage du buffer
-3. **StringBuffer inutile** — la synchronisation a un cout, utilisez StringBuilder
+3. **StringBuffer inutile** — la synchronisation à un cout, utilisez StringBuilder
 4. **Capacite par defaut (16)** — trop petite pour des constructions longues
 5. **Confondre \`length()\` et \`capacity()\`** — \`length()\` = contenu, \`capacity()\` = buffer interne
 
@@ -2884,7 +2884,7 @@ Source : [Oracle Java Documentation — Strings](https://docs.oracle.com/javase/
 ## Structure interne
 
 \`\`\`
-Tableau de buckets (tete de chaine ou racine d'arbre)
+Tableau de buckets (tête de chaine ou racine d'arbre)
 +------+
 |  [0] | ---> null
 +------+
@@ -2953,7 +2953,7 @@ public V put(K key, V value) {
             return oldValue;
         }
     }
-    // Nouvelle cle dans ce bucket → ajouter en tete
+    // Nouvelle cle dans ce bucket → ajouter en tête
     table[index] = new Node<>(hash, key, value, existing);
     return null;
 }
@@ -3023,9 +3023,9 @@ HashMap<String, String> map = new HashMap<>(16, 0.75f);
 // Impact du load factor
 String[][] loadFactorComparison = {
     {"Load Factor", "Avantage", "Inconvenient", "Usage"},
-    {"0.5", "Tres peu de collisions", "Beaucoup de memoire", "Tres peu d'elements"},
+    {"0.5", "Tres peu de collisions", "Beaucoup de mémoire", "Tres peu d'elements"},
     {"0.75", "Bon equilibre", "Default", "Usage general (DEFAUT)"},
-    {"1.0", "Economie memoire", "Beaucoup de collisions", "Memoire limitee"},
+    {"1.0", "Economie mémoire", "Beaucoup de collisions", "Memoire limitee"},
     {"1.5", "Tres economique", "Tres lent (O(n))", "Jamais recommande"},
 };
 \`\`\`
@@ -3040,7 +3040,7 @@ String[][] loadFactorComparison = {
 map.put(null, "valeur");  // null key stockee dans bucket index 0
 map.put("cle", null);     // null value autorisee
 
-// 3. Nouvelles methodes
+// 3. Nouvelles méthodes
 map.getOrDefault("key", "default");
 map.putIfAbsent("key", "value");
 map.computeIfAbsent("key", k -> expensiveComputation());
@@ -3050,13 +3050,13 @@ map.merge("key", 1, Integer::sum);  // Incrementation thread-safe (relative)
 
 ## Bonnes pratiques
 
-1. **Cle immuable** — si la cle change son hashCode apres insertion, la lookup echoue
-2. **Capacite initiale adequate** — \`new HashMap<>(taille * 2)\` evite les rehashing
+1. **Cle immuable** — si la cle change son hashCode après insertion, la lookup echoue
+2. **Capacite initiale adequate** — \`new HashMap<>(taille * 2)\` évite les rehashing
 3. **\`hashCode()\` et \`equals()\` coherents** — si \`a.equals(b)\` alors \`a.hashCode() == b.hashCode()\`
-4. **Load factor 0.75 par defaut** — bon equilibre entre temps et memoire
+4. **Load factor 0.75 par defaut** — bon equilibre entre temps et mémoire
 5. **Utiliser \`EnumMap\` pour les cles enum** — plus performant (tableau indexe par ordinal)
 6. **\`ConcurrentHashMap\` en multi-thread** — jamais \`HashMap\` partage
-7. **Initialiser avec la capacite** — \`new HashMap<>(expectedSize / 0.75f + 1)\` evite le rehashing
+7. **Initialiser avec la capacite** — \`new HashMap<>(expectedSize / 0.75f + 1)\` évite le rehashing
 
 ## Pièges courants
 
@@ -3086,7 +3086,7 @@ Source : [Oracle Java Documentation — HashMap](https://docs.oracle.com/javase/
 \`\`\`java
 // Java 5-6 : Segmented Lock
 // La table est divisee en 16 segments, chaque segment a son propre verrou
-// → 16 threads peuvent ecrire en parallele (segments differents)
+// → 16 threads peuvent écrire en parallele (segments différents)
 // → Les lectures sont non-verrouillees
 
 // Java 7 : Meme approche, ameliorations mineures
@@ -3108,16 +3108,16 @@ Source : [Oracle Java Documentation — HashMap](https://docs.oracle.com/javase/
 //   null   Node   null   Node   TreeNode
 //          lock         lock
 // Les lectures (get) ne verrouillent JAMAIS le bucket.
-// Les ecritures (put) verrouillent UNIQUEMENT le bucket concerne.
+// Les écritures (put) verrouillent UNIQUEMENT le bucket concerne.
 \`\`\`
 
-## Comparaison des strategies de synchronisation
+## Comparaison des stratégies de synchronisation
 
 \`\`\`java
 // MAUVAISE APPROCHE : Hashtable
 Hashtable<String, Integer> hashtable = new Hashtable<>();
-// Toutes les operations sont synchronized → un seul thread a la fois
-// get() bloque les autres get() → inutile !
+// Toutes les operations sont synchronized → un seul thread à la fois
+// get() bloque les autrès get() → inutile !
 
 // APPROCHE MOYENNE : synchronizedMap
 Map<String, Integer> syncMap = Collections.synchronizedMap(new HashMap<>());
@@ -3126,7 +3126,7 @@ Map<String, Integer> syncMap = Collections.synchronizedMap(new HashMap<>());
 
 // BONNE APPROCHE : ConcurrentHashMap
 ConcurrentHashMap<String, Integer> concurrentMap = new ConcurrentHashMap<>();
-// Lectures sans verrou, ecritures avec verrou par bucket
+// Lectures sans verrou, écritures avec verrou par bucket
 // get() n'est JAMAIS bloque par un autre get()
 // put() bloque seulement les put() sur le meme bucket
 \`\`\`
@@ -3162,7 +3162,7 @@ ConcurrentHashMap<String, Integer> map = new ConcurrentHashMap<>();
 // ATOMIQUE (correct)
 map.merge("views", 1, Integer::sum);
 
-// NON ATOMIQUE (incorrect — perte de mises a jour)
+// NON ATOMIQUE (incorrect — perte de mises à jour)
 Integer old = map.get("views");
 map.put("views", old + 1);  // Race condition !
 
@@ -3202,7 +3202,7 @@ map.forEachValue(1, System.out::println);
 
 // Recherche
 String found = map.search(1, (k, v) -> v.equals("target") ? k : null);
-// Retourne des que le resultat est trouve (short-circuit)
+// Retourne dès que le resultat est trouve (short-circuit)
 
 // Reduction
 long count = map.reduceValues(1, v -> v.length(), Integer::sum, 0);
@@ -3217,7 +3217,7 @@ ConcurrentHashMap<String, String> map = new ConcurrentHashMap<>();
 int size = map.size();          // Retourne int
 long count = map.mappingCount(); // Retourne long (recommande)
 
-// Ces valeurs sont des estimations car la map peut etre modifiee
+// Ces valeurs sont des estimations car la map peut être modifiee
 // pendant le calcul. C'est un compromis performance vs exactitude.
 \`\`\`
 
@@ -3238,19 +3238,19 @@ String[][] comparison = {
 ## Bonnes pratiques
 
 1. **Choix par defaut en multi-thread** — remplace Hashtable et synchronizedMap
-2. **Utiliser les methodes atomiques** — \`computeIfAbsent\`, \`merge\`, \`putIfAbsent\`
+2. **Utiliser les méthodes atomiques** — \`computeIfAbsent\`, \`merge\`, \`putIfAbsent\`
 3. **Eviter les operations composees manuelles** — \`get()\` puis \`put()\` n'est pas atomique
 4. **Preférer \`mappingCount()\` a \`size()\`** — plus precis pour les grandes maps
 5. **Attention aux traitements couteux dans \`computeIfAbsent\`** — le verrou est maintenu
-6. **\`forEach()\` avec parallelisme** — les lambdas doivent etre sans etat et thread-safe
+6. **\`forEach()\` avec parallelisme** — les lambdas doivent être sans état et thread-safe
 
 ## Pièges courants
 
 1. **\`null\` interdit** — ConcurrentHashMap ne supporte ni cle ni valeur null
-2. **Fausse atomique** — \`get()\` + \`put()\` sans methode atomique = race condition
-3. **Traitement long dans \`computeIfAbsent\`** — bloque les autres operations sur ce bucket
-4. **\`size()\` exact** — n'est pas garanti etre exact en concurrence
-5. **Overhead memoire** — plus important que HashMap (structures de synchronisation)
+2. **Fausse atomique** — \`get()\` + \`put()\` sans méthode atomique = race condition
+3. **Traitement long dans \`computeIfAbsent\`** — bloque les autrès operations sur ce bucket
+4. **\`size()\` exact** — n'est pas garanti être exact en concurrence
+5. **Overhead mémoire** — plus important que HashMap (structures de synchronisation)
 
 Source : [Oracle Java Documentation — ConcurrentHashMap](https://docs.oracle.com/javase/tutorial/collections/implementations/concurrent.html)
 `},
@@ -3341,7 +3341,7 @@ public class Employee {
     // getters...
 }
 
-// Plusieurs strategies de tri
+// Plusieurs stratégies de tri
 Comparator<Employee> BY_SALARY = (e1, e2) -> Double.compare(e2.getSalary(), e1.getSalary());
 Comparator<Employee> BY_NAME = (e1, e2) -> e1.getName().compareTo(e2.getName());
 Comparator<Employee> BY_HIRE_DATE = (e1, e2) -> e1.getHireDate().compareTo(e2.getHireDate());
@@ -3433,7 +3433,7 @@ Comparator<Person> complex = (p1, p2) -> {
 2. **Violation de la transitivite** — un Comparator qui n'est pas transitif plante le tri
 3. **NullPointerException** — si la liste contient des valeurs nulles sans \`nullsFirst()\`/\`nullsLast()\`
 4. **\`compareTo()\` non coherent avec \`equals()\`** — TreeMap peut "perdre" des entrees
-5. **Comparator qui modifie l'etat** — le comparateur doit etre sans effet de bord
+5. **Comparator qui modifie l'état** — le comparateur doit être sans effet de bord
 
 Source : [Oracle Java Documentation — Object Ordering](https://docs.oracle.com/javase/tutorial/collections/interfaces/order.html)
 `},
@@ -3448,7 +3448,7 @@ Source : [Oracle Java Documentation — Object Ordering](https://docs.oracle.com
 
 ## Qu'est-ce qu'un Record ?
 
-Un \`record\` est un type de classe concu pour etre un **porteur de donnees immuable** (value object). Le compilateur genere automatiquement tout le boilerplate : constructeur parametre, getters, \`equals()\`, \`hashCode()\`, \`toString()\`.
+Un \`record\` est un type de classe concu pour être un **porteur de donnees immuable** (value object). Le compilateur genere automatiquement tout le boilerplate : constructeur paramêtre, getters, \`equals()\`, \`hashCode()\`, \`toString()\`.
 
 \`\`\`java
 // CLASSE TRADITIONNELLE — des dizaines de lignes de boilerplate
@@ -3505,7 +3505,7 @@ user.toString();   // "User[id=1, name=Alice, email=alice@example.com]"
 
 \`\`\`java
 public record Product(String sku, String name, double price) {
-    // Constructeur compact : pas de parametres, les champs sont implicitement assignes
+    // Constructeur compact : pas de paramêtres, les champs sont implicitement assignes
     public Product {
         // Validation
         if (sku == null || sku.isBlank()) {
@@ -3521,7 +3521,7 @@ public record Product(String sku, String name, double price) {
     }
 }
 
-// Le constructeur canonique (avec tous les parametres) est toujours genere
+// Le constructeur canonique (avec tous les paramêtres) est toujours genere
 // Mais le constructeur compact s'execute AU DEBUT du constructeur canonique
 \`\`\`
 
@@ -3610,7 +3610,7 @@ public record Foo(int x) {
 }
 
 // 4. Pas de champs non-finaux
-// Un record ne peut pas etre etendu (implicitement final)
+// Un record ne peut pas être etendu (implicitement final)
 \`\`\`
 
 ## Records vs classes traditionnelles
@@ -3630,12 +3630,12 @@ public class MutableCounter {
 // Record : DTO
 public record UserDTO(Long id, String name, String email) {}
 
-// Record : pour les resultats de methodes
+// Record : pour les resultats de méthodes
 public record SearchResult<T>(List<T> results, int totalCount, int page) {}
 \`\`\`
 
 \`\`\`java
-// Record avec validation et methodes — le meilleur des deux mondes
+// Record avec validation et méthodes — le meilleur des deux mondes
 public record Temperature(double celsius) {
     private static final double ABSOLUTE_ZERO = -273.15;
 
@@ -3670,12 +3670,12 @@ public record Temperature(double celsius) {
 4. **Records et Jackson** — fonctionnent parfaitement (getters automatiques)
 5. **Petits records** — un record ne devrait pas avoir trop de champs (idealement < 7)
 6. **Records comme cles de Map** — equals/hashCode generes, parfait pour HashMap
-7. **Records locaux** — declares dans une methode pour des resultats intermediaires
+7. **Records locaux** — declares dans une méthode pour des resultats intermediaires
 
 ## Pièges courants
 
 1. **Pas d'heritage** — ne convient pas pour des hierarchies de classes
-2. **Serialization** — le mecanisme par defaut peut etre different des classes classiques
+2. **Serialization** — le mecanisme par defaut peut être différent des classes classiques
 3. **JPA/Hibernate** — incompatible avec les proxies et la lazy loading
 4. **Trop de champs** — rend le code illisible (envisagez un Builder)
 5. **Reference circulaire dans toString()** — possible si deux records se referencent mutuellement
@@ -3699,7 +3699,7 @@ Source : [Oracle Java Documentation — Records](https://docs.oracle.com/en/java
 
 ## Qu'est-ce qu'une lambda ?
 
-Une expression lambda est une **fonction anonyme** que l'on peut passer comme argument, stocker dans une variable ou retourner d'une methode. Elle est au coeur de la programmation fonctionnelle en Java.
+Une expression lambda est une **fonction anonyme** que l'on peut passer comme argument, stocker dans une variable ou retourner d'une méthode. Elle est au coeur de la programmation fonctionnelle en Java.
 
 \`\`\`java
 // Syntaxe generale
@@ -3707,7 +3707,7 @@ Une expression lambda est une **fonction anonyme** que l'on peut passer comme ar
 (parameters) -> { statements; }
 \`\`\`
 
-## Evolution : de la classe anonyme a la lambda
+## Evolution : de la classe anonyme à la lambda
 
 \`\`\`java
 // AVANT Java 8 — classe anonyme (verbeux)
@@ -3728,9 +3728,9 @@ button.setOnAction(System.out::println);
 
 \`\`\`java
 // Toutes les formes de lambda
-Runnable r1 = () -> System.out.println("No params");           // Zero parametre
-Consumer<String> c1 = s -> System.out.println(s);              // Un parametre (parenth. opt.)
-BiFunction<Integer, Integer, Integer> add = (a, b) -> a + b;   // Deux parametres
+Runnable r1 = () -> System.out.println("No params");           // Zero paramêtre
+Consumer<String> c1 = s -> System.out.println(s);              // Un paramêtre (parenth. opt.)
+BiFunction<Integer, Integer, Integer> add = (a, b) -> a + b;   // Deux paramêtres
 Comparator<String> comp = (a, b) -> {                           // Bloc avec return
     int cmp = a.length() - b.length();
     return cmp != 0 ? cmp : a.compareTo(b);
@@ -3767,8 +3767,8 @@ Predicate<String> isShortAndNotEmpty = isEmpty.negate().and(s -> s.length() < 5)
 \`\`\`
 
 \`\`\`java
-// Autres interfaces utiles
-// BiFunction<T, U, R> — deux parametres
+// Autrès interfaces utiles
+// BiFunction<T, U, R> — deux paramêtres
 BiFunction<String, String, String> concat = (a, b) -> a + b;
 
 // UnaryOperator<T> — Function<T, T>
@@ -3777,10 +3777,10 @@ UnaryOperator<String> identity = s -> s;
 // BinaryOperator<T> — BiFunction<T, T, T>
 BinaryOperator<Integer> max = Integer::max;
 
-// BiConsumer<T, U> — Consumer a deux parametres
+// BiConsumer<T, U> — Consumer a deux paramêtres
 BiConsumer<String, Integer> printKV = (k, v) -> System.out.println(k + "=" + v);
 
-// BiPredicate<T, U> — Predicate a deux parametres
+// BiPredicate<T, U> — Predicate a deux paramêtres
 BiPredicate<String, String> startsWith = String::startsWith;
 \`\`\`
 
@@ -3817,7 +3817,7 @@ names.forEach(name -> counter.incrementAndGet());
 ## Method references — shorthand pour les lambdas
 
 \`\`\`java
-// Quand la lambda appelle une methode existante, utilisez ::
+// Quand la lambda appelle une méthode existante, utilisez ::
 
 // 1. Methode statique
 //   (args) -> ClassName.staticMethod(args)
@@ -3857,18 +3857,18 @@ names.stream()
 
 ## Bonnes pratiques
 
-1. **Preferer les method references** quand une methode existe deja
-2. **Garder les lambdas courtes** — si le corps depasse 3 lignes, extrayez dans une methode
-3. **Eviter les effets de bord** — une lambda ne devrait pas modifier l'etat exterieur
+1. **Preferer les method references** quand une méthode existe déjà
+2. **Garder les lambdas courtes** — si le corps depasse 3 lignes, extrayez dans une méthode
+3. **Eviter les effets de bord** — une lambda ne devrait pas modifier l'état exterieur
 4. **Utiliser les interfaces standard** — \`Function\`, \`Predicate\`, \`Consumer\` plutot que vos propres interfaces
 5. **Ne pas capturer de variables mutables** — source de bugs en multi-thread
-6. **Composer avec \`andThen()\` et \`compose()\`** — plutot que d'ecrire des lambdas imbriquees
+6. **Composer avec \`andThen()\` et \`compose()\`** — plutot que d'écrire des lambdas imbriquees
 
 ## Pièges courants
 
 1. **Lambda et checked exceptions** — les interfaces fonctionnelles standard ne declarent pas de checked exceptions
 2. **Capturer une variable qui change** — erreur de compilation (effectively final)
-3. **\`this\` dans une lambda** — refere a la classe englobante, pas a l'interface fonctionnelle
+3. **\`this\` dans une lambda** — refere à la classe englobante, pas à l'interface fonctionnelle
 4. **Lambdas trop longues** — difficiles a lire et a tester
 5. **Effets de bord dans les lambdas** — comportement imprevisible en parallel stream
 
@@ -3907,7 +3907,7 @@ List<String> result = items.stream()       // 1. Source : obtention du Stream
     .filter(item -> item.startsWith("A")) // 2. Operation intermediaire (lazy)
     .map(String::toUpperCase)             // 3. Operation intermediaire (lazy)
     .sorted()                             // 4. Operation intermediaire (lazy)
-    .toList();                            // 5. Operation terminale (eager — declenche le traitement)
+    .toList();                            // 5. Operation terminale (eager — déclenche le traitement)
 \`\`\`
 
 ## Sources de Stream
@@ -3930,7 +3930,7 @@ Stream<String> empty = Stream.empty();
 Stream<Integer> powersOfTwo = Stream.iterate(1, n -> n * 2).limit(10);
 Stream<Double> random = Stream.generate(Math::random).limit(5);
 
-// Stream sur primitives (evite l'autoboxing)
+// Stream sur primitives (évite l'autoboxing)
 IntStream.range(0, 10);        // 0..9
 IntStream.rangeClosed(1, 10);  // 1..10
 LongStream.iterate(1L, n -> n + 1L).limit(100);
@@ -4028,9 +4028,9 @@ list.parallelStream()
 // ✅ Operations CPU-bound independantes
 // ❌ Petites collections (overhead du parallelisme > gain)
 // ❌ Operations I/O-bound (bloquant, pool sature)
-// ❌ Avec etat partage (race conditions)
+// ❌ Avec état partage (race conditions)
 
-// Controler le pool (avance)
+// Contrôler le pool (avance)
 ForkJoinPool customPool = new ForkJoinPool(4);
 try {
     customPool.submit(() ->
@@ -4064,10 +4064,10 @@ map.merge("Alice", 1, Integer::sum);
 ## Bonnes pratiques
 
 1. **Filter avant map** — reduit le nombre d'elements a transformer
-2. **Utiliser les primitives** (\`IntStream\`, \`LongStream\`) pour eviter l'autoboxing
+2. **Utiliser les primitives** (\`IntStream\`, \`LongStream\`) pour éviter l'autoboxing
 3. **Ne pas reutiliser un Stream** — une fois consomme, il est ferme
 4. **toList() (Java 16+) vs collect(Collectors.toList())** — le premier est plus court et cree une liste immuable
-5. **Attention aux effets de bord** — dans forEach et peek, pas de mutation d'etat externe
+5. **Attention aux effets de bord** — dans forEach et peek, pas de mutation d'état externe
 6. **Paralleliser avec parcimonie** — mesurez avant d'utiliser parallelStream()
 
 ## Pièges courants
@@ -4093,7 +4093,7 @@ Source : [Oracle Java Documentation — Streams](https://docs.oracle.com/javase/
 
 \`Optional\` est un conteneur qui peut contenir ou non une valeur. Il a ete introduit pour representer explicitement l'absence de valeur et reduire les \`NullPointerException\`.
 
-L'objectif est de rendre explicite dans le **type de retour** qu'une valeur peut etre absente, plutot que de retourner \`null\` et esperer que l'appelant verifie.
+L'objectif est de rendre explicite dans le **type de retour** qu'une valeur peut être absente, plutot que de retourner \`null\` et esperer que l'appelant verifie.
 
 ## Creation d'Optional
 
@@ -4161,9 +4161,9 @@ Optional<String> name = user.map(User::getName);
 // Si user est vide → Optional.empty()
 // Si user est present → Optional<String> contenant le nom
 
-// flatMap — transforme quand le resultat est deja un Optional
+// flatMap — transforme quand le resultat est déjà un Optional
 Optional<String> email = user.flatMap(User::getEmail);
-// Si getEmail() retourne Optional<String>, flatMap evite Optional<Optional<String>>
+// Si getEmail() retourne Optional<String>, flatMap évite Optional<Optional<String>>
 
 // filter — garde ou vide selon un predicat
 Optional<User> adult = user.filter(u -> u.getAge() >= 18);
@@ -4208,7 +4208,7 @@ max.ifPresent(System.out::println);
 // MAUVAIS — retourne null pour "pas de resultat"
 public User findById(long id) {
     User user = database.get(id);
-    return user;  // Pourrait etre null !
+    return user;  // Pourrait être null !
 }
 
 // BON — Optional explicite
@@ -4244,27 +4244,27 @@ public String getCityDisplayName(Long userId) {
 // 1. Les champs de classe
 public class User {
     // private Optional<String> email;  // Non — Optional n'est pas serializable
-    private String email;  // Simple champ, gerez null a l'usage
+    private String email;  // Simple champ, gerez null à l'usage
 }
 
-// 2. Les parametres de methode
+// 2. Les paramêtrès de méthode
 public void process(Optional<String> input) {  // Non — mauvaise pratique
-    // Equivalent a : "le parametre peut etre null, mais on vous le dit dans le type"
-    // Preferer : surcharge de methode ou methode avec conditions
+    // Equivalent a : "le paramêtre peut être null, mais on vous le dit dans le type"
+    // Preferer : surcharge de méthode ou méthode avec conditions
 }
 
 // 3. Les collections
 // Optional<List<String>> — mauvaise idee !
-// List.empty() represente deja l'absence de resultats
+// List.empty() represente déjà l'absence de resultats
 \`\`\`
 
 ## Bonnes pratiques
 
-1. **Utiliser Optional pour les retours de methodes** — rend explicite l'absence de valeur
-2. **Ne jamais retourner \`null\` d'une methode qui retourne Optional** — retournez \`Optional.empty()\`
+1. **Utiliser Optional pour les retours de méthodes** — rend explicite l'absence de valeur
+2. **Ne jamais retourner \`null\` d'une méthode qui retourne Optional** — retournez \`Optional.empty()\`
 3. **Utiliser \`ifPresent()\` et \`orElse()\`** — pas de \`isPresent()\` + \`get()\` (anti-pattern)
-4. **\`flatMap\` pour le chaining** — evite les Optionals imbriques
-5. **\`orElseGet()\` pour les valeurs couteuses** — evite le calcul inutile
+4. **\`flatMap\` pour le chaining** — évite les Optionals imbriques
+5. **\`orElseGet()\` pour les valeurs couteuses** — évite le calcul inutile
 6. **\`OptionalInt\`, \`OptionalLong\`, \`OptionalDouble\`** pour les primitives
 7. **Collecter les Optionals** avec \`flatMap(Optional::stream)\` (Java 9+)
 
@@ -4272,7 +4272,7 @@ public void process(Optional<String> input) {  // Non — mauvaise pratique
 
 1. **\`get()\` sans \`isPresent()\`** — NoSuchElementException
 2. **Optional comme champ** — non serializable, mauvaise performance
-3. **Optional comme parametre** — rend l'API moins lisible que la surcharge
+3. **Optional comme paramêtre** — rend l'API moins lisible que la surcharge
 4. **Retourner \`Optional.of()\` sans verifier null** — NPE immediat
 5. **Optional de collection** — \`Optional<List>\` est redondant, \`List.empty()\` suffit
 6. **\`orElse()\` avec valeur couteuse** — toujours evaluee, meme si Optional est present
@@ -4290,20 +4290,20 @@ Source : [Oracle Java Documentation — Optional](https://docs.oracle.com/javase
 
 ## Qu'est-ce que c'est ?
 
-Une interface fonctionnelle est une interface avec **une seule methode abstraite** (SAM — Single Abstract Method). Cette propriete permet aux expressions lambda et method references de les implementer de maniere implicite.
+Une interface fonctionnelle est une interface avec **une seule méthode abstraite** (SAM — Single Abstract Method). Cette propriete permet aux expressions lambda et method references de les implementer de maniere implicite.
 
 \`\`\`java
 // L'annotation @FunctionalInterface est optionnelle mais recommandee
 @FunctionalInterface
 public interface Transformer<T, R> {
     R transform(T input);
-    // Une seule methode abstraite → interface fonctionnelle
+    // Une seule méthode abstraite → interface fonctionnelle
 }
 \`\`\`
 
 ## @FunctionalInterface
 
-L'annotation \`@FunctionalInterface\` demande au compilateur de verifier que l'interface respecte les regles SAM. Si vous ajoutez une deuxieme methode abstraite, le compilateur genere une erreur.
+L'annotation \`@FunctionalInterface\` demande au compilateur de verifier que l'interface respecte les regles SAM. Si vous ajoutez une deuxieme méthode abstraite, le compilateur genere une erreur.
 
 \`\`\`java
 @FunctionalInterface
@@ -4326,12 +4326,12 @@ public interface Printer {
     boolean equals(Object o);
 }
 
-// Ceci compile car une seule methode abstraite : print()
+// Ceci compile car une seule méthode abstraite : print()
 \`\`\`
 
 \`\`\`java
 // Sans @FunctionalInterface, l'interface reste fonctionnelle
-// mais le compilateur ne previent pas si on ajoute une deuxieme methode
+// mais le compilateur ne previent pas si on ajoute une deuxieme méthode
 public interface Calculator {
     int calculate(int a, int b);
     // Si quelqu'un ajoute "int reset();" → plus fonctionnelle, mais pas d'erreur !
@@ -4351,11 +4351,11 @@ Consumer<String> log = s -> logger.info(s);
 Consumer<String> combined = print.andThen(log);
 combined.accept("message");  // Affiche puis log
 
-// BiConsumer<T, U> — deux parametres
+// BiConsumer<T, U> — deux paramêtres
 BiConsumer<String, Integer> printEntry = (k, v) -> System.out.println(k + "=" + v);
 
 // ============================================================
-// 2. Supplier<T> — fournit une valeur (factory), pas de parametre
+// 2. Supplier<T> — fournit une valeur (factory), pas de paramêtre
 // ============================================================
 Supplier<LocalDateTime> now = LocalDateTime::now;
 Supplier<List<String>> listFactory = ArrayList::new;
@@ -4403,7 +4403,7 @@ UnaryOperator<String> identity = String::toLowerCase;
 BinaryOperator<Integer> max = Integer::max;
 BinaryOperator<Integer> sum = Integer::sum;
 
-// Primitives (evitent l'autoboxing)
+// Primitives (évitent l'autoboxing)
 IntFunction<String> intToString = String::valueOf;
 ToIntFunction<String> stringToInt = String::length;
 DoubleBinaryOperator avg = (a, b) -> (a + b) / 2;
@@ -4456,11 +4456,11 @@ List<String> contents = files.stream()
 2. **@FunctionalInterface** — toujours annoter vos interfaces fonctionnelles personnalisees
 3. **Method references > lambdas > classes anonymes** — dans cet ordre de preference
 4. **Composer plutot qu'imbriquer** — \`andThen()\` et \`compose()\` pour la lisibilite
-5. **Ne pas ajouter de methode abstraite supplementaire** — l'interface cesserait d'etre fonctionnelle
+5. **Ne pas ajouter de méthode abstraite supplementaire** — l'interface cesserait d'être fonctionnelle
 
 ## Pièges courants
 
-1. **Ajouter une deuxieme methode abstraite sans @FunctionalInterface** — casse le code client silencieusement
+1. **Ajouter une deuxieme méthode abstraite sans @FunctionalInterface** — casse le code client silencieusement
 2. **Checked exceptions** — les interfaces standard n'en declarent pas
 3. **Equivocite** — si deux interfaces fonctionnelles conviennent, le compilateur peut ne pas savoir laquelle choisir
 4. **Surcharge ambiguë** — \`execute(Function<String, String>)\` vs \`execute(Predicate<String>)\` peut causer des erreurs
@@ -4478,7 +4478,7 @@ Source : [Oracle Java Documentation — Functional Interfaces](https://docs.orac
 
 ## Qu'est-ce que c'est ?
 
-Les **sealed classes** (classes scellees) permettent de controler **quelles classes peuvent etendre ou implementer** une classe ou interface donnee. C'est un compromis entre \`final\` (aucun heritage) et l'heritage ouvert (toute classe peut heriter).
+Les **sealed classes** (classes scellees) permettent de contrôler **quelles classes peuvent etendre ou implementer** une classe ou interface donnee. C'est un compromis entre \`final\` (aucun heritage) et l'heritage ouvert (toute classe peut heriter).
 
 Une classe scellee declare une **liste explicite** de sous-classes autorisees via le mot-cle \`permits\`.
 
@@ -4499,26 +4499,26 @@ Chaque sous-classe listee dans \`permits\` doit choisir un des trois modificateu
 public sealed class Animal permits Dog, Cat, Bird {}
 
 public final class Dog extends Animal {}
-// Dog ne peut plus etre etendu
+// Dog ne peut plus être etendu
 
 // 2. sealed — continue la restriction
 public sealed class Cat extends Animal permits Lion, Tiger {}
-// Cat etend Animal mais ne peut etre etendu que par Lion et Tiger
+// Cat etend Animal mais ne peut être etendu que par Lion et Tiger
 
 public final class Lion extends Cat {}
 public final class Tiger extends Cat {}
 
 // 3. non-sealed — heritage libre (la restriction est levee)
 public non-sealed class Bird extends Animal {}
-// Bird peut desormais etre etendu par n'importe quelle classe
+// Bird peut désormais être etendu par n'importe quelle classe
 
 public class Eagle extends Bird {}
 public class Penguin extends Bird {}
 \`\`\`
 
-## Les sous-classes doivent etre accessibles
+## Les sous-classes doivent être accessibles
 
-Les sous-classes autorisees doivent se trouver dans le **meme module** (ou le meme package si pas de module). C'est une regle imposee par le compilateur.
+Les sous-classes autorisees doivent se trouver dans le **meme module** (où le meme package si pas de module). C'est une regle imposee par le compilateur.
 
 \`\`\`java
 // Dans le meme fichier (petite hierarchie)
@@ -4595,7 +4595,7 @@ public void processPayment(PaymentMethod payment, double amount) {
 ## Sealed vs Enum vs Abstract
 
 \`\`\`java
-// Enum — nombre fixe d'instances, pas de donnees differentes par instance
+// Enum — nombre fixe d'instances, pas de donnees différentes par instance
 enum Day { MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY }
 // Chaque instance identique (juste un label)
 
@@ -4604,9 +4604,9 @@ sealed interface Vehicle permits Car, Bicycle, Truck {}
 record Car(String brand, int doors) implements Vehicle {}
 record Bicycle(String type, boolean electric) implements Vehicle {}
 record Truck(double capacity, int axles) implements Vehicle {}
-// Chaque sous-type a sa propre structure de donnees, tres differente
+// Chaque sous-type a sa propre structure de donnees, très différente
 
-// Abstract — heritage libre, aucun controle
+// Abstract — heritage libre, aucun contrôle
 abstract class Database {
     abstract void connect();
 }
@@ -4619,7 +4619,7 @@ String[][] comparison = {
     {"", "Sealed", "Enum", "Abstract"},
     {"Instances", "Illimitees par sous-type", "Fixes", "Illimitees"},
     {"Donnees par type", "Oui (record)", "Limitees", "Oui"},
-    {"Controle heritage", "Total (liste blanche)", "N/A (pas d'heritage)", "Aucun"},
+    {"Contrôle heritage", "Total (liste blanche)", "N/A (pas d'heritage)", "Aucun"},
     {"Switch exhaustif", "Oui", "Oui", "Non"},
     {"Nombre de variants", "Petit a moyen", "Petit", "Grand / illimite"},
 };
@@ -4639,20 +4639,20 @@ public String describeShape(Shape shape) {
 
 ## Bonnes pratiques
 
-1. **Utiliser sealed pour les domaines fermes** — types de paiement, etats d'une machine, resultats d'operation
-2. **Combiner avec records** — donnees immuables + hierarchie controlee
+1. **Utiliser sealed pour les domaines fermes** — types de paiement, états d'une machine, resultats d'operation
+2. **Combiner avec records** — donnees immuables + hierarchie contrôlee
 3. **Exploiter le switch exhaustif** — pas besoin de \`default\`, le compilateur verifie tout
-4. **Preferer sealed a une interface avec documentation** ("n'implemente pas cette interface")
+4. **Preferer sealed à une interface avec documentation** ("n'implemente pas cette interface")
 5. **\`non-sealed\` avec parcimonie** — utiliser seulement quand l'heritage libre est necessaire
-6. **Utiliser sealed pour les state machines** — etats finis avec donnees par etat
+6. **Utiliser sealed pour les state machines** — états finis avec donnees par état
 
 ## Pièges courants
 
 1. **Oublier \`permits\`** — erreur de compilation en Java 17+ (interdit par defaut)
-2. **Sous-classes dans un module different** — impossible, doivent etre dans le meme module
+2. **Sous-classes dans un module différent** — impossible, doivent être dans le meme module
 3. **\`default\` redondant** — avec sealed exhaustif, un \`default\` masque les nouveaux cas
 4. **Trop de variantes** — si > 10 sous-classes, envisagez une autre approche
-5. **Sealed sans pattern matching** — perd une grande partie de l'interet
+5. **Sealed sans pattern matching** — perd une grande partie de l'intérêt
 
 Source : [JEP 409 — Sealed Classes](https://openjdk.org/jeps/409)
 `},
@@ -4671,7 +4671,7 @@ Source : [JEP 409 — Sealed Classes](https://openjdk.org/jeps/409)
 
 ## Qu'est-ce que c'est ?
 
-En Java multi-thread, chaque thread peut avoir sa **propre copie en cache** des variables. Un thread peut modifier une variable sans que les autres threads le voient immediatement. \`synchronized\` et \`volatile\` sont deux mecanismes pour gerer cette visibilite inter-thread.
+En Java multi-thread, chaque thread peut avoir sa **propre copie en cache** des variables. Un thread peut modifier une variable sans que les autrès threads le voient immediatement. \`synchronized\` et \`volatile\` sont deux mecanismes pour gerer cette visibilite inter-thread.
 
 \`\`\`
 Thread 1                    Thread 2
@@ -4688,26 +4688,26 @@ Thread 1                    Thread 2
 
 ## volatile — visibilite sans atomicite
 
-\`volatile\` garantit que **toute lecture voit la derniere ecriture** (happens-before). Le compilateur et le CPU ne reordonnent pas les operations autour d'un acces volatile.
+\`volatile\` garantit que **toute lecture voit la derniere écriture** (happens-before). Le compilateur et le CPU ne reordonnent pas les operations autour d'un acces volatile.
 
 \`\`\`java
-// volatile = "lecture/ecriture toujours en memoire principale"
+// volatile = "lecture/écriture toujours en mémoire principale"
 public class RunningFlag {
     private volatile boolean running = true;
 
     public void stop() {
-        running = false;  // Ecriture immediate en memoire principale
+        running = false;  // Ecriture immediate en mémoire principale
     }
 
     public void work() {
-        while (running) {  // Lecture depuis la memoire principale
+        while (running) {  // Lecture depuis la mémoire principale
             // Sans volatile, le thread pourrait mettre en cache "running = true"
             // et ne jamais voir la modification de stop()
         }
     }
 }
 
-// Usage typique : flag d'arret, etat initialise, singleton double-check
+// Usage typique : flag d'arret, état initialise, singleton double-check
 \`\`\`
 
 \`\`\`java
@@ -4717,9 +4717,9 @@ public class Counter {
 
     public void increment() {
         count++;  // PROBLEME : ce n'est PAS atomique !
-        // 1. Lire count (depuis memoire principale)
+        // 1. Lire count (depuis mémoire principale)
         // 2. Incrementer (dans le registre CPU)
-        // 3. Ecrire count (vers memoire principale)
+        // 3. Ecrire count (vers mémoire principale)
         // Entre 1 et 3, un autre thread peut avoir modifie count !
     }
 }
@@ -4731,7 +4731,7 @@ public class Counter {
 
 ## synchronized — atomicite + visibilite
 
-\`synchronized\` offre les deux garanties : **atomicite** (l'operation ne peut pas etre interrompue) et **visibilite** (le lock garantit la coherence du cache).
+\`synchronized\` offre les deux garanties : **atomicite** (l'operation ne peut pas être interrompue) et **visibilite** (le lock garantit la coherence du cache).
 
 \`\`\`java
 public class SafeCounter {
@@ -4759,7 +4759,7 @@ public class SafeCounter {
 // Comment synchronized garantit la visibilite :
 // 1. Avant d'entrer dans synchronized : vide le cache CPU
 // 2. Execute le code critique
-// 3. En sortant de synchronized : ecrit toutes les modifications en memoire principale
+// 3. En sortant de synchronized : écrit toutes les modifications en mémoire principale
 // → Le thread suivant qui entre dans synchronized voit toutes les modifications
 
 // C'est le principe "happens-before" du JLS (Java Language Specification)
@@ -4812,7 +4812,7 @@ counter.compareAndSet(10, 20);    // Si == 10, alors = 20
 AtomicReference<String> ref = new AtomicReference<>("initial");
 ref.compareAndSet("initial", "updated");
 
-// LongAdder — plus performant que AtomicInteger pour les ecritures frequentes
+// LongAdder — plus performant que AtomicInteger pour les écritures frequentes
 LongAdder adder = new LongAdder();
 adder.increment();
 adder.add(5);
@@ -4828,14 +4828,14 @@ String[][] comparison = {
     {"Blocage", "Aucun", "Lock", "CAS (non-bloquant)"},
     {"Performance", "+++", "+", "++"},
     {"Deadlock", "Jamais", "Possible", "Jamais"},
-    {"Usage typique", "Flag, etat", "Operations composees", "Compteurs, CAS"},
+    {"Usage typique", "Flag, état", "Operations composees", "Compteurs, CAS"},
 };
 \`\`\`
 
 ## Bonnes pratiques
 
 1. **volatile pour les flags simples** — \`running\`, \`initialized\`, \`shutdown\`
-2. **synchronized pour les sections critiques** — quand plusieurs operations doivent etre atomiques ensemble
+2. **synchronized pour les sections critiques** — quand plusieurs operations doivent être atomiques ensemble
 3. **Atomic* pour les compteurs** — plus performant que synchronized pour les increments
 4. **Lock prive** — \`private final Object lock = new Object()\` au lieu de \`synchronized(this)\`
 5. **Minimiser les sections synchronisees** — bloque le moins de code possible
@@ -4871,7 +4871,7 @@ Ensemble, ils remplacent la creation manuelle de threads (\`new Thread()\`) et l
 
 ## ExecutorService — le pool de threads
 
-Creer un \`new Thread()\` par tache est inefficace : la creation/destruction de threads est couteuse et le nombre de threads concurrents n'est pas limite.
+Creer un \`new Thread()\` par tâche est inefficace : la creation/destruction de threads est couteuse et le nombre de threads concurrents n'est pas limite.
 
 \`\`\`java
 // Les principaux types de pools
@@ -4882,7 +4882,7 @@ ScheduledExecutorService scheduled = Executors.newScheduledThreadPool(2); // Tac
 \`\`\`
 
 \`\`\`java
-// Soumission de taches
+// Soumission de tâches
 ExecutorService pool = Executors.newFixedThreadPool(4);
 
 // execute() — Runnable, pas de retour (fire-and-forget)
@@ -4898,7 +4898,7 @@ Future<Integer> future = pool.submit(() -> {
 Integer result = future.get();              // Bloque jusqu'au resultat
 Integer result = future.get(5, TimeUnit.SECONDS);  // Timeout
 
-// invokeAll() — plusieurs taches
+// invokeAll() — plusieurs tâches
 List<Callable<String>> tasks = List.of(
     () -> "Task 1",
     () -> "Task 2"
@@ -4906,8 +4906,8 @@ List<Callable<String>> tasks = List.of(
 List<Future<String>> futures = pool.invokeAll(tasks);
 
 // Cycle de vie du pool
-pool.shutdown();                    // Attends la fin des taches en cours
-pool.shutdownNow();                 // Interrompt les taches en cours
+pool.shutdown();                    // Attends la fin des tâches en cours
+pool.shutdownNow();                 // Interrompt les tâches en cours
 pool.awaitTermination(10, TimeUnit.SECONDS);  // Attente max
 \`\`\`
 
@@ -4952,7 +4952,7 @@ CompletableFuture<String> future = CompletableFuture
 CompletableFuture<Order> future = CompletableFuture
     .supplyAsync(() -> fetchUser(42))
     .thenCompose(user -> CompletableFuture.supplyAsync(() -> fetchOrders(user.getId())));
-// thenCompose evite CompletableFuture<CompletableFuture<Order>>
+// thenCompose évite CompletableFuture<CompletableFuture<Order>>
 \`\`\`
 
 \`\`\`java
@@ -5038,9 +5038,9 @@ String[][] comparison = {
 
 ## Bonnes pratiques
 
-1. **Toujours specifier un \`ExecutorService\`** — ne pas utiliser le pool commun pour les taches longues
+1. **Toujours specifier un \`ExecutorService\`** — ne pas utiliser le pool commun pour les tâches longues
 2. **\`shutdown()\` proprement** — dans un bloc \`finally\` ou avec try-with-resources (Java 19+)
-3. **Dimensionner le pool selon le type de tache** — CPU-bound vs I/O-bound
+3. **Dimensionner le pool selon le type de tâche** — CPU-bound vs I/O-bound
 4. **\`thenCompose\` vs \`thenApply\`** — \`thenCompose\` quand la fonction retourne un CompletableFuture
 5. **Timeout systematique** — \`orTimeout()\` (Java 9+) pour les appels externes
 6. **Logguer les exceptions** — ne pas laisser les CompletableFuture silencieusement echouer
@@ -5065,7 +5065,7 @@ Source : [Oracle Java Documentation — ExecutorService](https://docs.oracle.com
 
 ## Qu'est-ce que c'est ?
 
-La reflexion permet a un programme Java d'**inspecter et manipuler** sa propre structure a l'execution : classes, methodes, champs, constructeurs — meme les elements prives. C'est un mecanisme puissant, utilise par tous les frameworks modernes (Spring, Hibernate, Jackson, JUnit).
+La reflexion permet à un programme Java d'**inspecter et manipuler** sa propre structure à l'execution : classes, méthodes, champs, constructeurs — meme les elements prives. C'est un mecanisme puissant, utilise par tous les frameworks modernes (Spring, Hibernate, Jackson, JUnit).
 
 ## Les classes fondamentales du package java.lang.reflect
 
@@ -5073,8 +5073,8 @@ La reflexion permet a un programme Java d'**inspecter et manipuler** sa propre s
 import java.lang.reflect.*;
 
 // Les classes principales :
-// Class<?>     → represente une classe chargee en memoire
-// Method       → represente une methode
+// Class<?>     → represente une classe chargee en mémoire
+// Method       → represente une méthode
 // Field        → represente un champ
 // Constructor<?> → represente un constructeur
 // Annotation   → represente une annotation
@@ -5089,7 +5089,7 @@ Class<?> c2 = "hello".getClass();                   // 2. .getClass() sur instan
 Class<?> c3 = Class.forName("java.lang.String");    // 3. Class.forName (par nom complet)
 
 // La troisieme forme est la plus utilisee dans les frameworks :
-// Elle permet de charger des classes dont on ne connait le nom qu'a l'execution
+// Elle permet de charger des classes dont on ne connait le nom qu'à l'execution
 \`\`\`
 
 \`\`\`java
@@ -5111,11 +5111,11 @@ Class<?>[] interfaces = clazz.getInterfaces();
 ## Instanciation dynamique
 
 \`\`\`java
-// Instanciation par constructeur sans parametre
+// Instanciation par constructeur sans paramêtre
 Class<?> clazz = Class.forName("com.example.User");
 User user = (User) clazz.getDeclaredConstructor().newInstance();
 
-// Instanciation avec parametres
+// Instanciation avec paramêtres
 Constructor<?> ctor = clazz.getDeclaredConstructor(String.class, int.class);
 User user = (User) ctor.newInstance("Alice", 30);
 \`\`\`
@@ -5150,7 +5150,7 @@ modifiersField.setInt(finalField, finalField.getModifiers() & ~Modifier.FINAL);
 finalField.set(null, "New Value");  // Modification de constante ! (dernier recours)
 \`\`\`
 
-## Invocation de methodes
+## Invocation de méthodes
 
 \`\`\`java
 class Calculator {
@@ -5192,7 +5192,7 @@ class MyService {
     public void process() { /* ... */ }
 }
 
-// Scan des annotations a l'execution
+// Scan des annotations à l'execution
 for (Method method : MyService.class.getDeclaredMethods()) {
     LogExecution annotation = method.getAnnotation(LogExecution.class);
     if (annotation != null) {
@@ -5218,7 +5218,7 @@ public class ReflectionBenchmark {
     }
 
     public void cachedReflection() throws Exception {
-        staticMethod.invoke(calc, 3, 4);  // ~50 nanosecondes (methode mise en cache)
+        staticMethod.invoke(calc, 3, 4);  // ~50 nanosecondes (méthode mise en cache)
     }
 
     private static final Method staticMethod;
@@ -5254,7 +5254,7 @@ public class User { /* ... */ }
 // 4. Tests (JUnit)
 @Test
 void myTest() { /* ... */ }
-// JUnit trouve les methodes @Test via reflexion
+// JUnit trouve les méthodes @Test via reflexion
 
 // 5. Proxies dynamiques (AOP)
 InvocationHandler handler = (proxy, method, args) -> {
@@ -5269,7 +5269,7 @@ UserService proxy = (UserService) Proxy.newProxyInstance(
 
 ## Bonnes pratiques
 
-1. **Mettre en cache les Method/Field/Constructor** — ne pas les recuperer a chaque appel
+1. **Mettre en cache les Method/Field/Constructor** — ne pas les reçuperer a chaque appel
 2. **Utiliser \`setAccessible(true)\` avec parcimonie** — contourne l'encapsulation
 3. **Preferer les API standard** — MethodHandle, VarHandle sont plus rapides
 4. **Limiter la reflexion au code d'infrastructure** — pas dans le code metier
@@ -5279,7 +5279,7 @@ UserService proxy = (UserService) Proxy.newProxyInstance(
 ## Pièges courants
 
 1. **Performance** — la reflexion est 10-100× plus lente que l'appel direct
-2. **Pas de verification compile-time** — une faute de frappe dans le nom de methode ne sera detectee qu'a l'execution
+2. **Pas de verification compile-time** — une faute de frappe dans le nom de méthode ne sera detectee qu'à l'execution
 3. **Violation d'encapsulation** — acceder a des membres prives brise l'abstraction
 4. **SecurityManager** — peut interdire la reflexion selon la configuration
 5. **Proxies et final** — impossible de creer un proxy pour une classe finale
@@ -5299,7 +5299,7 @@ Source : [Oracle Java Documentation — Reflection](https://docs.oracle.com/java
 
 Les **generiques** en Java sont **invariants** par defaut : \`List<String>\` n'est PAS un sous-type de \`List<Object>\`. Les **wildcards** (\`? extends T\`, \`? super T\`) permettent de retrouver de la flexibilite tout en preservant la securite des types.
 
-## Le probleme de l'invariance
+## Le problème de l'invariance
 
 \`\`\`java
 // Pourquoi List<String> n'est pas un sous-type de List<Object> ?
@@ -5328,7 +5328,7 @@ producers = numbers;                          // OK
 // LECTURE : OK — on sait que c'est au moins un Number
 Number n = producers.get(0);  // OK
 Object o = producers.get(0);  // OK
-// Integer i = producers.get(0);  // ERREUR : pourrait etre Double !
+// Integer i = producers.get(0);  // ERREUR : pourrait être Double !
 
 // ECRITURE : INTERDITE — ne sait pas quel sous-type ajouter
 // producers.add(42);      // ERREUR
@@ -5339,7 +5339,7 @@ Object o = producers.get(0);  // OK
 ## Contravariance avec ? super T
 
 \`\`\`java
-// ? super T = la collection CONSOMME des elements de type T (ecriture possible)
+// ? super T = la collection CONSOMME des elements de type T (écriture possible)
 List<Object> objects = new ArrayList<>();
 List<Number> numbers = new ArrayList<>();
 List<Integer> integers = new ArrayList<>();
@@ -5351,12 +5351,12 @@ consumers = numbers;                          // OK
 // Non ! List<Integer> n'est pas List<? super Integer>
 // (? super Integer) signifie "Integer ou supertype"
 
-// ECRITURE : OK — tout Integer peut etre ajoute
+// ECRITURE : OK — tout Integer peut être ajoute
 consumers.add(42);    // Integer -> OK
 
 // LECTURE : restreinte a Object
 Object obj = consumers.get(0);  // OK (au pire, c'est un Object)
-// Number num = consumers.get(0);  // ERREUR : pourrait etre Object
+// Number num = consumers.get(0);  // ERREUR : pourrait être Object
 \`\`\`
 
 ## Le principe PECS (Producer Extends, Consumer Super)
@@ -5373,10 +5373,10 @@ public double sum(Collection<? extends Number> numbers) {
 }
 // numbers est un "producteur" de Number
 
-// Si la collection RECOIT des donnees (ecriture) → ? super
+// Si la collection RECOIT des donnees (écriture) → ? super
 public void addAll(Collection<? super Integer> sink) {
     for (int i = 0; i < 100; i++) {
-        sink.add(i);  // Integer peut etre ajoute a Integer, Number, Object
+        sink.add(i);  // Integer peut être ajoute a Integer, Number, Object
     }
 }
 // sink est un "consommateur" de Integer
@@ -5385,7 +5385,7 @@ public void addAll(Collection<? super Integer> sink) {
 \`\`\`java
 // Exemple de la JDK : Collections.copy()
 public static <T> void copy(List<? super T> dest, List<? extends T> src) {
-    // dest est consommateur (? super T) — on y ecrit
+    // dest est consommateur (? super T) — on y écrit
     // src est producteur (? extends T) — on y lit
     for (int i = 0; i < src.size(); i++) {
         dest.set(i, src.get(i));
@@ -5417,17 +5417,17 @@ producers = new ArrayList<Orange>();  // OK
 Citrus c = producers.get(0);         // OK : au moins Citrus
 // producers.add(new Citrus());      // ERREUR
 
-// Avec wildcard super : contravariance (ecriture)
+// Avec wildcard super : contravariance (écriture)
 List<? super Citrus> consumers = citruses;
 consumers = new ArrayList<Fruit>();   // OK
 consumers.add(new Citrus());          // OK
 consumers.add(new Orange());          // OK (Orange extends Citrus)
 // consumers.add(new Fruit());        // ERREUR : Fruit n'est pas Citrus ou sous-type
-// Citrus c = consumers.get(0);      // ERREUR : pourrait etre Fruit ou Object
+// Citrus c = consumers.get(0);      // ERREUR : pourrait être Fruit ou Object
 \`\`\`
 
 \`\`\`java
-// Wildcard avec des methodes generiques — inference de type
+// Wildcard avec des méthodes generiques — inference de type
 public class Utils {
     // ? sans contrainte (wildcard nonborne)
     public static boolean isEmpty(List<?> list) {
@@ -5448,7 +5448,7 @@ List<?> wildcard = new ArrayList<String>();
 wildcard.add(null);     // OK (seulement null)
 // wildcard.add("a");   // ERREUR : type inconnu
 
-List raw = new ArrayList<String>();  // Type brut — a eviter !
+List raw = new ArrayList<String>();  // Type brut — a éviter !
 raw.add("a");                        // OK, mais pas de verification
 String s = (String) raw.get(0);      // Cast necessaire, pas type-safe
 \`\`\`
@@ -5468,17 +5468,17 @@ String[][] varianceComparison = {
 ## Bonnes pratiques
 
 1. **PECS systematique** — Producer Extends, Consumer Super
-2. **Retour de methode : \`? extends T\`** — la methode produit des donnees
-3. **Parametre d'entree : \`? super T\`** — la methode consomme des donnees
+2. **Retour de méthode : \`? extends T\`** — la méthode produit des donnees
+3. **Paramêtre d'entree : \`? super T\`** — la méthode consomme des donnees
 4. **\`<T>\` si T est reference a plusieurs endroits** — wildcard si utilise une seule fois
 5. **Eviter les wildcards dans les types de retour** — complique l'API
 
 ## Pièges courants
 
-1. **Wildcard dans le mauvais sens** — utiliser \`? extends\` quand on veut ecrire (impossible !)
+1. **Wildcard dans le mauvais sens** — utiliser \`? extends\` quand on veut écrire (impossible !)
 2. **\`? super\` ne permet pas de lire autre chose qu'Object** — perte d'information de type
 3. **Wildcard dans un type de retour** — \`List<? extends Number>\` force l'appelant a gerer le wildcard
-4. **Capturer un wildcard** — pas possible d'ecrire \`T\` a partir d'un \`?\` directement
+4. **Capturer un wildcard** — pas possible d'écrire \`T\` à partir d'un \`?\` directement
 5. **Oublier que les tableaux sont covariants** — \`String[]\` est sous-type de \`Object[]\` (contrairement aux generiques)
 
 Source : [Oracle Java Documentation — Wildcards](https://docs.oracle.com/javase/tutorial/java/generics/wildcards.html)
@@ -5494,13 +5494,13 @@ Source : [Oracle Java Documentation — Wildcards](https://docs.oracle.com/javas
 
 ## Qu'est-ce que c'est ?
 
-Les \`enum\` en Java sont bien plus que des constantes nominees. Ce sont des **classes Java a part entiere** : elles peuvent avoir des champs, des constructeurs, des methodes, et implementer des interfaces. Chaque constante enum est une **instance unique** de la classe enum.
+Les \`enum\` en Java sont bien plus que des constantes nominees. Ce sont des **classes Java a part entiere** : elles peuvent avoir des champs, des constructeurs, des méthodes, et implementer des interfaces. Chaque constante enum est une **instance unique** de la classe enum.
 
 \`\`\`java
 // Enum simple — constantes uniquement
 enum Day { MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY }
 
-// Enum avance — avec champs, constructeur et methodes
+// Enum avance — avec champs, constructeur et méthodes
 public enum Planet {
     MERCURY(3.303e+23, 2.4397e6),
     VENUS(4.869e+24, 6.0518e6),
@@ -5521,7 +5521,7 @@ public enum Planet {
 }
 \`\`\`
 
-## Enum avec comportements differents par constante
+## Enum avec comportements différents par constante
 
 \`\`\`java
 // Strategy pattern nativement supporte par les enums
@@ -5563,7 +5563,7 @@ for (Operation op : Operation.values()) {
 // / → 2.0
 \`\`\`
 
-## Enum comme machine a etats (State Machine)
+## Enum comme machine a états (State Machine)
 
 \`\`\`java
 public enum OrderState {
@@ -5668,7 +5668,7 @@ stateNames.put(State.RUNNING, "En cours");
 stateNames.put(State.STOPPED, "Arrete");
 stateNames.put(State.PAUSED, "En pause");
 
-// Parcours par ordre de declaration
+// Parcours par ordre de déclaration
 for (State state : State.values()) {
     System.out.println(state + " = " + stateNames.get(state));
 }
@@ -5696,8 +5696,8 @@ public enum DatabaseConnection {
 DatabaseConnection.INSTANCE.executeQuery("SELECT * FROM users");
 // Avantages du Singleton par enum :
 // 1. Thread-safe (garanti par le classloader JVM)
-// 2. Resistant a la serialization (les enums sont serialisables par defaut)
-// 3. Protege contre la reflection (les enums ne peuvent pas etre instancies par reflection)
+// 2. Resistant à la serialization (les enums sont serialisables par defaut)
+// 3. Protege contre la reflection (les enums ne peuvent pas être instancies par reflection)
 // "Effective Java" (Joshua Bloch) recommande cette approche
 \`\`\`
 
@@ -5735,19 +5735,19 @@ public enum ParserType {
 
 ## Bonnes pratiques
 
-1. **Utiliser les enums pour les ensembles finis** — etats, codes, types, configurations
+1. **Utiliser les enums pour les ensembles finis** — états, codes, types, configurations
 2. **Remplacer les constantes \`int\` ou \`String\`** — type-safe, impossible de passer une valeur invalide
 3. **EnumSet et EnumMap** pour les operations ensemblistes — plus performants que HashSet/HashMap
 4. **Enum Singleton** pour les singletons — le plus robuste (Joshua Bloch, Effective Java)
-5. **Ajouter des champs et methodes** pour enrichir la semantique
+5. **Ajouter des champs et méthodes** pour enrichir la semantique
 6. **\`valueOf(String)\` pour la deserialisation** — attention aux IllegalArgumentException
-7. **\`values()\` retourne une copie** — peut etre mise en cache si appele frequemment
+7. **\`values()\` retourne une copie** — peut être mise en cache si appele frequemment
 
 ## Pièges courants
 
-1. **Enum trop gros** — si l'enum a > 20 constantes ou des methodes de 50 lignes, envisagez une classe polymorphe
-2. **Ordre de declaration** — \`values()\` et \`ordinal()\` dependent de l'ordre, ne pas ajouter de constantes au milieu
-3. **Serialization** — les enums sont serialisables par defaut, mais les champs ajoutes doivent l'etre aussi
+1. **Enum trop gros** — si l'enum a > 20 constantes ou des méthodes de 50 lignes, envisagez une classe polymorphe
+2. **Ordre de déclaration** — \`values()\` et \`ordinal()\` dependent de l'ordre, ne pas ajouter de constantes au milieu
+3. **Serialization** — les enums sont serialisables par defaut, mais les champs ajoutes doivent l'être aussi
 4. **\`ordinal()\` dangereux** — ne pas utiliser \`ordinal()\` comme index de base de donnees (l'ordre peut changer)
 5. **Switch sans default** — avec un enum, le compilateur ne previent pas si un nouveau cas est ajoute
 

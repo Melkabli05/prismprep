@@ -122,7 +122,7 @@ L'écosystème des outils IA pour développeurs s'est rapidement structuré auto
 
 ## Pièges courants
 
-1. **Se limiter à un seul outil** : Copilot est excellent pour le code, mais pour l'architecture ou le debugging complexe, un chat (Claude, ChatGPT) est plus adapté.
+1. **Se limiter à un seul outil** : Copilot est excellent pour le code, mais pour l'architecture où le debugging complexe, un chat (Claude, ChatGPT) est plus adapté.
 2. **Ignorer les coûts** : les APIs OpenAI/Anthropic coûtent cher à grande échelle. Estimer le volume avant de s'engager.
 3. **Courbe d'apprentissage ignorée** : un outil IA mal utilisé donne de mauvais résultats. Former l'équipe.
 
@@ -203,7 +203,7 @@ Source : [OpenAI — Prompt Engineering Guide](https://platform.openai.com/docs/
         {
           id: 'ai-4',
           question: 'Quelles tâches déléguez-vous à l\'IA vs ce que vous faites manuellement ?',
-          answer: "**À l'IA** : boilerplate et scaffolding, tests unitaires simples, documentation Javadoc/README, conversion de formats (JSON → POJO), refactorings mécaniques, explication de code existant, recherche de bugs évidents.\n\n**Manuellement** : décisions d'architecture, review de sécurité, logique métier critique, algorithmes complexes, debugging de problèmes subtils, design d'API publique.\n\n**En collaboration** : optimisation de performances (l'IA propose, je benchmark), rédaction technique (l'IA draft, je refine), exploration de solutions (l'IA brainstorm, je choisis).\n\n__Règle : si l'erreur a un coût élevé → je le fais moi-même. Si l'erreur est rattrapable → l'IA accélère.__",
+          answer: "**À l'IA** : boilerplate et scaffolding, tests unitaires simples, documentation Javadoc/README, conversion de formats (JSON → POJO), refactorings mécaniques, explication de code existant, recherche de bugs évidents.\n\n**Manuellement** : décisions d'architecture, review de sécurité, logique métier critique, algorithmes complexes, debugging de problèmes subtils, design d'API publique.\n\n**En collaboration** : optimisation de performances (l'IA propose, je benchmark), rédaction technique (l'IA draft, je refine), exploration de solutions (l'IA brainstorm, je choisis).\n\n__Règle : si l'erreur à un coût élevé → je le fais moi-même. Si l'erreur est rattrapable → l'IA accélère.__",
         
           deepDive: `# Délégation IA vs Travail Manuel
 
@@ -273,7 +273,7 @@ Source : [Harvard Business Review — AI Delegation](https://hbr.org/ai-delegati
         {
           id: 'ai-5',
           question: 'Comment gérez-vous les hallucinations de l\'IA ?',
-          answer: "Les **hallucinations** sont des réponses plausibles mais factuellement incorrectes (API inexistantes, méthodes inventées, paramètres faux). Je les gère par **vérification systématique**.\n\nStratégies : **croiser avec la documentation officielle** (javadoc, MDN, docs Spring), **tester le code généré** immédiatement, **ne jamais copier-coller sans lire**, vérifier les **imports et dépendances** (l'IA invente souvent des bibliothèques).\n\nSignaux d'alerte : réponse trop **confiante** sans source, code qui **compile pas**, API qui n'existe pas dans la version indiquée.\n\n__L'IA est un accélérateur de productivité, pas un oracle. Toujours valider avant d'intégrer.__",
+          answer: "Les **hallucinations** sont des réponses plausibles mais factuellement incorrectes (API inexistantes, méthodes inventées, paramètrès faux). Je les gère par **vérification systématique**.\n\nStratégies : **croiser avec la documentation officielle** (javadoc, MDN, docs Spring), **tester le code généré** immédiatement, **ne jamais copier-coller sans lire**, vérifier les **imports et dépendances** (l'IA invente souvent des bibliothèques).\n\nSignaux d'alerte : réponse trop **confiante** sans source, code qui **compile pas**, API qui n'existe pas dans la version indiquée.\n\n__L'IA est un accélérateur de productivité, pas un oracle. Toujours valider avant d'intégrer.__",
         
           deepDive: `# Gérer les Hallucinations de l'IA
 
@@ -350,7 +350,7 @@ Source : [Anthropic — Reducing Hallucinations](https://docs.anthropic.com/en/d
 
 ## Qu'est-ce que c'est ?
 
-Le debugging est l'un des cas d'usage les plus efficaces de l'IA. Les LLMs excellent à analyser des messages d'erreur, des stack traces, et du code pour identifier la cause probable d'un bug — surtout pour les erreurs courantes ou les configurations incorrectes.
+Le debugging est l'un des cas d'usage les plus efficaces de l'IA. Les LLMs excellent à analyser des messages d'erreur, des stack traces, et du code pour identifier la cause probable d'un bug — surtout pour les erreurs courantes où les configurations incorrectes.
 
 L'IA peut réduire le temps de diagnostic de 70% sur les bugs classiques, mais ne remplace pas l'analyse en profondeur pour les problèmes complexes (race conditions, fuites mémoire, bugs distribués).
 
@@ -404,7 +404,7 @@ Source : [OpenAI — AI-Assisted Debugging](https://platform.openai.com/docs/gui
         {
           id: 'ai-7',
           question: 'Comment utiliser l\'IA pour les tests ?',
-          answer: "L'IA **génère rapidement** des tests unitaires de base : cas nominaux, cas limites évidents (null, vide, overflow), paramètres invalides. Elle comprend le code à tester et crée les mocks/stubs nécessaires.\n\nPour les **tests d'intégration** : l'IA peut scaffold les configurations `@SpringBootTest`, les setups de base de données de test. Pour les **tests E2E** : génération de scénarios Playwright/Cypress.\n\nAttention : l'IA génère souvent des tests qui **passent toujours** sans vraiment tester la logique (tests tautologiques). Il faut **revoir** chaque test pour vérifier qu'il détecterait effectivement une régression.\n\n__L'IA excelle pour la couverture quantitative, je m'assure de la qualité qualitative.__",
+          answer: "L'IA **génère rapidement** des tests unitaires de base : cas nominaux, cas limites évidents (null, vide, overflow), paramètrès invalides. Elle comprend le code à tester et crée les mocks/stubs nécessaires.\n\nPour les **tests d'intégration** : l'IA peut scaffold les configurations `@SpringBootTest`, les setups de base de données de test. Pour les **tests E2E** : génération de scénarios Playwright/Cypress.\n\nAttention : l'IA génère souvent des tests qui **passent toujours** sans vraiment tester la logique (tests tautologiques). Il faut **revoir** chaque test pour vérifier qu'il détecterait effectivement une régression.\n\n__L'IA excelle pour la couverture quantitative, je m'assure de la qualité qualitative.__",
           code: '// AI-generated test — à valider !\n@Test\nvoid shouldReturnEmptyWhenNoOrders() {\n  when(orderRepo.findAll()).thenReturn(List.of());\n  assertThat(orderService.getOrders()).isEmpty();\n}\n\n@Test\nvoid shouldThrowWhenNullInput() {\n  assertThatThrownBy(() -> service.process(null))\n    .isInstanceOf(IllegalArgumentException.class);\n}',
           language: 'java',
         
@@ -421,7 +421,7 @@ La generation de tests est l'un des cas d'usage les plus productifs de l'IA car 
 ### Ce que l'IA fait bien
 
 **Generation de tests unitaires pour des fonctions pures :**
-- Identifie les parametres d'entree et les valeurs de retour.
+- Identifie les paramêtrès d'entree et les valeurs de retour.
 - Cree le cas nominal, le cas vide/null, les valeurs limites.
 - Genere les assertions correctes.
 
@@ -437,7 +437,7 @@ La generation de tests est l'un des cas d'usage les plus productifs de l'IA car 
 ### Ce que l'IA fait mal
 
 - **Tests tautologiques** : des tests qui passent toujours sans vraiment tester la logique.
-- **Tests qui reproduisent le bug** : si le code est incorrect, l'IA ecrit un test qui valide le comportement incorrect.
+- **Tests qui reproduisent le bug** : si le code est incorrect, l'IA écrit un test qui valide le comportement incorrect.
 - **Tests de concurrence** : tester le comportement multi-thread est complexe.
 - **Tests de performance** : benchmarks et tests de charge specifiques.
 
@@ -489,14 +489,14 @@ void shouldRejectNullCustomerType() {
 3. **Utiliser l'IA comme inspiration** : demander des idees de tests, puis les implementer manuellement.
 4. **Definir les conventions** : indiquer le framework (JUnit 5), le style (given/when/then).
 5. **Combiner avec des outils de couverture** : JaCoCo, Istanbul pour identifier les zones non testees.
-6. **Faire du TDD assiste par IA** : ecrire le test d'abord, puis demander a l'IA d'implementer le code qui le fait passer.
+6. **Faire du TDD assiste par IA** : écrire le test d'abord, puis demander à l'IA d'implementer le code qui le fait passer.
 
 ## Pièges courants
 
 1. **Tests superficiels** : l'IA genere des tests qui assertent sur le comportement sans verifier la logique reelle.
-2. **Tests fragiles** : des tests trop lies a l'implementation (mocking excessif) qui cassent au moindre refactoring.
+2. **Tests fragiles** : des tests trop lies à l'implementation (mocking excessif) qui cassent au moindre refactoring.
 3. **Ignorer les cas d'erreur** : l'IA genere le cas nominal, oublie les exceptions, les bornes, les valeurs invalides.
-4. **Fausse confiance** : 80% de couverture de code ≠ 80% des bugs detectes. Un test mal ecrit ne sert a rien.
+4. **Fausse confiance** : 80% de couverture de code ≠ 80% des bugs detectes. Un test mal écrit ne sert a rien.
 5. **Ne pas tester les tests** : un test qui passe toujours sans verifier le bon comportement est pire que pas de test.
 
 Source : [JUnit 5 User Guide](https://junit.org/junit5/docs/current/user-guide/)`},
@@ -511,14 +511,14 @@ Source : [JUnit 5 User Guide](https://junit.org/junit5/docs/current/user-guide/)
 
 La **refactorisation** (refactoring) est la modification du code existant pour ameliorer sa structure sans changer son comportement. L'IA excelle dans les refactorings mecaniques (transformation de patterns) et peut accelerer considerablement la modernisation de code legacy.
 
-Contrairement a la generation de nouveau code, le refactoring demande une comprehension fine du code existant — l'IA doit preserver le comportement tout en ameliorant la structure.
+Contrairement à la generation de nouveau code, le refactoring demande une comprehension fine du code existant — l'IA doit preserver le comportement tout en ameliorant la structure.
 
 ## Concept detaille
 
 ### Refactorings mecaniques (IA forte)
 
 - **Renommage intelligent** : renommer une variable/fonction sur tout le projet de maniere coherente.
-- **Extraction de methode** : decouper une longue fonction en plusieurs petites.
+- **Extraction de méthode** : decouper une longue fonction en plusieurs petites.
 - **Migration de syntaxe** : Java 8 → Java 17 (lambda, records, switch expression), Callbacks → async/await.
 - **Migration de framework** : Angular 15 → 19 (standalone components, signals), Spring Boot 2 → 3.
 - **Design Patterns** : transformer du code procedural en Strategy, Observer, Factory.
@@ -532,10 +532,10 @@ Contrairement a la generation de nouveau code, le refactoring demande une compre
 - **Optimisation algorithmique** : choisir le bon pattern necessite une analyse de performance.
 - **Reorganisation de la base de donnees** : refactorer le schema sans casser les donnees existantes.
 
-### Exemple concret : extraction de methode
+### Exemple concret : extraction de méthode
 
 \`\`\`java
-// AVANT : methode trop longue, responsabilites melangees
+// AVANT : méthode trop longue, responsabilites melangees
 public void processOrder(Order order) {
     // Validation (30 lignes)
     if (order.getItems().isEmpty()) throw new IllegalArgumentException();
@@ -559,7 +559,7 @@ public void processOrder(Order order) {
     notificationService.send(order);
 }
 
-// APRES : extraction de methodes, chaque methode a une responsabilite unique
+// APRES : extraction de méthodes, chaque méthode à une responsabilite unique
 public void processOrder(Order order) {
     validateOrder(order);
     BigDecimal total = calculateTotal(order);
@@ -576,7 +576,7 @@ private void saveOrder(Order order, BigDecimal total) { /* ... */ }
 1. **Tester avant de refactorer** : avoir des tests qui valident le comportement actuel (filet de securite).
 2. **Commits atomiques** : un refactoring par commit, pas de mega-commit qui melange tout.
 3. **Revoir chaque modification** : l'IA peut faire des erreurs subtiles dans des cas particuliers.
-4. **Garder les tests verts** : apres chaque etape de refactoring, les tests doivent passer.
+4. **Garder les tests verts** : après chaque étape de refactoring, les tests doivent passer.
 5. **Documenter le changement** : expliquer POURQUOI le refactoring a ete fait (pas seulement quoi).
 6. **Utiliser des outils de qualite** : SonarQube, CodeClimate pour identifier les zones a refactorer.
 7. **Commencer par les zones les plus critiques** : le code le plus modifie est le meilleur candidat au refactoring.
@@ -584,7 +584,7 @@ private void saveOrder(Order order, BigDecimal total) { /* ... */ }
 ## Pièges courants
 
 1. **Refactorer sans tests** : impossible de verifier que le comportement n'a pas change.
-2. **Perte de logique metier** : l'IA peut supprimer du code qui semble inutile mais qui gere un edge case.
+2. **Perte de logique metier** : l'IA peut supprimer du code qui semble inutile mais qui gère un edge case.
 3. **Tout refactorer d'un coup** : mega-PR impossible a reviewer, risque de regression massif.
 4. **Appliquer sans comprendre** : si on ne comprend pas le changement, on ne pourra pas le maintenir.
 5. **Refactoring infini** : toujours vouloir ameliorer sans jamais livrer de valeur (analysis paralysis).
@@ -599,9 +599,9 @@ Source : [Martin Fowler — Refactoring](https://refactoring.com/)`},
 
 ## Qu'est-ce que c'est ?
 
-La documentation est souvent negligee (pas le temps, pas prioritaire). L'IA permet de generer rapidement un **premier jet** de documentation technique — Javadoc, README, guides — qui sera ensuite revise et complete par le developpeur.
+La documentation est souvent negligee (pas le temps, pas prioritaire). L'IA permet de generer rapidement un **premier jet** de documentation technique — Javadoc, README, guides — qui sera ensuite revise et complete par le développeur.
 
-L'objectif n'est pas de produire une documentation parfaite du premier coup, mais de reduire la friction initiale qui empeche d'ecrire de la documentation.
+L'objectif n'est pas de produire une documentation parfaite du premier coup, mais de reduire la friction initiale qui empeche d'écrire de la documentation.
 
 ## Concept detaille
 
@@ -609,14 +609,14 @@ L'objectif n'est pas de produire une documentation parfaite du premier coup, mai
 
 **Documentation de code :**
 - JSDoc, JavaDoc, docstrings Python.
-- Commentaires pour des methodes ou algorithmes complexes.
+- Commentaires pour des méthodes ou algorithmes complexes.
 - README de module/package.
 - Diagrammes de classe/sequence generes automatiquement.
 
 **Documentation projet :**
 - README (installation, utilisation, architecture).
 - Guide de demarrage (quickstart).
-- Changelog a partir des commits Git.
+- Changelog à partir des commits Git.
 - Wiki technique.
 - Architecture Decision Records (ADR).
 
@@ -628,7 +628,7 @@ L'objectif n'est pas de produire une documentation parfaite du premier coup, mai
 
 ### Flux de travail recommande
 
-1. **Rediger le prompt** : decrire la fonction/classe, son role, ses parametres.
+1. **Rediger le prompt** : décrire la fonction/classe, son rôle, ses paramêtres.
 2. **Generer le premier jet** : l'IA produit la documentation brute.
 3. **Verifier l'exactitude technique** : tester les exemples de code, verifier les signatures.
 4. **Ajouter le contexte metier** : expliquer POURQUOI cette fonction existe.
@@ -638,19 +638,19 @@ L'objectif n'est pas de produire une documentation parfaite du premier coup, mai
 
 \`\`\`typescript
 /**
- * Cree un nouvel utilisateur dans le systeme.
+ * Cree un nouvel utilisateur dans le système.
  *
- * @param user - Les donnees de l'utilisateur (nom, email, role)
+ * @param user - Les donnees de l'utilisateur (nom, email, rôle)
  * @returns L'utilisateur cree avec son ID unique
- * @throws ValidationError si l'email est deja utilise
- * @throws AuthorizationError si l'appelant n'a pas le role ADMIN
+ * @throws ValidationError si l'email est déjà utilise
+ * @throws AuthorizationError si l'appelant n'a pas le rôle ADMIN
  *
  * @example
  * // Creation d'un utilisateur basique
  * const user = await createUser({
  *   name: "Jean Dupont",
  *   email: "jean@example.com",
- *   role: "USER"
+ *   rôle: "USER"
  * });
  * console.log(user.id); // "usr_abc123"
  */
@@ -661,10 +661,10 @@ async function createUser(user: CreateUserDTO): Promise<User> {
 
 ## Bonnes pratiques
 
-1. **Toujours reviser** : la documentation generee par IA peut etre techniquement incorrecte, incomplete, ou trompeuse.
-2. **Adapter au public** : developpeurs vs utilisateurs finaux n'ont pas besoin du meme niveau de detail.
+1. **Toujours reviser** : la documentation generee par IA peut être techniquement incorrecte, incomplete, ou trompeuse.
+2. **Adapter au public** : développeurs vs utilisateurs finaux n'ont pas besoin du meme niveau de detail.
 3. **Ajouter du contexte metier** : l'IA ne connait pas le « pourquoi » metier de votre code.
-4. **Maintenir la documentation a jour** : la documentation obsolete est pire que pas de documentation.
+4. **Maintenir la documentation à jour** : la documentation obsolete est pire que pas de documentation.
 5. **Utiliser l'IA pour la traduction** : generer la documentation en anglais puis la traduire avec l'IA.
 6. **Inclure des exemples concrets** : chaque fonction/endpoint doit avoir un exemple d'utilisation.
 7. **Standardiser le format** : JSDoc pour TypeScript, JavaDoc pour Java, docstrings pour Python.
@@ -672,16 +672,16 @@ async function createUser(user: CreateUserDTO): Promise<User> {
 ## Pièges courants
 
 1. **Publier sans relecture** : une documentation incorrecte induit en erreur plus qu'elle n'aide.
-2. **Documentation generique** : « Cette classe gere les utilisateurs » n'apporte aucune information utile.
+2. **Documentation generique** : « Cette classe gère les utilisateurs » n'apporte aucune information utile.
 3. **Oublier les exemples** : un exemple concret vaut 1000 mots de description.
-4. **Documentation obsolete** : generee une fois, jamais mise a jour → trompeuse.
+4. **Documentation obsolete** : generee une fois, jamais mise à jour → trompeuse.
 5. **Trop de documentation** : documenter chaque ligne de code trivial (getters/setters) noie l'information importante.
 
 ## Pour aller plus loin
 
 - Combiner la generation IA avec des outils comme **Storybook** (composants UI) ou **Swagger UI** (API).
-- Utiliser l'IA pour generer des **diagrammes Mermaid** a partir du code.
-- Integrer la generation de documentation dans la CI/CD pour qu'elle reste a jour automatiquement.
+- Utiliser l'IA pour generer des **diagrammes Mermaid** à partir du code.
+- Integrer la generation de documentation dans la CI/CD pour qu'elle reste à jour automatiquement.
 
 Source : [Documentation Best Practices — Divio](https://documentation.divio.com/)`},
       ],
@@ -699,15 +699,15 @@ Source : [Documentation Best Practices — Divio](https://documentation.divio.co
 
 ## Qu'est-ce que c'est ?
 
-L'IA peut assister le processus de **code review** a deux niveaux : comme **auteur** (relire son propre code avant de soumettre la PR) et comme **reviewer automatique** (analyse des PRs de l'equipe par un outil comme CodeRabbit).
+L'IA peut assister le processus de **code review** a deux niveaux : comme **auteur** (relire son propre code avant de soumettre la PR) et comme **reviewer automatique** (analyse des PRs de l'équipe par un outil comme CodeRabbit).
 
-L'objectif n'est pas de remplacer le reviewer humain, mais d'automatiser la detection des problemes mecaniques pour que l'humain se concentre sur la logique metier et l'architecture.
+L'objectif n'est pas de remplacer le reviewer humain, mais d'automatiser la detection des problèmes mecaniques pour que l'humain se concentre sur la logique metier et l'architecture.
 
 ## Concept detaille
 
 ### IA comme auteur (pre-review)
 
-Avant de soumettre une PR, demander a l'IA de relire son code :
+Avant de soumettre une PR, demander à l'IA de relire son code :
 - Bugs evidents (null pointer, index out of bounds).
 - Violations de conventions de codage.
 - Problemes de securite (injection SQL, XSS).
@@ -726,7 +726,7 @@ Outils comme **CodeRabbit**, **GitHub Copilot for PRs** :
 
 ### Ce que l'IA detecte bien vs mal
 
-| Type de probleme | Detection IA | Detection humaine |
+| Type de problème | Detection IA | Detection humaine |
 |-----------------|-------------|-------------------|
 | Bugs evidents (NPE, hors limites) | Excellente | Bonne |
 | Securite (injection, XSS) | Bonne | Variable |
@@ -738,14 +738,14 @@ Outils comme **CodeRabbit**, **GitHub Copilot for PRs** :
 ### Exemple de workflow IA + humain
 
 \`\`\`
-1. Le developpeur utilise l'IA en pre-review pour corriger les bugs evidents
+1. Le développeur utilise l'IA en pre-review pour corriger les bugs evidents
 2. Il soumet la PR
 3. L'IA analyse automatiquement la PR et laisse des commentaires
 4. Le reviewer humain se concentre sur :
    - La logique metier est-elle correcte ?
    - L'architecture est-elle coherente ?
    - Les choix techniques sont-ils justifies ?
-5. Le developpeur corrige, la PR est mergee
+5. Le développeur corrige, la PR est mergee
 \`\`\`
 
 ## Bonnes pratiques
@@ -753,14 +753,14 @@ Outils comme **CodeRabbit**, **GitHub Copilot for PRs** :
 1. **Configurer les regles selon le projet** : definir ce que l'IA doit verifier (style + securite).
 2. **Traiter les commentaires IA comme consultatifs** : l'humain a toujours le dernier mot.
 3. **Combiner avec du linting automatise** : ESLint, SonarQube, Checkstyle pour les regles strictes.
-4. **Former l'equipe** : partager les patterns detectes par l'IA pour ameliorer le code en amont.
+4. **Former l'équipe** : partager les patterns detectes par l'IA pour ameliorer le code en amont.
 5. **Mesurer l'impact** : suivre le nombre de bugs trouves par l'IA vs par les humains.
 6. **Ne pas bloquer la PR sur les commentaires IA** : les suggestions IA ne doivent pas empecher le merge.
 
 ## Pièges courants
 
-1. **Faux positifs** : l'IA suggere des changements inutiles (bruit). Configurer des regles precises.
-2. **Dependance excessive** : ne plus faire de review humaine correcte parce que « l'IA a deja verifie ».
+1. **Faux positifs** : l'IA suggère des changements inutiles (bruit). Configurer des regles precises.
+2. **Dependance excessive** : ne plus faire de review humaine correcte parce que « l'IA a déjà verifie ».
 3. **Ignorer le contexte metier** : l'IA ne sait pas si le comportement correspond au besoin business.
 4. **Commentaires generiques** : l'IA peut produire des commentaires vagues (« ameliorer la qualite du code ») qui n'aident pas.
 5. **Overhead de configuration** : passer plus de temps a configurer l'outil qu'a faire la review.
@@ -775,16 +775,16 @@ Source : [CodeRabbit — AI Code Review](https://coderabbit.ai/)`},
 
 ## Qu'est-ce que c'est ?
 
-Mesurer l'impact de l'IA sur la productivite est essentiel pour justifier son adoption, choisir les bons outils, et identifier les axes d'amelioration. La mesure doit combiner des metriques **quantitatives** (temps, volume) et **qualitatives** (qualite du code, satisfaction equipe).
+Mesurer l'impact de l'IA sur la productivite est essentiel pour justifier son adoption, choisir les bons outils, et identifier les axes d'amelioration. La mesure doit combiner des metriques **quantitatives** (temps, volume) et **qualitatives** (qualite du code, satisfaction équipe).
 
-Sans mesure objective, l'adoption de l'IA repose sur des impressions subjectives qui peuvent etre trompeuses.
+Sans mesure objective, l'adoption de l'IA repose sur des impressions subjectives qui peuvent être trompeuses.
 
 ## Concept detaille
 
 ### Metriques quantitatives
 
-**Temps par tache :**
-- Mesurer le temps avant IA vs apres IA sur des taches comparables.
+**Temps par tâche :**
+- Mesurer le temps avant IA vs après IA sur des tâches comparables.
 - Exemple : generation de tests → 45 min sans IA → 10 min avec IA (review incluse).
 
 **Volume de production :**
@@ -792,10 +792,10 @@ Sans mesure objective, l'adoption de l'IA repose sur des impressions subjectives
 - Nombre de tickets fermes.
 - Throughput (features livrees par mois).
 
-**Velocite d'equipe :**
+**Velocite d'équipe :**
 - Story points completes par sprint.
-- Cycle time (temps du commit a la mise en production).
-- Lead time (temps de la demande a la livraison).
+- Cycle time (temps du commit à la mise en production).
+- Lead time (temps de la demande à la livraison).
 
 ### Metriques qualitatives
 
@@ -805,19 +805,19 @@ Sans mesure objective, l'adoption de l'IA repose sur des impressions subjectives
 - Temps moyen de resolution des bugs (MTTR).
 - Nombre de regressions.
 
-**Experience developpeur :**
-- Satisfaction de l'equipe (enquete NPS developpeur).
+**Experience développeur :**
+- Satisfaction de l'équipe (enquete NPS développeur).
 - Facilite d'onboarding des nouveaux.
-- Taux de retention des developpeurs.
+- Taux de retention des développeurs.
 - Sentiment d'accomplissement (l'IA fait le repetitif, le dev fait le creatif).
 
-### Fausses metriques a eviter
+### Fausses metriques a éviter
 
 - **Lignes de code** : l'IA genere plus de code, ce n'est pas un indicateur de productivite.
 - **Nombre de commits** : l'IA peut generer beaucoup de petits commits inutiles.
 - **Vitesse brute** : coder deux fois plus vite ne sert a rien si le code est de mauvaise qualite.
 
-### Tableau de bord suggere
+### Tableau de bord suggère
 
 | Categorie | Metrique | Frequence |
 |-----------|---------|----------|
@@ -831,17 +831,17 @@ Sans mesure objective, l'adoption de l'IA repose sur des impressions subjectives
 1. **Etablir un baseline** : mesurer avant l'introduction de l'IA pour comparer.
 2. **Mesurer le temps reellement economise** : inclure le temps de relecture et correction.
 3. **Suivre la qualite** : pas seulement la vitesse. Moins de bugs = vraie productivite.
-4. **Sonder l'equipe** : le ressenti des developpeurs est un indicateur important.
+4. **Sonder l'équipe** : le ressenti des développeurs est un indicateur important.
 5. **Ajuster les attendus** : l'IA n'est pas un magic wand. 20-40% de gain de productivite est realiste.
-6. **Comparer des taches similaires** : tache A (sans IA) vs tache B (avec IA) de complexite equivalente.
+6. **Comparer des tâches similaires** : tâche A (sans IA) vs tâche B (avec IA) de complexite equivalente.
 
 ## Pièges courants
 
 1. **Mesurer uniquement la vitesse** : coder plus vite + bugs plus nombreux = dette technique accrue.
-2. **Ignorer le temps de validation** : le temps passe a verifier le code IA doit etre compte.
-3. **Comparer des taches non comparables** : une tache simple n'est pas comparable a une tache complexe.
+2. **Ignorer le temps de validation** : le temps passe a verifier le code IA doit être compte.
+3. **Comparer des tâches non comparables** : une tâche simple n'est pas comparable à une tâche complexe.
 4. **Sur-estimer les gains** : 80% de gain de productivite est irrealiste (le temps de reflexion reste).
-5. **Oublier la courbe d'apprentissage** : les gains arrivent apres 2-3 mois d'utilisation reguliere.
+5. **Oublier la courbe d'apprentissage** : les gains arrivent après 2-3 mois d'utilisation reguliere.
 
 Source : [McKinsey — Developer Productivity](https://www.mckinsey.com/capabilities/mckinsey-digital/our-insights)`},
         {
@@ -969,7 +969,7 @@ Le développeur reste responsable du code qu'il livre, quelle que soit son origi
 
 1. **Ignorer la propriété intellectuelle** : utiliser du code généré par IA dans un produit commercial sans vérifier les licences.
 2. **Responsabilité mal comprise** : « c'est l'IA qui s'est trompée » n'est pas une défense valable.
-3. **Transparence zero** : ne pas informer l'équipe ou les clients de l'utilisation de l'IA.
+3. **Transparence zero** : ne pas informer l'équipe où les clients de l'utilisation de l'IA.
 4. **Biais non détectés** : l'IA reproduit des discriminations sans que personne ne les remarque.
 
 Source : [IEEE — Ethically Aligned Design for AI](https://ethicsinaction.ieee.org/)`},
@@ -1049,9 +1049,9 @@ Source : [OWASP — AI Security](https://owasp.org/www-project-ai-security/)`},
 
 ## Qu'est-ce que c'est ?
 
-Le domaine de l'IA evolue extremement rapidement — nouveaux modeles, nouveaux outils, nouvelles capacites chaque semaine. Rester informe est un defi, mais essentiel pour utiliser les bons outils et ne pas etre depasse.
+Le domaine de l'IA evolue extremement rapidement — nouveaux modèles, nouveaux outils, nouvelles capacites chaque semaine. Rester informe est un defi, mais essentiel pour utiliser les bons outils et ne pas être depasse.
 
-La veille IA n'est pas une option : c'est une competence professionnelle a part entiere pour les developpeurs modernes.
+La veille IA n'est pas une option : c'est une competence professionnelle a part entiere pour les développeurs modernes.
 
 ## Concept detaille
 
@@ -1064,7 +1064,7 @@ La veille IA n'est pas une option : c'est une competence professionnelle a part 
 - X/Twitter : suivre les chercheurs cles (Andrej Karpathy, Yann LeCun, Andrew Ng).
 
 **Experimentation pratique :**
-- Tester chaque nouveau modele des sa sortie (au moins un prompt).
+- Tester chaque nouveau modèle des sa sortie (au moins un prompt).
 - Participer a des hackathons IA.
 - Utiliser des playgrounds (OpenAI Playground, Claude Console).
 
@@ -1075,10 +1075,10 @@ La veille IA n'est pas une option : c'est une competence professionnelle a part 
 
 ### Distinguer le hype de la valeur reelle
 
-- **Hype** : « l'IA remplace les developpeurs », « plus besoin d'apprendre a coder ».
+- **Hype** : « l'IA remplace les développeurs », « plus besoin d'apprendre a coder ».
 - **Realite** : l'IA est un outil puissant mais limite. Les fondamentaux (algorithmes, architecture, tests) restent essentiels.
-- **Filtre** : pour chaque nouveau tool, demander « resout-il un vrai probleme ? » avant de l'adopter.
-- **Adoption** : attendre 2-3 mois apres une sortie pour voir les retours d'experience reels.
+- **Filtre** : pour chaque nouveau tool, demander « resout-il un vrai problème ? » avant de l'adopter.
+- **Adoption** : attendre 2-3 mois après une sortie pour voir les retours d'experience reels.
 
 ### Routine de veille recommandee
 
@@ -1086,23 +1086,23 @@ La veille IA n'est pas une option : c'est une competence professionnelle a part 
 |-----------|---------|-------|
 | Quotidien | Scanner X/Twitter, Reddit | 10 min |
 | Hebdomadaire | Lire The Batch + TLDR AI | 30 min |
-| Mensuel | Tester 1-2 nouveaux outils/modeles | 2h |
-| Trimestriel | Participer a un hackathon ou conference | 1 jour |
+| Mensuel | Tester 1-2 nouveaux outils/modèles | 2h |
+| Trimestriel | Participer à un hackathon ou conference | 1 jour |
 
 ## Bonnes pratiques
 
 1. **Temps dedie** : bloquer 30-60 min par semaine pour la veille IA.
 2. **Experimenter** : un nouvel outil teste 10 minutes vaut mieux que 10 articles lus.
-3. **Partager en equipe** : creer un canal Slack/Teams dedie a l'IA.
-4. **Se concentrer sur les fondamentaux** : les bases du developpement (qualite, tests, architecture) ne changent pas.
-5. **Ne pas suivre toutes les modes** : la plupart des nouveaux modeles/outils ne survivront pas. Se concentrer sur les leaders.
-6. **Creer une culture d'apprentissage** : sessions « Lunch & Learn » IA dans l'equipe.
+3. **Partager en équipe** : creer un canal Slack/Teams dedie à l'IA.
+4. **Se concentrer sur les fondamentaux** : les bases du développement (qualite, tests, architecture) ne changent pas.
+5. **Ne pas suivre toutes les modes** : la plupart des nouveaux modèles/outils ne survivront pas. Se concentrer sur les leaders.
+6. **Creer une culture d'apprentissage** : sessions « Lunch & Learn » IA dans l'équipe.
 
 ## Pièges courants
 
 1. **Information overload** : suivre 50 sources → saturation. Choisir 3-5 sources de qualite.
 2. **Hype vs realite** : un titre accrocheur ne fait pas une technologie mature.
-3. **Negliger les fondamentaux** : passer tout son temps a suivre l'IA au lieu de pratiquer le developpement.
+3. **Negliger les fondamentaux** : passer tout son temps a suivre l'IA au lieu de pratiquer le développement.
 4. **Installation compulsive** : installer chaque nouvel outil sans jamais les utiliser vraiment.
 5. **FOMO technologique** : angoisse de manquer la derniere nouveaute → epuisement.
 
@@ -1261,7 +1261,7 @@ C'est le pattern le plus utilisé en entreprise pour l'IA : il permet de répond
 
 1. **Indexation (offline) :**
    - Les documents sont découpés en **chunks** (segments de ~500 tokens).
-   - Chaque chunk est converti en **vecteur** (embedding) via un modèle d'embedding.
+   - Chaque chunk est converti en **vecteur** (embedding) vià un modèle d'embedding.
    - Les vecteurs sont stockés dans une **vector database** (Pinecone, Weaviate, Qdrant, pgvector).
 
 2. **Query (online) :**
@@ -1352,14 +1352,14 @@ Source : [ArXiv — Retrieval-Augmented Generation for LLMs](https://arxiv.org/a
           id: 'ai-19',
           question: 'Comment intégrer l\'IA dans une application ?',
           answer: "**Trois approches** : API directe (`OpenAI API`, `Anthropic API`) pour des cas simples, **framework** (`LangChain`, `LlamaIndex`) pour des pipelines complexes, **modèle local** (`Ollama`, `LM Studio`) pour la confidentialité.\n\nPattern classique : **Backend** → appel API → traitement de la réponse → retour au frontend. Ne **jamais** appeler l'API IA directement depuis le frontend (coût, sécurité, clé API exposée).\n\nConsidérations : **rate limiting** (coût par token), **latence** (streaming pour les réponses longues), **fallback** (que faire si l'API est down), **cachée** (même question = même réponse).\n\n__En production : monitorer les coûts, implémenter le retry, cachéer les réponses fréquentes, toujours valider les sorties.__",
-          code: '// Spring Boot — appel API OpenAI\n@Service\npublic class AiService {\n  private final RestTemplate restTemplate;\n  @Value("${openai.api.key}")\n  private String apiKey;\n\n  public String complete(String prompt) {\n    var request = Map.of(\n      "model", "gpt-4",\n      "messages", List.of(Map.of("role","user","content",prompt))\n    );\n    var headers = new HttpHeaders();\n    headers.setBearerAuth(apiKey);\n    // ... appel + gestion erreurs + cachée\n  }\n}',
+          code: '// Spring Boot — appel API OpenAI\n@Service\npublic class AiService {\n  private final RestTemplate restTemplate;\n  @Value("${openai.api.key}")\n  private String apiKey;\n\n  public String complete(String prompt) {\n    var request = Map.of(\n      "model", "gpt-4",\n      "messages", List.of(Map.of("rôle","user","content",prompt))\n    );\n    var headers = new HttpHeaders();\n    headers.setBearerAuth(apiKey);\n    // ... appel + gestion erreurs + cachée\n  }\n}',
           language: 'java',
         
           deepDive: `# Intégrer l'IA dans une Application
 
 ## Qu'est-ce que c'est ?
 
-Intégrer l'IA dans une application consiste à connecter un modèle de langage (LLM) à votre stack existante pour enrichir l'expérience utilisateur avec des capacités de génération, d'analyse ou de raisonnement. Contrairement à une utilisation ad-hoc via un chatbot, l'intégration applicative nécessite de penser en termes d'architecture, de sécurité, de coûts et de résilience.
+Intégrer l'IA dans une application consiste à connecter un modèle de langage (LLM) à votre stack existante pour enrichir l'expérience utilisateur avec des capacités de génération, d'analyse ou de raisonnement. Contrairement à une utilisation ad-hoc vià un chatbot, l'intégration applicative nécessite de penser en termes d'architecture, de sécurité, de coûts et de résilience.
 
 Les trois grandes approches sont :
 1. **API tierce directe** — appels REST aux providers (OpenAI, Anthropic, Google)
@@ -1418,7 +1418,7 @@ Les trois grandes approches sont :
 
 ### Cache
 - Mettre en cache les réponses aux questions fréquentes (Redis, CDN) pour réduire les coûts et la latence.
-- Stratégie : cache par hash du prompt + paramètres (modèle, température). Invalidation lorsque le contexte change.
+- Stratégie : cache par hash du prompt + paramètrès (modèle, température). Invalidation lorsque le contexte change.
 
 ### Gestion des erreurs
 - Implémenter un **retry avec backoff exponentiel** (503, 429).
@@ -1459,7 +1459,7 @@ public class AiService {
         return Mono.defer(() -> {
             var request = Map.of(
                 "model", "gpt-4",
-                "messages", List.of(Map.of("role", "user", "content", prompt)),
+                "messages", List.of(Map.of("rôle", "user", "content", prompt)),
                 "max_tokens", 1024
             );
             var headers = new HttpHeaders();
@@ -1587,7 +1587,7 @@ L'agent décompose un objectif complexe en sous-tâches. Techniques courantes :
 ### 2. Tool Use (utilisation d'outils)
 Le LLM peut déclencher des fonctions via function calling. Chaque outil est défini par :
 - Son nom et sa description (pour que le LLM sache quand l'utiliser)
-- Ses paramètres d'entrée (schema JSON)
+- Ses paramètrès d'entrée (schema JSON)
 - Sa fonction d'exécution
 
 \`\`\`typescript
@@ -1622,7 +1622,7 @@ const tools = [
 
 // Boucle ReAct simplifiée
 async function agentLoop(task: string, maxSteps = 10) {
-  let messages = [{ role: "user", content: task }];
+  let messages = [{ rôle: "user", content: task }];
 
   for (let step = 0; step < maxSteps; step++) {
     const response = await llm.complete(messages, { tools });
@@ -1634,7 +1634,7 @@ async function agentLoop(task: string, maxSteps = 10) {
     if (response.toolCall) {
       const result = await executeTool(response.toolCall);
       messages.push(response.message);
-      messages.push({ role: "tool", content: result });
+      messages.push({ rôle: "tool", content: result });
     }
   }
 

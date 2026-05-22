@@ -14,7 +14,7 @@ export const part3Categories = [
           {
             id: 'ms-1',
             question: "C'est quoi les microservices ?",
-            answer: "Architecture où l'application est découpée en **services indépendants**, chacun responsable d'une **fonctionnalité métier** avec sa propre BDD et son cycle de déploiement.\n\nIls communiquent via APIs : **`REST`/`gRPC`** en **synchrone**, **`Kafka`/`RabbitMQ`** en **asynchrone**. __Si un service tombe, les autres continuent__ — *résilience par isolation*.",
+            answer: "Architecture où l'application est découpée en **services indépendants**, chacun responsable d'une **fonctionnalité métier** avec sa propre BDD et son cycle de déploiement.\n\nIls communiquent via APIs : **`REST`/`gRPC`** en **synchrone**, **`Kafka`/`RabbitMQ`** en **asynchrone**. __Si un service tombe, les autrès continuent__ — *résilience par isolation*.",
             example: "E-commerce : ServiceCommande, ServicePaiement, ServiceInventaire — déployables séparément.",
           },
           {
@@ -120,7 +120,7 @@ export const part3Categories = [
           {
             id: 'dv-1',
             question: 'Docker',
-            answer: "Outil de **conteneurisation** : package l'application avec toutes ses dépendances dans un **conteneur** léger et portable. Contrairement à une VM, le conteneur partage le noyau hôte — démarrage rapide, empreinte minimale.\n\nLe même conteneur tourne de façon identique du laptop du dev à la production. Le `Dockerfile` décrit la construction de l'image, distribuée via un registre (`Docker Hub`).\n\n\n**Standard de fait** pour le déploiement, brique de base de `Kubernetes`.",
+            answer: "Outil de **conteneurisation** : package l'application avec toutes ses dépendances dans un **conteneur** léger et portable. Contrairement à une VM, le conteneur partage le noyau hôte — démarrage rapide, empreinte minimale.\n\nLe même conteneur tourne de façon identique du laptop du dev à la production. Le `Dockerfile` décrit la construction de l'image, distribuée vià un registre (`Docker Hub`).\n\n\n**Standard de fait** pour le déploiement, brique de base de `Kubernetes`.",
             code: 'FROM openjdk:17-jdk-slim\nCOPY target/app.jar /app.jar\nEXPOSE 8080\nENTRYPOINT ["java", "-jar", "/app.jar"]',
             language: 'dockerfile',
           },
@@ -195,7 +195,7 @@ export const part3Categories = [
           {
             id: 'sec-2',
             question: 'Injection SQL',
-            answer: "Un attaquant insère du **SQL malveillant** via les champs de saisie. Exemple : concaténation `\"SELECT * FROM users WHERE name = '\" + name + \"'\"` avec input `' OR '1'='1` rend la condition toujours vraie.\n\n\nConséquences : vol/modification/suppression de données, prise de contrôle du serveur.\n\nProtection : **requêtes préparées** (première ligne de défense, les paramètres sont des données pas du code), `ORM` (requêtes paramétrées auto), validation des entrées (type, longueur, format).",
+            answer: "Un attaquant insère du **SQL malveillant** via les champs de saisie. Exemple : concaténation `\"SELECT * FROM users WHERE name = '\" + name + \"'\"` avec input `' OR '1'='1` rend la condition toujours vraie.\n\n\nConséquences : vol/modification/suppression de données, prise de contrôle du serveur.\n\nProtection : **requêtes préparées** (première ligne de défense, les paramètrès sont des données pas du code), `ORM` (requêtes paramétrées auto), validation des entrées (type, longueur, format).",
             code: "// Vulnérable ❌\n\"SELECT * FROM users WHERE name = '\" + name + \"'\"\n\n// Sécurisé ✅\nPreparedStatement ps = conn.prepareStatement(\n    \"SELECT * FROM users WHERE name = ?\"\n);\nps.setString(1, name);",
             language: 'java',
           },

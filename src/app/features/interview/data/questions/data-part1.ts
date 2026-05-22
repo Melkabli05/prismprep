@@ -101,11 +101,11 @@ export const part1Categories: InterviewCategory[] = [
           {
             id: 'rh-q6',
             question: 'Qualités et défauts ?',
-            answer: "**Qualités** : organisé et méthodique, bonne capacité d'analyse, travail en équipe efficace même à distance.\n\n**Défauts** : tendance à vouloir tout faire en même temps — je corrige avec la **matrice d'Eisenhower** pour gérer les priorités. Autre point : je fonce parfois trop vite sans prendre assez de recul.\n\n__L'important est de montrer une conscience de soi et une démarche d'amélioration continue.__",
+            answer: "**Qualités** : organisé et méthodique, bonne capacité d'analyse, travail en équipe efficace même à distance.\n\n**Défauts** : tendance à vouloir tout faire en même temps — je corrige avec la **matrice d'Eisenhower** pour gérer les priorités. Autre point : je fonce parfois trop vite sans prendre assez de reçul.\n\n__L'important est de montrer une conscience de soi et une démarche d'amélioration continue.__",
           },
           {
             id: 'rh-q7',
-            question: 'Pourquoi vous et pas les autres ?',
+            question: 'Pourquoi vous et pas les autrès ?',
             answer: "Combinez **trois éléments** : votre **expérience technique** appliquée au poste (« Votre équipe travaille sur les microservices, j'ai déjà migré un monolithe vers cette architecture »), vos **soft skills** (communication, travail en équipe, gestion de la pression), et votre **motivation spécifique** pour cette entreprise — pas de réponse générique. __Personnalisez pour rendre votre réponse unique et mémorable.__",
           },
           {
@@ -249,7 +249,7 @@ export const part1Categories: InterviewCategory[] = [
           {
             id: 'git-14',
             question: 'git cherry-pick ?',
-            answer: "`git cherry-pick` copie un commit spécifique d'une branche et l'applique sur une autre, **sans fusion complète**. Utile pour appliquer un correctif de bug sur la production sans prendre tout le reste, ou récupérer un commit fait par erreur sur la mauvaise branche.\n\nAttention aux conflits si le commit dépend d'autres commits absents de la branche cible. **Cherry-pick** = copier un commit précis d'une branche à l'autre.",
+            answer: "`git cherry-pick` copie un commit spécifique d'une branche et l'applique sur une autre, **sans fusion complète**. Utile pour appliquer un correctif de bug sur la production sans prendre tout le reste, ou récupérer un commit fait par erreur sur la mauvaise branche.\n\nAttention aux conflits si le commit dépend d'autrès commits absents de la branche cible. **Cherry-pick** = copier un commit précis d'une branche à l'autre.",
             code: 'git cherry-pick <commit-hash>',
             language: 'bash',
           },
@@ -307,14 +307,14 @@ export const part1Categories: InterviewCategory[] = [
           {
             id: 'oop-5',
             question: 'Le polymorphisme',
-            answer: "Le **polymorphisme** permet à une même méthode de se comporter différemment selon l'objet. **Overriding** (redéfinition) : une sous-classe redéfinit une méthode héritée (`Forme.dessiner()` implémenté différemment par `Cercle` et `Rectangle`). **Overloading** (surcharge) : même nom de méthode avec des paramètres différents dans la même classe.\n\nPermet d'écrire du code *générique* fonctionnant avec n'importe quel sous-type.",
+            answer: "Le **polymorphisme** permet à une même méthode de se comporter différemment selon l'objet. **Overriding** (redéfinition) : une sous-classe redéfinit une méthode héritée (`Forme.dessiner()` implémenté différemment par `Cercle` et `Rectangle`). **Overloading** (surcharge) : même nom de méthode avec des paramètrès différents dans la même classe.\n\nPermet d'écrire du code *générique* fonctionnant avec n'importe quel sous-type.",
             code: 'abstract class Forme {\n    abstract void dessiner();\n}\nclass Cercle extends Forme {\n    void dessiner() { System.out.println("Cercle"); }\n}',
             language: 'java',
           },
           {
             id: 'oop-6',
             question: 'Surcharge vs Redéfinition',
-            answer: "**Surcharge** (*overloading*) : mêmes noms, paramètres différents, dans la même classe — résolution à la **compilation** (liaison statique).\n\n**Redéfinition** (*overriding*) : même signature, dans une sous-classe avec `@Override` — résolution à l'**exécution** (liaison dynamique).\n\n**Surcharge** = même nom + paramètres différents + compilation. **Redéfinition** = même signature + sous-classe + exécution.",
+            answer: "**Surcharge** (*overloading*) : mêmes noms, paramètrès différents, dans la même classe — résolution à la **compilation** (liaison statique).\n\n**Redéfinition** (*overriding*) : même signature, dans une sous-classe avec `@Override` — résolution à l'**exécution** (liaison dynamique).\n\n**Surcharge** = même nom + paramètrès différents + compilation. **Redéfinition** = même signature + sous-classe + exécution.",
             code: '// Surcharge\nint add(int a, int b) { return a+b; }\nint add(int a, int b, int c) { return a+b+c; }\n\n// Redéfinition\n@Override\nint add(int a, int b) { return a+b+bonus; }',
             language: 'java',
           },

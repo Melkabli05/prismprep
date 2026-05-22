@@ -23,7 +23,7 @@ La Programmation Orientée Objet (POO) repose sur quatre piliers fondamentaux qu
 
 ## 1. Encapsulation — Proteger les donnees
 
-L'encapsulation consiste a cacher les details internes d'un objet et a controler l'acces a ses donnees via une interface publique (getters/setters). Cela protege l'integrite des donnees et permet de modifier l'implementation sans impacter les appelants.
+L'encapsulation consiste a cacher les details internes d'un objet et a contrôler l'acces a ses donnees vià une interface publique (getters/setters). Cela protege l'integrite des donnees et permet de modifier l'implementation sans impacter les appelants.
 
 ### Java
 
@@ -79,7 +79,7 @@ class BankAccount {
 
 ## 2. Heritage — Reutiliser le code
 
-L'heritage permet a une classe (sous-classe) de recuperer les attributs et methodes d'une autre classe (super-classe). La relation doit representer un "est-un" (is-a).
+L'heritage permet à une classe (sous-classe) de reçuperer les attributs et méthodes d'une autre classe (super-classe). La relation doit representer un "est-un" (is-a).
 
 \`\`\`java
 public class Animal {
@@ -112,9 +112,9 @@ public class Chien extends Animal {
 
 ## 3. Polymorphisme — Une interface, multiples comportements
 
-Le polymorphisme permet a des objets de types differents de repondre a un meme message de facon appropriee. Deux formes :
+Le polymorphisme permet a des objets de types différents de repondre à un meme message de facon appropriee. Deux formes :
 
-**Polymorphisme dynamique (overriding)** : une sous-classe redefinit une methode heritee. Resolution a l'execution.
+**Polymorphisme dynamique (overriding)** : une sous-classe redefinit une méthode heritee. Resolution à l'execution.
 
 \`\`\`java
 List<Animal> animaux = Arrays.asList(new Chien("Rex"), new Chat("Felix"));
@@ -123,7 +123,7 @@ for (Animal a : animaux) {
 }
 \`\`\`
 
-**Polymorphisme statique (overloading)** : meme nom de methode avec des parametres differents dans la meme classe. Resolution a la compilation.
+**Polymorphisme statique (overloading)** : meme nom de méthode avec des paramêtrès différents dans la meme classe. Resolution à la compilation.
 
 \`\`\`java
 class Calculatrice {
@@ -203,7 +203,7 @@ Les 4 piliers sont renforces par les principes SOLID :
 
 ## Pièges courants
 
-- Heritage la ou la composition suffirait
+- Heritage la où la composition suffirait
 - Violation de LSP : sous-classe qui casse le contrat de la super-classe
 - Exposition des donnees internes (attributs publics)
 - Classes "God" qui violent tous les principes
@@ -220,13 +220,13 @@ Source : [Oracle Java Tutorial — Object-Oriented Programming Concepts](https:/
 
 ## Principe
 
-L'encapsulation est le pilier de la POO qui consiste a regrouper les donnees (attributs) et les methodes qui les manipulent dans une meme unite (la classe), tout en limitant l'acces direct aux details internes. C'est le mecanisme qui protege l'etat d'un objet contre les modifications non autorisees ou incoherentes.
+L'encapsulation est le pilier de la POO qui consiste a regrouper les donnees (attributs) et les méthodes qui les manipulent dans une meme unite (la classe), tout en limitant l'acces direct aux details internes. C'est le mecanisme qui protege l'état d'un objet contre les modifications non autorisees ou incoherentes.
 
 ## Les trois piliers de l'encapsulation
 
 1. **Regroupement** : donnees et comportement dans la meme classe
 2. **Protection** : attributs prives, interface publique
-3. **Controle** : validation des donnees via les methodes d'acces
+3. **Contrôle** : validation des donnees via les méthodes d'acces
 
 ## Implementation en Java
 
@@ -244,7 +244,7 @@ public class Personne {
 
     public void setNom(String nom) {
         if (nom == null || nom.trim().isEmpty()) {
-            throw new IllegalArgumentException("Le nom ne peut pas etre vide");
+            throw new IllegalArgumentException("Le nom ne peut pas être vide");
         }
         this.nom = nom.trim();
     }
@@ -282,7 +282,7 @@ public class CompteBancaire {
     private double solde;
     private List<Transaction> transactions = new ArrayList<>();
 
-    // Pas de getSolde() — on expose des methodes metier
+    // Pas de getSolde() — on expose des méthodes metier
     public void crediter(double montant, String libelle) {
         if (montant <= 0) throw new IllegalArgumentException("Montant invalide");
         solde += montant;
@@ -354,20 +354,20 @@ class Employee {
 
 ## Bonnes pratiques
 
-- Toujours declarer les attributs comme \`private\`
+- Toujours déclarer les attributs comme \`private\`
 - Exposer uniquement ce qui est necessaire (interface minimale)
-- Valider les donnees dans les setters et methodes de modification
+- Valider les donnees dans les setters et méthodes de modification
 - Retourner des copies (ou collections immutables) des donnees internes
 - Preferer l'immutabilite quand possible (\`final\` en Java, \`readonly\` en TypeScript)
 - Ne pas creer de getters/setters systematiques — seulement si necessaire
-- Utiliser des methodes metier au lieu de simples setters quand il y a une logique
+- Utiliser des méthodes metier au lieu de simples setters quand il y à une logique
 
 ## Pièges courants
 
 - Exposer tous les attributs comme publics (pas d'encapsulation)
 - Creer des getters qui retournent des references a des objets mutables (violation)
 - Oublier la validation dans les setters
-- Setters/getters automatiques sans reflexion (Lombok peut cacher le probleme)
+- Setters/getters automatiques sans reflexion (Lombok peut cacher le problème)
 - Exposer des collections internes sans defense
 
 ## Encapsulation et immutabilite
@@ -403,7 +403,7 @@ Source : [Oracle Java Tutorial — Encapsulation](https://docs.oracle.com/javase
 
 ## Principe
 
-L'heritage est un mecanisme qui permet a une classe (sous-classe / classe fille) de recevoir les proprietes et methodes d'une autre classe (super-classe / classe mere). Il etablit une relation "est-un" (is-a) et favorise la reutilisation du code.
+L'heritage est un mecanisme qui permet à une classe (sous-classe / classe fille) de recevoir les proprietes et méthodes d'une autre classe (super-classe / classe mere). Il etablit une relation "est-un" (is-a) et favorise la reutilisation du code.
 
 ## Types d'heritage
 
@@ -420,17 +420,17 @@ L'heritage est un mecanisme qui permet a une classe (sous-classe / classe fille)
 // Super-classe
 public class Vehicule {
     protected String marque;
-    protected String modele;
+    protected String modèle;
     protected int vitesse;
 
-    public Vehicule(String marque, String modele) {
+    public Vehicule(String marque, String modèle) {
         this.marque = marque;
-        this.modele = modele;
+        this.modèle = modèle;
         this.vitesse = 0;
     }
 
     public void demarrer() {
-        System.out.println(marque + " " + modele + " demarre");
+        System.out.println(marque + " " + modèle + " demarre");
     }
 
     public void accelerer(int kmh) {
@@ -446,18 +446,18 @@ public class Vehicule {
 public class Voiture extends Vehicule {
     private int nombrePortes;
 
-    public Voiture(String marque, String modele, int nombrePortes) {
-        super(marque, modele);  // Appel du constructeur parent
+    public Voiture(String marque, String modèle, int nombrePortes) {
+        super(marque, modèle);  // Appel du constructeur parent
         this.nombrePortes = nombrePortes;
     }
 
     // Redefinition (override)
     @Override
     public void demarrer() {
-        System.out.println("La voiture " + marque + " " + modele + " ronronne");
+        System.out.println("La voiture " + marque + " " + modèle + " ronronne");
     }
 
-    // Nouvelle methode
+    // Nouvelle méthode
     public void activerClimatisation() {
         System.out.println("Climatisation activee");
     }
@@ -511,21 +511,21 @@ class Car extends Vehicle {
 
 \`\`\`java
 public class Manager extends Employee {
-    private List<Employee> equipe;
+    private List<Employee> équipe;
 
-    public Manager(String nom, double salaire, List<Employee> equipe) {
-        super(nom, salaire);  // Doit etre la premiere ligne du constructeur
-        this.equipe = equipe;
+    public Manager(String nom, double salaire, List<Employee> équipe) {
+        super(nom, salaire);  // Doit être la premiere ligne du constructeur
+        this.équipe = équipe;
     }
 
     @Override
     public double getSalaire() {
-        // Utilise la methode du parent puis ajoute un bonus
+        // Utilise la méthode du parent puis ajoute un bonus
         return super.getSalaire() + this.calculerBonus();
     }
 
     private double calculerBonus() {
-        return equipe.size() * 100;
+        return équipe.size() * 100;
     }
 }
 \`\`\`
@@ -533,19 +533,19 @@ public class Manager extends Employee {
 ## Heritage et constructeurs — Regles importantes
 
 1. Le constructeur de la sous-classe DOIT appeler un constructeur de la super-classe
-2. \`super()\` est implicite si la super-classe a un constructeur sans parametres
-3. Si la super-classe a uniquement des constructeurs parametres, \`super(...)\` est obligatoire
+2. \`super()\` est implicite si la super-classe à un constructeur sans paramêtres
+3. Si la super-classe a uniquement des constructeurs paramêtres, \`super(...)\` est obligatoire
 
-## Le probleme du diamant
+## Le problème du diamant
 
-L'heritage multiple de classes est interdit en Java et TypeScript a cause du probleme du diamant :
+L'heritage multiple de classes est interdit en Java et TypeScript a cause du problème du diamant :
 
 \`\`\`
     Animal
     /    \\
  Chien  Chat
     \\    /
-   ChienChat  ← Quelle methode \`manger()\` heriter ?
+   ChienChat  ← Quelle méthode \`manger()\` heriter ?
 \`\`\`
 
 Solution : les interfaces permettent d'heriter de plusieurs contrats sans conflit.
@@ -571,7 +571,7 @@ class Canard implements Volant, Nageur {
 ## Bonnes pratiques
 
 - Relation "est-un" uniquement : ne pas heriter juste pour reutiliser du code
-- Preferer la composition a l'heritage (GoF : "Favor composition over inheritance")
+- Preferer la composition à l'heritage (GoF : "Favor composition over inheritance")
 - Profondeur max 2-3 niveaux
 - Toujours annoter avec \`@Override\` / \`override\` pour la redefinition
 - Appeler \`super()\` dans le constructeur
@@ -584,14 +584,14 @@ class Canard implements Volant, Nageur {
 - Violation de LSP : une sous-classe qui ne se comporte pas comme sa super-classe
 - Heritage pour reutiliser du code au lieu de composition
 - Oublier d'appeler \`super()\` dans le constructeur
-- Surcharge accidentelle (oublier \`@Override\` et creer une nouvelle methode)
+- Surcharge accidentelle (oublier \`@Override\` et creer une nouvelle méthode)
 
 Source : [Oracle Java Tutorial — Inheritance](https://docs.oracle.com/javase/tutorial/java/IandI/subclasses.html)
 `},
         {
           id: 'oop-4',
           question: 'Le polymorphisme',
-          answer: "Le **polymorphisme** permet à une même méthode de se comporter différemment selon l'objet. **Overriding** (redéfinition) : une sous-classe redéfinit une méthode héritée (`Forme.dessiner()` implémenté différemment par `Cercle` et `Rectangle`). **Overloading** (surcharge) : même nom de méthode avec des paramètres différents dans la même classe.\n\nPermet d'écrire du code *générique* fonctionnant avec n'importe quel sous-type.",
+          answer: "Le **polymorphisme** permet à une même méthode de se comporter différemment selon l'objet. **Overriding** (redéfinition) : une sous-classe redéfinit une méthode héritée (`Forme.dessiner()` implémenté différemment par `Cercle` et `Rectangle`). **Overloading** (surcharge) : même nom de méthode avec des paramètrès différents dans la même classe.\n\nPermet d'écrire du code *générique* fonctionnant avec n'importe quel sous-type.",
           code: 'abstract class Forme {\n    abstract void dessiner();\n}\nclass Cercle extends Forme {\n    void dessiner() { System.out.println("Cercle"); }\n}',
           language: 'java',
         
@@ -599,18 +599,18 @@ Source : [Oracle Java Tutorial — Inheritance](https://docs.oracle.com/javase/t
 
 ## Principe
 
-Le polymorphisme (du grec "plusieurs formes") est la capacite d'un objet a prendre plusieurs formes. Concretement, une meme interface (methode) peut avoir des comportements differents selon le type reel de l'objet qui l'invoque. C'est le pilier qui rend le code flexible, extensible et decouple.
+Le polymorphisme (du grec "plusieurs formes") est la capacite d'un objet a prendre plusieurs formes. Concretement, une meme interface (méthode) peut avoir des comportements différents selon le type reel de l'objet qui l'invoque. C'est le pilier qui rend le code flexible, extensible et decouple.
 
 ## Les deux formes de polymorphisme
 
 | Type | Autre nom | Resolution | Mecanisme |
 |------|-----------|------------|-----------|
-| Polymorphisme statique | Overloading (surcharge) | Compilation | Meme nom, parametres differents |
+| Polymorphisme statique | Overloading (surcharge) | Compilation | Meme nom, paramêtrès différents |
 | Polymorphisme dynamique | Overriding (redefinition) | Execution | Redefinition dans une sous-classe |
 
 ## Polymorphisme dynamique (overriding)
 
-La forme la plus puissante. Le type de l'objet est determine a l'execution.
+La forme la plus puissante. Le type de l'objet est determine à l'execution.
 
 \`\`\`java
 // Interface commune
@@ -708,7 +708,7 @@ class CheckoutService {
     async checkout(amount: number): Promise<PaymentResult> {
         // Logique commune avant payment...
         const result = await this.processor.process(amount);
-        // Logique commune apres payment...
+        // Logique commune après payment...
         return result;
     }
 }
@@ -718,7 +718,7 @@ class CheckoutService {
 
 \`\`\`java
 public class StringUtils {
-    // Surcharge — meme nom, signatures differentes
+    // Surcharge — meme nom, signatures différentes
     public String concat(String a, String b) {
         return a + b;
     }
@@ -795,9 +795,9 @@ class Carre implements Forme { /* ... */ }
 ## Bonnes pratiques
 
 - Programmer par interface, pas par implementation (DIP)
-- Utiliser le polymorphisme pour eviter les \`instanceof\` et \`switch\` sur les types
+- Utiliser le polymorphisme pour éviter les \`instanceof\` et \`switch\` sur les types
 - Respecter LSP : les sous-classes doivent pouvoir remplacer leur super-classe
-- Les methodes overridees doivent avoir un comportement coherent avec le contrat
+- Les méthodes overridees doivent avoir un comportement coherent avec le contrat
 - Utiliser \`@Override\`/\`override\` systematiquement
 
 ## Pièges courants
@@ -806,7 +806,7 @@ class Carre implements Forme { /* ... */ }
 - Violer LSP avec des comportements surprenants
 - Creer des interfaces trop larges (ISP)
 - Surcharger au lieu de redéfinir (et vice versa)
-- Oublier que la surcharge est resolue a la compilation (early binding)
+- Oublier que la surcharge est resolue à la compilation (early binding)
 
 Source : [Oracle Java Tutorial — Polymorphism](https://docs.oracle.com/javase/tutorial/java/IandI/polymorphism.html)
 `},
@@ -819,9 +819,9 @@ Source : [Oracle Java Tutorial — Polymorphism](https://docs.oracle.com/javase/
 
 ## Qu'est-ce que c'est
 
-**Classe abstraite**: Classe qui ne peut pas être instanciée directement. Elle peut contenir des implementations concretes en plus de methodes abstraites. Une classe ne peut heriter que d'une seule classe abstraite.
+**Classe abstraite**: Classe qui ne peut pas être instanciée directement. Elle peut contenir des implementations concretes en plus de méthodes abstraites. Une classe ne peut heriter que d'une seule classe abstraite.
 
-**Interface**: Contrat pur qui définit uniquement la signature des methodes (pas d'implementation). Une classe peut implementer plusieurs interfaces.
+**Interface**: Contrat pur qui définit uniquement la signature des méthodes (pas d'implementation). Une classe peut implementer plusieurs interfaces.
 
 ## TypeScript
 
@@ -945,7 +945,7 @@ class Dog extends Animal implements Drawable {
 - Pretez pour l'interface (programmation par contrat)
 - Utilisez des noms explicites: \`Drawable\`, \`Persistable\`, \`Serializable\`
 - Une interface par responsabilite (SRP)
-- Preferer la composition a l'heritage quand la hierarchie devient profonde
+- Preferer la composition à l'heritage quand la hierarchie devient profonde
 - En TypeScript, \`implements\` indique clairement le contrat
 
 ## Pièges courants
@@ -953,7 +953,7 @@ class Dog extends Animal implements Drawable {
 - Confusion "est-un" (heritage) vs "a-un" (composition)
 - Heriter de plusieurs classes abstraites en TypeScript (impossible)
 - Interfaces trop generiques (\`Operable\` sans précision)
-- Ajouter trop de methodes a une interface (violation SRP)
+- Ajouter trop de méthodes à une interface (violation SRP)
 - Utiliser une classe abstraite quand une interface suffit
 
 ## Pour aller plus loin
@@ -985,7 +985,7 @@ Source: https://www.typescriptlang.org/docs/handbook/2/classes.html`},
         {
           id: 'oop-6',
           question: 'Surcharge vs Redéfinition',
-          answer: "**Surcharge** (*overloading*) : mêmes noms, paramètres différents, dans la même classe — résolution à la **compilation** (liaison statique).\n\n**Redéfinition** (*overriding*) : même signature, dans une sous-classe avec `@Override` — résolution à l'**exécution** (liaison dynamique).\n\n**Surcharge** = même nom + paramètres différents + compilation. **Redéfinition** = même signature + sous-classe + exécution.",
+          answer: "**Surcharge** (*overloading*) : mêmes noms, paramètrès différents, dans la même classe — résolution à la **compilation** (liaison statique).\n\n**Redéfinition** (*overriding*) : même signature, dans une sous-classe avec `@Override` — résolution à l'**exécution** (liaison dynamique).\n\n**Surcharge** = même nom + paramètrès différents + compilation. **Redéfinition** = même signature + sous-classe + exécution.",
           code: '// Surcharge\nint add(int a, int b) { return a+b; }\nint add(int a, int b, int c) { return a+b+c; }\n\n// Redéfinition\n@Override\nint add(int a, int b) { return a+b+bonus; }',
           language: 'java',
         
@@ -993,28 +993,28 @@ Source: https://www.typescriptlang.org/docs/handbook/2/classes.html`},
 
 ## Principe
 
-La surcharge (overloading) et la redefinition (overriding) sont deux mecanismes qui permettent d'utiliser le meme nom de methode avec des comportements differents. Ils se distinguent par leur contexte, leur moment de resolution et leur objectif.
+La surcharge (overloading) et la redefinition (overriding) sont deux mecanismes qui permettent d'utiliser le meme nom de méthode avec des comportements différents. Ils se distinguent par leur contexte, leur moment de resolution et leur objectif.
 
 ## Tableau comparatif
 
 | Aspect | Surcharge (Overloading) | Redefinition (Overriding) |
 |--------|------------------------|--------------------------|
 | Relation | Meme classe (ou classe liee) | Super-classe → Sous-classe |
-| Signature | DOIT differer (parametres) | DOIT etre identique |
+| Signature | DOIT differer (paramêtres) | DOIT être identique |
 | Resolution | Compilation (early binding) | Execution (late binding) |
 | Mot-cle | Aucun | \`@Override\` (Java) / \`override\` (TS) |
 | Return type | Peut differer | Identique (ou covariant) |
 | Exception | Peut differer | Meme ou sous-classe |
-| Visibilite | Peut differer | Ne peut pas etre reduite |
+| Visibilite | Peut differer | Ne peut pas être reduite |
 | Static | Oui | Non (pas de override statique) |
 
-## Surcharge (Overloading) — Meme nom, parametres differents
+## Surcharge (Overloading) — Meme nom, paramêtrès différents
 
-La surcharge definit plusieurs methodes avec le meme nom mais des signatures differentes (nombre, type, ou ordre des parametres). Resolution a la compilation.
+La surcharge definit plusieurs méthodes avec le meme nom mais des signatures différentes (nombre, type, ou ordre des paramêtres). Resolution à la compilation.
 
 \`\`\`java
 public class Calculator {
-    // Surcharge par type de parametre
+    // Surcharge par type de paramêtre
     public int add(int a, int b) {
         return a + b;
     }
@@ -1027,7 +1027,7 @@ public class Calculator {
         return a + b;
     }
 
-    // Surcharge par nombre de parametres
+    // Surcharge par nombre de paramêtres
     public int add(int a, int b, int c) {
         return a + b + c;
     }
@@ -1057,9 +1057,9 @@ class Calculator {
 }
 \`\`\`
 
-## Redefinition (Overriding) — Meme signature, comportement different
+## Redefinition (Overriding) — Meme signature, comportement différent
 
-La redefinition permet a une sous-classe de fournir une implementation specifique d'une methode deja definie dans sa super-classe. Resolution a l'execution (late binding).
+La redefinition permet à une sous-classe de fournir une implementation specifique d'une méthode déjà definie dans sa super-classe. Resolution à l'execution (late binding).
 
 \`\`\`java
 abstract class Employee {
@@ -1074,7 +1074,7 @@ abstract class Employee {
     // Methode a redefinir
     public abstract double calculatePay();
 
-    // Methode concrete qui peut etre redefinie
+    // Methode concrete qui peut être redefinie
     public String getDescription() {
         return "Employee: " + name;
     }
@@ -1116,12 +1116,12 @@ class Manager extends Employee {
 
 ## Regles Java pour la redefinition
 
-1. La methode doit avoir la meme signature (nom + parametres)
-2. Le type de retour doit etre identique ou covariant (sous-type)
-3. Le niveau de visibilite ne peut pas etre reduit (\`public\` ne peut pas devenir \`protected\`)
-4. Seules les methodes instanciees peuvent etre redefinies (pas les static)
-5. Les methodes \`final\` ne peuvent pas etre redefinies
-6. Les constructeurs ne sont pas herites et ne peuvent pas etre redefinis
+1. La méthode doit avoir la meme signature (nom + paramêtres)
+2. Le type de retour doit être identique ou covariant (sous-type)
+3. Le niveau de visibilite ne peut pas être reduit (\`public\` ne peut pas devenir \`protected\`)
+4. Seules les méthodes instanciees peuvent être redefinies (pas les static)
+5. Les méthodes \`final\` ne peuvent pas être redefinies
+6. Les constructeurs ne sont pas herites et ne peuvent pas être redefinis
 
 ## Covariance du type de retour
 
@@ -1136,7 +1136,7 @@ class Child extends Parent {
 }
 \`\`\`
 
-## Polymorphisme avec les methodes surchargees
+## Polymorphisme avec les méthodes surchargees
 
 \`\`\`java
 class Printer {
@@ -1149,25 +1149,25 @@ class Printer {
 Printer p = new Printer();
 p.print("hello");       // String
 p.print(42);            // Integer
-p.print((Object) "hi"); // Object ! (resolution a la compilation)
+p.print((Object) "hi"); // Object ! (resolution à la compilation)
 \`\`\`
 
 ## Bonnes pratiques
 
 - Toujours utiliser \`@Override\`/\`override\` pour la redefinition (detecte les erreurs de signature)
 - Respecter le contrat de la super-classe (LSP)
-- Ne pas surcharger avec le meme nombre de parametres et types differents sans raison
+- Ne pas surcharger avec le meme nombre de paramêtrès et types différents sans raison
 - Limiter la surcharge a 3-4 variantes maximum
-- La redefinition doit etre coherente : ne pas changer le comportement attendu
-- Ne pas redefinir une methode pour lever une exception inattendue
+- La redefinition doit être coherente : ne pas changer le comportement attendu
+- Ne pas redefinir une méthode pour lever une exception inattendue
 
 ## Pièges courants
 
-- Oublier \`@Override\` et creer accidentellement une nouvelle methode
+- Oublier \`@Override\` et creer accidentellement une nouvelle méthode
 - Confondre surcharge et redefinition dans les discussions techniques
-- Violer LSP en redefinissant une methode avec un comportement incompatible
+- Violer LSP en redefinissant une méthode avec un comportement incompatible
 - Surcharger avec des types qui creent des ambiguites (ex: \`Object\` vs \`String\`)
-- Croire que la redefinition s'applique aux methodes statiques (c'est du hiding)
+- Croire que la redefinition s'applique aux méthodes statiques (c'est du hiding)
 
 Source : [Oracle Java Tutorial — Overriding and Hiding Methods](https://docs.oracle.com/javase/tutorial/java/IandI/override.html)
 `},
@@ -1210,7 +1210,7 @@ professor.teach(student);
 
 ## Aggregation
 
-Relation "a-un" (has-a) faible. Un objet contient une reference a l'autre, mais l'autre peut exister independamment. L'ensemble ne controle pas la creation/suppression du composant.
+Relation "a-un" (has-a) faible. Un objet contient une reference à l'autre, mais l'autre peut exister independamment. L'ensemble ne contrôle pas la creation/suppression du composant.
 
 \`\`\`typescript
 // Aggregation: University "a" des Departments (les Departments existent independamment)
@@ -1240,7 +1240,7 @@ uni.addDepartment(dept);
 
 ## Composition
 
-Relation "a-un" FORTE. L'objet控制了 la creation et la destruction du composant. Si l'objet pere est detruit, le composant est aussi detruit.
+Relation "a-un" FORTE. L'objetcontrôle la creation et la destruction du composant. Si l'objet pere est detruit, le composant est aussi detruit.
 
 \`\`\`typescript
 // Composition: Car "a" un Engine (l'engine ne peut pas exister independamment du Car)
@@ -1259,7 +1259,7 @@ class Car {
   constructor(make: string, model: string) {
     this.make = make;
     this.model = model;
-    // Car cree et controle l'engine
+    // Car cree et contrôle l'engine
     this.engine = new Engine('V8');
   }
   
@@ -1290,8 +1290,8 @@ Composition:      A <●-------> B     (fleche avec losange plein)
 
 ## Bonnes pratiques
 
-- Identifiez si l'objet controle la creation et destruction de l'autre
-- Preferer la composition (plus flexible) a l'heritage
+- Identifiez si l'objet contrôle la creation et destruction de l'autre
+- Preferer la composition (plus flexible) à l'heritage
 - Utilisez l'aggregation pour les relations "contains but can exist alone"
 - Les referencias faibles (weak references) sont un signe d'aggregation
 
@@ -1310,7 +1310,7 @@ class Library {
   private books: Book[];
   
   removeBook(book: Book) {
-    // Le livre continue d'exister apres removal
+    // Le livre continue d'exister après removal
     this.books = this.books.filter(b => b !== book);
   }
 }
@@ -1341,7 +1341,7 @@ Source: https://www.uml.org.cn/Object-Oriented/upload/202109161.pdf`},
 
 ## Qu'est-ce que c'est
 
-**Heritage**: Une classe enfant herite des attributs et methodes d'une classe parent. Relation "est-un" (is-a).
+**Heritage**: Une classe enfant herite des attributs et méthodes d'une classe parent. Relation "est-un" (is-a).
 
 **Composition**: Une classe contient une instance d'une autre classe comme attribut. Relation "a-un" (has-a).
 
@@ -1392,7 +1392,7 @@ class Engine {
 
 class Car {
   make: string;
-  // Composition: Car a un Engine
+  // Composition: Car à un Engine
   private engine: Engine;
   
   constructor() {
@@ -1404,7 +1404,7 @@ class Car {
   }
   
   // Car nest pas un Engine
-  // Car a un Engine
+  // Car à un Engine
 }
 \`\`\`
 
@@ -1414,12 +1414,12 @@ class Car {
 // Probleme: Hiérarchie rigide et diamond problem
 //         Animal
 //        /     \\
-       //      Mammal   Bird (heritage multiple si許可)
+       //      Mammal   Bird (heritage multiple siautorise)
 //          |      |
 //         Dog    Bat (que se passe-t-il?)
 
 // Probleme: Une classe ne peut heriter que d'une seule parent
-// Et si Dog doit etre un Animal ET un Robot?
+// Et si Dog doit être un Animal ET un Robot?
 
 // Solution: Composition
 class RobotDog {
@@ -1474,7 +1474,7 @@ class GameObject {
 | Flexibilite | Faible | Haute |
 | Dynamique | Non | Oui (via interfaces) |
 | Couplage | Fort | Faible |
-| Reutilisation | Limitee a la hierarchie | Multiple sources |
+| Reutilisation | Limitee à la hierarchie | Multiple sources |
 | Tresses | Unique | Plusieurs |
 
 ## Bonnes pratiques
@@ -1547,7 +1547,7 @@ Java n'autorise pas l'heritage multiple de classes (une classe ne peut etendre q
       D
 \`\`\`
 
-Si B et C definissent la meme methode \`doSomething()\`, et D herite de B et C, quelle version D doit-elle utiliser?
+Si B et C definissent la meme méthode \`doSomething()\`, et D herite de B et C, quelle version D doit-elle utiliser?
 
 ### En Java (sans heritage multiple)
 
@@ -1655,7 +1655,7 @@ class Robot {
 | Raison | Explication |
 |--------|------------|
 | Simplicite | Pas de complexe resolutions order |
-| Diamond Problem | Elimine les ambiguites de methodes |
+| Diamond Problem | Elimine les ambiguites de méthodes |
 | SOLID | Favorise la composition sur l'heritage |
 | Design | Interface + classe abstraite = design clair |
 
@@ -1685,7 +1685,7 @@ interface D extends B, C {
 
 - Utilisez des interfaces pour implementer plusieurs contrats
 - Pretez pour la composition (has-a) sur l'heritage (is-a)
-- Limitez l'heritage de classe a une seule classe parente
+- Limitez l'heritage de classe à une seule classe parente
 - Utilisez des classes abstraites pour le code partage, interfaces pour les contrats
 
 ## Pièges courants
@@ -1730,11 +1730,11 @@ Source: https://docs.oracle.com/javase/tutorial/java/IandI/multiple.html`},
 Le couplage faible (low coupling) et la cohesion forte (high cohesion) sont deux objectifs de conception fondamentaux en genie logiciel. Ils mesurent respectivement le degre de dependance entre modules et le degre de focalisation au sein d'un meme module.
 
 - **Couplage faible** : les modules dependent peu les uns des autres. Un changement dans un module impacte minimalement les autres.
-- **Cohesion forte** : un module a une responsabilite unique et bien definie. Ses elements internes travaillent ensemble pour accomplir cette tache.
+- **Cohesion forte** : un module à une responsabilite unique et bien definie. Ses elements internes travaillent ensemble pour accomplir cette tâche.
 
 ## Couplage — Du fort au faible
 
-### Couplage FORT (a eviter)
+### Couplage FORT (a éviter)
 
 \`\`\`typescript
 // MAUVAIS : Couplage fort par heritage et dependance concrete
@@ -1780,21 +1780,21 @@ class UserService {
 }
 \`\`\`
 
-### Les differentes formes de couplage (du pire au meilleur)
+### Les différentes formes de couplage (du pire au meilleur)
 
 | Type de couplage | Description | Niveau |
 |------------------|-------------|--------|
 | Content | Un module modifie les donnees internes d'un autre | Pire |
 | Common | Modules partagent des donnees globales | Mauvais |
-| Control | Un module controle le flux d'un autre | Mauvais |
+| Control | Un module contrôle le flux d'un autre | Mauvais |
 | Stamp | Un module recoit une structure de donnees complete | Moyen |
 | Data | Unmodule passe des donnees simples (primitives) | Bon |
-| Message | Communication via messages/evenements | Excellent |
+| Message | Communication via messages/événements | Excellent |
 | None | Aucune dependance | Ideal |
 
 ## Cohesion — Du faible au fort
 
-### Cohesion FAIBLE (a eviter)
+### Cohesion FAIBLE (a éviter)
 
 \`\`\`typescript
 // MAUVAIS : Faible cohesion — la classe fait tout
@@ -1811,7 +1811,7 @@ class GodClass {
 ### Cohesion FORTE (a viser)
 
 \`\`\`typescript
-// BON : Forte cohesion — chaque classe a une responsabilite unique
+// BON : Forte cohesion — chaque classe à une responsabilite unique
 class UserValidator {
     validate(user: User): ValidationResult {
         if (!user.email.includes('@')) {
@@ -1862,7 +1862,7 @@ class UserRepository {
 // SRP : UserRepository ne fait que la persistence
 // OCP : On peut ajouter un AuditLogRepository sans modifier UserRepository
 // LSP : Toute implementation de Database peut remplacer l'autre
-// ISP : Database a une interface minimale
+// ISP : Database à une interface minimale
 // DIP : UserService depend d'abstraction (Database) pas de concretion (MySQL)
 
 interface Logger {
@@ -1899,15 +1899,15 @@ class OrderService {
 ## Indices de mauvais design (code smells)
 
 ### Couplage fort
-- Changer un module force des changements dans d'autres modules
+- Changer un module force des changements dans d'autrès modules
 - Tests difficiles (besoin de beaucoup de mocks)
-- \`new\` avec des classes concretes dans les methodes
+- \`new\` avec des classes concretes dans les méthodes
 - Imports directs entre modules non lies
 - Singletons globaux utilises comme dependances cachees
-- Chaines de methodes longues (train wreck : \`a.getB().getC().doSomething()\`)
+- Chaines de méthodes longues (train wreck : \`a.getB().getC().doSomething()\`)
 
 ### Faible cohesion
-- Classes nommees \`Util\`, \`Helper\`, \`Manager\`, \`Service\` tres generiques
+- Classes nommees \`Util\`, \`Helper\`, \`Manager\`, \`Service\` très generiques
 - Methodes qui n'utilisent pas les memes attributs
 - Imports varies dans une meme classe
 - Test unitaire difficile a nommer / trop long
@@ -1917,13 +1917,13 @@ class OrderService {
 
 \`\`\`typescript
 // Poser ces questions pour chaque classe :
-// 1. "Est-ce que je peux decrire son role en une phrase ?"
+// 1. "Est-ce que je peux décrire son rôle en une phrase ?"
 //    → Non = faible cohesion
 // 2. "Si cette interface change, combien de classes sont impactees ?"
 //    → Beaucoup = couplage fort
 // 3. "Puis-je tester cette classe en isolant ses dependances ?"
 //    → Non = couplage fort
-// 4. "Est-ce que cette classe a une raison de changer ?"
+// 4. "Est-ce que cette classe à une raison de changer ?"
 //    → Plus d'une = faible cohesion (SRP)
 \`\`\`
 
@@ -1934,7 +1934,7 @@ class OrderService {
 - SRP : une classe = une responsabilite
 - Composition sur heritage
 - Evenements/observers pour la communication decouplee
-- Tests unitaires faciles a ecrire = bon signe
+- Tests unitaires faciles a écrire = bon signe
 - Reviser regulierement les dependances entre modules
 
 Source : [Wikipedia — Coupling and Cohesion](https://en.wikipedia.org/wiki/Coupling_(computer_programming))
@@ -1950,7 +1950,7 @@ Source : [Wikipedia — Coupling and Cohesion](https://en.wikipedia.org/wiki/Cou
 
 ## Principe
 
-La liaison dynamique (dynamic binding ou late binding) est le mecanisme par lequel l'appel d'une methode est resolu a l'execution plutot qu'a la compilation. Cela permet au programme de determiner quelle methode executer en fonction du **type reel** de l'objet au moment de l'appel, pas du type declare de la reference.
+La liaison dynamique (dynamic binding ou late binding) est le mecanisme par lequel l'appel d'une méthode est resolu à l'execution plutot qu'à la compilation. Cela permet au programme de determiner quelle méthode executer en fonction du **type reel** de l'objet au moment de l'appel, pas du type declare de la reference.
 
 C'est le fondement du polymorphisme dynamique (overriding).
 
@@ -1997,14 +1997,14 @@ public class TestLiaison {
         monAnimal = new Chat();
         monAnimal.faireDuBruit();  // "Le chat miaule : Miaou !"
 
-        // La methode appellee depend du TYPE REEL (liaison dynamique)
+        // La méthode appellee depend du TYPE REEL (liaison dynamique)
     }
 }
 \`\`\`
 
-## Comment ca marche en interne (vtable)
+## Comment ça marche en interne (vtable)
 
-Le compilateur cree une **table virtuelle** (vtable) pour chaque classe contenant des methodes overrideables :
+Le compilateur cree une **table virtuelle** (vtable) pour chaque classe contenant des méthodes overrideables :
 
 \`\`\`java
 // Representation conceptuelle de la vtable
@@ -2020,7 +2020,7 @@ class Chien extends Animal {
 }
 
 // A l'execution, monAnimal.faireDuBruit() est compile en :
-// monAnimal.vtable[0]()  -- resolution via l'index, pas le nom
+// monAnimal.vtable[0]()  -- resolution vià l'index, pas le nom
 \`\`\`
 
 ## Liaison dynamique avec les interfaces
@@ -2103,7 +2103,7 @@ async function notifyAll(senders: NotificationSender[], message: string) {
 Le cout de la liaison dynamique est minimal dans les JVM modernes :
 
 1. **Appel standard** : look-up dans la vtable (quelques instructions CPU)
-2. **JIT compilation** : le JIT inline les methodes hot, eliminant la vtable lookup
+2. **JIT compilation** : le JIT inline les méthodes hot, eliminant la vtable lookup
 3. **Monomorphic call site** : si la JVM voit toujours le meme type, elle optimise completement
 
 \`\`\`java
@@ -2113,9 +2113,9 @@ for (int i = 0; i < 1000000; i++) {
 }
 \`\`\`
 
-## Pièges lies a la liaison dynamique
+## Pièges lies à la liaison dynamique
 
-### 1. Appel de methode overrideable dans le constructeur
+### 1. Appel de méthode overrideable dans le constructeur
 
 \`\`\`java
 class Parent {
@@ -2139,9 +2139,9 @@ class Child extends Parent {
 }
 \`\`\`
 
-### 2. Confusion avec les methodes statiques
+### 2. Confusion avec les méthodes statiques
 
-Les methodes statiques utilisent la **liaison statique** (early binding) :
+Les méthodes statiques utilisent la **liaison statique** (early binding) :
 
 \`\`\`java
 class Animal {
@@ -2160,10 +2160,10 @@ a.type();  // "Animal" — pas de liaison dynamique pour les statiques !
 ## Bonnes pratiques
 
 - Programmer par interface : le polymorphisme (liaison dynamique) est alors automatique
-- Ne pas appeler de methodes overrideables dans les constructeurs
+- Ne pas appeler de méthodes overrideables dans les constructeurs
 - Utiliser \`@Override\` / \`override\` systematiquement
-- Documenter les methodes conçues pour etre overridees
-- Les performances ne sont pas une raison pour eviter le polymorphisme en Java moderne
+- Documenter les méthodes conçues pour être overridees
+- Les performances ne sont pas une raison pour éviter le polymorphisme en Java moderne
 
 Source : [Oracle Java Tutorial — Polymorphism](https://docs.oracle.com/javase/tutorial/java/IandI/polymorphism.html)
 `},

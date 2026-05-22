@@ -29,7 +29,7 @@ export const part2Categories: InterviewCategory[] = [
           {
             id: 'java-4',
             question: 'StackOverflowError vs OutOfMemoryError',
-            answer: "**`StackOverflowError`** : la pile d'exécution est pleine, typiquement par récursion infinie (stack ~512Ko-1Mo). **`OutOfMemoryError`** : le tas (*heap*) est saturé, par exemple une liste qui grandit indéfiniment.\n\n`StackOverflow` se diagnostique facilement via la trace d'appels ; `OutOfMemory` nécessite souvent un profiling (`JVisualVM`, `Eclipse MAT`). En production : `-Xmx` pour le heap, `-Xss` pour la stack.",
+            answer: "**`StackOverflowError`** : la pile d'exécution est pleine, typiquement par récursion infinie (stack ~512Ko-1Mo). **`OutOfMemoryError`** : le tas (*heap*) est saturé, par exemple une liste qui grandit indéfiniment.\n\n`StackOverflow` se diagnostique facilement vià la trace d'appels ; `OutOfMemory` nécessite souvent un profiling (`JVisualVM`, `Eclipse MAT`). En production : `-Xmx` pour le heap, `-Xss` pour la stack.",
           },
           {
             id: 'java-5',
@@ -58,7 +58,7 @@ export const part2Categories: InterviewCategory[] = [
           {
             id: 'java-8',
             question: 'throw vs throws',
-            answer: "**`throw`** lance explicitement une exception dans le code (ex. `throw new IllegalArgumentException()`). **`throws`** déclare dans la signature qu'une méthode peut lancer une exception — surtout pour les *checked exceptions*.\n\n`throws` sert de contrat : l'appelant doit attraper l'exception ou la redéclarer. C'est un mécanisme de **transparence** qui empêche d'ignorer les erreurs potentielles.",
+            answer: "**`throw`** lance explicitement une exception dans le code (ex. `throw new IllegalArgumentException()`). **`throws`** déclare dans la signature qu'une méthode peut lancer une exception — surtout pour les *checked exceptions*.\n\n`throws` sert de contrat : l'appelant doit attraper l'exception où la redéclarer. C'est un mécanisme de **transparence** qui empêche d'ignorer les erreurs potentielles.",
             code: 'void verifier(int v) throws IllegalArgumentException {\n    if (v < 0) throw new IllegalArgumentException("Négatif");\n}',
             language: 'java',
           },
@@ -86,7 +86,7 @@ export const part2Categories: InterviewCategory[] = [
           {
             id: 'java-12',
             question: 'Array vs ArrayList',
-            answer: "**`Array`** : taille fixe, accepte les primitives, syntaxe crochets. **`ArrayList`** : taille dynamique, objets uniquement (*autoboxing* pour les primitives), méthodes `add`/`get`/`remove`.\n\n`ArrayList` est plus flexible et préférée dans la plupart des cas. `Array` reste utile pour les performances critiques ou les tailles connues à l'avance.",
+            answer: "**`Array`** : taille fixe, accepte les primitives, syntaxe crochets. **`ArrayList`** : taille dynamique, objets uniquement (*autoboxing* pour les primitives), méthodes `add`/`get`/`remove`.\n\n`ArrayList` est plus flexible et préférée dans la plupart des cas. `Array` reste utile pour les performances critiques où les tailles connues à l'avance.",
           },
           {
             id: 'java-13',
@@ -195,12 +195,12 @@ export const part2Categories: InterviewCategory[] = [
           {
             id: 'sp-7',
             question: 'Auto-configuration',
-            answer: "Au démarrage, Spring Boot scanne le *classpath* et configure automatiquement les beans selon les dépendances détectées (**Hibernate** → `EntityManagerFactory`, **spring-web** → Tomcat + MVC).\n\nRepose sur `@ConditionalOnClass`, `@ConditionalOnMissingBean`, `@ConditionalOnProperty` : l'auto-config s'active si les conditions sont remplies, et recule si vous définissez votre propre bean. Excluable via `@SpringBootApplication(exclude = ...)`.",
+            answer: "Au démarrage, Spring Boot scanne le *classpath* et configure automatiquement les beans selon les dépendances détectées (**Hibernate** → `EntityManagerFactory`, **spring-web** → Tomcat + MVC).\n\nRepose sur `@ConditionalOnClass`, `@ConditionalOnMissingBean`, `@ConditionalOnProperty` : l'auto-config s'active si les conditions sont remplies, et reçule si vous définissez votre propre bean. Excluable via `@SpringBootApplication(exclude = ...)`.",
           },
           {
             id: 'sp-8',
             question: 'AOP',
-            answer: "L'**AOP** gère les **préoccupations transversales** (logging, sécurité, transactions) sans polluer le code métier. Un **Aspect** contient le code commun, les **Pointcuts** définissent où l'appliquer.\n\n\nTypes d'*advice* : `@Before`, `@After`, `@AfterReturning`, `@AfterThrowing`, `@Around` (le plus puissant). Spring utilise des **proxys dynamiques** — __les appels internes (`this.methode()`) ne passent pas par le proxy__. `@Transactional` et `@Async` sont implémentés via AOP.",
+            answer: "L'**AOP** gère les **préoccupations transversales** (logging, sécurité, transactions) sans polluer le code métier. Un **Aspect** contient le code commun, les **Pointcuts** définissent où l'appliquer.\n\n\nTypes d'*advice* : `@Before`, `@After`, `@AfterReturning`, `@AfterThrowing`, `@Around` (le plus puissant). Spring utilise des **proxys dynamiques** — __les appels internes (`this.méthode()`) ne passent pas par le proxy__. `@Transactional` et `@Async` sont implémentés via AOP.",
             code: '@Aspect\n@Component\npublic class LogAspect {\n    @Before("execution(* com.example.service.*.*(..))")\n    public void log(JoinPoint jp) {\n        System.out.println("Appel: " + jp.getSignature());\n    }\n}',
             language: 'java',
           },
@@ -213,14 +213,14 @@ export const part2Categories: InterviewCategory[] = [
           {
             id: 'sp-9',
             question: 'Spring Security',
-            answer: "Framework d'**authentification** (« qui êtes-vous ? ») et d'**autorisation** (« que pouvez-vous faire ? »). Architecture : chaîne de filtres servlet interceptant chaque requête HTTP. `SecurityFilterChain` configurable via `HttpSecurity`.\n\nMécanismes : form login, Basic, **JWT**, **OAuth2**. Par défaut : CSRF, headers de sécurité, validation de session activés. Pour les APIs REST *stateless* avec JWT : __désactiver CSRF, session `STATELESS`__. Puissant mais courbe d'apprentissage raide.",
+            answer: "Framework d'**authentification** (« qui êtes-vous ? ») et d'**autorisation** (« que pouvez-vous faire ? »). Architecture : chaîne de filtrès servlet interceptant chaque requête HTTP. `SecurityFilterChain` configurable via `HttpSecurity`.\n\nMécanismes : form login, Basic, **JWT**, **OAuth2**. Par défaut : CSRF, headers de sécurité, validation de session activés. Pour les APIs REST *stateless* avec JWT : __désactiver CSRF, session `STATELESS`__. Puissant mais courbe d'apprentissage raide.",
             code: '@Configuration\n@EnableWebSecurity\npublic class SecurityConfig {\n    @Bean\n    public SecurityFilterChain chain(HttpSecurity http) throws Exception {\n        http.authorizeHttpRequests(a -> a\n            .requestMatchers("/public/**").permitAll()\n            .anyRequest().authenticated()\n        );\n        return http.build();\n    }\n}',
             language: 'java',
           },
           {
             id: 'sp-10',
             question: '@Transactional',
-            answer: "**`@Transactional`** enveloppe l'exécution dans une transaction : commit si succès, **rollback automatique** sur `RuntimeException`/`Error` (configurable via `rollbackFor`). Implémenté via AOP — __les appels internes (`this.methode()`) ne sont pas interceptés__.\n\n\nPropagation par défaut : `REQUIRED` (rejoint la transaction existante ou en crée une nouvelle). Autres modes : `REQUIRES_NEW`, `NESTED`, `SUPPORTS`. Indispensable pour la cohérence des opérations BDD.",
+            answer: "**`@Transactional`** enveloppe l'exécution dans une transaction : commit si succès, **rollback automatique** sur `RuntimeException`/`Error` (configurable via `rollbackFor`). Implémenté via AOP — __les appels internes (`this.méthode()`) ne sont pas interceptés__.\n\n\nPropagation par défaut : `REQUIRED` (rejoint la transaction existante ou en crée une nouvelle). Autrès modes : `REQUIRES_NEW`, `NESTED`, `SUPPORTS`. Indispensable pour la cohérence des opérations BDD.",
             code: '@Transactional\npublic void transferer(Long from, Long to, double montant) {\n    compteDao.debiter(from, montant);\n    compteDao.crediter(to, montant);\n}',
             language: 'java',
           },
@@ -263,7 +263,7 @@ export const part2Categories: InterviewCategory[] = [
           {
             id: 'ng-2',
             question: 'Data Binding',
-            answer: "Quatre formes de synchronisation modèle↔vue : **interpolation** `{{ expr }}` (modèle→vue), **property binding** `[prop]='val'` (modèle→vue dynamique), **event binding** `(event)='methode()'` (vue→modèle), **two-way binding** `[(ngModel)]='val'` (bidirectionnel, idéal pour les formulaires).\n\nPrivilégier le **one-way binding** : plus prévisible et plus facile à déboguer.",
+            answer: "Quatre formes de synchronisation modèle↔vue : **interpolation** `{{ expr }}` (modèle→vue), **property binding** `[prop]='val'` (modèle→vue dynamique), **event binding** `(event)='méthode()'` (vue→modèle), **two-way binding** `[(ngModel)]='val'` (bidirectionnel, idéal pour les formulaires).\n\nPrivilégier le **one-way binding** : plus prévisible et plus facile à déboguer.",
             code: '<p>{{ nom }}</p>\n<img [src]="url">\n<button (click)="go()">OK</button>\n<input [(ngModel)]="user.nom">',
             language: 'html',
           },

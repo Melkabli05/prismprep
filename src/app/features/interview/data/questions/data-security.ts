@@ -35,14 +35,14 @@ L'authentification et l'autorisation sont deux concepts fondamentaux en securite
 ## Protocoles courants
 
 ### OAuth 2.0
-Protocole de delegation d'autorisation permettant a une application d'acceder a des ressources sur behalf d'un utilisateur.
+Protocole de delegation d'autorisation permettant à une application d'acceder a des ressources sur behalf d'un utilisateur.
 
 ### JWT (JSON Web Token)
 Token siege containing claims utilises pour l'authentification.
 
 ## Bonnes pratiques
 
-1. Utilisez MFA (Multi-Factor Authentication) des que possible
+1. Utilisez MFA (Multi-Factor Authentication) dès que possible
 2. Implementer le principe du moindre privilege (least privilege)
 3. Separer clairement authentification et autorisation
 4. Utiliser des tokens avec expiration courte
@@ -51,7 +51,7 @@ Token siege containing claims utilises pour l'authentification.
 ## Pièges courants
 
 1. Confondre les deux concepts dans la documentation
-2. Ne pas verifier les permissions cote serveur (se fier uniquement au client)
+2. Ne pas verifier les permissions côté serveur (se fier uniquement au client)
 3. Utiliser des tokens sans expiration
 4. Stocker les mots de passe en texte clair
 
@@ -65,21 +65,21 @@ Source : [OWASP Authentication](https://owasp.org/www-project-web-security-testi
 
 ## Qu'est-ce que c'est ?
 
-L'OWASP Top 10 est un document de sensibilisation qui classe les 10 risques de securite les plus critiques pour les applications web. Il est mis a jour periodiquement par l'Open Web Application Security Project.
+L'OWASP Top 10 est un document de sensibilisation qui classe les 10 risques de securite les plus critiques pour les applications web. Il est mis à jour periodiquement par l'Open Web Application Security Project.
 
 ## Les 10 risques (2021)
 
 ### A01: Broken Access Control
-Echec de la restriction de l'acces aux ressources. Exemple : un utilisateur peut acceder aux donnees d'un autre utilisateur via l'URL.
+Echec de la restriction de l'acces aux ressources. Exemple : un utilisateur peut acceder aux donnees d'un autre utilisateur vià l'URL.
 
 ### A02: Cryptographic Failures
-Echecs lies a la cryptographie conduisant a l'exposition de donnees sensibles (mots de passe, cartes de credit).
+Echecs lies à la cryptographie conduisant à l'exposition de donnees sensibles (mots de passe, cartes de credit).
 
 ### A03: Injection
 Les instructions SQL, NoSQL, OS ou LDAP incluent des donnees non dignes de confiance.
 
 ### A04: Insecure Design
-Conception securisee insuffisante. Mod menaces early dans le cycle de developpement.
+Conception securisee insuffisante. Mod menaces early dans le cycle de développement.
 
 ### A05: Security Misconfiguration
 Configuration incorrecte de securite : ports ouverts, erreurs HTTP, stack traces exposees.
@@ -91,27 +91,27 @@ Utilisation de composants avec des vulnerabilites connues.
 Echecs dans les fonctions d'authentification : sessions non invalidees, mots de passe faibles.
 
 ### A08: Software and Data Integrity Failures
-Mise a jour automatique sans verification d'integrite, deserialisation non securisee.
+Mise à jour automatique sans verification d'integrite, deserialisation non securisee.
 
 ### A09: Security Logging and Monitoring Failures
 Absence de journalisation et surveillance.
 
 ### A10: Server-Side Request Forgery (SSRF)
-Le serveur effectue des requetes vers des destinations non autorisees.
+Le serveur effectue des requêtes vers des destinations non autorisees.
 
 ## Bonnes pratiques
 
 1. Effectuer des revues de securite regulieres
 2. Utiliser des outils SAST et DAST
-3. Mettre a jour regulierement les dependances
+3. Mettre à jour regulierement les dependances
 4. Implementer une politique de securite claire
-5. Former les developpeurs aux pratiques securitaires
+5. Former les développeurs aux pratiques securitaires
 
 Source : [OWASP Top 10](https://owasp.org/Top10/)`},
         {
           id: 'sec-3',
           question: 'Injection SQL',
-          answer: "Un attaquant insère du **SQL malveillant** via les champs de saisie. Exemple : concaténation `\"SELECT * FROM users WHERE name = '\" + name + \"'\"` avec input `' OR '1'='1` rend la condition toujours vraie.\n\nConséquences : vol/modification/suppression de données, prise de contrôle du serveur.\n\nProtection : **requêtes préparées** (première ligne de défense, les paramètres sont des données pas du code), `ORM` (requêtes paramétrées auto), validation des entrées (type, longueur, format).",
+          answer: "Un attaquant insère du **SQL malveillant** via les champs de saisie. Exemple : concaténation `\"SELECT * FROM users WHERE name = '\" + name + \"'\"` avec input `' OR '1'='1` rend la condition toujours vraie.\n\nConséquences : vol/modification/suppression de données, prise de contrôle du serveur.\n\nProtection : **requêtes préparées** (première ligne de défense, les paramètrès sont des données pas du code), `ORM` (requêtes paramétrées auto), validation des entrées (type, longueur, format).",
           code: "// Vulnérable ❌\n\"SELECT * FROM users WHERE name = '\" + name + \"'\"\n\n// Sécurisé ✅\nPreparedStatement ps = conn.prepareStatement(\n    \"SELECT * FROM users WHERE name = ?\"\n);\nps.setString(1, name);",
           language: 'java',
         
@@ -119,22 +119,22 @@ Source : [OWASP Top 10](https://owasp.org/Top10/)`},
 
 ## Qu'est-ce que c'est ?
 
-L injection SQL est une technique d attaque consistant a inserer du code SQL malveillant dans une requete destined a etre executee par la base de donnees. Elle permet de contourner l authentification, lire des donnees sensibles, ou detruire la base.
+L injection SQL est une technique d attaque consistant a inserer du code SQL malveillant dans une requête destined a être executee par la base de donnees. Elle permet de contourner l authentification, lire des donnees sensibles, ou detruire la base.
 
 ## Types d injection
 
 ### In-Band SQLi
-L attaquant utilise le meme canal pour lancer l attaque et recuperer les resultats.
+L attaquant utilise le meme canal pour lancer l attaque et reçuperer les resultats.
 
 ### Inferential SQLi (Blind)
 L attaquant ne recoit pas de donnees mais peut inferer l information via des comportements (true/false queries).
 
 ### Out-of-Band SQLi
-L attaquant utilise des canaux differents pour lancer l attaque et recuperer les resultats.
+L attaquant utilise des canaux différents pour lancer l attaque et reçuperer les resultats.
 
 ## Exemple d attaque
 
-Une requete vulnerable:
+Une requête vulnerable:
 SELECT * FROM users WHERE username = ' + username + ' AND password = ' + password + '
 
 Un attaquant peut entrer: OR 1=1
@@ -142,8 +142,8 @@ Resultat: SELECT * FROM users WHERE username = ' OR 1=1
 
 ## Comment se premunir
 
-### Requetes parametrees (Prepared Statements)
-Utilisation de requetes parametrees avec des variables liees.
+### Requetes paramêtrees (Prepared Statements)
+Utilisation de requêtes paramêtrees avec des variables liees.
 
 ### ORM (Hibernate, Entity Framework)
 Les ORM protegent generalement contre les injections SQL.
@@ -153,9 +153,9 @@ Filtrer et valider toutes les entrees utilisateur.
 
 ## Bonnes pratiques
 
-1. Toujours utiliser des requetes parametrees
+1. Toujours utiliser des requêtes paramêtrees
 2. Limiter les privileges de la base de donnees
-3. Echapper les caracteres speciaux
+3. Echapper les caractères speciaux
 4. Mettre en place un WAF (Web Application Firewall)
 5. Effectuer des tests de penetration reguliers
 
@@ -163,13 +163,13 @@ Source : [OWASP SQL Injection](https://owasp.org/www-community/attacks/SQL_Injec
         {
           id: 'sec-8',
           question: 'XSS (Cross-Site Scripting)',
-          answer: "L'attaquant injecte du **JavaScript malveillant** dans une page vue par d'autres utilisateurs. Trois types : **Stored XSS** (script persisté en BDD, exécuté à chaque visite), **Reflected XSS** (script dans l'URL, exécuté au clic), **DOM-based** (manipulation côté client).\n\nConséquences : vol de session/cookies, redirection malveillante, keylogging.\n\nProtection : **échapper le HTML** (`<` → `&lt;`), **Content Security Policy** (`CSP` header), `HttpOnly` sur les cookies, frameworks modernes (Angular/React échappent par défaut). __Ne jamais insérer du HTML non échappé.__",
+          answer: "L'attaquant injecte du **JavaScript malveillant** dans une page vue par d'autrès utilisateurs. Trois types : **Stored XSS** (script persisté en BDD, exécuté à chaque visite), **Reflected XSS** (script dans l'URL, exécuté au clic), **DOM-based** (manipulation côté client).\n\nConséquences : vol de session/cookies, redirection malveillante, keylogging.\n\nProtection : **échapper le HTML** (`<` → `&lt;`), **Content Security Policy** (`CSP` header), `HttpOnly` sur les cookies, frameworks modernes (Angular/React échappent par défaut). __Ne jamais insérer du HTML non échappé.__",
         
           deepDive: `# XSS (Cross-Site Scripting)
 
 ## Qu'est-ce que c'est ?
 
-XSS est une vulnerabilite permettant d injecter du code JavaScript malveillant dans des pages web views par dautres utilisateurs. Elle permet de voler des cookies, des sessions, ou de rediriger vers des sites malveillants.
+XSS est une vulnerabilite permettant d injecter du code JavaScript malveillant dans des pages web views par dautrès utilisateurs. Elle permet de voler des cookies, des sessions, ou de rediriger vers des sites malveillants.
 
 ## Types de XSS
 
@@ -180,7 +180,7 @@ Le script malveillant est stocke sur le serveur (base de donnees, forum) et serv
 Le script malveillant est dans l URL et execute lors du clic de la victime.
 
 ### DOM-based XSS
-Le script s execute cote client via manipulation du DOM.
+Le script s execute côté client via manipulation du DOM.
 
 ## Exemple
 
@@ -225,7 +225,7 @@ Source : [OWASP XSS](https://owasp.org/www-community/attacks/xss/)`},
 
 CSRF est une attaque forcant un utilisateur authentifie a executer des actions non desirees sur une application web. L'attaque exploite la confiance du site dans le navigateur de la victime.
 
-## Comment ca marche
+## Comment ça marche
 
 1. L'utilisateur se connecte a sa banque en ligne
 2. Il visite un site malveillant contenant:
@@ -243,8 +243,8 @@ La defense la plus efficace est le token CSRF:
   ...
 </form>
 
-### Validation cote serveur
-Verifier que le token dans la requete correspond au token stocke dans la session.
+### Validation côté serveur
+Verifier que le token dans la requête correspond au token stocke dans la session.
 
 ## SameSite Cookies
 
@@ -274,7 +274,7 @@ Source : [OWASP CSRF](https://owasp.org/www-community/attacks/csrf/)`},
 
 ## Qu'est-ce que c'est
 
-CORS (Cross-Origin Resource Sharing) is a browser security mechanism that controls whether web pages from one origin (domain, protocol, and port) can request resources from a different origin. Without CORS, browsers block such cross-origin requests by default due to the Same-Origin Policy (SOP).
+CORS (Cross-Origin Resource Sharing) is a browser security mechanism that controls whether web pages from one origin (domain, protocol, and port) can request resources from a différent origin. Without CORS, browsers block such cross-origin requests by default due to the Same-Origin Policy (SOP).
 
 CORS is not a security vulnerability - it is a deliberate relaxation of SOP to allow legitimate cross-origin resource sharing in controlled ways.
 
@@ -358,7 +358,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 interface AuthRequest extends Request {
-  user?: { userId: string; roles: string[] };
+  user?: { userId: string; rôles: string[] };
 }
 
 export function authenticate(req: AuthRequest, res: Response, next: NextFunction): void {
@@ -372,7 +372,7 @@ export function authenticate(req: AuthRequest, res: Response, next: NextFunction
   const token = authHeader.substring(7);
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string; roles: string[] };
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string; rôles: string[] };
     req.user = decoded;
     next();
   } catch {
@@ -386,7 +386,7 @@ export function authenticate(req: AuthRequest, res: Response, next: NextFunction
 \`\`\`typescript
 export function authorize(...allowedRoles: string[]) {
   return (req: AuthRequest, res: Response, next: NextFunction): void => {
-    if (!req.user || !allowedRoles.some(role => req.user!.roles.includes(role))) {
+    if (!req.user || !allowedRoles.some(rôle => req.user!.rôles.includes(rôle))) {
       res.status(403).json({ error: 'Insufficient permissions' });
       return;
     }
@@ -432,7 +432,7 @@ Sources:
           id: 'sec-6',
           question: 'JWT en détail',
           answer: "**JSON Web Token** : token auto-contenu en trois parties séparées par des `.` : **Header** (algorithme, type), **Payload** (claims : `sub`, `iat`, `exp`, données custom), **Signature** (vérifie l'intégrité via clé secrète ou paire de clés RSA).\n\n**Stateless** : le serveur ne stocke pas la session — toute l'info est dans le token. Le serveur vérifie uniquement la **signature** et l'**expiration**.\n\n__Bonnes pratiques__ : tokens courts (15min access), **refresh tokens** pour le renouvellement, stocker en `httpOnly` cookie (pas localStorage), ne pas mettre de données sensibles dans le payload (encodé, pas chiffré).",
-          code: '// Structure JWT\nheader.payload.signature\n\n// Exemple payload\n{\n  "sub": "user123",\n  "role": "admin",\n  "exp": 1700000000\n}',
+          code: '// Structure JWT\nheader.payload.signature\n\n// Exemple payload\n{\n  "sub": "user123",\n  "rôle": "admin",\n  "exp": 1700000000\n}',
           language: 'json',
         
           deepDive: `# JWT in Detail

@@ -116,7 +116,7 @@ Le fournisseur livre une application complète, prête à l'emploi. Le client es
 ## Bonnes pratiques
 
 1. **Commencer par le PaaS** : sauf si vous avez des contraintes spécifiques (OS personnalisé, performance extrême).
-2. **Ne pas sous-estimer le coût IaaS** : la gestion OS (patches, sécurité, monitoring) a un coût humain caché.
+2. **Ne pas sous-estimer le coût IaaS** : la gestion OS (patches, sécurité, monitoring) à un coût humain caché.
 3. **Éviter le lock-in PaaS** : utiliser des services standard (PostgreSQL plutôt que DynamoDB) pour garder la portabilité.
 4. **Combiner les modèles** : IaaS pour le calcul intensif + PaaS pour l'API + SaaS pour le CRM.
 5. **Prévoir un plan de sortie** : savoir comment quitter un fournisseur avant d'y entrer.
@@ -243,7 +243,7 @@ Source : [AWS Documentation](https://docs.aws.amazon.com/)`},
         {
           id: 'cloud-3',
           question: 'Que sont les régions et zones de disponibilité ?',
-          answer: 'Une **région** est un ensemble de data centers géographiquement isolés (ex: `eu-west-1` = Irlande). Chaque région contient plusieurs **Availability Zones** (AZ) — des data centers physiquement séparés avec alimentation et réseau indépendants.\n\nDéployer sur **plusieurs AZs** assure la haute disponibilité : si un data center tombe, les autres prennent le relais. Déployer sur **plusieurs régions** assure la reprise après sinistre (DR) et la faible latence pour les utilisateurs mondiaux.\n\n__Règle : au minimum 2 AZs en production pour la haute disponibilité.__ Le choix de région impacte latence, coûts et conformité (RGPD → données en Europe).',
+          answer: 'Une **région** est un ensemble de data centers géographiquement isolés (ex: `eu-west-1` = Irlande). Chaque région contient plusieurs **Availability Zones** (AZ) — des data centers physiquement séparés avec alimentation et réseau indépendants.\n\nDéployer sur **plusieurs AZs** assure la haute disponibilité : si un data center tombe, les autrès prennent le relais. Déployer sur **plusieurs régions** assure la reprise après sinistre (DR) et la faible latence pour les utilisateurs mondiaux.\n\n__Règle : au minimum 2 AZs en production pour la haute disponibilité.__ Le choix de région impacte latence, coûts et conformité (RGPD → données en Europe).',
         
           deepDive: `# Régions et Zones de Disponibilité AWS
 
@@ -270,7 +270,7 @@ Une AZ n'est PAS un simple rack serveur. C'est un ensemble de data centers avec 
 - Connexions réseau redondantes à plusieurs opérateurs.
 - Sites physiquement séparés de plusieurs kilomètres.
 
-Déployer sur plusieurs AZ = haute disponibilité : si une AZ tombe (orage, incendie), les autres continuent.
+Déployer sur plusieurs AZ = haute disponibilité : si une AZ tombe (orage, incendie), les autrès continuent.
 
 ### Qu'est-ce qu'une Edge Location ?
 
@@ -357,7 +357,7 @@ Un système d'auto-scaling repose sur trois composants : la **métrique** qui d�
 
 **Horizontal (Scale Out/In)** : ajouter ou retirer des instances. Approche préférée pour les applications cloud-natives. Résilience et flexibilité maximales.
 
-**Vertical (Scale Up/Down)** : augmenter ou diminuer la puissance d'une instance (CPU, RAM). Plus simple (pas de changement d'architecture) mais nécessite un redémarrage et a une limite haute. AWS graviton en fait partie.
+**Vertical (Scale Up/Down)** : augmenter ou diminuer la puissance d'une instance (CPU, RAM). Plus simple (pas de changement d'architecture) mais nécessite un redémarrage et à une limite haute. AWS graviton en fait partie.
 
 **Predictive scaling** : utiliser le machine learning pour analyser les patterns de trafic et anticiper les besoins de scaling. Idéal pour les charges cycliques (ex : plus de trafic le lundi matin).
 
@@ -552,7 +552,7 @@ Source : [Terraform vs CloudFormation](https://www.terraform.io/intro/vs/cloudfo
         {
           id: 'cloud-6',
           question: 'Qu\'est-ce que le serverless et quels sont ses avantages ?',
-          answer: 'Le **serverless** ne signifie pas « sans serveur » — c\'est le fournisseur qui gère les serveurs. Vous ne provisionnez rien, vous **déployez du code** qui s\'exécute à la demande. Paiement à l\'exécution réelle (millisecondes), scaling automatique, zéro administration.\n\nAvantages : **coût optimisé** (pas de serveur idle), **scaling infini**, **time-to-market rapide**. Inconvénients : **cold starts** (latence au premier appel), limites d\'exécution (15 min sur `Lambda`), debugging et observabilité plus complexes.\n\n__Le serverless est idéal pour les workloads événementiels, intermittents ou imprévisibles.__ Pas pour les traitements longs ou la charge constante.',
+          answer: 'Le **serverless** ne signifie pas « sans serveur » — c\'est le fournisseur qui gère les serveurs. Vous ne provisionnez rien, vous **déployez du code** qui s\'exécute à la demande. Paiement à l\'exécution réelle (millisecondes), scaling automatique, zéro administration.\n\nAvantages : **coût optimisé** (pas de serveur idle), **scaling infini**, **time-to-market rapide**. Inconvénients : **cold starts** (latence au premier appel), limites d\'exécution (15 min sur `Lambda`), debugging et observabilité plus complexes.\n\n__Le serverless est idéal pour les workloads événementiels, intermittents ou imprévisibles.__ Pas pour les traitements longs où la charge constante.',
         
           deepDive: `# Serverless — Principes et Avantages
 
@@ -841,7 +841,7 @@ Sans CDN, un utilisateur à Tokyo qui visite un site hébergé en Irlande subit 
 
 1. L'utilisateur demande \`https://cdn.monsite.com/image.webp\`.
 2. Le DNS résout vers l'edge location le plus proche (géographiquement).
-3. Si l'edge a la ressource en cache (TTL valide), il la sert directement → **cache HIT**.
+3. Si l'edge à la ressource en cache (TTL valide), il la sert directement → **cache HIT**.
 4. Si l'edge n'a pas la ressource, il la demande au serveur d'origine (Origin Fetch), la met en cache, et la sert → **cache MISS**.
 5. Les resources sont stockées en cache selon les headers \`Cache-Control\` définis par l'origine.
 
@@ -1047,7 +1047,7 @@ Source : [CNCF — Cloud Native Definition](https://github.com/cncf/toc/blob/mai
         {
           id: 'cloud-11',
           question: 'Qu\'est-ce qu\'AWS IAM et pourquoi est-il crucial ?',
-          answer: '**IAM** (*Identity and Access Management*) gère l\'authentification et l\'autorisation sur AWS. Concepts : **Users** (personnes), **Groups** (ensembles de users), **Roles** (permissions assumables temporairement par des services), **Policies** (documents JSON définissant les droits).\n\nPrincipes : **moindre privilège** (ne donner que les permissions nécessaires), **pas de clés d\'accès sur les instances** (utiliser des roles IAM à la place), **MFA** sur les comptes root, **rotation des credentials**.\n\n__Une mauvaise config IAM = la faille de sécurité la plus courante et la plus grave sur AWS.__ Des buckets S3 publics ou des clés leakées peuvent exposer toute l\'infrastructure.',
+          answer: '**IAM** (*Identity and Access Management*) gère l\'authentification et l\'autorisation sur AWS. Concepts : **Users** (personnes), **Groups** (ensembles de users), **Roles** (permissions assumables temporairement par des services), **Policies** (documents JSON définissant les droits).\n\nPrincipes : **moindre privilège** (ne donner que les permissions nécessaires), **pas de clés d\'accès sur les instances** (utiliser des rôles IAM à la place), **MFA** sur les comptes root, **rotation des credentials**.\n\n__Une mauvaise config IAM = la faille de sécurité la plus courante et la plus grave sur AWS.__ Des buckets S3 publics ou des clés leakées peuvent exposer toute l\'infrastructure.',
           code: '{\n  "Effect": "Allow",\n  "Action": [\n    "s3:GetObject",\n    "s3:PutObject"\n  ],\n  "Resource": "arn:aws:s3:::my-bucket/*"\n}',
           language: 'json',
         
@@ -1152,7 +1152,7 @@ Le principe fondamental est le **moindre privilège** : chaque identité (utilis
 3. **Pas de rotation des clés** : une clé volée reste valide indéfiniment → un ancien employé peut toujours accéder aux ressources.
 4. **Bucket S3 public** : ne pas configurer \`Block Public Access\` → des milliers de fuites de données.
 5. **Confusion entre user et rôle** : créer un utilisateur IAM avec des clés long terme pour une application qui tourne sur EC2 → risque. Utiliser un rôle avec STS à la place.
-6. **Pas de least privilege dans les roles Lambda** : un rôle Lambda qui peut tout faire sur S3 → si la fonction est compromise, l'attaquant a accès à tout S3.
+6. **Pas de least privilege dans les rôles Lambda** : un rôle Lambda qui peut tout faire sur S3 → si la fonction est compromise, l'attaquant a accès à tout S3.
 
 Source : [AWS IAM Best Practices](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html)`},
         {
@@ -1229,7 +1229,7 @@ Plateforme complète pour le cycle de vie du développement :
 - Outils de migration (Azure Migrate) très complets.
 
 **Inconvénients :**
-- Services parfois moins performants que les équivalents AWS (ex : Functions moins rapides que Lambda).
+- Services parfois moins performants que les équivalents AWS (ex : Functions moins rapidès que Lambda).
 - Portail très riche mais parfois lent et complexe (des centaines de panneaux).
 - Documentation moins claire que AWS (mais s'améliore).
 - Verrouillage Microsoft (si on utilise .NET + SQL Server + AD, difficile de partir).
