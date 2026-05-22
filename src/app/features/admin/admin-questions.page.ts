@@ -17,163 +17,208 @@ interface Row {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LucideAngularModule],
   template: `
-    <div class="max-w-5xl">
-      <!-- Section header -->
-      <div class="flex items-start gap-4 mb-6">
-        <div class="w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0 border border-border-subtle" style="background: var(--color-accent-soft); color: var(--color-accent)">
-          <lucide-icon name="file-text" class="h-5 w-5" />
-        </div>
-        <div>
-          <h2 class="font-display text-xl font-semibold tracking-tight m-0 mb-0.5" style="color: var(--color-text-primary)">Éditeur de questions</h2>
-          <p class="text-sm m-0" style="color: var(--color-text-muted)">{{ total() }} questions · {{ cats().length }} catégories</p>
-        </div>
-      </div>
+    <div class="layout">
+      <!-- Category sidebar -->
+      <aside class="cats">
+        <h3 class="cats-title">Catégories</h3>
+        @for (cat of cats(); track cat.id) {
+          <button class="cat-btn" [class.active]="activeCat() === cat.id" (click)="selectCat(cat.id)">
+            <span class="cat-name">{{ cat.title }}</span>
+            <span class="cat-count" [class.active]="activeCat() === cat.id">{{ count(cat.id) }}</span>
+          </button>
+        }
+      </aside>
 
-      <div class="flex gap-6 items-start">
-        <!-- Category sidebar — pill buttons matching category-pills pattern -->
-        <aside class="hidden md:flex flex-col gap-1 w-[220px] flex-shrink-0 sticky" style="top: 5rem">
-          @for (cat of cats(); track cat.id) {
-            <button (click)="selectCat(cat.id)"
-              class="flex items-center justify-between px-3 py-2 border-none rounded-full text-sm font-medium cursor-pointer transition-all duration-180 cat-pill"
-              [class.active]="activeCat() === cat.id"
-              style="font-family: inherit; background: transparent; color: var(--color-text-muted)">
-              <span class="truncate">{{ cat.title }}</span>
-              <span class="ml-1.5 min-w-[20px] h-[18px] px-[5px] rounded-full text-[11px] font-semibold flex items-center justify-center cat-count"
-                [class.active]="activeCat() === cat.id">{{ count(cat.id) }}</span>
-            </button>
-          }
-        </aside>
+      <!-- Questions -->
+      <div class="questions">
+        @if (activeCat() === '') {
+          <div class="empty">
+            <p>Sélectionnez une catégorie pour éditer ses questions.</p>
+          </div>
+        } @else {
+          <div class="q-header-bar">
+            <span class="q-count">{{ questions().length }} questions</span>
+          </div>
 
-        <!-- Mobile category dropdown -->
-        <div class="md:hidden w-full mb-4">
-          <select #sel (change)="selectCat(sel.value)" class="w-full px-3 py-2 rounded-lg border text-sm surface border-border" style="color: var(--color-text-primary)">
-            <option value="">— Choisir une catégorie —</option>
-            @for (cat of cats(); track cat.id) {
-              <option [value]="cat.id" [selected]="activeCat() === cat.id">{{ cat.title }} ({{ count(cat.id) }})</option>
-            }
-          </select>
-        </div>
+          @for (q of questions(); track q.id) {
+            <div class="q-card" [class.open]="editingId() === q.id">
+              <button class="q-toggle" (click)="toggleEdit(q.id)" [attr.aria-expanded]="editingId() === q.id">
+                <span class="q-id">{{ q.id }}</span>
+                <span class="q-text">{{ q.question }}</span>
+                <lucide-icon [name]="editingId() === q.id ? 'chevron-up' : 'chevron-down'" class="q-chevron" />
+              </button>
 
-        <!-- Question list -->
-        <div class="flex-1 min-w-0 flex flex-col gap-2">
-          @if (activeCat() === '') {
-            <div class="hidden md:flex flex-col items-center justify-center py-24 gap-4 text-center">
-              <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background: var(--color-surface-hover); color: var(--color-text-muted)">
-                <lucide-icon name="arrow-left" class="h-5 w-5" />
-              </div>
-              <p class="text-sm m-0" style="color: var(--color-text-muted)">Sélectionnez une catégorie pour afficher ses questions.</p>
-            </div>
-          } @else {
-            @for (q of questions(); track q.id) {
-              <div class="rounded-xl border overflow-hidden transition-all duration-200 surface border-border"
-                [class.open]="editingId() === q.id">
-                <!-- Card header -->
-                <button (click)="toggleEdit(q.id)"
-                  class="flex items-center gap-3 w-full px-4 py-3.5 border-none text-left cursor-pointer transition-all duration-150"
-                  style="background: transparent; color: inherit; font-family: inherit"
-                  [attr.aria-expanded]="editingId() === q.id">
-                  <span class="text-[11px] font-semibold font-mono min-w-[3rem]" style="color: var(--color-accent)">{{ q.id }}</span>
-                  <span class="flex-1 text-sm font-medium" style="color: var(--color-text-primary)">{{ q.question }}</span>
-                  <lucide-icon [name]="editingId() === q.id ? 'chevron-up' : 'chevron-down'" class="h-4 w-4 flex-shrink-0" style="color: var(--color-text-muted)" />
-                </button>
+              @if (editingId() === q.id) {
+                <div class="q-editor">
+                  <label class="field">
+                    <span class="field-label">Question</span>
+                    <input #qTitle [value]="editQ()" (input)="editQ.set(qTitle.value)" class="field-input" />
+                  </label>
 
-                <!-- Editor body -->
-                @if (editingId() === q.id) {
-                  <div class="flex flex-col gap-4 px-4 pb-5 pt-0 border-t border-border-subtle"
-                    style="background: var(--color-surface-raised)">
-                    <label class="flex flex-col gap-1.5">
-                      <span class="text-[11px] font-semibold uppercase tracking-wider" style="color: var(--color-text-muted)">Question</span>
-                      <input #qTitle [value]="editQ()" (input)="editQ.set(qTitle.value)"
-                        class="w-full px-3.5 py-2.5 rounded-xl border text-sm transition-all duration-200 field-input" style="font-family: inherit" />
+                  <label class="field">
+                    <span class="field-label">Réponse</span>
+                    <textarea #qAns [value]="editA()" (input)="editA.set(qAns.value)" class="field-input field-ta"></textarea>
+                  </label>
+
+                  <div class="field-row">
+                    <label class="field flex-1">
+                      <span class="field-label">Code (optionnel)</span>
+                      <textarea #qCode [value]="editC()" (input)="editC.set(qCode.value)" class="field-input field-ta field-mono"></textarea>
                     </label>
-
-                    <label class="flex flex-col gap-1.5">
-                      <span class="text-[11px] font-semibold uppercase tracking-wider" style="color: var(--color-text-muted)">Réponse</span>
-                      <textarea #qAns [value]="editA()" (input)="editA.set(qAns.value)"
-                        class="w-full px-3.5 py-2.5 rounded-xl border text-sm resize-y min-h-[100px] transition-all duration-200 field-input" style="font-family: inherit"></textarea>
+                    <label class="field" style="width: 140px">
+                      <span class="field-label">Langage</span>
+                      <input #qLang [value]="editL()" (input)="editL.set(qLang.value)" placeholder="java, sql…" class="field-input" />
                     </label>
-
-                    <div class="flex gap-3">
-                      <label class="flex flex-col gap-1.5 flex-1">
-                        <span class="text-[11px] font-semibold uppercase tracking-wider" style="color: var(--color-text-muted)">Code (optionnel)</span>
-                        <textarea #qCode [value]="editC()" (input)="editC.set(qCode.value)"
-                          class="w-full px-3.5 py-2.5 rounded-xl border text-sm resize-y min-h-[100px] font-mono transition-all duration-200 field-input"></textarea>
-                      </label>
-                      <label class="flex flex-col gap-1.5 w-[140px]">
-                        <span class="text-[11px] font-semibold uppercase tracking-wider" style="color: var(--color-text-muted)">Langage</span>
-                        <input #qLang [value]="editL()" (input)="editL.set(qLang.value)"
-                          placeholder="java, sql…"
-                          class="w-full px-3.5 py-2.5 rounded-xl border text-sm transition-all duration-200 field-input" style="font-family: inherit" />
-                      </label>
-                    </div>
-
-                    <label class="flex flex-col gap-1.5">
-                      <span class="text-[11px] font-semibold uppercase tracking-wider" style="color: var(--color-text-muted)">Deep Dive (optionnel)</span>
-                      <textarea #qDd [value]="editD()" (input)="editD.set(qDd.value)"
-                        class="w-full px-3.5 py-2.5 rounded-xl border text-sm resize-y min-h-[160px] font-mono transition-all duration-200 field-input"></textarea>
-                    </label>
-
-                    <!-- Action bar -->
-                    <div class="flex items-center gap-3 pt-2 border-t border-border-subtle">
-                      @if (savedId() === q.id) {
-                        <span class="flex items-center gap-1.5 text-sm font-semibold" style="color: var(--color-success)" role="status">
-                          <lucide-icon name="check-circle" class="h-4 w-4" /> Sauvegardé
-                        </span>
-                      }
-                      @if (saveError()) {
-                        <span class="text-sm" style="color: var(--color-error)">{{ saveError() }}</span>
-                      }
-                      <span class="flex-1"></span>
-                      <button (click)="toggleEdit('')"
-                        class="h-[34px] px-4 rounded-full border text-sm font-medium cursor-pointer transition-all duration-150 btn-ghost"
-                        style="font-family: inherit; background: transparent; color: var(--color-text-secondary); border-color: var(--color-border)">
-                        Annuler
-                      </button>
-                      <button (click)="save(q)"
-                        class="h-[34px] px-4 rounded-full border-none text-sm font-semibold cursor-pointer transition-all duration-150 btn-save"
-                        style="font-family: inherit; background: var(--color-accent); color: var(--color-accent-text)">
-                        Sauvegarder
-                      </button>
-                    </div>
                   </div>
-                }
-              </div>
-            }
-          }
-        </div>
-      </div>
 
-      <!-- Loading overlay -->
-      @if (loading()) {
-        <div class="fixed inset-0 z-[100] flex items-center justify-center font-semibold text-base text-white"
-          style="background: rgba(0,0,0,0.35); backdrop-filter: blur(4px)">
-          Sauvegarde en cours…
-        </div>
-      }
+                  <label class="field">
+                    <span class="field-label">Deep Dive (optionnel)</span>
+                    <textarea #qDd [value]="editD()" (input)="editD.set(qDd.value)" class="field-input field-ta field-mono" style="min-height: 160px"></textarea>
+                  </label>
+
+                  <div class="editor-bar">
+                    <div class="editor-feedback">
+                      @if (savedId() === q.id) { <span class="save-ok"><lucide-icon name="check-circle" class="h-4 w-4" /> Sauvegardé</span> }
+                      @if (saveError()) { <span class="save-err">{{ saveError() }}</span> }
+                    </div>
+                    <button class="btn-ghost" (click)="toggleEdit('')">Annuler</button>
+                    <button class="btn-save" (click)="save(q)">Sauvegarder</button>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        }
+      </div>
     </div>
+
+    @if (loading()) {
+      <div class="loading-overlay">Sauvegarde en cours…</div>
+    }
   `,
   styles: `
-    /* Category pills — interactive states using custom properties */
-    .cat-pill:hover { background: var(--color-surface-hover); color: var(--color-text-secondary); }
-    .cat-pill.active { background: var(--color-surface); color: var(--color-text-primary); border: 1px solid var(--color-border); box-shadow: var(--shadow-sm); }
-    .cat-pill.active:hover { background: var(--color-surface-hover); }
+    .layout { display: flex; gap: 1.5rem; align-items: flex-start; }
+    .flex-1 { flex: 1; }
+    .field-row { display: flex; gap: 0.75rem; }
 
-    /* Count badges inside pills */
-    .cat-count { background: var(--color-surface-hover); color: var(--color-text-muted); }
+    /* ── Category sidebar ──────────────────────────── */
+    .cats {
+      width: 220px; flex-shrink: 0;
+      display: flex; flex-direction: column; gap: 0.25rem;
+      position: sticky; top: 5rem;
+    }
+    .cats-title {
+      font-size: 0.6875rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--color-text-muted);
+      margin: 0 0 0.25rem 0.5rem;
+    }
+    .cat-btn {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.5rem 0.75rem; border: none; border-radius: var(--radius-full);
+      background: transparent; color: var(--color-text-muted);
+      font-size: 0.8125rem; font-weight: 500; font-family: inherit; cursor: pointer;
+      transition: background 180ms ease, color 180ms ease, box-shadow 180ms ease;
+    }
+    .cat-btn:hover { background: var(--color-surface-hover); color: var(--color-text-secondary); }
+    .cat-btn.active {
+      background: var(--color-surface); color: var(--color-text-primary);
+      border: 1px solid var(--color-border); box-shadow: var(--shadow-sm);
+    }
+    .cat-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .cat-count {
+      min-width: 20px; height: 18px; padding: 0 5px; border-radius: var(--radius-full);
+      font-size: 0.6875rem; font-weight: 600; display: flex; align-items: center; justify-content: center;
+      background: var(--color-surface-hover); color: var(--color-text-muted);
+      margin-left: 0.375rem;
+    }
     .cat-count.active { background: var(--color-accent-soft); color: var(--color-accent); }
 
-    /* Question card */
-    .open { border-color: var(--color-accent); box-shadow: 0 0 0 1px var(--color-accent-soft); }
+    /* ── Questions list ────────────────────────────── */
+    .questions { flex: 1; min-width: 0; }
+    .empty { padding: 3rem 2rem; text-align: center; }
+    .empty p { color: var(--color-text-muted); font-size: 0.875rem; margin: 0; }
+    .q-header-bar { margin-bottom: 0.5rem; }
+    .q-count { font-size: 0.75rem; color: var(--color-text-muted); }
 
-    /* Form inputs */
-    .field-input { background: var(--color-surface); border-color: var(--color-border); color: var(--color-text-primary); }
+    /* ── Question card ─────────────────────────────── */
+    .q-card {
+      background: var(--color-surface); border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg); margin-bottom: 0.5rem; overflow: hidden;
+      transition: border-color 200ms ease;
+    }
+    .q-card.open { border-color: var(--color-accent); }
+    .q-toggle {
+      display: flex; align-items: center; gap: 0.75rem;
+      width: 100%; padding: 0.75rem 1rem; border: none;
+      background: transparent; color: inherit; text-align: left;
+      font-family: inherit; cursor: pointer;
+      transition: background 150ms ease;
+    }
+    .q-toggle:hover { background: var(--color-surface-raised); }
+    .q-id {
+      font-size: 0.6875rem; font-weight: 600; color: var(--color-accent);
+      font-family: var(--font-mono); min-width: 2.5rem;
+    }
+    .q-text { flex: 1; font-size: 0.875rem; font-weight: 500; }
+    .q-chevron { width: 1rem; height: 1rem; flex-shrink: 0; color: var(--color-text-muted); }
+
+    /* ── Editor ─────────────────────────────────────── */
+    .q-editor {
+      display: flex; flex-direction: column; gap: 0.875rem;
+      padding: 0 1rem 1.25rem;
+      border-top: 1px solid var(--color-border-subtle);
+      background: var(--color-surface-raised);
+    }
+    .field { display: flex; flex-direction: column; gap: 0.375rem; }
+    .field-label {
+      font-size: 0.6875rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.05em; color: var(--color-text-muted);
+    }
+    .field-input {
+      width: 100%; padding: 0.625rem 0.875rem;
+      background: var(--color-surface); border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg); color: var(--color-text-primary);
+      font-size: 0.875rem; font-family: inherit; line-height: 1.6;
+      transition: border-color 200ms ease, box-shadow 200ms ease;
+    }
     .field-input:focus { outline: none; border-color: var(--color-accent); box-shadow: 0 0 0 3px var(--color-accent-soft); }
     .field-input::placeholder { color: var(--color-text-placeholder); }
+    .field-ta { resize: vertical; min-height: 100px; }
+    .field-mono { font-family: var(--font-mono); font-size: 0.8125rem; }
 
-    /* Buttons */
+    /* ── Editor action bar ──────────────────────────── */
+    .editor-bar {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding-top: 0.5rem; border-top: 1px solid var(--color-border-subtle);
+    }
+    .editor-feedback { flex: 1; display: flex; align-items: center; gap: 0.75rem; }
+    .save-ok { display: flex; align-items: center; gap: 0.375rem; font-size: 0.8125rem; font-weight: 600; color: var(--color-success); }
+    .save-err { font-size: 0.8125rem; color: var(--color-error); }
+
+    .btn-ghost {
+      height: 34px; padding: 0 1rem; border: 1px solid var(--color-border);
+      border-radius: var(--radius-full); background: transparent;
+      color: var(--color-text-secondary); font-size: 0.8125rem; font-weight: 500;
+      font-family: inherit; cursor: pointer;
+      transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+    }
     .btn-ghost:hover { background: var(--color-surface-hover); border-color: var(--color-border-strong); color: var(--color-text-primary); }
+
+    .btn-save {
+      height: 34px; padding: 0 1rem; border: none; border-radius: var(--radius-full);
+      background: var(--color-accent); color: var(--color-accent-text);
+      font-size: 0.8125rem; font-weight: 600; font-family: inherit; cursor: pointer;
+      transition: background 150ms ease, transform 120ms ease;
+    }
     .btn-save:hover { background: var(--color-accent-hover); transform: translateY(-1px); }
     .btn-save:active { transform: translateY(0); }
+
+    .loading-overlay {
+      position: fixed; inset: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.35); backdrop-filter: blur(4px);
+      color: white; font-weight: 600; font-size: 1rem;
+    }
   `,
 })
 export class AdminQuestionsPage {
