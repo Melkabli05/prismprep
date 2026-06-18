@@ -1,4 +1,4 @@
-import { InjectionToken } from '@angular/core';
+import { InjectionToken, Provider } from '@angular/core';
 
 /**
  * Supabase configuration tokens — injected via provideSupabase() in app.config,
@@ -9,3 +9,11 @@ import { InjectionToken } from '@angular/core';
  */
 export const SUPABASE_URL = new InjectionToken<string>('supabase.url');
 export const SUPABASE_ANON_KEY = new InjectionToken<string>('supabase.anonKey');
+
+/** Convenience provider factory — use in app.config and in tests with fake values. */
+export function provideSupabase(url: string, anonKey: string): Provider[] {
+  return [
+    { provide: SUPABASE_URL, useValue: url },
+    { provide: SUPABASE_ANON_KEY, useValue: anonKey },
+  ];
+}

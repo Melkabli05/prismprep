@@ -9,7 +9,7 @@ import { LucideAngularModule, icons } from 'lucide-angular';
 
 import { routes } from './app.routes';
 import { environment } from '../environments/environment';
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from '@core/config/supabase.config';
+import { provideSupabase } from '@core/config/supabase.config';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,7 +17,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(),
     importProvidersFrom(LucideAngularModule.pick(icons)),
-    { provide: SUPABASE_URL, useValue: environment.supabaseUrl },
-    { provide: SUPABASE_ANON_KEY, useValue: environment.supabaseAnonKey },
+    provideSupabase(environment.supabaseUrl, environment.supabaseAnonKey),
   ],
 };
