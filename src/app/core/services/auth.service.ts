@@ -1,10 +1,11 @@
-import { Injectable, signal, computed } from '@angular/core';
-import { createClient, SupabaseClient, User } from '@supabase/supabase-js';
-import { environment } from '../../../environments/environment';
+import { Injectable, signal, computed, inject } from '@angular/core';
+import { User } from '@supabase/supabase-js';
+import { SupabaseClientService } from './supabase-client.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private client: SupabaseClient | null = null;
+  private readonly supabase = inject(SupabaseClientService);
+  private get client() { return this.supabase.client; }
 
   private readonly _user = signal<User | null>(null);
   private readonly _loading = signal(true);
@@ -25,9 +26,6 @@ export class AuthService {
   });
 
   init(): void {
-    this.client = createClient(environment.supabaseUrl, environment.supabaseAnonKey, {
-      auth: { persistSession: true, autoRefreshToken: true },
-    });
     this.client.auth.getSession().then(({ data }) => {
       this._user.set(data.session?.user ?? null);
       this._loading.set(false);
@@ -38,14 +36,12 @@ export class AuthService {
   }
 
   async signIn(email: string, password: string): Promise<{ error: string | null }> {
-    if (!this.client) return { error: 'Client not initialized' };
     const { error } = await this.client.auth.signInWithPassword({ email, password });
     this.cleanQueryParams();
     return { error: error?.message ?? null };
   }
 
   async signUp(email: string, password: string, name: string): Promise<{ error: string | null }> {
-    if (!this.client) return { error: 'Client not initialized' };
     const { error } = await this.client.auth.signUp({ email, password, options: { data: { name } } });
     this.cleanQueryParams();
     return { error: error?.message ?? null };
@@ -58,19 +54,16 @@ export class AuthService {
   }
 
   async updateProfile(name: string, stack: string[] = []): Promise<{ error: string | null }> {
-    if (!this.client) return { error: 'Client not initialized' };
     const { error } = await this.client.auth.updateUser({ data: { name, stack } });
     return { error: error?.message ?? null };
   }
 
   async updateTheme(theme: string): Promise<{ error: string | null }> {
-    if (!this.client) return { error: 'Client not initialized' };
     const { error } = await this.client.auth.updateUser({ data: { theme } });
     return { error: error?.message ?? null };
   }
 
   async signOut(): Promise<void> {
-    if (!this.client) return;
     await this.client.auth.signOut();
   }
 
