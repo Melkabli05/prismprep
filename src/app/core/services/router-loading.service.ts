@@ -11,6 +11,9 @@ export class RouterLoadingService {
   private trickleHandle: ReturnType<typeof setInterval> | null = null;
 
   constructor() {
+    // router.events is a long-lived Observable; the trickle setInterval is cleared
+    // in complete() so there are no resource leaks. The subscription lives for the
+    // app lifetime and is cleaned up when the root injector is destroyed.
     this.router.events.subscribe((e) => {
       if (e instanceof NavigationStart) {
         this.start();

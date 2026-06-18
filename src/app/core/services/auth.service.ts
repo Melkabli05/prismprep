@@ -30,6 +30,11 @@ export class AuthService {
       this._user.set(data.session?.user ?? null);
       this._loading.set(false);
     });
+    // onAuthStateChange is an Observable that fires for the lifetime of the client.
+    // Intentionally left without an explicit unsubscribe — the subscription is
+    // cleaned up implicitly when the root injector is destroyed (app shutdown).
+    // If AuthService is ever provided at a non-root level, a DestroyRef + takeUntil
+    // pattern would be needed here.
     this.client.auth.onAuthStateChange((_event, session) => {
       this._user.set(session?.user ?? null);
     });

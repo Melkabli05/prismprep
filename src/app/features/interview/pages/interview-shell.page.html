@@ -112,9 +112,9 @@
 
       @if (svc.mockQuestions()[svc.mockInterviewIdx()]) {
         <app-question-card
-          [question]="svc.mockQuestions()[svc.mockInterviewIdx()].question"
-          [categoryName]="svc.mockQuestions()[svc.mockInterviewIdx()].category.title"
-          [categoryColor]="svc.mockQuestions()[svc.mockInterviewIdx()].category.color"
+          [question]="mockCurrent.question"
+          [categoryName]="mockCurrent.category.title"
+          [categoryColor]="mockCurrent.category.color"
           [flashcardMode]="true"
           [revealedCards]="svc.revealedCards()"
           [bookmarks]="svc.bookmarks()"

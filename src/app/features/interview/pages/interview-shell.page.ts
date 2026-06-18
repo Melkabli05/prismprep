@@ -38,6 +38,11 @@ export class InterviewShellPage {
   readonly deepDiveQuestion = signal<InterviewQuestion | null>(null);
   readonly showDeepDiveModal = signal(false);
 
+  /** Typed current mock question — the @if guard in the template makes this safe */
+  get mockCurrent() {
+    return this.svc.mockQuestions()[this.svc.mockInterviewIdx()]!;
+  }
+
   constructor() {
     this.seo.updatePage({
       title: 'Prism',

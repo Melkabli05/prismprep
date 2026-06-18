@@ -81,7 +81,7 @@ function tokenize(code: string, lang: string): string {
     let i = 0;
 
     while (i < line.length) {
-      const ch = line[i];
+      const ch = line[i] ?? '';
       const ch2 = line.slice(i, i + 2);
 
       if (ch2 === '//' || (isSql && ch2 === '--')) {
@@ -100,7 +100,7 @@ function tokenize(code: string, lang: string): string {
 
       if (ch === '@') {
         let j = i + 1;
-        while (j < line.length && /\w/.test(line[j])) j++;
+        while (j < line.length && /\w/.test(line[j] ?? '')) j++;
         row += `<span class="ct">${esc(line.slice(i, j))}</span>`;
         i = j;
         continue;
@@ -110,8 +110,8 @@ function tokenize(code: string, lang: string): string {
         const quote = ch;
         let j = i + 1;
         while (j < line.length) {
-          if (line[j] === '\\') { j += 2; continue; }
-          if (line[j] === quote) { j++; break; }
+          if ((line[j] ?? '') === '\\') { j += 2; continue; }
+          if ((line[j] ?? '') === quote) { j++; break; }
           j++;
         }
         row += `<span class="cs">${esc(line.slice(i, j))}</span>`;
@@ -121,7 +121,7 @@ function tokenize(code: string, lang: string): string {
 
       if (/[0-9]/.test(ch) || (ch === '.' && /[0-9]/.test(line[i + 1] ?? ''))) {
         let j = i;
-        while (j < line.length && /[0-9.xXa-fA-FbBoO_]/.test(line[j])) j++;
+        while (j < line.length && /[0-9.xXa-fA-FbBoO_]/.test(line[j] ?? '')) j++;
         row += `<span class="cn">${esc(line.slice(i, j))}</span>`;
         i = j;
         continue;
@@ -129,7 +129,7 @@ function tokenize(code: string, lang: string): string {
 
       if (/[a-zA-Z_$]/.test(ch)) {
         let j = i;
-        while (j < line.length && /\w/.test(line[j])) j++;
+        while (j < line.length && /\w/.test(line[j] ?? '')) j++;
         const word = line.slice(i, j);
         const checkWord = isSql ? word.toUpperCase() : word;
 
@@ -137,7 +137,7 @@ function tokenize(code: string, lang: string): string {
           row += `<span class="ck">${esc(word)}</span>`;
         } else if (/^[A-Z][a-zA-Z0-9_]*$/.test(word)) {
           row += `<span class="ct">${esc(word)}</span>`;
-        } else if (line[j] === '(') {
+        } else if ((line[j] ?? '') === '(') {
           row += `<span class="cf">${esc(word)}</span>`;
         } else {
           row += esc(word);
@@ -148,19 +148,19 @@ function tokenize(code: string, lang: string): string {
 
       if (isJsTs && /[+\-*/%=<>!&|^~?]/.test(ch)) {
         let j = i;
-        while (j < line.length && /[+\-*/%=<>!&|^~?.]/.test(line[j])) j++;
+        while (j < line.length && /[+\-*/%=<>!&|^~?.]/.test(line[j] ?? '')) j++;
         row += `<span class="co2">${esc(line.slice(i, j))}</span>`;
         i = j;
         continue;
       }
 
       if (/[()\[\]{}.,'";:`]/.test(ch)) {
-        row += `<span class="cp">${esc(ch)}</span>`;
+        row += `<span class="cp">${esc(ch ?? '')}</span>`;
         i++;
         continue;
       }
 
-      row += esc(ch);
+      row += esc(ch ?? '');
       i++;
     }
 
