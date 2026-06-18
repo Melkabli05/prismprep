@@ -1,5 +1,5 @@
 import { Component, inject, ChangeDetectionStrategy, computed } from '@angular/core';
-import { RouterLoadingService } from '../../../core/services/router-loading.service';
+import { RouterLoadingService } from '../services/router-loading.service';
 
 @Component({
   selector: 'app-router-progress-bar',
