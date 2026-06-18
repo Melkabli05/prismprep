@@ -4,7 +4,7 @@ import { InterviewService } from '../state/interview.service';
 import { SeoService } from '../../../core/services/seo.service';
 import { interviewCategories } from '../data';
 import type { InterviewSection, InterviewQuestion } from '../../../core/models/interview.models';
-import { DeepDiveModalComponent } from '../../../shared/components/deep-dive-modal/deep-dive-modal.component';
+import { DeepDiveModalComponent } from '../components/deep-dive-modal/deep-dive-modal.component';
 
 import { HeaderComponent } from '../components/header/header.component';
 import { ToolbarComponent } from '../components/toolbar/toolbar.component';

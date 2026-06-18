@@ -3,8 +3,8 @@ import { form, FormField } from '@angular/forms/signals';
 import { LucideAngularModule } from 'lucide-angular';
 import { SearchShortcutDirective } from '../../../../shared/directives/search-shortcut.directive';
 import { AuthService } from '../../../../core/services/auth.service';
-import { AuthModalComponent } from '../../../../shared/components/auth-modal/auth-modal.component';
-import { UserPreferencesComponent } from '../../../../shared/components/user-preferences/user-preferences.component';
+import { AuthModalComponent } from '../auth-modal/auth-modal.component';
+import { UserPreferencesComponent } from '../user-preferences/user-preferences.component';
 
 @Component({
   selector: 'app-header',

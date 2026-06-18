@@ -5,8 +5,8 @@ import { CodeBlockComponent } from '../../../../shared/components/code-block/cod
 import { InlineTextPipe } from '../../../../shared/pipes/inline-text.pipe';
 import { AnswerParagraphsComponent } from '../../../../shared/components/answer-paragraphs/answer-paragraphs.component';
 import { ExampleBlockComponent } from '../../../../shared/components/example-block/example-block.component';
-import { NoteEditorComponent } from '../../../../shared/components/note-editor/note-editor.component';
-import { FlashcardRevealComponent } from '../../../../shared/components/flashcard-reveal/flashcard-reveal.component';
+import { NoteEditorComponent } from '../note-editor/note-editor.component';
+import { FlashcardRevealComponent } from '../flashcard-reveal/flashcard-reveal.component';
 
 @Component({
   selector: 'app-question-card',
