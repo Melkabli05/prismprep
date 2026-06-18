@@ -66,8 +66,10 @@ export class App {
       }
     });
 
+    let remoteStateInited = false;
     effect(() => {
-      if (!this.auth.loading() && this.interview.loaded()) {
+      if (!this.auth.loading() && this.interview.loaded() && !remoteStateInited) {
+        remoteStateInited = true;
         this.interview.initRemoteState();
       }
     });
