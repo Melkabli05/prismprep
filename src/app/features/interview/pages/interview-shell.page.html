@@ -1,4 +1,5 @@
 <app-header
+  [categories]="svc.categoryTree()"
   (toggleTheme)="svc.toggleTheme()"
   (searchChange)="svc.setSearchQuery($event)">
 </app-header>

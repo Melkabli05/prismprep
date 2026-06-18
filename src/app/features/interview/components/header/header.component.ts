@@ -1,10 +1,11 @@
-import { Component, inject, signal, output, effect, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { Component, inject, input, signal, output, effect, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { form, FormField } from '@angular/forms/signals';
 import { LucideAngularModule } from 'lucide-angular';
 import { SearchShortcutDirective } from '@shared/directives/search-shortcut.directive';
 import { AuthService } from '@core/services/auth.service';
-import { AuthModalComponent } from '../auth-modal/auth-modal.component';
-import { UserPreferencesComponent } from '../user-preferences/user-preferences.component';
+import { AuthModalComponent } from '@core/components/auth-modal/auth-modal.component';
+import { UserPreferencesComponent } from '@core/components/user-preferences/user-preferences.component';
+import type { InterviewCategory } from '@core/models/interview.models';
 
 @Component({
   selector: 'app-header',
@@ -110,7 +111,7 @@ import { UserPreferencesComponent } from '../user-preferences/user-preferences.c
         <app-auth-modal (close)="showAuthModal.set(false)" />
       }
       @if (showPreferences()) {
-        <app-user-preferences (close)="showPreferences.set(false)" />
+        <app-user-preferences [categories]="categories()" (close)="showPreferences.set(false)" />
       }
 
       <div class="max-w-3xl mx-auto px-4 sm:px-6 h-full flex items-center justify-between gap-4">
@@ -178,6 +179,7 @@ import { UserPreferencesComponent } from '../user-preferences/user-preferences.c
 })
 export class HeaderComponent implements OnDestroy {
   readonly auth = inject(AuthService);
+  readonly categories = input<InterviewCategory[]>([]);
   readonly isDark = signal(false);
   readonly isMac = signal(false);
   readonly showAuthModal = signal(false);

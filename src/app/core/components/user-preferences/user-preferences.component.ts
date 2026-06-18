@@ -3,14 +3,15 @@ import {
   Component,
   computed,
   inject,
+  input,
   output,
   signal,
 } from '@angular/core';
 import { form, FormField, required } from '@angular/forms/signals';
 import { LucideAngularModule } from 'lucide-angular';
-import { AuthService } from '@core/services/auth.service';
-import { InterviewService } from '../../state/interview.service';
-import { ThemeService, ThemeOption } from '@core/services/theme.service';
+import { AuthService } from '../../services/auth.service';
+import { ThemeService, ThemeOption } from '../../services/theme.service';
+import type { InterviewCategory } from '../../models/interview.models';
 type Tab = 'profile' | 'theme' | 'stack';
 
 interface ProfileModel {
@@ -213,9 +214,9 @@ const EMPTY_PROFILE: ProfileModel = { name: '' };
 })
 export class UserPreferencesComponent {
   private readonly auth = inject(AuthService);
-  private readonly interview = inject(InterviewService);
   private readonly themeService = inject(ThemeService);
 
+  readonly categories = input<InterviewCategory[]>([]);
   readonly close = output<void>();
 
   readonly user = this.auth.user;
@@ -241,7 +242,7 @@ export class UserPreferencesComponent {
     required(s.name, { message: 'Le nom est requis' });
   });
 
-  readonly allCategories = computed(() => this.interview.categoryTree());
+  readonly allCategories = computed(() => this.categories());
 
   private readonly _selectedStack = signal<string[]>([]);
   readonly selectedStack = this._selectedStack.asReadonly();
