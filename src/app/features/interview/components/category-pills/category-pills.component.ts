@@ -1,6 +1,6 @@
 import { Component, input, output, computed, signal, viewChild, afterNextRender, afterRenderEffect, ChangeDetectionStrategy, inject, ElementRef, DestroyRef } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
-import { InterviewService } from '../../../../core/services/interview.service';
+import { InterviewService } from '../../state/interview.service';
 
 @Component({
   selector: 'app-category-pills',

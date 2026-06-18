@@ -1,10 +1,10 @@
 import { Injectable, signal, computed, effect, inject, linkedSignal } from '@angular/core';
-import type { InterviewCategory, InterviewQuestion, InterviewSection } from '../models/interview.models';
-import { localStorageSignal, setLocalStorage } from './local-storage.service';
-import { QuestionsService } from './questions.service';
+import type { InterviewCategory, InterviewQuestion, InterviewSection } from '../../../core/models/interview.models';
+import { localStorageSignal, setLocalStorage } from '../../../core/services/local-storage.service';
+import { QuestionsService } from '../data/questions.service';
 import { UserStateService } from './user-state.service';
-import { AuthService } from './auth.service';
-import { ThemeService } from './theme.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { ThemeService } from '../../../core/services/theme.service';
 
 function seededRandom(seed: string): () => number {
   let h = 0;
@@ -128,9 +128,8 @@ export class InterviewService {
   }
 
   async initRemoteState(): Promise<void> {
-    const client = this.questions.getClient();
-    if (!client || !this.auth.uid || !this.questions.loaded()) return;
-    await this.userState.loadRemote(client, this.auth.uid);
+    if (!this.auth.uid || !this.questions.loaded()) return;
+    await this.userState.loadRemote();
   }
 
   setCategory(id: string): void { this._activeCategory.set(id); this._shuffledIds.set([]); }
@@ -143,31 +142,11 @@ export class InterviewService {
   setMockTimer(v: number): void { this._mockTimer.set(v); }
   setMockRunning(v: boolean): void { this._mockRunning.set(v); }
 
-  toggleBookmark(id: string): void {
-    const client = this.questions.getClient();
-    this.userState.toggleBookmark(id);
-    if (client && this.auth.uid) this.userState.syncBookmark(client, this.auth.uid, id);
-  }
-
-  toggleRevealedCard(id: string): void {
-    const client = this.questions.getClient();
-    this.userState.toggleRevealed(id);
-    if (client && this.auth.uid) this.userState.syncRevealed(client, this.auth.uid, id);
-  }
-
+  toggleBookmark(id: string): void { this.userState.toggleBookmark(id); }
+  toggleRevealedCard(id: string): void { this.userState.toggleRevealed(id); }
   resetRevealedCards(): void { this.userState.resetRevealed(); }
-
-  updateNote(id: string, note: string): void {
-    const client = this.questions.getClient();
-    this.userState.updateNote(id, note);
-    if (client && this.auth.uid) this.userState.syncNote(client, this.auth.uid, id, note);
-  }
-
-  markViewed(id: string): void {
-    const client = this.questions.getClient();
-    this.userState.markViewed(id);
-    if (client && this.auth.uid) this.userState.syncViewed(client, this.auth.uid, id);
-  }
+  updateNote(id: string, note: string): void { this.userState.updateNote(id, note); }
+  markViewed(id: string): void { this.userState.markViewed(id); }
 
   shuffleCurrentCategory(): void {
     const ids = this.category().sections.flatMap(s => s.questions.map(q => q.id));

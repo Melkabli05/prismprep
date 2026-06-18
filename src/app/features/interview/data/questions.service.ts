@@ -1,7 +1,6 @@
-import { Injectable, signal, computed } from '@angular/core';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { environment } from '../../../environments/environment';
-import type { InterviewCategory, InterviewSection } from '../models/interview.models';
+import { Injectable, signal, computed, inject } from '@angular/core';
+import type { InterviewCategory, InterviewSection } from '../../../core/models/interview.models';
+import { SupabaseClientService } from '../../../core/services/supabase-client.service';
 
 export interface QuestionRow {
   id: string; section_id: string; category_id: string;
@@ -15,9 +14,12 @@ interface CategoryRow { id: string; title: string; color: string; description: s
 
 @Injectable({ providedIn: 'root' })
 export class QuestionsService {
-  private client: SupabaseClient | null = null;
+  private readonly supabase = inject(SupabaseClientService);
   private readonly _questions = signal<QuestionRow[]>([]);
   private readonly _loaded = signal(false);
+
+  private sectionRows: SectionRow[] = [];
+  private categoryRows: CategoryRow[] = [];
 
   readonly questions = this._questions.asReadonly();
   readonly loaded = this._loaded.asReadonly();
@@ -27,44 +29,36 @@ export class QuestionsService {
   );
 
   init(): void {
-    this.client = createClient(environment.supabaseUrl, environment.supabaseAnonKey);
     this.load();
   }
 
-  getClient(): SupabaseClient | null { return this.client; }
-
   async load(): Promise<void> {
-    if (!this.client) { console.warn('[QuestionsService] Client not initialized'); return; }
     try {
+      const client = this.supabase.client;
       const [questionsRes, sectionsRes, categoriesRes] = await Promise.all([
-        this.client.from('questions').select('id, section_id, category_id, question, answer, example, code, language, sort_order, deep_dive').order('sort_order'),
-        this.client.from('sections').select('id, category_id, title, sort_order').order('sort_order'),
-        this.client.from('categories').select('id, title, color, description, sort_order').order('sort_order'),
+        client.from('questions').select('id, section_id, category_id, question, answer, example, code, language, sort_order, deep_dive').order('sort_order'),
+        client.from('sections').select('id, category_id, title, sort_order').order('sort_order'),
+        client.from('categories').select('id, title, color, description, sort_order').order('sort_order'),
       ]);
       if (questionsRes.error) { console.error('[QuestionsService] Questions error:', questionsRes.error); return; }
-      const sections: SectionRow[] = sectionsRes.data ?? [];
-      const categories: CategoryRow[] = categoriesRes.data ?? [];
-      console.log('[QuestionsService] Loaded', questionsRes.data?.length ?? 0, 'questions,', sections.length, 'sections,', categories.length, 'categories');
+      this.sectionRows = sectionsRes.data ?? [];
+      this.categoryRows = categoriesRes.data ?? [];
+      console.log('[QuestionsService] Loaded', questionsRes.data?.length ?? 0, 'questions,', this.sectionRows.length, 'sections,', this.categoryRows.length, 'categories');
       this._questions.set(questionsRes.data ?? []);
       this._loaded.set(true);
-      (this as any)._sections = sections;
-      (this as any)._categories = categories;
     } catch (e) {
       console.error('[QuestionsService] Load exception:', e);
     }
   }
 
-  private get sections(): SectionRow[] { return (this as any)._sections ?? []; }
-  private get categories(): CategoryRow[] { return (this as any)._categories ?? []; }
-
   private buildTreeInternal(questions: QuestionRow[]): InterviewCategory[] {
     const catMap = new Map<string, InterviewCategory>();
     const secMap = new Map<string, InterviewSection>();
 
-    for (const s of this.sections) {
+    for (const s of this.sectionRows) {
       secMap.set(s.id, { id: s.id, title: s.title, questions: [] });
     }
-    for (const c of this.categories) {
+    for (const c of this.categoryRows) {
       catMap.set(c.id, { id: c.id, title: c.title, color: c.color, description: c.description, sections: [] });
     }
 
@@ -80,7 +74,7 @@ export class QuestionsService {
 
     for (const cat of catMap.values()) {
       cat.sections = Array.from(secMap.values()).filter(sec => {
-        const sectionRow = this.sections.find(s => s.id === sec.id);
+        const sectionRow = this.sectionRows.find(s => s.id === sec.id);
         return sectionRow && sectionRow.category_id === cat.id;
       });
     }

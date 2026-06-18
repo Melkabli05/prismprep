@@ -1,6 +1,6 @@
 import { Component, inject, signal, effect, ChangeDetectionStrategy } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
-import { InterviewService } from '../../../core/services/interview.service';
+import { InterviewService } from '../state/interview.service';
 import { SeoService } from '../../../core/services/seo.service';
 import { interviewCategories } from '../data';
 import type { InterviewSection, InterviewQuestion } from '../../../core/models/interview.models';
