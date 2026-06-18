@@ -8,9 +8,9 @@ import {
 } from '@angular/core';
 import { form, FormField, required } from '@angular/forms/signals';
 import { LucideAngularModule } from 'lucide-angular';
-import { AuthService } from '../../../../core/services/auth.service';
+import { AuthService } from '@core/services/auth.service';
 import { InterviewService } from '../../state/interview.service';
-import { ThemeService, ThemeOption } from '../../../../core/services/theme.service';
+import { ThemeService, ThemeOption } from '@core/services/theme.service';
 type Tab = 'profile' | 'theme' | 'stack';
 
 interface ProfileModel {

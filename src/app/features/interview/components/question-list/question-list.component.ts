@@ -1,5 +1,5 @@
 import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
-import { type InterviewQuestion } from '../../../../core/models/interview.models';
+import { type InterviewQuestion } from '@core/models/interview.models';
 import { QuestionCardComponent } from '../question-card/question-card.component';
 
 @Component({

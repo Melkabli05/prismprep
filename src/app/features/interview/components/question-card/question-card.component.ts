@@ -1,10 +1,10 @@
 import { Component, input, output, computed, linkedSignal, effect, ChangeDetectionStrategy } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
-import { type InterviewQuestion } from '../../../../core/models/interview.models';
-import { CodeBlockComponent } from '../../../../shared/components/code-block/code-block.component';
-import { InlineTextPipe } from '../../../../shared/pipes/inline-text.pipe';
-import { AnswerParagraphsComponent } from '../../../../shared/components/answer-paragraphs/answer-paragraphs.component';
-import { ExampleBlockComponent } from '../../../../shared/components/example-block/example-block.component';
+import { type InterviewQuestion } from '@core/models/interview.models';
+import { CodeBlockComponent } from '@shared/components/code-block/code-block.component';
+import { InlineTextPipe } from '@shared/pipes/inline-text.pipe';
+import { AnswerParagraphsComponent } from '@shared/components/answer-paragraphs/answer-paragraphs.component';
+import { ExampleBlockComponent } from '@shared/components/example-block/example-block.component';
 import { NoteEditorComponent } from '../note-editor/note-editor.component';
 import { FlashcardRevealComponent } from '../flashcard-reveal/flashcard-reveal.component';
 

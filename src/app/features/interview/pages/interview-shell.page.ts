@@ -1,9 +1,9 @@
 import { Component, inject, signal, effect, ChangeDetectionStrategy } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
 import { InterviewService } from '../state/interview.service';
-import { SeoService } from '../../../core/services/seo.service';
+import { SeoService } from '@core/services/seo.service';
 import { interviewCategories } from '../data';
-import type { InterviewSection, InterviewQuestion } from '../../../core/models/interview.models';
+import type { InterviewSection, InterviewQuestion } from '@core/models/interview.models';
 import { DeepDiveModalComponent } from '../components/deep-dive-modal/deep-dive-modal.component';
 
 import { HeaderComponent } from '../components/header/header.component';
@@ -11,7 +11,7 @@ import { ToolbarComponent } from '../components/toolbar/toolbar.component';
 import { CategoryPillsComponent } from '../components/category-pills/category-pills.component';
 import { QuestionCardComponent } from '../components/question-card/question-card.component';
 import { QuestionListComponent } from '../components/question-list/question-list.component';
-import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
+import { SectionHeaderComponent } from '@shared/components/section-header/section-header.component';
 
 @Component({
   selector: 'app-interview-shell',

@@ -1,5 +1,5 @@
 import { Component, input, inject, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
-import { MarkdownService } from '../../../../shared/services/markdown.service';
+import { MarkdownService } from '@shared/services/markdown.service';
 
 @Component({
   selector: 'app-deep-dive-content',

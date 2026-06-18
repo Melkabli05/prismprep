@@ -15,7 +15,7 @@ import {
   validate,
 } from '@angular/forms/signals';
 import { LucideAngularModule } from 'lucide-angular';
-import { AuthService } from '../../../../core/services/auth.service';
+import { AuthService } from '@core/services/auth.service';
 
 interface SignInModel {
   email: string;

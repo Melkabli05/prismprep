@@ -1,9 +1,9 @@
 import { Component, inject, effect, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { AuthService } from './core/services/auth.service';
-import { InterviewService } from './features/interview/state/interview.service';
-import { AppLoaderComponent } from './shared/components/app-loader/app-loader.component';
-import { RouterProgressBarComponent } from './core/components/router-progress-bar.component';
+import { AuthService } from '@core/services/auth.service';
+import { InterviewService } from '@features/interview/state/interview.service';
+import { AppLoaderComponent } from '@shared/components/app-loader/app-loader.component';
+import { RouterProgressBarComponent } from '@core/components/router-progress-bar.component';
 
 @Component({
   selector: 'app-root',

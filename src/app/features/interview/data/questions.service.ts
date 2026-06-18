@@ -1,6 +1,6 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
-import type { InterviewCategory, InterviewSection } from '../../../core/models/interview.models';
-import { SupabaseClientService } from '../../../core/services/supabase-client.service';
+import type { InterviewCategory, InterviewSection } from '@core/models/interview.models';
+import { SupabaseClientService } from '@core/services/supabase-client.service';
 
 export interface QuestionRow {
   id: string; section_id: string; category_id: string;

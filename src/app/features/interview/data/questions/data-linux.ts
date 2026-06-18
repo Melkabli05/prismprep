@@ -1,4 +1,4 @@
-import type { InterviewCategory } from '../../../../core/models/interview.models';
+import type { InterviewCategory } from '@core/models/interview.models';
 
 export const linuxCategory: InterviewCategory = {
   id: 'linux',

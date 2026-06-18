@@ -1,8 +1,8 @@
 import { Component, inject, signal, output, effect, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { form, FormField } from '@angular/forms/signals';
 import { LucideAngularModule } from 'lucide-angular';
-import { SearchShortcutDirective } from '../../../../shared/directives/search-shortcut.directive';
-import { AuthService } from '../../../../core/services/auth.service';
+import { SearchShortcutDirective } from '@shared/directives/search-shortcut.directive';
+import { AuthService } from '@core/services/auth.service';
 import { AuthModalComponent } from '../auth-modal/auth-modal.component';
 import { UserPreferencesComponent } from '../user-preferences/user-preferences.component';
 

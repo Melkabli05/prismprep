@@ -20,8 +20,8 @@ module.exports = defineConfig([
     },
     settings: {
       'import/resolver': {
-        node: {
-          extensions: ['.ts', '.js'],
+        typescript: {
+          project: './tsconfig.app.json',
         },
       },
       'boundaries/include': ['src/app/**/*.ts'],

@@ -1,10 +1,10 @@
 import { Injectable, signal, computed, effect, inject, linkedSignal } from '@angular/core';
-import type { InterviewCategory, InterviewQuestion, InterviewSection } from '../../../core/models/interview.models';
-import { localStorageSignal, setLocalStorage } from '../../../core/services/local-storage.service';
+import type { InterviewCategory, InterviewQuestion, InterviewSection } from '@core/models/interview.models';
+import { localStorageSignal, setLocalStorage } from '@core/services/local-storage.service';
 import { QuestionsService } from '../data/questions.service';
 import { UserStateService } from './user-state.service';
-import { AuthService } from '../../../core/services/auth.service';
-import { ThemeService } from '../../../core/services/theme.service';
+import { AuthService } from '@core/services/auth.service';
+import { ThemeService } from '@core/services/theme.service';
 
 function seededRandom(seed: string): () => number {
   let h = 0;
