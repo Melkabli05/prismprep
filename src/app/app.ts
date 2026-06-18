@@ -1,7 +1,7 @@
 import { Component, inject, effect, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
-import { InterviewService } from '@features/interview/state/interview.service';
+import { Interview } from '@features/interview/state/interview';
 import { AppLoaderComponent } from '@shared/components/app-loader/app-loader.component';
 import { RouterProgressBarComponent } from '@core/components/router-progress-bar.component';
 
@@ -46,7 +46,7 @@ import { RouterProgressBarComponent } from '@core/components/router-progress-bar
 })
 export class App {
   readonly auth = inject(AuthService);
-  private interview = inject(InterviewService);
+  private interview = inject(Interview);
 
   /** Holds the loader in DOM for 300ms after auth resolves so the fade-out plays */
   readonly showLoader = signal(true);

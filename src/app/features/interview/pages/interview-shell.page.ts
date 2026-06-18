@@ -1,6 +1,6 @@
 import { Component, inject, signal, effect, computed } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
-import { InterviewService } from '../state/interview.service';
+import { Interview } from '../state/interview';
 import { SeoService } from '@core/services/seo.service';
 import { interviewCategories } from '../data';
 import type { InterviewSection, InterviewQuestion } from '@core/models/interview.models';
@@ -30,7 +30,7 @@ import { SectionHeaderComponent } from '@shared/components/section-header/sectio
 })
 export class InterviewShellPage {
   /** Smart component — reads everything from the centralized service */
-  readonly svc = inject(InterviewService);
+  readonly svc = inject(Interview);
   private readonly seo = inject(SeoService);
   readonly categories = interviewCategories;
   readonly todayDate = computed(() => new Date().toLocaleDateString('fr-FR'));

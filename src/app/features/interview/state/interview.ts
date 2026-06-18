@@ -2,7 +2,7 @@ import { Service, signal, computed, effect, inject, linkedSignal } from '@angula
 import type { InterviewCategory, InterviewQuestion, InterviewSection } from '@core/models/interview.models';
 import { localStorageSignal, setLocalStorage } from '@core/services/local-storage.service';
 import { QuestionsService } from '../data/questions.service';
-import { UserStateService } from './user-state.service';
+import { UserState } from './user-state';
 import { AuthService } from '@core/services/auth.service';
 import { ThemeService } from '@core/services/theme.service';
 
@@ -15,9 +15,9 @@ function getDailySeed(): string { const d = new Date(); return `${d.getFullYear(
 function formatTime(s: number): string { return `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`; }
 
 @Service()
-export class InterviewService {
+export class Interview {
   readonly questions = inject(QuestionsService);
-  readonly userState = inject(UserStateService);
+  readonly userState = inject(UserState);
   private auth = inject(AuthService);
   private theme = inject(ThemeService);
 

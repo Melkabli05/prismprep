@@ -4,7 +4,7 @@ import { SupabaseClientService } from '@core/services/supabase-client.service';
 import { AuthService } from '@core/services/auth.service';
 
 @Service()
-export class UserStateService {
+export class UserState {
   private readonly supabase = inject(SupabaseClientService);
   private readonly auth = inject(AuthService);
 

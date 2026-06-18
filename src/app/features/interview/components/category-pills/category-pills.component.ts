@@ -1,6 +1,6 @@
 import { Component, input, output, computed, signal, viewChild, afterNextRender, afterRenderEffect, inject, ElementRef, DestroyRef } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
-import { InterviewService } from '../../state/interview.service';
+import { Interview } from '../../state/interview';
 
 @Component({
   selector: 'app-category-pills',
@@ -177,7 +177,7 @@ import { InterviewService } from '../../state/interview.service';
   `,
 })
 export class CategoryPillsComponent {
-  readonly svc = inject(InterviewService);
+  readonly svc = inject(Interview);
   activeCategory = input<string>('rh');
   categoryChange = output<string>();
 
