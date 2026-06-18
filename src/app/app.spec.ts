@@ -26,10 +26,12 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render title', async () => {
+  it('should render the app root', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, interview-prep-angular');
+    // App renders a router-progress-bar and conditionally a loader or router-outlet
+    expect(compiled.querySelector('app-router-progress-bar')).toBeTruthy();
+    expect(compiled.querySelector('a.skip-link')).toBeTruthy();
   });
 });

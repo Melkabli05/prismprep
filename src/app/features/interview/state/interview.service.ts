@@ -105,7 +105,7 @@ export class InterviewService {
 
   getOrderedQuestions(section: InterviewSection): InterviewQuestion[] {
     const ids = this._shuffledIds();
-    if (!ids?.length) return section.questions;
+    if (!ids.length) return section.questions;
     return [...section.questions].sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
   }
 

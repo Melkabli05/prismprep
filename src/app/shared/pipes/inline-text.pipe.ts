@@ -2,6 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'inlineText',
+  pure: true,
 })
 export class InlineTextPipe implements PipeTransform {
   transform(text: string): string {

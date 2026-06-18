@@ -1,4 +1,4 @@
-import { Component, inject, signal, effect } from '@angular/core';
+import { Component, inject, signal, effect, computed } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
 import { InterviewService } from '../state/interview.service';
 import { SeoService } from '@core/services/seo.service';
@@ -33,7 +33,7 @@ export class InterviewShellPage {
   readonly svc = inject(InterviewService);
   private readonly seo = inject(SeoService);
   readonly categories = interviewCategories;
-  todayDate = () => new Date().toLocaleDateString('fr-FR');
+  readonly todayDate = computed(() => new Date().toLocaleDateString('fr-FR'));
 
   readonly deepDiveQuestion = signal<InterviewQuestion | null>(null);
   readonly showDeepDiveModal = signal(false);
