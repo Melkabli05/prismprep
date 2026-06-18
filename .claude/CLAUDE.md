@@ -27,7 +27,7 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Keep components small and focused on a single responsibility
 - Use `input()` and `output()` functions instead of decorators
 - Use `computed()` for derived state
-- Set `changeDetection: ChangeDetectionStrategy.OnPush` in `@Component` decorator
+- Must NOT set `changeDetection: ChangeDetectionStrategy.OnPush` in `@Component` decorator. It's the default in Angular v22+.
 - Prefer inline templates for small components
 - Prefer Reactive forms instead of Template-driven ones
 - Do NOT use `ngClass`, use `class` bindings instead
@@ -51,5 +51,5 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 ## Services
 
 - Design services around a single responsibility
-- Use the `providedIn: 'root'` option for singleton services
-- Use the `inject()` function instead of constructor injection
+- Use the `@Service()` decorator (Angular v22+) instead of `@Injectable({ providedIn: 'root' })`
+- Use the `inject()` function instead of constructor injection — `@Service()` does not support constructor-parameter DI
