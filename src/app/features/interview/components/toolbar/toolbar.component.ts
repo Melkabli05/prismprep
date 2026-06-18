@@ -1,10 +1,9 @@
-import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
 import { Toolbar, ToolbarWidget, ToolbarWidgetGroup } from '@angular/aria/toolbar';
 
 @Component({
   selector: 'app-toolbar',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LucideAngularModule, Toolbar, ToolbarWidget, ToolbarWidgetGroup],
   host: {
     'role': 'toolbar',

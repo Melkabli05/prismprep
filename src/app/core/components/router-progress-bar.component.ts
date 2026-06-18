@@ -1,9 +1,8 @@
-import { Component, inject, ChangeDetectionStrategy, computed } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { RouterLoadingService } from '../services/router-loading.service';
 
 @Component({
   selector: 'app-router-progress-bar',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (service.active()) {
       <div class="progress-bar" role="progressbar" aria-label="Navigation en cours" aria-valuenow="{{ progress() }}">

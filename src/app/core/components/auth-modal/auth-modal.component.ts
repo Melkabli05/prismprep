@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   Component,
   computed,
   inject,
@@ -34,7 +33,6 @@ const EMPTY_SIGN_UP: SignUpModel = { name: '', email: '', password: '', confirmP
 
 @Component({
   selector: 'app-auth-modal',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormField, LucideAngularModule],
   template: `
     <div

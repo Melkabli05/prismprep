@@ -1,8 +1,7 @@
-import { Component, input, computed, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, computed } from '@angular/core';
 
 @Component({
   selector: 'app-progress-bar',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: `
     .progress-track {
       width: 100%;

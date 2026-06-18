@@ -1,4 +1,4 @@
-import { Component, input, output, computed, linkedSignal, effect, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, output, computed, linkedSignal, effect } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
 import { type InterviewQuestion } from '@core/models/interview.models';
 import { CodeBlockComponent } from '@shared/components/code-block/code-block.component';
@@ -10,7 +10,6 @@ import { FlashcardRevealComponent } from '../flashcard-reveal/flashcard-reveal.c
 
 @Component({
   selector: 'app-question-card',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     LucideAngularModule,
     CodeBlockComponent,

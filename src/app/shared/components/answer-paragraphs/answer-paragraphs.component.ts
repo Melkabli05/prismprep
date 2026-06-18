@@ -1,9 +1,8 @@
-import { Component, input, computed, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, computed } from '@angular/core';
 import { InlineTextPipe } from '../../pipes/inline-text.pipe';
 
 @Component({
   selector: 'app-answer-paragraphs',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [InlineTextPipe],
   styles: `
     .para-first {

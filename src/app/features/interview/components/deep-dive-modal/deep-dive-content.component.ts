@@ -1,9 +1,8 @@
-import { Component, input, inject, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
+import { Component, input, inject, ViewEncapsulation } from '@angular/core';
 import { MarkdownService } from '@shared/services/markdown.service';
 
 @Component({
   selector: 'app-deep-dive-content',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   imports: [],
   styles: `

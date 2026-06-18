@@ -1,8 +1,7 @@
-import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-loader',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
       class="loader-overlay"

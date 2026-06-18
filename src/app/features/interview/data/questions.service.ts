@@ -1,4 +1,4 @@
-import { Injectable, signal, computed, inject } from '@angular/core';
+import { Service, signal, computed, inject } from '@angular/core';
 import type { InterviewCategory, InterviewSection } from '@core/models/interview.models';
 import { SupabaseClientService } from '@core/services/supabase-client.service';
 
@@ -12,7 +12,7 @@ export interface QuestionRow {
 interface SectionRow { id: string; category_id: string; title: string; sort_order: number; }
 interface CategoryRow { id: string; title: string; color: string; description: string; sort_order: number; }
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class QuestionsService {
   private readonly supabase = inject(SupabaseClientService);
   private readonly _questions = signal<QuestionRow[]>([]);

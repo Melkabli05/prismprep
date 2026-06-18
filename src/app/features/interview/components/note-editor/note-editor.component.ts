@@ -1,9 +1,8 @@
-import { Component, input, output, signal, effect, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { Component, input, output, signal, effect, OnDestroy } from '@angular/core';
 import { form, FormField } from '@angular/forms/signals';
 
 @Component({
   selector: 'app-note-editor',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormField],
   styles: `
     textarea {

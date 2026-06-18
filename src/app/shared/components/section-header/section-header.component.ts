@@ -1,9 +1,8 @@
-import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-section-header',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LucideAngularModule],
   styles: `
     .icon-wrap {

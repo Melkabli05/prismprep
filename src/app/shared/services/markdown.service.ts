@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import MarkdownIt from 'markdown-it';
 
 // ─── Token sets ──────────────────────────────────────────────────────────────
@@ -186,7 +186,7 @@ function buildCodeBlock(code: string, lang: string): string {
 
 // ─── Service ─────────────────────────────────────────────────────────────────
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class MarkdownService {
   private readonly md = new MarkdownIt({
     html: false,

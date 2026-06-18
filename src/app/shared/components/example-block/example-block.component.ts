@@ -1,10 +1,9 @@
-import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
 import { InlineTextPipe } from '../../pipes/inline-text.pipe';
 
 @Component({
   selector: 'app-example-block',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LucideAngularModule, InlineTextPipe],
   styles: `
     .example-card {

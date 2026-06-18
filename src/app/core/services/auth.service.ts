@@ -1,8 +1,8 @@
-import { Injectable, signal, computed, inject } from '@angular/core';
+import { Service, signal, computed, inject } from '@angular/core';
 import { User } from '@supabase/supabase-js';
 import { SupabaseClientService } from './supabase-client.service';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class AuthService {
   private readonly supabase = inject(SupabaseClientService);
   private get client() { return this.supabase.client; }

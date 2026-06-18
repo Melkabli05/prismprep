@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   Component,
   DestroyRef,
   ViewEncapsulation,
@@ -192,7 +191,6 @@ function tokenize(code: string, lang: string): string {
 
 @Component({
   selector: 'app-code-block',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   // ViewEncapsulation.None is intentional: <pre> and token spans must be styled
   // globally because [innerHTML] content is inserted outside Angular's shadow DOM.
   // All rules are scoped under .code-block to limit bleed.

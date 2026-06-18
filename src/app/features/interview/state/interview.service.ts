@@ -1,4 +1,4 @@
-import { Injectable, signal, computed, effect, inject, linkedSignal } from '@angular/core';
+import { Service, signal, computed, effect, inject, linkedSignal } from '@angular/core';
 import type { InterviewCategory, InterviewQuestion, InterviewSection } from '@core/models/interview.models';
 import { localStorageSignal, setLocalStorage } from '@core/services/local-storage.service';
 import { QuestionsService } from '../data/questions.service';
@@ -14,7 +14,7 @@ function seededRandom(seed: string): () => number {
 function getDailySeed(): string { const d = new Date(); return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`; }
 function formatTime(s: number): string { return `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`; }
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class InterviewService {
   readonly questions = inject(QuestionsService);
   readonly userState = inject(UserStateService);

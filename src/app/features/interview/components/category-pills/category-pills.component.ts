@@ -1,10 +1,9 @@
-import { Component, input, output, computed, signal, viewChild, afterNextRender, afterRenderEffect, ChangeDetectionStrategy, inject, ElementRef, DestroyRef } from '@angular/core';
+import { Component, input, output, computed, signal, viewChild, afterNextRender, afterRenderEffect, inject, ElementRef, DestroyRef } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
 import { InterviewService } from '../../state/interview.service';
 
 @Component({
   selector: 'app-category-pills',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LucideAngularModule],
   styles: `
     .category-pill {

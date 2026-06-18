@@ -1,8 +1,7 @@
-import { Component, input, computed, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, computed } from '@angular/core';
 
 @Component({
   selector: 'app-skeleton-card',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="skeleton-grid" role="status" aria-label="Chargement du contenu">
       @for (_ of skeletonItems(); track $index) {

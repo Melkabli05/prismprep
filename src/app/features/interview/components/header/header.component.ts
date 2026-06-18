@@ -1,4 +1,4 @@
-import { Component, inject, input, signal, output, effect, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { Component, inject, input, signal, output, effect, OnDestroy } from '@angular/core';
 import { form, FormField } from '@angular/forms/signals';
 import { LucideAngularModule } from 'lucide-angular';
 import { SearchShortcutDirective } from '@shared/directives/search-shortcut.directive';
@@ -9,7 +9,6 @@ import type { InterviewCategory } from '@core/models/interview.models';
 
 @Component({
   selector: 'app-header',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LucideAngularModule, FormField, SearchShortcutDirective, AuthModalComponent, UserPreferencesComponent],
   styles: `
     :host { display: block; position: sticky; top: 0; z-index: 50; }

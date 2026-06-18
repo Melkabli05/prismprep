@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, input, output, signal, computed, viewChild } from '@angular/core';
+import { Component, input, output, signal, computed, viewChild } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
 import { DeepDiveContentComponent } from './deep-dive-content.component';
 
 @Component({
   selector: 'app-deep-dive-modal',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LucideAngularModule, DeepDiveContentComponent],
   template: `
     <div class="modal-card" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="deep-dive-title">

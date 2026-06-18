@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   Component,
   computed,
   inject,
@@ -22,7 +21,6 @@ const EMPTY_PROFILE: ProfileModel = { name: '' };
 
 @Component({
   selector: 'app-user-preferences',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormField, LucideAngularModule],
   template: `
     <div

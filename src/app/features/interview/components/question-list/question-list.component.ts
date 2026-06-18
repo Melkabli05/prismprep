@@ -1,10 +1,9 @@
-import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { type InterviewQuestion } from '@core/models/interview.models';
 import { QuestionCardComponent } from '../question-card/question-card.component';
 
 @Component({
   selector: 'app-question-list',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [QuestionCardComponent],
   template: `
     <div style="display: flex; flex-direction: column; gap: 1.75rem;">

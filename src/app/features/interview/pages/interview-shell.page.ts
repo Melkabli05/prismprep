@@ -1,4 +1,4 @@
-import { Component, inject, signal, effect, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, effect } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
 import { InterviewService } from '../state/interview.service';
 import { SeoService } from '@core/services/seo.service';
@@ -15,7 +15,6 @@ import { SectionHeaderComponent } from '@shared/components/section-header/sectio
 
 @Component({
   selector: 'app-interview-shell',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     LucideAngularModule,
     HeaderComponent,

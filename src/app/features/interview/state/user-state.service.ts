@@ -1,9 +1,9 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { localStorageSignal } from '@core/services/local-storage.service';
 import { SupabaseClientService } from '@core/services/supabase-client.service';
 import { AuthService } from '@core/services/auth.service';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class UserStateService {
   private readonly supabase = inject(SupabaseClientService);
   private readonly auth = inject(AuthService);

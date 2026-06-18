@@ -1,4 +1,4 @@
-import { Component, inject, effect, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, effect, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { InterviewService } from '@features/interview/state/interview.service';
@@ -7,7 +7,6 @@ import { RouterProgressBarComponent } from '@core/components/router-progress-bar
 
 @Component({
   selector: 'app-root',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterOutlet, AppLoaderComponent, RouterProgressBarComponent],
   template: `
     <app-router-progress-bar />

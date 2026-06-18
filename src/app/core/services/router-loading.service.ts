@@ -1,15 +1,17 @@
-import { Injectable, signal } from '@angular/core';
+import { Service, inject, signal } from '@angular/core';
 import { NavigationStart, NavigationEnd, NavigationCancel, NavigationError, Router } from '@angular/router';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class RouterLoadingService {
+  private readonly router = inject(Router);
+
   readonly active = signal(false);
   readonly progress = signal(0);
 
   private trickleHandle: ReturnType<typeof setInterval> | null = null;
 
-  constructor(router: Router) {
-    router.events.subscribe((e) => {
+  constructor() {
+    this.router.events.subscribe((e) => {
       if (e instanceof NavigationStart) {
         this.start();
       } else if (

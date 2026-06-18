@@ -1,9 +1,9 @@
-import { Injectable, signal, computed, effect, inject } from '@angular/core';
+import { Service, signal, computed, effect, inject } from '@angular/core';
 import { AuthService } from './auth.service';
 
 export type ThemeOption = 'light' | 'dark' | 'system';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class ThemeService {
   private auth = inject(AuthService);
 

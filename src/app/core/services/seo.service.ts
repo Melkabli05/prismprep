@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { Title, Meta } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 
@@ -8,7 +8,7 @@ export interface SeoPageData {
   route?: string;
 }
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class SeoService {
   private title = inject(Title);
   private meta = inject(Meta);
