@@ -23,6 +23,8 @@
     "@supabase/supabase-js": "^2.106.0",
     "lucide-angular": "^0.475.0",
     "markdown-it": "^14.1.1",
+    "marked": "^18.0.5",
+    "ngx-monaco-editor": "^12.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },

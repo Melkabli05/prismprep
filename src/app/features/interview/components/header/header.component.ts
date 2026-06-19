@@ -1,5 +1,6 @@
 import { Component, inject, input, signal, output, effect, OnDestroy } from '@angular/core';
 import { form, FormField } from '@angular/forms/signals';
+import { RouterLink } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
 import { SearchShortcutDirective } from '@shared/directives/search-shortcut.directive';
 import { AuthService } from '@core/services/auth.service';
@@ -9,7 +10,7 @@ import type { InterviewCategory } from '@core/models/interview.models';
 
 @Component({
   selector: 'app-header',
-  imports: [LucideAngularModule, FormField, SearchShortcutDirective, AuthModalComponent, UserPreferencesComponent],
+  imports: [RouterLink, LucideAngularModule, FormField, SearchShortcutDirective, AuthModalComponent, UserPreferencesComponent],
   styles: `
     :host { display: block; position: sticky; top: 0; z-index: 50; }
     header {
@@ -156,6 +157,12 @@ import type { InterviewCategory } from '@core/models/interview.models';
                     <lucide-icon name="settings" class="w-4 h-4" />
                     Préférences
                   </button>
+                  @if (auth.isAdmin()) {
+                    <a routerLink="/admin" class="dropdown-item" role="menuitem" (click)="showDropdown.set(false)">
+                      <lucide-icon name="shield" class="w-4 h-4" />
+                      Admin
+                    </a>
+                  }
                   <div class="dropdown-divider"></div>
                   <button class="dropdown-item danger" role="menuitem" (click)="signOut()">
                     <lucide-icon name="log-out" class="w-4 h-4" />

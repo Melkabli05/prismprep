@@ -1,4 +1,6 @@
-import { Service, signal, computed, inject } from '@angular/core';
+import { Service, signal, computed, inject, resource } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { filter, firstValueFrom } from 'rxjs';
 import { User } from '@supabase/supabase-js';
 import { SupabaseClientService } from './supabase-client.service';
 
@@ -13,6 +15,30 @@ export class AuthService {
   readonly user = this._user.asReadonly();
   readonly loading = this._loading.asReadonly();
   readonly isAuthenticated = computed(() => this._user() !== null);
+
+  /** Role lives in the profiles table, never in client-writable user_metadata. */
+  private readonly profile = resource({
+    params: () => this._user()?.id,
+    loader: async ({ params: userId }) => {
+      const { data } = await this.client.from('profiles').select('role').eq('id', userId).single();
+      return data;
+    },
+  });
+
+  readonly isAdmin = computed(() => this.profile.value()?.role === 'admin');
+
+  /** True once session check (and, if signed in, the profile fetch) has settled. */
+  readonly ready = computed(() => {
+    if (this._loading()) return false;
+    if (!this._user()) return true;
+    const status = this.profile.status();
+    return status === 'resolved' || status === 'error' || status === 'local';
+  });
+
+  async untilReady(): Promise<void> {
+    if (this.ready()) return;
+    await firstValueFrom(toObservable(this.ready).pipe(filter(Boolean)));
+  }
 
   readonly stack = computed(() => {
     const meta = this._user()?.user_metadata;

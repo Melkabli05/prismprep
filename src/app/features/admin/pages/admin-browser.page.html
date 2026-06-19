@@ -1,0 +1,398 @@
+<!-- ─── Toolbar ─────────────────────────────────────────────────────── -->
+<div class="toolbar" role="toolbar" aria-label="Content management">
+
+  <div class="toolbar-left">
+    <div class="search-wrap">
+      <lucide-icon name="search" class="search-icon" aria-hidden="true" />
+      <input
+        #searchInput
+        type="search"
+        placeholder="Search questions, sections, categories…"
+        class="search-input"
+        [value]="searchQuery()"
+        (input)="searchQuery.set($any($event.target).value)"
+        aria-label="Filter content"
+        aria-controls="content-tree"
+      />
+      @if (searchHasQuery()) {
+        <button type="button" class="search-clear" (click)="searchQuery.set('')" aria-label="Clear search">
+          <lucide-icon name="x" class="w-3.5 h-3.5" aria-hidden="true" />
+        </button>
+      }
+    </div>
+
+    <span class="result-count" aria-live="polite" aria-atomic="true">
+      @if (searchHasQuery()) {
+        {{ filteredQuestionCount() }} of {{ totalQuestionCount() }}
+      } @else {
+        {{ totalQuestionCount() }} questions
+      }
+    </span>
+  </div>
+
+  <div class="toolbar-right">
+    <button type="button" class="btn-new" (click)="openNewCategory()">
+      <lucide-icon name="plus" class="w-4 h-4" aria-hidden="true" />
+      New category
+    </button>
+    <button type="button" class="icon-btn" (click)="showShortcutsHelp.set(true)" aria-label="Keyboard shortcuts">
+      <lucide-icon name="keyboard" class="w-4 h-4" aria-hidden="true" />
+    </button>
+  </div>
+
+</div>
+
+<!-- ─── Error / Loading / Empty ─────────────────────────────────── -->
+@if (admin.error(); as err) {
+  <div class="alert alert-error" role="alert">{{ err.message }}</div>
+}
+
+@if (admin.loading() && !admin.loaded()) {
+  <p class="loading-state" aria-live="polite">Loading content…</p>
+} @else if (filteredTree().length === 0) {
+  <p class="empty-state" role="status">
+    @if (searchHasQuery()) { No results for "{{ searchQuery() }}" } @else { No content yet. }
+  </p>
+}
+
+<!-- ─── Content Tree ──────────────────────────────────────────────── -->
+@if (admin.loaded()) {
+  <div
+    id="content-tree"
+    class="tree"
+    cdkDropList
+    [cdkDropListData]="filteredTree()"
+    (cdkDropListDropped)="onCategoryDropped($event)"
+    role="tree"
+    aria-label="Content hierarchy"
+  >
+    @for (cat of filteredTree(); track cat.row.id) {
+      <div
+        class="category-item"
+        cdkDrag
+        [cdkDragData]="cat.row"
+        role="treeitem"
+        [attr.aria-expanded]="isCategoryExpanded(cat.row.id)"
+        aria-level="1"
+      >
+        <!-- Category row -->
+        <div class="cat-row">
+          <button
+            type="button"
+            class="toggle-btn"
+            (click)="toggleCategory(cat.row.id)"
+            [attr.aria-label]="(isCategoryExpanded(cat.row.id) ? 'Collapse' : 'Expand') + ' ' + cat.row.title"
+          >
+            <lucide-icon [name]="isCategoryExpanded(cat.row.id) ? 'chevron-down' : 'chevron-right'" class="w-3.5 h-3.5" aria-hidden="true" />
+          </button>
+
+          <span class="cat-swatch" [style]="cat.row.color" aria-hidden="true"></span>
+          <span class="cat-title">{{ cat.row.title }}</span>
+
+          <span class="meta-chip" aria-label="{{ cat.sections.length }} sections">
+            {{ cat.sections.length }} sections
+          </span>
+
+          <!-- Reorder -->
+          <div class="reorder-group" aria-label="Reorder">
+            <button type="button" class="reorder-btn" (click)="moveCategory(cat.row.id, -1)" aria-label="Move up">
+              <lucide-icon name="chevron-up" class="w-3 h-3" aria-hidden="true" />
+            </button>
+            <button type="button" class="reorder-btn" (click)="moveCategory(cat.row.id, 1)" aria-label="Move down">
+              <lucide-icon name="chevron-down" class="w-3 h-3" aria-hidden="true" />
+            </button>
+            <span class="drag-handle" cdkDragHandle aria-hidden="true">
+              <lucide-icon name="grip-vertical" class="w-3 h-3" />
+            </span>
+          </div>
+
+          <!-- Action menu trigger -->
+          <button
+            #menuBtn
+            type="button"
+            class="icon-btn menu-btn"
+            (click)="openActionMenu('cat', cat.row.id, menuBtn)"
+            [class.menu-open]="openMenu()?.kind === 'cat' && openMenu()?.id === cat.row.id"
+            aria-label="Category actions"
+            [attr.aria-expanded]="openMenu()?.kind === 'cat' && openMenu()?.id === cat.row.id"
+            aria-haspopup="menu"
+          >
+            <lucide-icon name="ellipsis" class="w-4 h-4" aria-hidden="true" />
+          </button>
+        </div>
+
+        <!-- Sections -->
+        @if (isCategoryExpanded(cat.row.id)) {
+          <div
+            class="section-list"
+            cdkDropList
+            [cdkDropListData]="cat.sections"
+            (cdkDropListDropped)="onSectionDropped(cat.row.id, $event)"
+            role="group"
+            aria-label="Sections in {{ cat.row.title }}"
+          >
+            @for (sec of cat.sections; track sec.row.id) {
+              <div
+                class="section-item"
+                cdkDrag
+                [cdkDragData]="sec.row"
+                role="treeitem"
+                [attr.aria-expanded]="isSectionExpanded(sec.row.id)"
+                aria-level="2"
+              >
+                <!-- Section row -->
+                <div class="sec-row">
+                  <button
+                    type="button"
+                    class="toggle-btn"
+                    (click)="toggleSection(sec.row.id)"
+                    [attr.aria-label]="(isSectionExpanded(sec.row.id) ? 'Collapse' : 'Expand') + ' ' + sec.row.title"
+                  >
+                    <lucide-icon [name]="isSectionExpanded(sec.row.id) ? 'chevron-down' : 'chevron-right'" class="w-3.5 h-3.5" aria-hidden="true" />
+                  </button>
+
+                  @if (editingSectionId() === sec.row.id) {
+                    <input
+                      type="text"
+                      class="inline-input"
+                      [value]="editingSectionTitle()"
+                      (input)="editingSectionTitle.set($any($event.target).value)"
+                      (keydown.enter)="saveInlineSection()"
+                      (keydown.escape)="cancelInlineSection()"
+                      (blur)="saveInlineSection()"
+                      autofocus
+                      aria-label="Edit section title"
+                    />
+                  } @else {
+                    <span
+                      class="sec-title editable"
+                      (dblclick)="startEditSection(sec.row)"
+                      title="Double-click to rename"
+                    >{{ sec.row.title }}</span>
+                  }
+
+                  <span class="meta-chip" aria-label="{{ sec.questions.length }} questions">
+                    {{ sec.questions.length }}
+                  </span>
+
+                  <!-- Reorder -->
+                  <div class="reorder-group" aria-label="Reorder">
+                    <button type="button" class="reorder-btn" (click)="moveSection(cat.row.id, sec.row.id, -1)" aria-label="Move up">
+                      <lucide-icon name="chevron-up" class="w-3 h-3" aria-hidden="true" />
+                    </button>
+                    <button type="button" class="reorder-btn" (click)="moveSection(cat.row.id, sec.row.id, 1)" aria-label="Move down">
+                      <lucide-icon name="chevron-down" class="w-3 h-3" aria-hidden="true" />
+                    </button>
+                    <span class="drag-handle" cdkDragHandle aria-hidden="true">
+                      <lucide-icon name="grip-vertical" class="w-3 h-3" />
+                    </span>
+                  </div>
+
+                  <button
+                    #menuBtn
+                    type="button"
+                    class="icon-btn menu-btn"
+                    (click)="openActionMenu('sec', sec.row.id, menuBtn)"
+                    [class.menu-open]="openMenu()?.kind === 'sec' && openMenu()?.id === sec.row.id"
+                    aria-label="Section actions"
+                    [attr.aria-expanded]="openMenu()?.kind === 'sec' && openMenu()?.id === sec.row.id"
+                    aria-haspopup="menu"
+                  >
+                    <lucide-icon name="ellipsis" class="w-4 h-4" aria-hidden="true" />
+                  </button>
+                </div>
+
+                <!-- Questions -->
+                @if (isSectionExpanded(sec.row.id)) {
+                  <div
+                    class="question-list"
+                    cdkDropList
+                    [cdkDropListData]="sec.questions"
+                    (cdkDropListDropped)="onQuestionDropped(sec.row.id, $event)"
+                    role="group"
+                    aria-label="Questions in {{ sec.row.title }}"
+                  >
+                    @for (q of sec.questions; track q.id) {
+                      <div
+                        class="question-item"
+                        cdkDrag
+                        [cdkDragData]="q"
+                        role="treeitem"
+                        aria-level="3"
+                      >
+                        @if (editingQuestionId() === q.id) {
+                          <input
+                            type="text"
+                            class="inline-input"
+                            [value]="editingQuestionText()"
+                            (input)="editingQuestionText.set($any($event.target).value)"
+                            (keydown.enter)="saveInlineQuestion()"
+                            (keydown.escape)="cancelInlineQuestion()"
+                            (blur)="saveInlineQuestion()"
+                            autofocus
+                            aria-label="Edit question"
+                          />
+                        } @else {
+                          <span
+                            class="q-text editable"
+                            (dblclick)="startEditQuestion(q)"
+                            title="Double-click to rename"
+                          >{{ q.question }}</span>
+                        }
+
+                        <span class="q-id" aria-label="ID: {{ q.id }}">{{ q.id }}</span>
+
+                        @if (q.deep_dive) {
+                          <span class="dd-badge" title="Has deep dive content">DD</span>
+                        }
+
+                        <!-- Reorder -->
+                        <div class="reorder-group" aria-label="Reorder">
+                          <button type="button" class="reorder-btn" (click)="moveQuestion(sec.row.id, q.id, -1)" aria-label="Move up">
+                            <lucide-icon name="chevron-up" class="w-3 h-3" aria-hidden="true" />
+                          </button>
+                          <button type="button" class="reorder-btn" (click)="moveQuestion(sec.row.id, q.id, 1)" aria-label="Move down">
+                            <lucide-icon name="chevron-down" class="w-3 h-3" aria-hidden="true" />
+                          </button>
+                          <span class="drag-handle" cdkDragHandle aria-hidden="true">
+                            <lucide-icon name="grip-vertical" class="w-3 h-3" />
+                          </span>
+                        </div>
+
+                        <a
+                          class="icon-btn menu-btn"
+                          [routerLink]="['/admin/questions', q.id]"
+                          aria-label="Edit question"
+                        >
+                          <lucide-icon name="pencil" class="w-3.5 h-3.5" aria-hidden="true" />
+                        </a>
+
+                        <button
+                          type="button"
+                          class="icon-btn danger-btn"
+                          (click)="requestDeleteQuestion(q)"
+                          aria-label="Delete question"
+                        >
+                          <lucide-icon name="trash-2" class="w-3.5 h-3.5" aria-hidden="true" />
+                        </button>
+                      </div>
+                    } @empty {
+                      <p class="empty-children" role="status">No questions yet.</p>
+                    }
+                  </div>
+                }
+              </div>
+            } @empty {
+              <p class="empty-children" role="status">No sections yet.</p>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+}
+
+<!-- ─── Floating Action Menu ─────────────────────────────────────── -->
+@if (openMenu(); as menu) {
+  <div
+    class="action-menu"
+    role="menu"
+    [style.top.px]="menu.rect.bottom + 4"
+    [style.left.px]="menu.rect.left"
+    (click)="$event.stopPropagation()"
+  >
+    @if (menu.kind === 'cat') {
+      <button type="button" class="menu-item" role="menuitem" (click)="onMenuAction('add-section', findCategory(menu.id))">
+        <lucide-icon name="plus" class="w-3.5 h-3.5" aria-hidden="true" />
+        Add section
+      </button>
+      <button type="button" class="menu-item" role="menuitem" (click)="onMenuAction('edit-category', findCategory(menu.id))">
+        <lucide-icon name="pencil" class="w-3.5 h-3.5" aria-hidden="true" />
+        Edit category
+      </button>
+      <hr class="menu-sep" aria-hidden="true" />
+      <button type="button" class="menu-item danger" role="menuitem" (click)="onMenuAction('delete-category', findCategory(menu.id))">
+        <lucide-icon name="trash-2" class="w-3.5 h-3.5" aria-hidden="true" />
+        Delete category
+      </button>
+    }
+    @if (menu.kind === 'sec') {
+      <button type="button" class="menu-item" role="menuitem" (click)="onMenuAction('rename-section', undefined, findSection(menu.id))">
+        <lucide-icon name="pencil" class="w-3.5 h-3.5" aria-hidden="true" />
+        Rename section
+      </button>
+      <hr class="menu-sep" aria-hidden="true" />
+      <button type="button" class="menu-item danger" role="menuitem" (click)="onMenuAction('delete-section', undefined, findSection(menu.id))">
+        <lucide-icon name="trash-2" class="w-3.5 h-3.5" aria-hidden="true" />
+        Delete section
+      </button>
+    }
+  </div>
+}
+
+<!-- ─── Dialogs ──────────────────────────────────────────────────── -->
+@if (categoryDialogOpen()) {
+  <app-category-form-dialog
+    [category]="categoryBeingEdited()"
+    (saved)="closeCategoryDialog()"
+    (cancel)="closeCategoryDialog()"
+  />
+}
+
+@if (sectionDialogOpen()) {
+  <app-section-form-dialog
+    [section]="sectionBeingEdited()"
+    [categoryId]="sectionDialogCategoryId()"
+    (saved)="closeSectionDialog()"
+    (cancel)="closeSectionDialog()"
+  />
+}
+
+@if (deleteTarget(); as target) {
+  <app-delete-confirm-dialog
+    [kind]="target.kind"
+    [id]="target.id"
+    [label]="target.label"
+    (confirmed)="confirmDelete()"
+    (cancel)="cancelDelete()"
+  />
+}
+
+<!-- ─── Shortcuts Help ───────────────────────────────────────────── -->
+@if (showShortcutsHelp()) {
+  <div
+    class="overlay"
+    (click)="showShortcutsHelp.set(false)"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="shortcuts-title"
+  >
+    <div class="shortcuts-panel" (click)="$event.stopPropagation()">
+      <div class="shortcuts-header">
+        <h2 id="shortcuts-title" class="shortcuts-title">Keyboard Shortcuts</h2>
+        <button type="button" class="icon-btn" (click)="showShortcutsHelp.set(false)" aria-label="Close shortcuts">
+          <lucide-icon name="x" class="w-4 h-4" aria-hidden="true" />
+        </button>
+      </div>
+
+      <dl class="shortcuts-grid">
+        <div class="shortcut-row">
+          <span class="keys"><kbd>/</kbd></span>
+          <dt>Focus search</dt>
+        </div>
+        <div class="shortcut-row">
+          <span class="keys"><kbd>N</kbd></span>
+          <dt>New category</dt>
+        </div>
+        <div class="shortcut-row">
+          <span class="keys"><kbd>Esc</kbd></span>
+          <dt>Close / cancel</dt>
+        </div>
+        <div class="shortcut-row">
+          <span class="keys"><kbd>⌘K</kbd></span>
+          <dt>Focus search (Mac)</dt>
+        </div>
+      </dl>
+    </div>
+  </div>
+}
