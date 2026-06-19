@@ -11,27 +11,25 @@ export interface AiToolbarAction {
   selector: 'app-ai-toolbar',
   imports: [LucideAngularModule],
   template: `
-    <div class="toolbar" role="toolbar" aria-label="AI actions">
+    <div class="ai-toolbar" role="toolbar" [attr.aria-label]="'AI actions for ' + field()">
       @for (action of actions; track action.id) {
         <button
           type="button"
           class="toolbar-btn"
           [disabled]="loading() || disabled()"
           (click)="actionSelected.emit(action.id)"
-          [attr.aria-label]="action.label"
-          [attr.title]="action.label"
+          [attr.aria-label]="action.label + ' ' + field()"
         >
-          <lucide-icon [name]="action.icon" class="btn-icon" aria-hidden="true"></lucide-icon>
+          <lucide-icon [name]="action.icon" class="btn-icon" aria-hidden="true" />
           <span class="btn-label">{{ action.label }}</span>
         </button>
       }
     </div>
   `,
   styles: `
-    .toolbar {
+    .ai-toolbar {
       display: flex;
       align-items: center;
-      gap: 0;
       border: 1.5px solid var(--color-border);
       background: var(--color-surface);
     }
@@ -51,45 +49,29 @@ export interface AiToolbarAction {
       text-transform: uppercase;
       letter-spacing: 0.08em;
       cursor: pointer;
-      transition: opacity 150ms ease, background 150ms ease;
-      white-space: nowrap;
+      transition: background 120ms ease, opacity 120ms ease;
     }
 
-    .toolbar-btn:last-child {
-      border-right: none;
-    }
+    .toolbar-btn:last-child { border-right: none; }
 
-    .toolbar-btn:hover:not(:disabled) {
-      background: var(--color-accent-soft);
-    }
+    .toolbar-btn:hover:not(:disabled) { background: var(--color-accent-soft); }
 
     .toolbar-btn:active:not(:disabled) {
       background: var(--color-accent);
       color: var(--color-surface);
     }
 
-    .toolbar-btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
+    .toolbar-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    .btn-icon {
-      width: 14px;
-      height: 14px;
-      flex-shrink: 0;
-    }
-
-    .btn-label {
-      line-height: 1;
-    }
+    .btn-icon { width: 0.875rem; height: 0.875rem; flex-shrink: 0; }
+    .btn-label { line-height: 1; }
   `,
 })
 export class AiToolbarComponent {
-  loading = input(false);
-  disabled = input(false);
-  field = input.required<'answer' | 'deepDive'>();
-
-  actionSelected = output<string>();
+  readonly loading = input(false);
+  readonly disabled = input(false);
+  readonly field = input.required<'answer' | 'deepDive'>();
+  readonly actionSelected = output<string>();
 
   readonly actions: AiToolbarAction[] = [
     { id: 'review', label: 'Review', icon: 'sparkles' },
