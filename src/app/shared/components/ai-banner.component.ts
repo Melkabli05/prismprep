@@ -51,19 +51,28 @@ export function diffLines(a: string, b: string): DiffLine[] {
         <span class="banner-label">{{ actionLabel() }} by AI</span>
       </div>
 
-      <div class="diff-view" aria-label="AI suggestion diff">
-        @for (line of diffLines(); track $index) {
-          <div
-            class="diff-line"
-            [class.diff-line--unchanged]="line.type === 'unchanged'"
-            [class.diff-line--added]="line.type === 'added'"
-            [class.diff-line--removed]="line.type === 'removed'"
-          >
-            <span class="diff-marker">{{ getMarker(line.type) }}</span>
-            <span class="diff-text">{{ line.text }}</span>
-          </div>
-        }
-      </div>
+      @if (loading()) {
+        <div class="skeleton-wrap" aria-label="Loading AI suggestion...">
+          <div class="skeleton-line" style="width: 60%"></div>
+          <div class="skeleton-line" style="width: 85%"></div>
+          <div class="skeleton-line" style="width: 70%"></div>
+          <div class="skeleton-line" style="width: 40%"></div>
+        </div>
+      } @else {
+        <div class="diff-view" aria-label="AI suggestion diff">
+          @for (line of diffLines(); track $index) {
+            <div
+              class="diff-line"
+              [class.diff-line--unchanged]="line.type === 'unchanged'"
+              [class.diff-line--added]="line.type === 'added'"
+              [class.diff-line--removed]="line.type === 'removed'"
+            >
+              <span class="diff-marker">{{ getMarker(line.type) }}</span>
+              <span class="diff-text">{{ line.text }}</span>
+            </div>
+          }
+        </div>
+      }
 
       <div class="banner-actions">
         <button
@@ -213,6 +222,18 @@ export function diffLines(a: string, b: string): DiffLine[] {
     .btn--accept:hover:not(:disabled) {
       background: var(--color-accent-dark);
       border-color: var(--color-accent-dark);
+    }
+
+    .skeleton-wrap { padding: 0.75rem; }
+    .skeleton-line {
+      height: 0.875rem; margin-bottom: 0.5rem;
+      background: var(--color-border);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    .skeleton-line:last-child { margin-bottom: 0; }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.8; }
     }
   `,
 })

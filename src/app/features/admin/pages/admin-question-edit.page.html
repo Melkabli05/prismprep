@@ -35,6 +35,14 @@
 <!-- ─── Form ───────────────────────────────────────────────────── -->
 <form id="question-form" (submit)="onSubmit($event)" novalidate>
 
+  @if (aiError(); as err) {
+    <div class="ai-error" role="alert">
+      <lucide-icon name="circle-alert" class="w-4 h-4" />
+      {{ err }}
+      <button type="button" class="error-dismiss" (click)="clearAiState()">Dismiss</button>
+    </div>
+  }
+
   <!-- Meta row (edit mode) -->
   @if (!isNew()) {
     <div class="meta-row">
