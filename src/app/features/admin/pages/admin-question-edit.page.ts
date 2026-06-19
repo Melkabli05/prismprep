@@ -7,6 +7,10 @@ import { AdminContentService } from '../data/admin-content.service';
 import { MonacoEditorComponent } from '@shared/components/monaco-editor.component';
 import { MarkdownEditorComponent } from '@shared/components/markdown-editor.component';
 import { AnswerEditorComponent } from '@shared/components/answer-editor.component';
+import { AiService } from '@core/ai/ai-provider.service';
+import { AiToolbarComponent } from '@shared/components/ai-toolbar.component';
+import { AiBannerComponent } from '@shared/components/ai-banner.component';
+import { AiSuggestion, AnswerAction, DeepDiveAction } from '@core/ai/ai-provider.service';
 
 interface QuestionModel {
   id: string;
@@ -30,6 +34,8 @@ const EMPTY_MODEL: QuestionModel = {
     MonacoEditorComponent,
     MarkdownEditorComponent,
     AnswerEditorComponent,
+    AiToolbarComponent,
+    AiBannerComponent,
   ],
   templateUrl: './admin-question-edit.page.html',
   styleUrl: './admin-question-edit.page.css',
@@ -38,6 +44,12 @@ export class AdminQuestionEditPage {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   readonly admin = inject(AdminContentService);
+  readonly ai = inject(AiService);
+
+  readonly aiLoading = signal(false);
+  readonly aiError = signal<string | null>(null);
+  readonly aiSuggestion = signal<AiSuggestion | null>(null);
+  readonly aiField = signal<'answer' | 'deepDive' | null>(null);
 
   private readonly paramMap = toSignal(this.route.paramMap, { initialValue: this.route.snapshot.paramMap });
   private readonly queryParamMap = toSignal(this.route.queryParamMap, { initialValue: this.route.snapshot.queryParamMap });
@@ -147,4 +159,31 @@ export class AdminQuestionEditPage {
       .filter(q => q.section_id === this.newSectionId())
       .reduce((max, q) => Math.max(max, q.sort_order), -1) + 1;
   }
+
+  async onAiAction(field: 'answer' | 'deepDive', action: string): Promise<void> {
+    this.aiLoading.set(true);
+    this.aiError.set(null);
+    const current = field === 'answer' ? this.model().answer : this.model().deepDive ?? '';
+    const result = field === 'answer'
+      ? await this.ai.actAnswer(action as AnswerAction, current, this.model().question, this.model().language ?? 'typescript')
+      : await this.ai.actDeepDive(action as DeepDiveAction, current);
+    this.aiLoading.set(false);
+    if ('error' in result) { this.aiError.set(result.error.message); return; }
+    this.aiSuggestion.set(result.suggestion);
+    this.aiField.set(field);
+  }
+
+  acceptAiSuggestion(): void {
+    const s = this.aiSuggestion();
+    const field = this.aiField();
+    if (!s || !field) return;
+    if (field === 'answer') {
+      this.model.update(m => ({ ...m, answer: s.result }));
+    } else {
+      this.model.update(m => ({ ...m, deepDive: s.result }));
+    }
+    this.clearAiState();
+  }
+
+  clearAiState(): void { this.aiSuggestion.set(null); this.aiError.set(null); this.aiField.set(null); }
 }

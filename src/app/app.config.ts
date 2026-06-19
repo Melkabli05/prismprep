@@ -11,6 +11,7 @@ import { MonacoEditorModule, NgxMonacoEditorConfig } from 'ngx-monaco-editor';
 import { routes } from './app.routes';
 import { environment } from '../environments/environment';
 import { provideSupabase } from '@core/config/supabase.config';
+import { AI_PROVIDER_CONFIG } from '@core/config/ai.config';
 
 const monacoConfig: NgxMonacoEditorConfig = {
   baseUrl: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.0/min',
@@ -67,5 +68,6 @@ export const appConfig: ApplicationConfig = {
       MonacoEditorModule.forRoot(monacoConfig),
     ),
     provideSupabase(environment.supabaseUrl, environment.supabaseAnonKey),
+    { provide: AI_PROVIDER_CONFIG, useValue: { apiKey: environment.geminiApiKey } },
   ],
 };

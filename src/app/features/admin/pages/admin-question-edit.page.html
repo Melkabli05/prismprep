@@ -71,6 +71,19 @@
   <!-- Answer -->
   <div class="field">
     <label class="field-label">Answer</label>
+    <app-ai-toolbar
+      [loading]="aiLoading()"
+      field="answer"
+      (actionSelected)="onAiAction('answer', $event)"
+    />
+    @if (aiSuggestion() && aiField() === 'answer') {
+      <app-ai-banner
+        [suggestion]="aiSuggestion()!"
+        [loading]="aiLoading()"
+        (accepted)="acceptAiSuggestion()"
+        (dismissed)="clearAiState()"
+      />
+    }
     <app-answer-editor
       [value]="model().answer"
       (valueChange)="model.update(m => ({ ...m, answer: $event }))"
@@ -96,6 +109,19 @@
   <!-- Deep dive — Markdown Editor -->
   <div class="field">
     <label class="field-label">Deep Dive <span class="field-label-opt">(optional)</span></label>
+    <app-ai-toolbar
+      [loading]="aiLoading()"
+      field="deepDive"
+      (actionSelected)="onAiAction('deepDive', $event)"
+    />
+    @if (aiSuggestion() && aiField() === 'deepDive') {
+      <app-ai-banner
+        [suggestion]="aiSuggestion()!"
+        [loading]="aiLoading()"
+        (accepted)="acceptAiSuggestion()"
+        (dismissed)="clearAiState()"
+      />
+    }
     <app-markdown-editor
       [value]="model().deepDive"
       (valueChange)="model.update(m => ({ ...m, deepDive: $event }))"
